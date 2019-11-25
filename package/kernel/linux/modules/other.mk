@@ -38,27 +38,34 @@ define KernelPackage/bluetooth
 	CONFIG_BT_LE=y \
 	CONFIG_BT_RFCOMM \
 	CONFIG_BT_BNEP \
+	CONFIG_BT_BCM \
 	CONFIG_BT_HCIBTUSB \
-	CONFIG_BT_HCIBTUSB_BCM=n \
+	CONFIG_BT_HCIBTUSB_BCM=y \
+	CONFIG_SERIAL_DEV_BUS \
+	CONFIG_BT_HS=y \
+	CONFIG_BT_DEBUGFS=y \
 	CONFIG_BT_HCIUART \
-	CONFIG_BT_HCIUART_BCM=n \
+	CONFIG_BT_HCIUART_3WIRE=y \
+	CONFIG_BT_HCIUART_SERDEV=y \
+	CONFIG_BT_HCIUART_BCM=y \
+	CONFIG_BT_HCIUART_BCSP=n \
 	CONFIG_BT_HCIUART_INTEL=n \
 	CONFIG_BT_HCIUART_H4 \
 	CONFIG_BT_HCIUART_NOKIA=n \
+	CONFIG_BT_HCIBCM203X \
 	CONFIG_BT_HIDP
   $(call AddDepends/rfkill)
   FILES:= \
 	$(LINUX_DIR)/net/bluetooth/bluetooth.ko \
 	$(LINUX_DIR)/net/bluetooth/rfcomm/rfcomm.ko \
 	$(LINUX_DIR)/net/bluetooth/bnep/bnep.ko \
-	$(LINUX_DIR)/net/bluetooth/hidp/hidp.ko \
 	$(LINUX_DIR)/drivers/bluetooth/hci_uart.ko \
-	$(LINUX_DIR)/drivers/bluetooth/btusb.ko
+	$(LINUX_DIR)/drivers/bluetooth/btbcm.ko
 ifeq ($(strip $(call CompareKernelPatchVer,$(KERNEL_PATCHVER),ge,4.1.0)),1)
   FILES+= \
 	$(LINUX_DIR)/drivers/bluetooth/btintel.ko
 endif
-  AUTOLOAD:=$(call AutoProbe,bluetooth rfcomm bnep hidp hci_uart btusb)
+  AUTOLOAD:=$(call AutoProbe,bluetooth rfcomm hidp hci_uart btbcm)
 endef
 
 define KernelPackage/bluetooth/description

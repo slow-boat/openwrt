@@ -82,10 +82,11 @@ define Build/imx6-combined-image
 			$@.boot/;
 	)
 
-	mkimage -A arm -O linux -T script -C none -a 0 -e 0 \
+	if [ -n "$(BOOT_SCRIPT)" ]; then mkimage -A arm -O linux -T script -C none -a 0 -e 0 \
 		-n '$(DEVICE_ID) OpenWrt bootscript' \
 		-d $(BOOT_SCRIPT) \
-		$@.boot/boot.scr
+		$@.boot/boot.scr;\
+	fi
 
 	cp $@ $@.fs
 
@@ -95,6 +96,14 @@ define Build/imx6-combined-image
 		$(CONFIG_TARGET_ROOTFS_PARTSIZE) \
 		$@.fs \
 		1024
+endef
+
+define Build/imx6-wand-sdcard
+	$(Build/imx6-combined-image-prepare)
+	$(Build/imx6-combined-image)
+	dd if=$(STAGING_DIR_IMAGE)/$(UBOOT)-SPL of=$@ bs=1024 seek=1 conv=notrunc
+	dd if=$(STAGING_DIR_IMAGE)/$(UBOOT)-u-boot.img of=$@ seek=69 bs=1k conv=notrunc
+	$(Build/imx6-combined-image-clean)
 endef
 
 define Build/imx6-sdcard
@@ -188,7 +197,23 @@ TARGET_DEVICES += ventana-large
 define Device/wandboard
   DEVICE_VENDOR := Wandboard
   DEVICE_MODEL := Dual
-  DEVICE_DTS := imx6dl-wandboard
+  KERNEL := kernel-bin
+  UBOOT := wandboard
+  BOOT_SCRIPT = ""
+  DEVICE_NAME := wandboard
+  DEVICE_DTS := \
+	imx6qp-wandboard-revd1 \
+	imx6q-wandboard-revd1 \
+	imx6dl-wandboard \
+	imx6q-wandboard \
+	imx6dl-wandboard \
+	imx6q-wandboard-revb1 \
+	imx6dl-wandboard-revb1
+  IMAGES := combined.bin sysupgrade.bin dtb
+  FILESYSTEMS := squashfs
+  IMAGE/combined.bin := append-rootfs | pad-extra 128k | imx6-wand-sdcard
+  IMAGE/sysupgrade.bin := sysupgrade-tar | append-metadata
+  IMAGE/dtb := install-dtb
 endef
 TARGET_DEVICES += wandboard
 

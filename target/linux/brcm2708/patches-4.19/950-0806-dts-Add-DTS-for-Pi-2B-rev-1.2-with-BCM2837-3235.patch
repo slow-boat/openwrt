@@ -13,8 +13,10 @@ Signed-off-by: Phil Elwell <phil@raspberrypi.org>
  create mode 100644 arch/arm/boot/dts/bcm2710-rpi-2-b.dts
  create mode 100644 arch/arm64/boot/dts/broadcom/bcm2710-rpi-2-b.dts
 
---- a/arch/arm/boot/dts/Makefile
-+++ b/arch/arm/boot/dts/Makefile
+Index: linux-4.19.85/arch/arm/boot/dts/Makefile
+===================================================================
+--- linux-4.19.85.orig/arch/arm/boot/dts/Makefile
++++ linux-4.19.85/arch/arm/boot/dts/Makefile
 @@ -7,6 +7,7 @@ dtb-$(CONFIG_ARCH_BCM2835) += \
  	bcm2708-rpi-zero.dtb \
  	bcm2708-rpi-zero-w.dtb \
@@ -23,8 +25,10 @@ Signed-off-by: Phil Elwell <phil@raspberrypi.org>
  	bcm2710-rpi-3-b.dtb \
  	bcm2711-rpi-4-b.dtb \
  	bcm2710-rpi-3-b-plus.dtb \
+Index: linux-4.19.85/arch/arm/boot/dts/bcm2710-rpi-2-b.dts
+===================================================================
 --- /dev/null
-+++ b/arch/arm/boot/dts/bcm2710-rpi-2-b.dts
++++ linux-4.19.85/arch/arm/boot/dts/bcm2710-rpi-2-b.dts
 @@ -0,0 +1,125 @@
 +/dts-v1/;
 +
@@ -151,8 +155,10 @@ Signed-off-by: Phil Elwell <phil@raspberrypi.org>
 +		pwr_led_trigger = <&pwr_led>,"linux,default-trigger";
 +	};
 +};
---- a/arch/arm64/boot/dts/broadcom/Makefile
-+++ b/arch/arm64/boot/dts/broadcom/Makefile
+Index: linux-4.19.85/arch/arm64/boot/dts/broadcom/Makefile
+===================================================================
+--- linux-4.19.85.orig/arch/arm64/boot/dts/broadcom/Makefile
++++ linux-4.19.85/arch/arm64/boot/dts/broadcom/Makefile
 @@ -1,7 +1,9 @@
  # SPDX-License-Identifier: GPL-2.0
  dtb-$(CONFIG_ARCH_BCM2835) += bcm2837-rpi-3-b.dtb \
@@ -163,8 +169,10 @@ Signed-off-by: Phil Elwell <phil@raspberrypi.org>
  dtb-$(CONFIG_ARCH_BCM2835) += bcm2710-rpi-3-b.dtb
  dtb-$(CONFIG_ARCH_BCM2835) += bcm2711-rpi-4-b.dtb
  dtb-$(CONFIG_ARCH_BCM2835) += bcm2710-rpi-3-b-plus.dtb
+Index: linux-4.19.85/arch/arm64/boot/dts/broadcom/bcm2710-rpi-2-b.dts
+===================================================================
 --- /dev/null
-+++ b/arch/arm64/boot/dts/broadcom/bcm2710-rpi-2-b.dts
++++ linux-4.19.85/arch/arm64/boot/dts/broadcom/bcm2710-rpi-2-b.dts
 @@ -0,0 +1,3 @@
 +#define RPI364
 +

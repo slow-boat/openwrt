@@ -1,4 +1,4 @@
-src-git packages git@github.com:/slow-boat/packages.git
+src-git packages git@github.com:/slow-boat/packages.git;audio
 src-git luci https://git.openwrt.org/project/luci.git
 src-git routing https://git.openwrt.org/feed/routing.git
 src-git telephony https://git.openwrt.org/feed/telephony.git

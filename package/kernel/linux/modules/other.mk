@@ -60,6 +60,7 @@ define KernelPackage/bluetooth
 	$(LINUX_DIR)/net/bluetooth/rfcomm/rfcomm.ko \
 	$(LINUX_DIR)/net/bluetooth/bnep/bnep.ko \
 	$(LINUX_DIR)/drivers/bluetooth/hci_uart.ko \
+	$(LINUX_DIR)/drivers/tty/serdev/serdev.ko \
 	$(LINUX_DIR)/drivers/bluetooth/btbcm.ko
 ifeq ($(strip $(call CompareKernelPatchVer,$(KERNEL_PATCHVER),ge,4.1.0)),1)
   FILES+= \

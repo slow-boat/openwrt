@@ -41,6 +41,10 @@ platform_check_image() {
 		nand_do_platform_check $board $1
 		return $?;
 		;;
+	wandboard,cubox-i)
+		platform_check_image_sdcard "$1"
+		return $?;
+		;;
 	esac
 
 	echo "Sysupgrade is not yet supported on $board."
@@ -57,6 +61,9 @@ platform_do_upgrade() {
 	*gw5*)
 		nand_do_upgrade "$1"
 		;;
+	wandboard,cubox-i)
+		platform_do_upgrade_sdcard "$1"
+		;;		
 	esac
 }
 
@@ -67,6 +74,9 @@ platform_copy_config() {
 	apalis*)
 		apalis_copy_config
 		;;
+	wandboard,cubox-i)
+		platform_copy_config_sdcard "$1"
+		;;			
 	esac
 }
 

@@ -9,12 +9,12 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=cypress-nvram
 PKG_SOURCE_DATE:=2019-09-03
-PKG_SOURCE_VERSION:=8587f367031c3df45c96cb818678af7b4e601f2b
-PKG_MIRROR_HASH:=41d64d2406fdb7278b5784a3ecb9935a36cd4a94dfc57c2a4b02715547c0cc4e
+PKG_SOURCE_VERSION:=e7b78df22f2a0c5f56abb7b5880661611de35e5f
+PKG_MIRROR_HASH:=1cb20a749696852be0a512d51961365dd9c031362af0af1a2b9f5a3fb894885f
 PKG_RELEASE:=1
 
 PKG_SOURCE_PROTO:=git
-PKG_SOURCE_URL:=https://github.com/Noltari/cypress-nvram.git
+PKG_SOURCE_URL:=https://github.com/openwrt/cypress-nvram.git
 
 PKG_MAINTAINER:=Álvaro Fernández Rojas <noltari@gmail.com>
 

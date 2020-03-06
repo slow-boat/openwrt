@@ -1,0 +1,1 @@
+dwc_otg.fiq_fsm_enable=0 dwc_otg.fiq_enable=0 dwc_otg.nak_holdoff=0 enable_uart=0 force_turbo=1 console=tty1 root=/dev/mmcblk0p2 rootfstype=squashfs,ext4 rootwait

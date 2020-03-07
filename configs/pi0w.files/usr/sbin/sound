@@ -1,0 +1,31 @@
+#!/bin/sh
+
+chrt -fp 55 35
+chrt -fp 55 36
+chrt -fp 55 37
+
+while true; do
+	jackpid=`pgrep jackd` || {
+		echo "Starting Jack"
+		jackd -R -P30 -d alsa -r 48000 -zs -s -n3 -p2048 &
+		# jackd -R -d alsa -r48000 -zs -n3 &
+		sleep 3
+		continue
+	}
+	
+	# check if jconvolver running
+	convpid=`pgrep jconvolver` || {
+		echo "Starting convolver"
+		nice -n -30 jconvolver -s default /root/convolver.jconv &
+		echo "Started..."
+		sleep 1
+		continue
+	}
+	# nice -n20 zita-n2j --buff 50 --filt 96 --jserv default 192.168.1.2 5001
+	# jack_connect zita-n2j:out_1 system:playback_1
+	# jack_connect zita-n2j:out_2 system:playback_2
+	sleep 10
+done;
+
+	
+

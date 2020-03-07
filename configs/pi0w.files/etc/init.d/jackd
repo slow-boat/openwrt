@@ -1,0 +1,15 @@
+#!/bin/sh /etc/rc.common
+# Copyright (C) 2007-2014 OpenWrt.org
+
+START=93
+
+USE_PROCD=1
+
+PROG=/usr/sbin/sound
+
+start_service() {
+
+	procd_open_instance
+	procd_set_param command "$PROG"
+	procd_close_instance
+}

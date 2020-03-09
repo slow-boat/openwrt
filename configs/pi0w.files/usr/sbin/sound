@@ -4,12 +4,14 @@ chrt -fp 55 35
 chrt -fp 55 36
 chrt -fp 55 37
 
+start=
 while true; do
 	jackpid=`pgrep jackd` || {
 		echo "Starting Jack"
 		jackd -R -P30 -d alsa -r 48000 -zs -s -n3 -p2048 &
 		# jackd -R -d alsa -r48000 -zs -n3 &
 		sleep 3
+		start=1
 		continue
 	}
 	
@@ -19,11 +21,26 @@ while true; do
 		nice -n -30 jconvolver -s default /root/convolver.jconv &
 		echo "Started..."
 		sleep 1
+		start=2
 		continue
 	}
-	# nice -n20 zita-n2j --buff 50 --filt 96 --jserv default 192.168.1.2 5001
-	# jack_connect zita-n2j:out_1 system:playback_1
-	# jack_connect zita-n2j:out_2 system:playback_2
+	
+	# check if zita-n2j running
+	zitapid=`pgrep zita-n2j` || {
+		echo "Starting convolver"
+		nice -n -30 zita-n2j --jserv default --buff 700 --filt 36 192.168.1.2 5001 &
+		echo "Started..."		
+		start=3
+		continue
+	}
+	
+	[ -n "$start" ] && {
+		echo "Started audio"
+		alsactl --file /root/asound.state.RCA.thru.test restore
+		jack_connect zita-n2j:out_1 jconvolver:in.L
+		jack_connect zita-n2j:out_2 jconvolver:in.R
+		start=
+	}
 	sleep 10
 done;
 

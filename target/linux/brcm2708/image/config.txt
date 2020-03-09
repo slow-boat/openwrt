@@ -12,3 +12,12 @@ include distroconfig.txt
 
 [all]
 # Place your custom settings here.
+
+# Uncomment some or all of these lines to enable the optional hardware interfaces
+dtparam=i2c_arm=on
+dtparam=i2s=on
+dtparam=spi=on
+
+# Uncomment one of these lines to enable an audio interface
+dtoverlay=audioinjector-wm8731-audio
+

@@ -1,8 +1,13 @@
 #!/bin/sh
 
+# usb IRQ
 chrt -fp 55 35
 chrt -fp 55 36
 chrt -fp 55 37
+
+# wifi IRQ
+chrt -fp 55 49
+chrt -fp 55 50
 
 start=
 while true; do
@@ -35,7 +40,7 @@ while true; do
 	}
 	
 	[ -n "$start" ] && {
-		echo "Started audio"
+		echo "Started audio ($start)"
 		alsactl --file /root/asound.state.RCA.thru.test restore
 		jack_connect zita-n2j:out_1 jconvolver:in.L
 		jack_connect zita-n2j:out_2 jconvolver:in.R

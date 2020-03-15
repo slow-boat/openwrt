@@ -1,52 +1,59 @@
 #!/bin/sh
 
-# usb IRQ
-chrt -fp 55 35
-chrt -fp 55 36
-chrt -fp 55 37
+exec 1>/tmp/sound.log
+exec 2>&1
 
-# wifi IRQ
-chrt -fp 55 49
-chrt -fp 55 50
+# increase priority of apps by this amount
+PROC_PRI=10
+
+# set up IRQs (default 51)  with higher priority- USB and wifi mmc
+IRQ_PRI=53
+IRQS="35 36 37 49 50"
+for irq in $IRQS; do chrt -fp $IRQ_PRI $irq; done
 
 start=
 while true; do
 	jackpid=`pgrep jackd` || {
 		echo "Starting Jack"
-		jackd -R -P30 -d alsa -r 48000 -zs -s -n3 -p2048 &
+		jackd -R -P$PROC_PRI -d alsa -r 48000 -zs -s -n3 -p2048 &
+		# jackd -R -P30 -d alsa -r 48000 -zs -s -n3 &
 		# jackd -R -d alsa -r48000 -zs -n3 &
-		sleep 3
 		start=1
+		sleep 6 
 		continue
 	}
 	
 	# check if jconvolver running
 	convpid=`pgrep jconvolver` || {
 		echo "Starting convolver"
-		nice -n -30 jconvolver -s default /root/convolver.jconv &
+		nice -n -$((PROC_PRI+5)) jconvolver -s default /root/convolver.jconv &
 		echo "Started..."
-		sleep 1
 		start=2
+		sleep 1
 		continue
 	}
 	
 	# check if zita-n2j running
 	zitapid=`pgrep zita-n2j` || {
-		echo "Starting convolver"
-		nice -n -30 zita-n2j --jserv default --buff 700 --filt 36 192.168.1.2 5001 &
+		echo "Starting zita-n2j"
+#		nice -n -30 zita-n2j --jserv default --buff 700 --filt 48 192.168.1.2 5001 &
+#		nice -n -30 zita-n2j --jserv default --buff 50 --filt 32 192.168.1.1 5001 &
+		nice -n -$PROC_PRI zita-n2j --jserv default --buff 50 192.168.1.1 5001 &
 		echo "Started..."		
 		start=3
+		sleep 1
 		continue
 	}
 	
 	[ -n "$start" ] && {
-		echo "Started audio ($start)"
-		alsactl --file /root/asound.state.RCA.thru.test restore
+		echo "Started audio ($start) jackd($jackpid) jconvolver($convpid) n2j($zitapid)"
+		alsactl --file /root/asound.audioinjector.no.in restore
+#		alsactl --file /root/asound.audioinjector.line.in restore
 		jack_connect zita-n2j:out_1 jconvolver:in.L
 		jack_connect zita-n2j:out_2 jconvolver:in.R
 		start=
 	}
-	sleep 10
+	sleep 3
 done;
 
 	

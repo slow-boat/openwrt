@@ -204,6 +204,21 @@ endef
 
 $(eval $(call KernelPackage,fb-tft))
 
+define KernelPackage/fb-tft-device
+  SUBMENU:=$(VIDEO_MENU)
+  TITLE:=Module for adding fbtft devices
+  DEPENDS:=+kmod-fb-tft
+  KCONFIG:=CONFIG_FB_TFT_FBTFT_DEVICE
+  FILES:=$(LINUX_DIR)/drivers/staging/fbtft/fbtft_device.ko
+  AUTOLOAD:=$(call AutoLoad,09,fbtft_device)
+endef
+
+define KernelPackage/fb-tft-device/description
+  Module for adding fbtft devices
+endef
+
+$(eval $(call KernelPackage,fb-tft-device))
+
 define KernelPackage/fb-tft-ili9341
   SUBMENU:=$(VIDEO_MENU)
   TITLE:=FB driver for the ILI9341 LCD Controller

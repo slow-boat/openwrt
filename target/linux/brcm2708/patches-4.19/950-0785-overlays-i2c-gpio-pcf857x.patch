@@ -1,0 +1,88 @@
+Index: linux-4.19.91/arch/arm/boot/dts/overlays/i2c-gpio-pcf857x-overlay.dts
+===================================================================
+--- /dev/null
++++ linux-4.19.91/arch/arm/boot/dts/overlays/i2c-gpio-pcf857x-overlay.dts
+@@ -0,0 +1,71 @@
++// Definitions for PCF8575 Gpio Extender from NXP
++
++/dts-v1/;
++/plugin/;
++
++/ {
++	compatible = "brcm,bcm2835";
++
++	fragment@0 {
++		target = <&i2c1>;
++		__overlay__ {
++			status = "okay";
++		};
++	};
++
++	fragment@1 {
++		target = <&gpio>;
++		__overlay__ {
++			pcf8575_pins: pcf8575_pins@20 {
++				brcm,pins = <4>;
++				brcm,function = <0>;
++			};
++		};
++	};
++
++	fragment@2 {
++		target = <&i2c1>;
++		__overlay__ {
++			#address-cells = <1>;
++			#size-cells = <0>;
++
++			pcf8575: nxp@20 {
++				compatible = "nxp,pcf8575";
++				reg = <0x20>;
++				gpio-controller;
++				#gpio-cells = <2>;
++
++				status = "okay";
++			};
++		};
++	};
++
++	fragment@3 {
++		target = <&pcf8575>;
++		__dormant__ {
++			compatible = "nxp,pcf8574";
++		};
++	};
++
++	fragment@4 {
++		target = <&i2c1>;
++		__overlay__ {
++			pcf8575_irq: nxp@20 {
++				#interrupt-cells=<2>;
++				interrupt-parent = <&gpio>;
++				interrupts = <4 2>;
++				interrupt-controller;
++				nxp,irq-mirror;
++			};
++		};
++	};
++
++	__overrides__ {
++		gpiopin = <&pcf8575_pins>,"brcm,pins:0",
++				<&pcf8575_irq>,"interrupts:0";
++		addr = <&pcf8575>,"reg:0", <&pcf8575_pins>,"reg:0";
++		pcf8574 = <0>,"=3";
++		noints = <0>,"!1!4";
++	};
++};
++
+Index: linux-4.19.91/arch/arm/boot/dts/overlays/Makefile
+===================================================================
+--- linux-4.19.91.orig/arch/arm/boot/dts/overlays/Makefile
++++ linux-4.19.91/arch/arm/boot/dts/overlays/Makefile
+@@ -64,6 +64,7 @@ dtbo-$(CONFIG_ARCH_BCM2835) += \
+ 	i-sabre-q2m.dtbo \
+ 	i2c-bcm2708.dtbo \
+ 	i2c-gpio.dtbo \
++	i2c-gpio-pcf857x.dtbo \
+ 	i2c-mux.dtbo \
+ 	i2c-pwm-pca9685a.dtbo \
+ 	i2c-rtc.dtbo \

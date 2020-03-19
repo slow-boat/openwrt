@@ -11,12 +11,17 @@
 include distroconfig.txt
 
 [all]
-
-# Audioinjector enable
+#buses
 dtparam=i2c_arm=on
 dtparam=i2s=on
 dtparam=spi=on
+
+#chips/modules
+dtoverlay=rpi-backlight
+dtoverlay=spi0-hw-cs
 dtoverlay=audioinjector-wm8731-audio
+dtoverlay=rpi-display-slow-boat
+dtoverlay=i2c-gpio-pcf857x
 
 # overclock to 1.1GHz: gets a bit hotter, but still no heatsink required
 # - benefit doing audio DSP is >15% speed improvement. Also it seems to fix

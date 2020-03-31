@@ -61,7 +61,7 @@ proto_dhcp_setup() {
 	[ "$delegate" = "0" ] && proto_export "IFACE6RD_DELEGATE=0"
 	# Request classless route option (see RFC 3442) by default
 	[ "$classlessroute" = "0" ] || append dhcpopts "-O 121"
-
+	[ -n "$hostname" ] || hostname="$(uci get system.@system[0].hostname 2>/dev/null)-$config"
 	proto_export "INTERFACE=$config"
 	proto_run_command "$config" udhcpc \
 		-p /var/run/udhcpc-$iface.pid \

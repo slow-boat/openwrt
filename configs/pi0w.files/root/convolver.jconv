@@ -1,6 +1,6 @@
 #                in  out   partition    maxsize	
 # ---------------------------------------------
-/convolver/new    2    2         1024     250000
+/convolver/new    2    2         4096     65536
 #
 #
 #              num   port name     connect to 

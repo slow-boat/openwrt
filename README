@@ -14,16 +14,34 @@ of a case sensitive file system.
 You need gcc, binutils, bzip2, flex, python3.5+, perl, make, find, grep, diff,
 unzip, gawk, getopt, subversion, libz-dev and libc headers installed.
 
+slow-boat customisations
+------------------------
+To make it easier, there is a configs subdirectory. In this contains pre-defined
+target setups. Currently pi0w is the only one supported since this fork is all about
+making a budget audio DSP.
+
+The next steps create a common download folder in the parent folder in case you
+want to have multiple build environments in parallel (different targets for example).
+Additionally we symlink various pre-configured files to save the tedium.
+Choose intended target- in this case the PI0W without bluetooth.
+0.
+mkdir ../dl
+ln -s ../dl dl
+ln -s configs/pi0w-no_bt.config .config
+ln -s configs/pi0w.files files
+
 1. Run "./scripts/feeds update -a" to obtain all the latest package definitions
 defined in feeds.conf / feeds.conf.default
 
 2. Run "./scripts/feeds install -a" to install symlinks for all obtained
 packages into package/feeds/
 
-3. Run "make menuconfig" to select your preferred configuration for the
+2b. Run "./scripts/feeds install -a" again to capture any missing/ill-defined dependencies
+
+3. Run "make menuconfig" to ammend your preferred configuration for the
 toolchain, target system & firmware packages.
 
-4. Run "make" to build your firmware. This will download all sources, build
+4. Run "make -j9" to build your firmware. This will download all sources, build
 the cross-compile toolchain and then cross-compile the Linux kernel & all
 chosen applications for your target system.
 

@@ -9,7 +9,7 @@ config zone
 	option input 'ACCEPT'
 	option output 'ACCEPT'
 	option forward 'ACCEPT'
-	option network 'lan wwan'
+	option network 'lan wifi'
 
 config zone
 	option name 'wan'

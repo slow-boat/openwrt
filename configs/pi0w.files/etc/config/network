@@ -9,6 +9,6 @@ config interface 'lan'
 	option proto 'dhcp'
 	option ifname 'eth0'
 
-config interface 'wwan'
+config interface 'wifi'
 	option proto 'dhcp'
 	option metric '10'

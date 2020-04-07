@@ -13,23 +13,56 @@ IRQ_PRI=53
 IRQS="35 36 37 49 50"
 for irq in $IRQS; do chrt -fp $IRQ_PRI $irq; done
 
+VAR_DIR="/var/run/zita-n2j"
+check_zita_ports() {
+	zita_ports=`ls ${VAR_DIR}/ifaces/`
+	lsp=`jack_lsp -c`
+	active=`echo "$lsp" | grep '   '`
+	for client in $zita_ports; do
+		echo "$lsp" | grep $client >/dev/null || {
+			echo "removing jack client $client from list"
+			rm ${VAR_DIR}/ifaces/$client
+			continue
+		}
+		echo "$active" | grep $client >/dev/null || {
+			echo "connecting jack client $client"
+			jack_connect ${client}:out_1 jconvolver:in.L
+			jack_connect ${client}:out_2 jconvolver:in.R
+		}
+	done
+}
+
+# pid, exepath
+checkpid(){
+	local path=`readlink -f $1` && [ "$path" == "$2" ] || return 1
+}
+
+mkdir -p /var/run/sound
+
 start=
 while true; do
 	sleep 1
-	jackpid=`pgrep jackd` || {
+	checkpid /var/run/sound/jackd /usr/bin/jackd || {
 		echo "Starting Jack"
 		jackd -R -P$PROC_PRI -d alsa -r 48000 -zs -s -i2 -o2 -n2 -p2048 &
+		jackpid=$!
+		rm /var/run/sound/jackd 2>/dev/null
+		ln -s /proc/${jackpid}/exe /var/run/sound/jackd || continue
 		start=1
 		continue
 	}
 	
-	jackres=`jack_wait -c -s $JACKNAME 2>/dev/null | tail -n1` && [ "$jackres" == "running" ] || continue
+	[ "$start" != "1" ] || \
+		jackres=`jack_wait -c -s $JACKNAME 2>/dev/null | tail -n1` && [ "$jackres" == "running" ] || \
+		continue
 	
 	# check if jconvolver running
-	convpid=`pgrep jconvolver` || {
+	checkpid /var/run/sound/jconvolver /usr/bin/jconvolver || {
 		echo "Starting convolver"
 		jconvolver -s $JACKNAME /root/convolver.jconv &
-		echo "Started..."
+		convpid=$!
+		rm /var/run/sound/jconvolver 2>/dev/null
+		ln -s /proc/${convpid}/exe /var/run/sound/jconvolver || continue
 		start=2
 		continue
 	}
@@ -43,7 +76,7 @@ while true; do
 		continue
 	}
 	
-	/etc/init.d/mpd start
+#	/etc/init.d/mpd start
 
 	# run jack event monitor in background- sending output to named pipe. wait for data on the pipe-
 	# specifically "Client wifi-n2j registered" type events- which we will use to trigger connects
@@ -54,6 +87,6 @@ while true; do
 #		alsactl --file /root/asound.audioinjector.line.in restore
 		start=
 	}
+	check_zita_ports
 	sleep 3
 done;
-

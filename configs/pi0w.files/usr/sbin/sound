@@ -44,7 +44,7 @@ while true; do
 	sleep 1
 	checkpid /var/run/sound/jackd /usr/bin/jackd || {
 		echo "Starting Jack"
-		jackd -R -P$PROC_PRI -d alsa -r 48000 -zs -s -i2 -o2 -n2 -p2048 &
+		jackd -R -P$PROC_PRI -d alsa -dduplex -r48000 -zs -s -i2 -o2 -n2 -p2048 &
 		jackpid=$!
 		rm /var/run/sound/jackd 2>/dev/null
 		ln -s /proc/${jackpid}/exe /var/run/sound/jackd || continue
@@ -76,7 +76,6 @@ while true; do
 		continue
 	}
 	
-#	/etc/init.d/mpd start
 
 	# run jack event monitor in background- sending output to named pipe. wait for data on the pipe-
 	# specifically "Client wifi-n2j registered" type events- which we will use to trigger connects
@@ -86,6 +85,7 @@ while true; do
 		alsactl --file /root/asound.audioinjector.no.in restore
 #		alsactl --file /root/asound.audioinjector.line.in restore
 		start=
+		pgrep mpd || /etc/init.d/mpd start
 	}
 	check_zita_ports
 	sleep 3

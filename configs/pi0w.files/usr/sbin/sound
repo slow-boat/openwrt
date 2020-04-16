@@ -1,8 +1,10 @@
 #!/bin/sh
 
 JACKNAME=default
+MIXERNAME="SoftMaster"
+INIT_VOL="/etc/.soundvolume"
 
-exec 1>/tmp/sound.log
+exec 1>>/tmp/sound.log
 exec 2>&1
 
 # increase priority of apps by this amount
@@ -39,11 +41,26 @@ checkpid(){
 
 mkdir -p /var/run/sound
 
+echo "`date` starting sound service"
 start=
 while true; do
 	sleep 1
 	checkpid /var/run/sound/jackd /usr/bin/jackd || {
-		echo "Starting Jack"
+		# soft mixer does not appear straight away...
+		# for some reason when jack loads it gets fixed to 100%
+		# and cannot be reduced... makes things a tad loud
+		# so we trick the mixer into existance, then set it
+		# then start jack...
+		# and to add to the fun, sometimes aplay plays indefinitely even if
+		# we set the duration to 1
+		echo "setting volume"
+		aplay -Dduplex -d1 -fS16_LE -c2 -r48000 /dev/zero &
+		sleep 2
+		pkill aplay
+		init_vol=`printf %d $(cat "$INIT_VOL" 2>/dev/null) 2>/dev/null`||init_vol=12
+		amixer sset $MIXERNAME $((init_vol*255/100)) || continue
+		
+		echo "Set mixer $MIXERNAME level to ${init_vol}%... Starting Jack"
 		jackd -R -P$PROC_PRI -d alsa -dduplex -r48000 -zs -s -i2 -o2 -n2 -p2048 &
 		jackpid=$!
 		rm /var/run/sound/jackd 2>/dev/null
@@ -75,7 +92,6 @@ while true; do
 		start=3		
 		continue
 	}
-	
 
 	# run jack event monitor in background- sending output to named pipe. wait for data on the pipe-
 	# specifically "Client wifi-n2j registered" type events- which we will use to trigger connects
@@ -85,6 +101,7 @@ while true; do
 		alsactl --file /root/asound.audioinjector.no.in restore
 #		alsactl --file /root/asound.audioinjector.line.in restore
 		start=
+		mount -a
 		pgrep mpd || /etc/init.d/mpd start
 	}
 	check_zita_ports

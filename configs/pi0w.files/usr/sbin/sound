@@ -8,7 +8,7 @@ exec 1>>/tmp/sound.log
 exec 2>&1
 
 # increase priority of apps by this amount
-PROC_PRI=20
+JACK_PRI=70
 
 # set up IRQs (default 51)  with higher priority- USB and wifi mmc
 IRQ_PRI=53
@@ -54,14 +54,14 @@ while true; do
 		# and to add to the fun, sometimes aplay plays indefinitely even if
 		# we set the duration to 1
 		echo "setting volume"
-		aplay -Dduplex -d1 -fS16_LE -c2 -r48000 /dev/zero &
+		aplay -Dduplex -d1 -fS32_LE -c2 -r48000 /dev/zero &
 		sleep 2
 		pkill aplay
 		init_vol=`printf %d $(cat "$INIT_VOL" 2>/dev/null) 2>/dev/null`||init_vol=12
 		amixer sset $MIXERNAME $((init_vol*255/100)) || continue
 		
 		echo "Set mixer $MIXERNAME level to ${init_vol}%... Starting Jack"
-		jackd -R -P$PROC_PRI -d alsa -dduplex -r48000 -zs -s -i2 -o2 -n2 -p2048 &
+		jackd -R -P$JACK_PRI -d alsa -dduplex -r48000 -zs -s -i2 -o2 -n3 -p2048 &
 		jackpid=$!
 		rm /var/run/sound/jackd 2>/dev/null
 		ln -s /proc/${jackpid}/exe /var/run/sound/jackd || continue

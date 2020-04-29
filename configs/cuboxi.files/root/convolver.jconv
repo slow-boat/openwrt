@@ -1,0 +1,18 @@
+#                in  out   partition    maxsize	
+# ---------------------------------------------
+/convolver/new    2    2         4096     65536
+#
+#
+#              num   port name     connect to 
+# -----------------------------------------------
+/input/name     1     in.L    "system:capture_1"
+/input/name     2     in.R    "system:capture_2"
+/output/name    1     Out-1    system:playback_1        
+/output/name    2     Out-2    system:playback_2
+#
+#
+#                in out  gain  delay  offset  length  chan      file  
+# ----------------------------------------------------------------------
+/impulse/read     1   1    1     0      0       0       1     impulse48.wav
+/impulse/read     2   2    1     0      0       0       2     impulse48.wav
+

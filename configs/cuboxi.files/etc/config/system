@@ -1,0 +1,10 @@
+config system
+	option ttylogin '0'
+	option log_size '64'
+	option urandom_seed '0'
+	option hostname 'cuboxi'
+	option zonename 'Australia/Perth'
+	option timezone 'AWST-8'
+	option log_proto 'udp'
+	option conloglevel '8'
+	option cronloglevel '8'

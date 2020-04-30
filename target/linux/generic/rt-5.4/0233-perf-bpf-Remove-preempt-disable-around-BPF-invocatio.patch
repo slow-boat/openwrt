@@ -1,0 +1,39 @@
+From e7550f37a54c40547b3dd5ebd2e4613d44f4c8eb Mon Sep 17 00:00:00 2001
+From: Thomas Gleixner <tglx@linutronix.de>
+Date: Mon, 24 Feb 2020 15:01:38 +0100
+Subject: [PATCH 233/290] perf/bpf: Remove preempt disable around BPF
+ invocation
+
+The BPF invocation from the perf event overflow handler does not require to
+disable preemption because this is called from NMI or at least hard
+interrupt context which is already non-preemptible.
+
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+---
+ kernel/events/core.c | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/kernel/events/core.c b/kernel/events/core.c
+index a4ad23064f15..253bdc106cb8 100644
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -8966,7 +8966,6 @@ static void bpf_overflow_handler(struct perf_event *event,
+ 	int ret = 0;
+ 
+ 	ctx.regs = perf_arch_bpf_user_pt_regs(regs);
+-	preempt_disable();
+ 	if (unlikely(__this_cpu_inc_return(bpf_prog_active) != 1))
+ 		goto out;
+ 	rcu_read_lock();
+@@ -8974,7 +8973,6 @@ static void bpf_overflow_handler(struct perf_event *event,
+ 	rcu_read_unlock();
+ out:
+ 	__this_cpu_dec(bpf_prog_active);
+-	preempt_enable();
+ 	if (!ret)
+ 		return;
+ 
+-- 
+2.26.1
+

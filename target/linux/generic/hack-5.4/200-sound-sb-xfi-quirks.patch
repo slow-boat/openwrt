@@ -1,0 +1,81 @@
+Index: linux-4.19.91/sound/usb/quirks.c
+===================================================================
+--- linux-4.19.91.orig/sound/usb/quirks.c
++++ linux-4.19.91/sound/usb/quirks.c
+@@ -409,7 +409,7 @@ static int create_autodetect_quirks(stru
+ }
+ 
+ /*
+- * Create a stream for an Edirol UA-700/UA-25/UA-4FX interface.  
++ * Create a stream for an Edirol UA-700/UA-25/UA-4FX interface.
+  * The only way to detect the sample rate is by looking at wMaxPacketSize.
+  */
+ static int create_uaxx_quirk(struct snd_usb_audio *chip,
+@@ -609,6 +609,7 @@ static int snd_usb_audigy2nx_boot_quirk(
+ 	snd_usb_ctl_msg(dev, usb_rcvctrlpipe(dev, 0), 0x2a,
+ 			USB_DIR_IN | USB_TYPE_VENDOR | USB_RECIP_OTHER,
+ 			0, 0, &buf, 1);
++
+ 	if (buf == 0) {
+ 		snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0), 0x29,
+ 				USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_OTHER,
+@@ -618,6 +619,46 @@ static int snd_usb_audigy2nx_boot_quirk(
+ 	return 0;
+ }
+ 
++static int snd_usb_sb_x_fi_boot_quirk(struct usb_device *dev)
++{
++	u32 buf = 1;
++	int err;
++
++	snd_usb_ctl_msg(dev, usb_rcvctrlpipe(dev, 0), 0x2a,
++			USB_DIR_IN | USB_TYPE_VENDOR | USB_RECIP_OTHER,
++			0, 0, &buf, 2);
++
++	if (buf == 0) {
++		snd_printk(KERN_ERR "X-Fi Surround 5.1 Full Speed Mode\n");
++
++		/* send it twice */
++		snd_usb_ctl_msg(dev, usb_rcvctrlpipe(dev, 0), 0x2a,
++			USB_DIR_IN | USB_TYPE_VENDOR | USB_RECIP_OTHER,
++			0, 0, &buf, 2);
++
++		/* should return 0 again, then we send magic number to card to make it USB2.0*/
++		if (buf == 0) {
++			snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0), 0x29,
++					USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_OTHER,
++					1, 2000, NULL, 0);
++			return -ENODEV;
++		}
++	}
++
++	err = usb_reset_configuration(dev);
++#if 0
++	snd_usb_ctl_msg(dev, usb_rcvctrlpipe(dev, 0), 133,
++		USB_DIR_IN | USB_TYPE_CLASS | USB_RECIP_INTERFACE,
++		0, 0x0400, &buf, 3);
++
++	snd_usb_ctl_msg(dev, usb_rcvctrlpipe(dev, 0), 133,
++		USB_DIR_IN | USB_TYPE_CLASS | USB_RECIP_INTERFACE,
++		0, 0x0300, &buf, 3);
++#endif
++	snd_printk(KERN_ERR "X-Fi Surround 5.1 High Speed Mode (reset %d)\n", err);
++	return 0;
++}
++
+ static int snd_usb_fasttrackpro_boot_quirk(struct usb_device *dev)
+ {
+ 	int err;
+@@ -1030,6 +1071,12 @@ int snd_usb_apply_boot_quirk(struct usb_
+ 		/* SB Audigy 2 NX needs its own boot-up magic, too */
+ 		return snd_usb_audigy2nx_boot_quirk(dev);
+ 
++	case USB_ID(0x041e, 0x3042):
++	case USB_ID(0x041e, 0x30df):
++	case USB_ID(0x041e, 0x3237):
++		/* SB XFi variants need a magic USB sequence to put into HS USB mode, needed for 5.1 */
++		return snd_usb_sb_x_fi_boot_quirk(dev);
++
+ 	case USB_ID(0x10f5, 0x0200):
+ 		/* C-Media CM106 / Turtle Beach Audio Advantage Roadie */
+ 		return snd_usb_cm106_boot_quirk(dev);

@@ -129,9 +129,9 @@ Signed-off-by: Felix Fietkau <nbd@nbd.name>
 --- a/net/core/skbuff.c
 +++ b/net/core/skbuff.c
 @@ -64,6 +64,7 @@
- #include <linux/errqueue.h>
  #include <linux/prefetch.h>
  #include <linux/if_vlan.h>
+ #include <linux/locallock.h>
 +#include <linux/if.h>
  
  #include <net/protocol.h>

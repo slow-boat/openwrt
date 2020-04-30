@@ -41,12 +41,10 @@ define KernelPackage/bluetooth
 	CONFIG_BT_BCM \
 	CONFIG_BT_HCIBTUSB \
 	CONFIG_BT_HCIBTUSB_BCM=y \
-	CONFIG_SERIAL_DEV_BUS \
 	CONFIG_BT_HS=y \
 	CONFIG_BT_DEBUGFS=y \
 	CONFIG_BT_HCIUART \
 	CONFIG_BT_HCIUART_3WIRE=y \
-	CONFIG_BT_HCIUART_SERDEV=y \
 	CONFIG_BT_HCIUART_BCM=y \
 	CONFIG_BT_HCIUART_BCSP=n \
 	CONFIG_BT_HCIUART_INTEL=n \
@@ -60,11 +58,17 @@ define KernelPackage/bluetooth
 	$(LINUX_DIR)/net/bluetooth/rfcomm/rfcomm.ko \
 	$(LINUX_DIR)/net/bluetooth/bnep/bnep.ko \
 	$(LINUX_DIR)/drivers/bluetooth/hci_uart.ko \
-	$(LINUX_DIR)/drivers/tty/serdev/serdev.ko \
 	$(LINUX_DIR)/drivers/bluetooth/btbcm.ko
 ifeq ($(strip $(call CompareKernelPatchVer,$(KERNEL_PATCHVER),ge,4.1.0)),1)
   FILES+= \
 	$(LINUX_DIR)/drivers/bluetooth/btintel.ko
+endif
+ifeq ($(strip $(call CompareKernelPatchVer,$(KERNEL_PATCHVER),ge,4.14.0)),1)
+  KCONFIG+= \
+	CONFIG_SERIAL_DEV_BUS \
+	CONFIG_BT_HCIUART_SERDEV=y
+  FILES+= \
+	$(LINUX_DIR)/drivers/tty/serdev/serdev.ko	
 endif
   AUTOLOAD:=$(call AutoProbe,bluetooth rfcomm hidp hci_uart btbcm)
 endef

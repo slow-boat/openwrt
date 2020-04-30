@@ -1,0 +1,40 @@
+Index: linux-4.9.207/arch/arm/boot/dts/imx6qdl-cubox-i.dtsi
+===================================================================
+--- linux-4.9.207.orig/arch/arm/boot/dts/imx6qdl-cubox-i.dtsi
++++ linux-4.9.207/arch/arm/boot/dts/imx6qdl-cubox-i.dtsi
+@@ -227,6 +227,23 @@
+ 				MX6QDL_PAD_EIM_DA8__GPIO3_IO08	0x17059
+ 			>;
+ 		};
++
++		pinctrl_cubox_i_brcm_bt: cubox_i-brcm-bt {
++			fsl,pins = <
++				MX6QDL_PAD_CSI0_DAT14__GPIO6_IO00	0x40013070
++				MX6QDL_PAD_CSI0_DAT15__GPIO6_IO01	0x40013070
++				MX6QDL_PAD_CSI0_DAT18__GPIO6_IO04	0x40013070
++			>;
++		};
++
++		pinctrl_cubox_i_uart4: cubox_i-uart4 {
++			fsl,pins = <
++				MX6QDL_PAD_CSI0_DAT12__UART4_TX_DATA 0x1b0b1
++				MX6QDL_PAD_CSI0_DAT13__UART4_RX_DATA 0x1b0b1
++				MX6QDL_PAD_CSI0_DAT16__UART4_RTS_B 0x1b0b1
++				MX6QDL_PAD_CSI0_DAT17__UART4_CTS_B 0x1b0b1
++			>;
++		};
+ 	};
+ };
+ 
+@@ -261,3 +278,11 @@
+ 	cd-gpios = <&gpio1 4 GPIO_ACTIVE_LOW>;
+ 	status = "okay";
+ };
++
++/* UART4 - Connected to optional BRCM Wifi/BT/FM */
++&uart4 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_cubox_i_brcm_bt &pinctrl_cubox_i_uart4>;
++	fsl,uart-has-rtscts;
++	status = "okay";
++};

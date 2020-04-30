@@ -202,8 +202,6 @@ define Device/wandboard
   BOOT_SCRIPT = ""
   DEVICE_NAME := wandboard
   DEVICE_DTS := \
-	imx6qp-wandboard-revd1 \
-	imx6q-wandboard-revd1 \
 	imx6dl-wandboard \
 	imx6q-wandboard \
 	imx6dl-wandboard \
@@ -232,29 +230,5 @@ define Device/cubox-i
   IMAGE/dtb := install-dtb
 endef
 TARGET_DEVICES += cubox-i
-
-define Device/apalis
-  DEVICE_VENDOR := Toradex
-  DEVICE_MODEL := Apalis family
-  SUPPORTED_DEVICES := apalis,ixora apalis,eval
-  DEVICE_DTS := \
-	  imx6q-apalis-eval \
-	  imx6q-apalis-ixora \
-	  imx6q-apalis-ixora-v1.1
-  DEVICE_PACKAGES := \
-	kmod-can kmod-can-flexcan kmod-can-raw \
-	kmod-leds-gpio kmod-gpio-button-hotplug \
-	kmod-pps-gpio kmod-rtc-ds1307
-  BOOT_SCRIPT := bootscript-apalis
-  UBOOT := apalis_imx6
-  FILESYSTEMS := squashfs
-  IMAGES := combined.bin sysupgrade.bin
-  IMAGE_NAME = $$(IMAGE_PREFIX)-$$(1).$$(2)
-  IMAGE/combined.bin := append-rootfs | pad-extra 128k | apalis-emmc
-  IMAGE/sysupgrade.bin := sysupgrade-tar | append-metadata
-  ARTIFACTS := recovery.scr
-  ARTIFACT/recovery.scr := recovery-scr
-endef
-TARGET_DEVICES += apalis
 
 $(eval $(call BuildImage))

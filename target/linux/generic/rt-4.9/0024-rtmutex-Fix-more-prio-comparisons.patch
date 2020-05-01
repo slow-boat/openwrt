@@ -1,7 +1,7 @@
-From 8243819e3ae71cb7f0674e444454d1a09afd8a50 Mon Sep 17 00:00:00 2001
+From ed3d20e68ab4cc230898fd71f44ba048c2235e60 Mon Sep 17 00:00:00 2001
 From: Peter Zijlstra <peterz@infradead.org>
 Date: Thu, 23 Mar 2017 15:56:14 +0100
-Subject: [PATCH 024/366] rtmutex: Fix more prio comparisons
+Subject: [PATCH 024/370] rtmutex: Fix more prio comparisons
 
 Upstream commit 19830e55247cddb3f46f1bf60b8e245593491bea
 
@@ -103,5 +103,5 @@ index e275b8148db9..a8202c772907 100644
  		return;
  	}
 -- 
-2.25.3
+2.19.1
 

@@ -1,7 +1,7 @@
-From 3114753dbfef20dd6f2913d254c471299aa9e19f Mon Sep 17 00:00:00 2001
+From f22f388a687ff7bf95f92c8be4e1d159a5e2e2a5 Mon Sep 17 00:00:00 2001
 From: Julia Cartwright <julia@ni.com>
 Date: Fri, 20 Jan 2017 10:13:47 -0600
-Subject: [PATCH 043/366] pinctrl: qcom: Use raw spinlock variants
+Subject: [PATCH 043/370] pinctrl: qcom: Use raw spinlock variants
 
 The MSM pinctrl driver currently implements an irq_chip for handling
 GPIO interrupts; due to how irq_chip handling is done, it's necessary
@@ -45,7 +45,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  1 file changed, 24 insertions(+), 24 deletions(-)
 
 diff --git a/drivers/pinctrl/qcom/pinctrl-msm.c b/drivers/pinctrl/qcom/pinctrl-msm.c
-index 5aa221487a9c..42d9fb3b22a0 100644
+index bedce3453dd3..faf038978650 100644
 --- a/drivers/pinctrl/qcom/pinctrl-msm.c
 +++ b/drivers/pinctrl/qcom/pinctrl-msm.c
 @@ -61,7 +61,7 @@ struct msm_pinctrl {
@@ -244,7 +244,7 @@ index 5aa221487a9c..42d9fb3b22a0 100644
  
  	return 0;
  }
-@@ -891,7 +891,7 @@ int msm_pinctrl_probe(struct platform_device *pdev,
+@@ -878,7 +878,7 @@ int msm_pinctrl_probe(struct platform_device *pdev,
  	pctrl->soc = soc_data;
  	pctrl->chip = msm_gpio_template;
  
@@ -254,5 +254,5 @@ index 5aa221487a9c..42d9fb3b22a0 100644
  	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
  	pctrl->regs = devm_ioremap_resource(&pdev->dev, res);
 -- 
-2.25.3
+2.19.1
 

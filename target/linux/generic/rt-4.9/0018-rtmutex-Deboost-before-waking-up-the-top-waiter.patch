@@ -1,7 +1,7 @@
-From 371e7a66fb8d3ea8f636c461d388fbdae659ccd3 Mon Sep 17 00:00:00 2001
+From 489973072cfaa76ad663d9787e9bb5fcd1733a4c Mon Sep 17 00:00:00 2001
 From: Xunlei Pang <xlpang@redhat.com>
 Date: Thu, 23 Mar 2017 15:56:07 +0100
-Subject: [PATCH 018/366] rtmutex: Deboost before waking up the top waiter
+Subject: [PATCH 018/370] rtmutex: Deboost before waking up the top waiter
 
 Upstream commit 2a1c6029940675abb2217b590512dbf691867ec4
 
@@ -44,10 +44,10 @@ Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
  3 files changed, 34 insertions(+), 32 deletions(-)
 
 diff --git a/kernel/futex.c b/kernel/futex.c
-index 4dfa778e7cb1..f8a35ec29c28 100644
+index 5a0cec3ff151..7ceef4c20f37 100644
 --- a/kernel/futex.c
 +++ b/kernel/futex.c
-@@ -1476,10 +1476,7 @@ static int wake_futex_pi(u32 __user *uaddr, u32 uval, struct futex_pi_state *pi_
+@@ -1459,10 +1459,7 @@ static int wake_futex_pi(u32 __user *uaddr, u32 uval, struct futex_pi_state *pi_
  out_unlock:
  	raw_spin_unlock_irq(&pi_state->pi_mutex.wait_lock);
  
@@ -185,5 +185,5 @@ index f4c34c4195a0..dad9229040dc 100644
  #ifdef CONFIG_DEBUG_RT_MUTEXES
  # include "rtmutex-debug.h"
 -- 
-2.25.3
+2.19.1
 

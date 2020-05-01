@@ -1,7 +1,7 @@
-From b7c1eb60d248c909d97c8c4c16a084246451c795 Mon Sep 17 00:00:00 2001
+From 35f778b652feeba1404d03a9dc061074bf706416 Mon Sep 17 00:00:00 2001
 From: Peter Zijlstra <peterz@infradead.org>
 Date: Thu, 23 Mar 2017 15:56:12 +0100
-Subject: [PATCH 023/366] sched,tracing: Update trace_sched_pi_setprio()
+Subject: [PATCH 023/370] sched,tracing: Update trace_sched_pi_setprio()
 
 Upstream commit b91473ff6e979c0028f02f90e40c844959c736d8
 
@@ -99,7 +99,7 @@ index 9b90c57517a9..516ae88cddf4 100644
  
  	TP_printk("comm=%s pid=%d oldprio=%d newprio=%d",
 diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index fff5a3d496de..1d92726672ba 100644
+index 93a7c8521c46..98d3094f81c5 100644
 --- a/kernel/sched/core.c
 +++ b/kernel/sched/core.c
 @@ -3710,7 +3710,7 @@ void rt_mutex_setprio(struct task_struct *p, struct task_struct *pi_task)
@@ -112,5 +112,5 @@ index fff5a3d496de..1d92726672ba 100644
  
  	if (oldprio == prio)
 -- 
-2.25.3
+2.19.1
 

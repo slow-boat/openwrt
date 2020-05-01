@@ -275,7 +275,7 @@ define KernelPackage/crypto-ghash
 endef
 
 define KernelPackage/crypto-ghash/arm-ce
-  FILES+= $(LINUX_DIR)/arch/arm/crypto/ghash-arm-ce.ko
+  FILES+= $(LINUX_DIR)/arch/arm/crypto/ghash-arm-ce.ko@ge4.19
   AUTOLOAD+=$(call AutoLoad,09,ghash-arm-ce)
 endef
 

@@ -13,8 +13,7 @@ FEATURES:=audio fpu gpio pcie rtc usb usbgadget squashfs targz nand ubifs boot-p
 CPU_TYPE:=cortex-a9
 CPU_SUBTYPE:=neon
 
-KERNEL_PATCHVER:=5.4
-KERNEL_TESTING_PATCHVER:=5.4
+KERNEL_PATCHVER:=4.9
 
 include $(INCLUDE_DIR)/target.mk
 

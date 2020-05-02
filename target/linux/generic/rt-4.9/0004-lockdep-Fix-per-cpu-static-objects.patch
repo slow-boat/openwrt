@@ -1,7 +1,7 @@
-From a2252c1be1fa646ca583eb5a32c83b699c18bc8c Mon Sep 17 00:00:00 2001
+From 6b4460290880e4a3dde51a3fdd5a25be7ecb2cfb Mon Sep 17 00:00:00 2001
 From: Peter Zijlstra <peterz@infradead.org>
 Date: Mon, 20 Mar 2017 12:26:55 +0100
-Subject: [PATCH 004/370] lockdep: Fix per-cpu static objects
+Subject: [PATCH 004/351] lockdep: Fix per-cpu static objects
 
 Since commit 383776fa7527 ("locking/lockdep: Handle statically initialized
 PER_CPU locks properly") we try to collapse per-cpu locks into a single
@@ -72,10 +72,10 @@ index 8e0cb7a0f836..68123c1fe549 100644
  
  /*
 diff --git a/kernel/cpu.c b/kernel/cpu.c
-index 967163fb90a8..991533a7ebc5 100644
+index 802eb3361a0a..dac06acbae9d 100644
 --- a/kernel/cpu.c
 +++ b/kernel/cpu.c
-@@ -1255,6 +1255,8 @@ core_initcall(cpu_hotplug_pm_sync_init);
+@@ -1242,6 +1242,8 @@ core_initcall(cpu_hotplug_pm_sync_init);
  
  #endif /* CONFIG_PM_SLEEP_SMP */
  
@@ -84,7 +84,7 @@ index 967163fb90a8..991533a7ebc5 100644
  #endif /* CONFIG_SMP */
  
  /* Boot processor state steps */
-@@ -1939,6 +1941,10 @@ void __init boot_cpu_init(void)
+@@ -1926,6 +1928,10 @@ void __init boot_cpu_init(void)
  	set_cpu_active(cpu, true);
  	set_cpu_present(cpu, true);
  	set_cpu_possible(cpu, true);
@@ -96,7 +96,7 @@ index 967163fb90a8..991533a7ebc5 100644
  
  /*
 diff --git a/kernel/module.c b/kernel/module.c
-index 6a6ed7f3e0fc..3a851cb10916 100644
+index e1921aaa1b35..ea2d3e3a029d 100644
 --- a/kernel/module.c
 +++ b/kernel/module.c
 @@ -677,8 +677,12 @@ bool __is_module_percpu_address(unsigned long addr, unsigned long *can_addr)
@@ -114,10 +114,10 @@ index 6a6ed7f3e0fc..3a851cb10916 100644
  				return true;
  			}
 diff --git a/mm/percpu.c b/mm/percpu.c
-index a42fb6c3edc0..88b57ee35ba3 100644
+index 90349153b49d..4e739fcf91bf 100644
 --- a/mm/percpu.c
 +++ b/mm/percpu.c
-@@ -1296,8 +1296,11 @@ bool __is_kernel_percpu_address(unsigned long addr, unsigned long *can_addr)
+@@ -1295,8 +1295,11 @@ bool __is_kernel_percpu_address(unsigned long addr, unsigned long *can_addr)
  		void *va = (void *)addr;
  
  		if (va >= start && va < start + static_size) {
@@ -131,5 +131,5 @@ index a42fb6c3edc0..88b57ee35ba3 100644
  		}
  	}
 -- 
-2.19.1
+2.16.1
 

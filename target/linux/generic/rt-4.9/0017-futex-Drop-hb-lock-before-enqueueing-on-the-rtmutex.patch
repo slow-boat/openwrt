@@ -1,7 +1,7 @@
-From 9791bbd9e9401e01d6eb088c42b6d4d9063d599a Mon Sep 17 00:00:00 2001
+From bf47fdb7cdb2e22743fb7187161192f4e2a6f3f0 Mon Sep 17 00:00:00 2001
 From: Peter Zijlstra <peterz@infradead.org>
 Date: Wed, 22 Mar 2017 11:36:00 +0100
-Subject: [PATCH 017/370] futex: Drop hb->lock before enqueueing on the rtmutex
+Subject: [PATCH 017/351] futex: Drop hb->lock before enqueueing on the rtmutex
 
 Upstream commit 56222b212e8edb1cf51f5dd73ff645809b082b40
 
@@ -48,16 +48,16 @@ Link: http://lkml.kernel.org/r/20170322104152.161341537@infradead.org
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 ---
- kernel/futex.c                  | 30 ++++++++++++++------
- kernel/locking/rtmutex.c        | 49 +++++++++++++++++++--------------
- kernel/locking/rtmutex_common.h |  3 ++
+ kernel/futex.c                  | 30 +++++++++++++++++--------
+ kernel/locking/rtmutex.c        | 49 +++++++++++++++++++++++------------------
+ kernel/locking/rtmutex_common.h |  3 +++
  3 files changed, 52 insertions(+), 30 deletions(-)
 
 diff --git a/kernel/futex.c b/kernel/futex.c
-index 928708a76f79..0668d20864a5 100644
+index 83d1344b56cf..28dd92600941 100644
 --- a/kernel/futex.c
 +++ b/kernel/futex.c
-@@ -2695,20 +2695,33 @@ static int futex_lock_pi(u32 __user *uaddr, unsigned int flags,
+@@ -2656,20 +2656,33 @@ static int futex_lock_pi(u32 __user *uaddr, unsigned int flags,
  		goto no_block;
  	}
  
@@ -96,7 +96,7 @@ index 928708a76f79..0668d20864a5 100644
  
  	if (unlikely(to))
  		hrtimer_start_expires(&to->timer, HRTIMER_MODE_ABS);
-@@ -2721,6 +2734,9 @@ static int futex_lock_pi(u32 __user *uaddr, unsigned int flags,
+@@ -2682,6 +2695,9 @@ static int futex_lock_pi(u32 __user *uaddr, unsigned int flags,
  	 * first acquire the hb->lock before removing the lock from the
  	 * rt_mutex waitqueue, such that we can keep the hb and rt_mutex
  	 * wait lists consistent.
@@ -106,7 +106,7 @@ index 928708a76f79..0668d20864a5 100644
  	 */
  	if (ret && !rt_mutex_cleanup_proxy_lock(&q.pi_state->pi_mutex, &rt_waiter))
  		ret = 0;
-@@ -2832,10 +2848,6 @@ static int futex_unlock_pi(u32 __user *uaddr, unsigned int flags)
+@@ -2793,10 +2809,6 @@ static int futex_unlock_pi(u32 __user *uaddr, unsigned int flags)
  
  		get_pi_state(pi_state);
  		/*
@@ -118,10 +118,10 @@ index 928708a76f79..0668d20864a5 100644
  		 * there is no point where we hold neither; and therefore
  		 * wake_futex_pi() must observe a state consistent with what we
 diff --git a/kernel/locking/rtmutex.c b/kernel/locking/rtmutex.c
-index ef5cdcd6d9ec..7f8ee5d61ce9 100644
+index de0d97838ed9..30f08b70433a 100644
 --- a/kernel/locking/rtmutex.c
 +++ b/kernel/locking/rtmutex.c
-@@ -1684,31 +1684,14 @@ void rt_mutex_proxy_unlock(struct rt_mutex *lock,
+@@ -1659,31 +1659,14 @@ void rt_mutex_proxy_unlock(struct rt_mutex *lock,
  	rt_mutex_set_owner(lock, NULL);
  }
  
@@ -155,7 +155,7 @@ index ef5cdcd6d9ec..7f8ee5d61ce9 100644
  
  	/* We enforce deadlock detection for futexes */
  	ret = task_blocks_on_rt_mutex(lock, waiter, task,
-@@ -1727,13 +1710,37 @@ int rt_mutex_start_proxy_lock(struct rt_mutex *lock,
+@@ -1702,13 +1685,37 @@ int rt_mutex_start_proxy_lock(struct rt_mutex *lock,
  	if (unlikely(ret))
  		remove_waiter(lock, waiter);
  
@@ -196,10 +196,10 @@ index ef5cdcd6d9ec..7f8ee5d61ce9 100644
   * rt_mutex_next_owner - return the next owner of the lock
   *
 diff --git a/kernel/locking/rtmutex_common.h b/kernel/locking/rtmutex_common.h
-index b620aafa06e1..f4c34c4195a0 100644
+index 4fe3f32da3c5..25ccf716b936 100644
 --- a/kernel/locking/rtmutex_common.h
 +++ b/kernel/locking/rtmutex_common.h
-@@ -105,6 +105,9 @@ extern void rt_mutex_init_proxy_locked(struct rt_mutex *lock,
+@@ -104,6 +104,9 @@ extern void rt_mutex_init_proxy_locked(struct rt_mutex *lock,
  extern void rt_mutex_proxy_unlock(struct rt_mutex *lock,
  				  struct task_struct *proxy_owner);
  extern void rt_mutex_init_waiter(struct rt_mutex_waiter *waiter);
@@ -210,5 +210,5 @@ index b620aafa06e1..f4c34c4195a0 100644
  				     struct rt_mutex_waiter *waiter,
  				     struct task_struct *task);
 -- 
-2.19.1
+2.16.1
 

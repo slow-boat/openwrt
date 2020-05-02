@@ -1,7 +1,7 @@
-From fb82956134899f5e1ac41e79f9d01d92ec214106 Mon Sep 17 00:00:00 2001
+From e0a1ca6958af42ca8179433d43576ac427145714 Mon Sep 17 00:00:00 2001
 From: Xunlei Pang <xlpang@redhat.com>
 Date: Thu, 23 Mar 2017 15:56:08 +0100
-Subject: [PATCH 019/370] sched/rtmutex/deadline: Fix a PI crash for deadline
+Subject: [PATCH 019/351] sched/rtmutex/deadline: Fix a PI crash for deadline
  tasks
 
 Upstream commit e96a7705e7d3fef96aec9b590c63b2f6f7d2ba22
@@ -73,10 +73,10 @@ index 325f649d77ff..d359b1a71610 100644
  #else
  # define INIT_RT_MUTEXES(tsk)
 diff --git a/include/linux/sched.h b/include/linux/sched.h
-index 5ebef8c86c26..eca931aa7ed5 100644
+index a4d0afc009a7..117293dcbf2a 100644
 --- a/include/linux/sched.h
 +++ b/include/linux/sched.h
-@@ -1734,6 +1734,8 @@ struct task_struct {
+@@ -1733,6 +1733,8 @@ struct task_struct {
  	/* PI waiters blocked on a rt_mutex held by this task */
  	struct rb_root pi_waiters;
  	struct rb_node *pi_waiters_leftmost;
@@ -110,10 +110,10 @@ index 70e10cb49be0..40f4dbff7762 100644
  #endif
  }
 diff --git a/kernel/locking/rtmutex.c b/kernel/locking/rtmutex.c
-index a77f7cae7ca0..199612829fd6 100644
+index 440469b69df9..3c4e5bff1d9a 100644
 --- a/kernel/locking/rtmutex.c
 +++ b/kernel/locking/rtmutex.c
-@@ -319,6 +319,19 @@ rt_mutex_dequeue_pi(struct task_struct *task, struct rt_mutex_waiter *waiter)
+@@ -320,6 +320,19 @@ rt_mutex_dequeue_pi(struct task_struct *task, struct rt_mutex_waiter *waiter)
  	RB_CLEAR_NODE(&waiter->pi_tree_entry);
  }
  
@@ -133,7 +133,7 @@ index a77f7cae7ca0..199612829fd6 100644
  /*
   * Calculate task priority from the waiter tree priority
   *
-@@ -334,12 +347,12 @@ int rt_mutex_getprio(struct task_struct *task)
+@@ -335,12 +348,12 @@ int rt_mutex_getprio(struct task_struct *task)
  		   task->normal_prio);
  }
  
@@ -150,7 +150,7 @@ index a77f7cae7ca0..199612829fd6 100644
  }
  
  /*
-@@ -348,12 +361,12 @@ struct task_struct *rt_mutex_get_top_task(struct task_struct *task)
+@@ -349,12 +362,12 @@ struct task_struct *rt_mutex_get_top_task(struct task_struct *task)
   */
  int rt_mutex_get_effective_prio(struct task_struct *task, int newprio)
  {
@@ -168,10 +168,10 @@ index a77f7cae7ca0..199612829fd6 100644
  
  /*
 diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 917be221438b..ee817bf71efc 100644
+index bce3a7ad4253..39462f951e4f 100644
 --- a/kernel/sched/core.c
 +++ b/kernel/sched/core.c
-@@ -3671,6 +3671,8 @@ void rt_mutex_setprio(struct task_struct *p, int prio)
+@@ -3669,6 +3669,8 @@ void rt_mutex_setprio(struct task_struct *p, int prio)
  		goto out_unlock;
  	}
  
@@ -181,5 +181,5 @@ index 917be221438b..ee817bf71efc 100644
  	oldprio = p->prio;
  
 -- 
-2.19.1
+2.16.1
 

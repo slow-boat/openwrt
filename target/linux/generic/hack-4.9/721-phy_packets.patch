@@ -13,10 +13,10 @@ Signed-off-by: Felix Fietkau <nbd@nbd.name>
  net/ethernet/eth.c        |  6 ++++++
  6 files changed, 58 insertions(+), 14 deletions(-)
 
-Index: linux-4.9.116/include/linux/netdevice.h
+Index: linux-4.9.146/include/linux/netdevice.h
 ===================================================================
---- linux-4.9.116.orig/include/linux/netdevice.h
-+++ linux-4.9.116/include/linux/netdevice.h
+--- linux-4.9.146.orig/include/linux/netdevice.h
++++ linux-4.9.146/include/linux/netdevice.h
 @@ -1414,6 +1414,7 @@ enum netdev_priv_flags {
  	IFF_RXFH_CONFIGURED		= 1<<25,
  	IFF_PHONY_HEADROOM		= 1<<26,
@@ -56,11 +56,11 @@ Index: linux-4.9.116/include/linux/netdevice.h
  /*
   * Cache lines mostly used on receive path (including eth_type_trans())
   */
-Index: linux-4.9.116/include/linux/skbuff.h
+Index: linux-4.9.146/include/linux/skbuff.h
 ===================================================================
---- linux-4.9.116.orig/include/linux/skbuff.h
-+++ linux-4.9.116/include/linux/skbuff.h
-@@ -2341,6 +2341,10 @@ static inline int pskb_trim(struct sk_bu
+--- linux-4.9.146.orig/include/linux/skbuff.h
++++ linux-4.9.146/include/linux/skbuff.h
+@@ -2346,6 +2346,10 @@ static inline int pskb_trim(struct sk_bu
  	return (len < skb->len) ? __pskb_trim(skb, len) : 0;
  }
  
@@ -71,7 +71,7 @@ Index: linux-4.9.116/include/linux/skbuff.h
  /**
   *	pskb_trim_unique - remove end from a paged unique (not cloned) buffer
   *	@skb: buffer to alter
-@@ -2461,16 +2465,6 @@ static inline struct sk_buff *dev_alloc_
+@@ -2466,16 +2470,6 @@ static inline struct sk_buff *dev_alloc_
  }
  
  
@@ -88,10 +88,10 @@ Index: linux-4.9.116/include/linux/skbuff.h
  static inline struct sk_buff *netdev_alloc_skb_ip_align(struct net_device *dev,
  		unsigned int length)
  {
-Index: linux-4.9.116/net/Kconfig
+Index: linux-4.9.146/net/Kconfig
 ===================================================================
---- linux-4.9.116.orig/net/Kconfig
-+++ linux-4.9.116/net/Kconfig
+--- linux-4.9.146.orig/net/Kconfig
++++ linux-4.9.146/net/Kconfig
 @@ -25,6 +25,12 @@ menuconfig NET
  
  if NET
@@ -105,11 +105,11 @@ Index: linux-4.9.116/net/Kconfig
  config WANT_COMPAT_NETLINK_MESSAGES
  	bool
  	help
-Index: linux-4.9.116/net/core/dev.c
+Index: linux-4.9.146/net/core/dev.c
 ===================================================================
---- linux-4.9.116.orig/net/core/dev.c
-+++ linux-4.9.116/net/core/dev.c
-@@ -2958,10 +2958,20 @@ static int xmit_one(struct sk_buff *skb,
+--- linux-4.9.146.orig/net/core/dev.c
++++ linux-4.9.146/net/core/dev.c
+@@ -2980,10 +2980,20 @@ static int xmit_one(struct sk_buff *skb,
  	if (!list_empty(&ptype_all) || !list_empty(&dev->ptype_all))
  		dev_queue_xmit_nit(skb, dev);
  
@@ -134,10 +134,10 @@ Index: linux-4.9.116/net/core/dev.c
  
  	return rc;
  }
-Index: linux-4.9.116/net/core/skbuff.c
+Index: linux-4.9.146/net/core/skbuff.c
 ===================================================================
---- linux-4.9.116.orig/net/core/skbuff.c
-+++ linux-4.9.116/net/core/skbuff.c
+--- linux-4.9.146.orig/net/core/skbuff.c
++++ linux-4.9.146/net/core/skbuff.c
 @@ -65,6 +65,7 @@
  #include <linux/prefetch.h>
  #include <linux/if_vlan.h>
@@ -169,10 +169,10 @@ Index: linux-4.9.116/net/core/skbuff.c
  void skb_add_rx_frag(struct sk_buff *skb, int i, struct page *page, int off,
  		     int size, unsigned int truesize)
  {
-Index: linux-4.9.116/net/ethernet/eth.c
+Index: linux-4.9.146/net/ethernet/eth.c
 ===================================================================
---- linux-4.9.116.orig/net/ethernet/eth.c
-+++ linux-4.9.116/net/ethernet/eth.c
+--- linux-4.9.146.orig/net/ethernet/eth.c
++++ linux-4.9.146/net/ethernet/eth.c
 @@ -171,6 +171,12 @@ __be16 eth_type_trans(struct sk_buff *sk
  	const struct ethhdr *eth;
  

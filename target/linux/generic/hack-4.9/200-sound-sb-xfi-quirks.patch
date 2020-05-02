@@ -49,7 +49,7 @@ Index: linux-4.19.91/sound/usb/quirks.c
 +		}
 +	}
 +
-+	err = usb_reset_configuration(dev);
++
 +#if 0
 +	snd_usb_ctl_msg(dev, usb_rcvctrlpipe(dev, 0), 133,
 +		USB_DIR_IN | USB_TYPE_CLASS | USB_RECIP_INTERFACE,
@@ -59,7 +59,7 @@ Index: linux-4.19.91/sound/usb/quirks.c
 +		USB_DIR_IN | USB_TYPE_CLASS | USB_RECIP_INTERFACE,
 +		0, 0x0300, &buf, 3);
 +#endif
-+	snd_printk(KERN_ERR "X-Fi Surround 5.1 High Speed Mode (reset %d)\n", err);
++	snd_printk(KERN_ERR "X-Fi Surround 5.1 High Speed Mode\n");
 +	return 0;
 +}
 +

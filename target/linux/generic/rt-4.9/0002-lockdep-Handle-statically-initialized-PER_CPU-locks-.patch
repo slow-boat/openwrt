@@ -1,7 +1,7 @@
-From 29a6b30ae2eab784d845f02f3eff12dce3af244c Mon Sep 17 00:00:00 2001
+From 3a2897c2520deeaf548e76e2fef77aa15275977c Mon Sep 17 00:00:00 2001
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Fri, 17 Feb 2017 19:44:39 +0100
-Subject: [PATCH 002/370] lockdep: Handle statically initialized PER_CPU locks
+Subject: [PATCH 002/351] lockdep: Handle statically initialized PER_CPU locks
  proper
 
 If a PER_CPU struct which contains a spin_lock is statically initialized
@@ -158,7 +158,7 @@ index 6599c7f3071d..43f06eda837a 100644
  	}
  	/*
 diff --git a/kernel/module.c b/kernel/module.c
-index 0651f2d25fc9..1ac6c9eb68ae 100644
+index 07bfb9971f2f..b729ef9c2e2f 100644
 --- a/kernel/module.c
 +++ b/kernel/module.c
 @@ -660,16 +660,7 @@ static void percpu_modcopy(struct module *mod,
@@ -215,10 +215,10 @@ index 0651f2d25fc9..1ac6c9eb68ae 100644
  
  static inline void __percpu *mod_percpu(struct module *mod)
 diff --git a/mm/percpu.c b/mm/percpu.c
-index 3794cfc88689..a42fb6c3edc0 100644
+index f014cebbf405..90349153b49d 100644
 --- a/mm/percpu.c
 +++ b/mm/percpu.c
-@@ -1284,18 +1284,7 @@ void free_percpu(void __percpu *ptr)
+@@ -1283,18 +1283,7 @@ void free_percpu(void __percpu *ptr)
  }
  EXPORT_SYMBOL_GPL(free_percpu);
  
@@ -238,7 +238,7 @@ index 3794cfc88689..a42fb6c3edc0 100644
  {
  #ifdef CONFIG_SMP
  	const size_t static_size = __per_cpu_end - __per_cpu_start;
-@@ -1304,15 +1293,35 @@ bool is_kernel_percpu_address(unsigned long addr)
+@@ -1303,15 +1292,35 @@ bool is_kernel_percpu_address(unsigned long addr)
  
  	for_each_possible_cpu(cpu) {
  		void *start = per_cpu_ptr(base, cpu);
@@ -277,5 +277,5 @@ index 3794cfc88689..a42fb6c3edc0 100644
   * per_cpu_ptr_to_phys - convert translated percpu address to physical address
   * @addr: the address to be converted to physical address
 -- 
-2.19.1
+2.16.1
 

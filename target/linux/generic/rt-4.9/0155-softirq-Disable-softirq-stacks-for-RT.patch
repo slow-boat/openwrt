@@ -1,4 +1,4 @@
-From a80d5678729225cee181e0f49c3fc1aa824a963d Mon Sep 17 00:00:00 2001
+From b8165ebf78e03af51eb8e3e0c10ee51dc5be9dff Mon Sep 17 00:00:00 2001
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Mon, 18 Jul 2011 13:59:17 +0200
 Subject: [PATCH 155/370] softirq: Disable softirq stacks for RT
@@ -119,7 +119,7 @@ index 5cbf03c14981..6067d9379e5b 100644
  #ifdef CONFIG_HOTPLUG_CPU
  void fixup_irqs(void)
 diff --git a/arch/x86/entry/entry_64.S b/arch/x86/entry/entry_64.S
-index 870e941c1947..5110dede0fa6 100644
+index d58d8dcb8245..a2d9d29f699b 100644
 --- a/arch/x86/entry/entry_64.S
 +++ b/arch/x86/entry/entry_64.S
 @@ -838,6 +838,7 @@ bad_gs:
@@ -139,10 +139,10 @@ index 870e941c1947..5110dede0fa6 100644
  #ifdef CONFIG_XEN
  idtentry xen_hypervisor_callback xen_do_hypervisor_callback has_error_code=0
 diff --git a/arch/x86/kernel/irq_32.c b/arch/x86/kernel/irq_32.c
-index 5aaa39a10823..51fae836d143 100644
+index 2763573ee1d2..6fe8aa905088 100644
 --- a/arch/x86/kernel/irq_32.c
 +++ b/arch/x86/kernel/irq_32.c
-@@ -129,6 +129,7 @@ void irq_ctx_init(int cpu)
+@@ -128,6 +128,7 @@ void irq_ctx_init(int cpu)
  	       cpu, per_cpu(hardirq_stack, cpu),  per_cpu(softirq_stack, cpu));
  }
  
@@ -150,7 +150,7 @@ index 5aaa39a10823..51fae836d143 100644
  void do_softirq_own_stack(void)
  {
  	struct irq_stack *irqstk;
-@@ -145,6 +146,7 @@ void do_softirq_own_stack(void)
+@@ -144,6 +145,7 @@ void do_softirq_own_stack(void)
  
  	call_on_stack(__do_softirq, isp);
  }

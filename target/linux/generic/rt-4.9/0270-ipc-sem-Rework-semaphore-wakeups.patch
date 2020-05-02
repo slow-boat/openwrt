@@ -1,4 +1,4 @@
-From 7a7527a679a4807237cbbcb532c02cfd59091592 Mon Sep 17 00:00:00 2001
+From 58c058769a1fc63f3755099483fb0270ea547499 Mon Sep 17 00:00:00 2001
 From: Peter Zijlstra <peterz@infradead.org>
 Date: Wed, 14 Sep 2011 11:57:04 +0200
 Subject: [PATCH 270/370] ipc/sem: Rework semaphore wakeups

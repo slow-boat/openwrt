@@ -1,4 +1,4 @@
-From 9f0917052b2a61515c94a737a7ea1022d2b38b01 Mon Sep 17 00:00:00 2001
+From 0087a62fb93958c2d854e35fa9dcfa159f2ac988 Mon Sep 17 00:00:00 2001
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Wed, 14 Dec 2011 01:03:49 +0100
 Subject: [PATCH 279/370] cpumask: Disable CONFIG_CPUMASK_OFFSTACK for RT
@@ -46,10 +46,10 @@ Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
  2 files changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 5831fdf3c186..d3c4be933e7e 100644
+index 2649b8253f0b..a63eff28f59d 100644
 --- a/arch/x86/Kconfig
 +++ b/arch/x86/Kconfig
-@@ -915,7 +915,7 @@ config IOMMU_HELPER
+@@ -914,7 +914,7 @@ config IOMMU_HELPER
  config MAXSMP
  	bool "Enable Maximum number of SMP Processors and NUMA Nodes"
  	depends on X86_64 && SMP && DEBUG_KERNEL

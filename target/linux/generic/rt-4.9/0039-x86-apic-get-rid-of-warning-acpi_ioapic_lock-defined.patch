@@ -1,4 +1,4 @@
-From fe54178f969ae43b70871be2ea85ba4a00217002 Mon Sep 17 00:00:00 2001
+From d9f1df62a94abee7e974bbb424bf863106afd0a2 Mon Sep 17 00:00:00 2001
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Fri, 21 Oct 2016 10:29:11 +0200
 Subject: [PATCH 039/370] x86/apic: get rid of "warning: 'acpi_ioapic_lock'

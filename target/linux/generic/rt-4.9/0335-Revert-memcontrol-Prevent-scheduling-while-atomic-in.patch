@@ -1,4 +1,4 @@
-From c2d201d90f06388646cd7a1cbd498634d1451e7a Mon Sep 17 00:00:00 2001
+From c3dd421c3bc808d2667463884b0041e624cbfbc8 Mon Sep 17 00:00:00 2001
 From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 Date: Wed, 22 Nov 2017 07:31:19 -0500
 Subject: [PATCH 335/370] Revert "memcontrol: Prevent scheduling while atomic
@@ -38,7 +38,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  1 file changed, 6 insertions(+), 7 deletions(-)
 
 diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index e27dd93f597d..1d486e8d4885 100644
+index 77e456d1b34d..7cded24dc0eb 100644
 --- a/mm/memcontrol.c
 +++ b/mm/memcontrol.c
 @@ -1698,7 +1698,6 @@ struct memcg_stock_pcp {

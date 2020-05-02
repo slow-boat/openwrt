@@ -35,10 +35,10 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 ---
 
-Index: linux-4.9.146/include/linux/gfp.h
+Index: linux-4.9.116/include/linux/gfp.h
 ===================================================================
---- linux-4.9.146.orig/include/linux/gfp.h
-+++ linux-4.9.146/include/linux/gfp.h
+--- linux-4.9.116.orig/include/linux/gfp.h
++++ linux-4.9.116/include/linux/gfp.h
 @@ -508,9 +508,9 @@ extern void free_hot_cold_page_list(stru
  struct page_frag_cache;
  extern void __page_frag_drain(struct page *page, unsigned int order,
@@ -52,11 +52,11 @@ Index: linux-4.9.146/include/linux/gfp.h
  
  #define __free_page(page) __free_pages((page), 0)
  #define free_page(addr) free_pages((addr), 0)
-Index: linux-4.9.146/include/linux/skbuff.h
+Index: linux-4.9.116/include/linux/skbuff.h
 ===================================================================
---- linux-4.9.146.orig/include/linux/skbuff.h
-+++ linux-4.9.146/include/linux/skbuff.h
-@@ -2483,7 +2483,7 @@ static inline struct sk_buff *netdev_all
+--- linux-4.9.116.orig/include/linux/skbuff.h
++++ linux-4.9.116/include/linux/skbuff.h
+@@ -2478,7 +2478,7 @@ static inline struct sk_buff *netdev_all
  
  static inline void skb_free_frag(void *addr)
  {
@@ -65,11 +65,11 @@ Index: linux-4.9.146/include/linux/skbuff.h
  }
  
  void *napi_alloc_frag(unsigned int fragsz);
-Index: linux-4.9.146/mm/page_alloc.c
+Index: linux-4.9.116/mm/page_alloc.c
 ===================================================================
---- linux-4.9.146.orig/mm/page_alloc.c
-+++ linux-4.9.146/mm/page_alloc.c
-@@ -4011,8 +4011,8 @@ void __page_frag_drain(struct page *page
+--- linux-4.9.116.orig/mm/page_alloc.c
++++ linux-4.9.116/mm/page_alloc.c
+@@ -4021,8 +4021,8 @@ void __page_frag_drain(struct page *page
  }
  EXPORT_SYMBOL(__page_frag_drain);
  
@@ -80,7 +80,7 @@ Index: linux-4.9.146/mm/page_alloc.c
  {
  	unsigned int size = PAGE_SIZE;
  	struct page *page;
-@@ -4063,19 +4063,19 @@ refill:
+@@ -4073,19 +4073,19 @@ refill:
  
  	return nc->va + offset;
  }
@@ -103,10 +103,10 @@ Index: linux-4.9.146/mm/page_alloc.c
  
  static void *make_alloc_exact(unsigned long addr, unsigned int order,
  		size_t size)
-Index: linux-4.9.146/net/core/skbuff.c
+Index: linux-4.9.116/net/core/skbuff.c
 ===================================================================
---- linux-4.9.146.orig/net/core/skbuff.c
-+++ linux-4.9.146/net/core/skbuff.c
+--- linux-4.9.116.orig/net/core/skbuff.c
++++ linux-4.9.116/net/core/skbuff.c
 @@ -372,7 +372,7 @@ static void *__netdev_alloc_frag(unsigne
  
  	local_lock_irqsave(netdev_alloc_lock, flags);

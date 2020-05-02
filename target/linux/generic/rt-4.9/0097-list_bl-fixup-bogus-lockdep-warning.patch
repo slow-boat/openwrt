@@ -1,4 +1,4 @@
-From a91559270c49b14700ff612f9fc3ebce1f230560 Mon Sep 17 00:00:00 2001
+From c786bda56ffa861ea2f8c145fcf1792f620de9e8 Mon Sep 17 00:00:00 2001
 From: Josh Cartwright <joshc@ni.com>
 Date: Thu, 31 Mar 2016 00:04:25 -0500
 Subject: [PATCH 097/370] list_bl: fixup bogus lockdep warning

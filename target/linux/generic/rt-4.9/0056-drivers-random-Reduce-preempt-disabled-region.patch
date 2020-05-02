@@ -1,4 +1,4 @@
-From cd991e08904fb594f3a96886ab1f5c2c40219365 Mon Sep 17 00:00:00 2001
+From d2242b684455659ff59d356800b3722f6ca6fe50 Mon Sep 17 00:00:00 2001
 From: Ingo Molnar <mingo@elte.hu>
 Date: Fri, 3 Jul 2009 08:29:30 -0500
 Subject: [PATCH 056/370] drivers: random: Reduce preempt disabled region
@@ -12,7 +12,7 @@ Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
  1 file changed, 3 deletions(-)
 
 diff --git a/drivers/char/random.c b/drivers/char/random.c
-index 81b65d0e7563..74300e8896d4 100644
+index ddeac4eefd0a..68795667a94f 100644
 --- a/drivers/char/random.c
 +++ b/drivers/char/random.c
 @@ -1087,8 +1087,6 @@ static void add_timer_randomness(struct timer_rand_state *state, unsigned num)

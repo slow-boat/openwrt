@@ -1,4 +1,4 @@
-From b9c2128b59f061b569e4fd07fa305620566b66bf Mon Sep 17 00:00:00 2001
+From 9325d8311d79c6590db51a77a5be75fee0daac5a Mon Sep 17 00:00:00 2001
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Tue, 10 Jul 2018 18:53:18 +0200
 Subject: [PATCH 356/370] sched, tracing: Fix trace_sched_pi_setprio() for

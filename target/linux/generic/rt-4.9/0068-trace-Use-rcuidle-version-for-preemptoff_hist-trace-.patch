@@ -1,4 +1,4 @@
-From 76d82fc400c127befb29671d3d63923fd5234cd4 Mon Sep 17 00:00:00 2001
+From 81852537fa16ce0730fe72d5d9265b79a21de8a5 Mon Sep 17 00:00:00 2001
 From: Yang Shi <yang.shi@windriver.com>
 Date: Tue, 23 Feb 2016 13:23:23 -0800
 Subject: [PATCH 068/370] trace: Use rcuidle version for preemptoff_hist trace

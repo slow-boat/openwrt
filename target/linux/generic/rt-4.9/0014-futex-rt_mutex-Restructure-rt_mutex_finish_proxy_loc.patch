@@ -1,4 +1,4 @@
-From 958466bd1205b539ecefe83265754a1206940804 Mon Sep 17 00:00:00 2001
+From 1a1d2bed818ce7ae91810ae27bcbc9be08eca83e Mon Sep 17 00:00:00 2001
 From: Peter Zijlstra <peterz@infradead.org>
 Date: Wed, 22 Mar 2017 11:35:57 +0100
 Subject: [PATCH 014/370] futex,rt_mutex: Restructure
@@ -41,10 +41,10 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  3 files changed, 55 insertions(+), 12 deletions(-)
 
 diff --git a/kernel/futex.c b/kernel/futex.c
-index 600f7c3f93ae..469ecb8ebdb1 100644
+index 2ddc553bd161..539993955712 100644
 --- a/kernel/futex.c
 +++ b/kernel/futex.c
-@@ -3081,10 +3081,13 @@ static int futex_wait_requeue_pi(u32 __user *uaddr, unsigned int flags,
+@@ -3073,10 +3073,13 @@ static int futex_wait_requeue_pi(u32 __user *uaddr, unsigned int flags,
  		 */
  		WARN_ON(!q.pi_state);
  		pi_mutex = &q.pi_state->pi_mutex;

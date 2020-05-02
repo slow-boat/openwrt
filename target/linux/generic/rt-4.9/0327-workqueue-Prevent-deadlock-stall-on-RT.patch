@@ -1,4 +1,4 @@
-From 0ceeea4fb630811b587c4b98926a05d66362c6a0 Mon Sep 17 00:00:00 2001
+From 0ea5a8ea6ba9f3907470629cadfde499414e8b92 Mon Sep 17 00:00:00 2001
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Fri, 27 Jun 2014 16:24:52 +0200
 Subject: [PATCH 327/370] workqueue: Prevent deadlock/stall on RT
@@ -42,7 +42,7 @@ Cc: Steven Rostedt <rostedt@goodmis.org>
  2 files changed, 52 insertions(+), 15 deletions(-)
 
 diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index d4204e8c7c3b..db4f403f7703 100644
+index 2515137b8b1b..7837627368aa 100644
 --- a/kernel/sched/core.c
 +++ b/kernel/sched/core.c
 @@ -3676,9 +3676,8 @@ void __noreturn do_task_dead(void)

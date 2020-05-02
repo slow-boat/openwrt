@@ -1,4 +1,4 @@
-From 2c496fad4049505d32983f79eb682efb4262f19f Mon Sep 17 00:00:00 2001
+From b00c5ff5fa8098832ea60837df76843cc77172dd Mon Sep 17 00:00:00 2001
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Tue, 23 Jun 2015 15:32:51 +0200
 Subject: [PATCH 246/370] irqwork: push most work into softirq context
@@ -147,7 +147,7 @@ index bcf107ce0854..0ddaf1e66d8c 100644
  EXPORT_SYMBOL_GPL(irq_work_run);
  
 diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 4d5fcfa3a96e..5f66d62bca5b 100644
+index a5055bd445ee..e1e44cde10ab 100644
 --- a/kernel/sched/core.c
 +++ b/kernel/sched/core.c
 @@ -6046,6 +6046,7 @@ static int init_rootdomain(struct root_domain *rd)
@@ -159,7 +159,7 @@ index 4d5fcfa3a96e..5f66d62bca5b 100644
  
  	init_dl_bw(&rd->dl_bw);
 diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
-index 586c3bcc3e01..87fd56b88f01 100644
+index 4c185caffcce..c573b1a848b6 100644
 --- a/kernel/time/tick-sched.c
 +++ b/kernel/time/tick-sched.c
 @@ -220,6 +220,7 @@ static void nohz_full_kick_func(struct irq_work *work)
@@ -171,7 +171,7 @@ index 586c3bcc3e01..87fd56b88f01 100644
  
  /*
 diff --git a/kernel/time/timer.c b/kernel/time/timer.c
-index a416cee45801..e345117292fe 100644
+index acc63da74fed..cfe9475e0192 100644
 --- a/kernel/time/timer.c
 +++ b/kernel/time/timer.c
 @@ -1661,7 +1661,7 @@ void update_process_times(int user_tick)
@@ -183,9 +183,9 @@ index a416cee45801..e345117292fe 100644
  	if (in_irq())
  		irq_work_tick();
  #endif
-@@ -1717,6 +1717,10 @@ static __latent_entropy void run_timer_softirq(struct softirq_action *h)
- {
- 	struct timer_base *base = this_cpu_ptr(&timer_bases[BASE_STD]);
+@@ -1714,6 +1714,10 @@ static __latent_entropy void run_timer_softirq(struct softirq_action *h)
+ 	 */
+ 	base->must_forward_clk = false;
  
 +#if defined(CONFIG_IRQ_WORK) && defined(CONFIG_PREEMPT_RT_FULL)
 +	irq_work_tick();

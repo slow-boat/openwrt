@@ -1,4 +1,4 @@
-From fc072e829e8b00c447c07c305826bbd3bcd74180 Mon Sep 17 00:00:00 2001
+From 55f1adf66650a929dd6eb768f15fbb3375ada0a8 Mon Sep 17 00:00:00 2001
 From: Xunlei Pang <xlpang@redhat.com>
 Date: Thu, 23 Mar 2017 15:56:09 +0100
 Subject: [PATCH 020/370] sched/deadline/rtmutex: Dont miss the

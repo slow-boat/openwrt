@@ -1,4 +1,4 @@
-From 902cffaaca4c0f53f15a56b3eded1b9dbe6b2870 Mon Sep 17 00:00:00 2001
+From 56205535851162660d05b9edc8842a81e4dbffef Mon Sep 17 00:00:00 2001
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Mon, 6 Nov 2017 18:45:30 +0100
 Subject: [PATCH 332/370] fs: convert two more BH_Uptodate_Lock related

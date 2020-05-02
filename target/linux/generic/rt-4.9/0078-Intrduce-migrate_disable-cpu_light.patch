@@ -1,4 +1,4 @@
-From de85e273ae6101d819d7fa58c4b1eb7795630d52 Mon Sep 17 00:00:00 2001
+From 5c593c57659aae80c33919abe8d0956df9814355 Mon Sep 17 00:00:00 2001
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Fri, 17 Jun 2011 15:42:38 +0200
 Subject: [PATCH 078/370] Intrduce migrate_disable() + cpu_light()
@@ -41,10 +41,10 @@ Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
  7 files changed, 125 insertions(+), 11 deletions(-)
 
 diff --git a/include/linux/cpu.h b/include/linux/cpu.h
-index ae5ac89324df..31cce0290a33 100644
+index 917829b27350..6387899a3011 100644
 --- a/include/linux/cpu.h
 +++ b/include/linux/cpu.h
-@@ -184,6 +184,9 @@ static inline void cpu_notifier_register_done(void)
+@@ -182,6 +182,9 @@ static inline void cpu_notifier_register_done(void)
  #endif /* CONFIG_SMP */
  extern struct bus_type cpu_subsys;
  
@@ -80,7 +80,7 @@ index 26e0eaa16492..64f1488df183 100644
  
  #ifdef CONFIG_PREEMPT_NOTIFIERS
 diff --git a/include/linux/sched.h b/include/linux/sched.h
-index b77dcad08b4d..ea26e02cd89b 100644
+index 7b8462ef90d5..241f28b2e6f8 100644
 --- a/include/linux/sched.h
 +++ b/include/linux/sched.h
 @@ -1531,6 +1531,12 @@ struct task_struct {
@@ -111,7 +111,7 @@ index b77dcad08b4d..ea26e02cd89b 100644
  #define TNF_MIGRATED	0x01
  #define TNF_NO_GROUP	0x02
  #define TNF_SHARED	0x04
-@@ -3550,6 +3548,31 @@ static inline void set_task_cpu(struct task_struct *p, unsigned int cpu)
+@@ -3546,6 +3544,31 @@ static inline void set_task_cpu(struct task_struct *p, unsigned int cpu)
  
  #endif /* CONFIG_SMP */
  
@@ -158,7 +158,7 @@ index 68123c1fe549..891c533724f5 100644
   * Callback to arch code if there's nosmp or maxcpus=0 on the
   * boot command line:
 diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index e5f9e164792c..3628b2fa02d9 100644
+index 99d7676dda91..703c2ebd9cfd 100644
 --- a/kernel/sched/core.c
 +++ b/kernel/sched/core.c
 @@ -1100,6 +1100,11 @@ void do_set_cpus_allowed(struct task_struct *p, const struct cpumask *new_mask)

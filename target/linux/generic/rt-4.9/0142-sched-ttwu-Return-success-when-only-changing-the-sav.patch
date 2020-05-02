@@ -1,4 +1,4 @@
-From b217b2ef3e806d319203bd0a1219e00d56d32efa Mon Sep 17 00:00:00 2001
+From 86f078e8788a04d4b9dccadd6cc416bc3333f310 Mon Sep 17 00:00:00 2001
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Tue, 13 Dec 2011 21:42:19 +0100
 Subject: [PATCH 142/370] sched: ttwu: Return success when only changing the
@@ -20,7 +20,7 @@ Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
  1 file changed, 3 insertions(+), 1 deletion(-)
 
 diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 9cc2c3f31cac..2a5146705ae2 100644
+index 7f5660efc8f4..115b4faa85a6 100644
 --- a/kernel/sched/core.c
 +++ b/kernel/sched/core.c
 @@ -2041,8 +2041,10 @@ try_to_wake_up(struct task_struct *p, unsigned int state, int wake_flags)

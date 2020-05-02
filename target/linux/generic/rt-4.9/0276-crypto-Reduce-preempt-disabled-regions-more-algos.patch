@@ -1,4 +1,4 @@
-From 5ace9a7ef2edd17291f15889b113dafe0b7e56e6 Mon Sep 17 00:00:00 2001
+From 32a1f8a78a5198e2cac2cfdbe9743ea09a06ff75 Mon Sep 17 00:00:00 2001
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Fri, 21 Feb 2014 17:24:04 +0100
 Subject: [PATCH 276/370] crypto: Reduce preempt disabled regions, more algos

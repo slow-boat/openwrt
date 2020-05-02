@@ -1,4 +1,4 @@
-From f94139a7b88dd96f896abcb157a7c19b32df55e5 Mon Sep 17 00:00:00 2001
+From a32dd99b263c07818d402939ffe4e49a06213460 Mon Sep 17 00:00:00 2001
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Fri, 15 Jan 2016 16:33:34 +0100
 Subject: [PATCH 293/370] net/core: protect users of napi_alloc_cache against
@@ -17,7 +17,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  1 file changed, 19 insertions(+), 6 deletions(-)
 
 diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-index 09c22f2747a9..2334c9c35e58 100644
+index e862180f18dd..8271d7da0dad 100644
 --- a/net/core/skbuff.c
 +++ b/net/core/skbuff.c
 @@ -362,6 +362,7 @@ struct napi_alloc_cache {

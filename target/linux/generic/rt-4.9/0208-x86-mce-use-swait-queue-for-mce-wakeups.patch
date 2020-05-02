@@ -1,4 +1,4 @@
-From df8ee9294de7d6107fdb0e411dc0f35d9d005d80 Mon Sep 17 00:00:00 2001
+From 42374b5765a504dbec0323aef608c20793779e61 Mon Sep 17 00:00:00 2001
 From: Steven Rostedt <rostedt@goodmis.org>
 Date: Fri, 27 Feb 2015 15:20:37 +0100
 Subject: [PATCH 208/370] x86/mce: use swait queue for mce wakeups

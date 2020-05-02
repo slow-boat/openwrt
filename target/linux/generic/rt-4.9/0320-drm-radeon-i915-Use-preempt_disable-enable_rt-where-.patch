@@ -1,4 +1,4 @@
-From 28331a0956b28cf93d183367bb36a2878cb38a5e Mon Sep 17 00:00:00 2001
+From 3bfe74901355405ad0cd31c9fbf6cc1596438bc6 Mon Sep 17 00:00:00 2001
 From: Mike Galbraith <umgwanakikbuti@gmail.com>
 Date: Sat, 27 Feb 2016 08:09:11 +0100
 Subject: [PATCH 320/370] drm,radeon,i915: Use preempt_disable/enable_rt()

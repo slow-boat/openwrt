@@ -1,4 +1,4 @@
-From 8983120ea224f879a780682518e4ca0162a9e5d1 Mon Sep 17 00:00:00 2001
+From aec3631e71653fbae4ce87ba4797dca1f4e64597 Mon Sep 17 00:00:00 2001
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Wed, 22 Jun 2011 19:47:03 +0200
 Subject: [PATCH 229/370] sched: Distangle worker accounting from rqlock
@@ -30,7 +30,7 @@ Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
  3 files changed, 41 insertions(+), 97 deletions(-)
 
 diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index fc30849a9ffc..4d5fcfa3a96e 100644
+index 3ff6199a0d4e..a5055bd445ee 100644
 --- a/kernel/sched/core.c
 +++ b/kernel/sched/core.c
 @@ -1724,10 +1724,6 @@ static inline void ttwu_activate(struct rq *rq, struct task_struct *p, int en_fl

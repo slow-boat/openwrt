@@ -1,4 +1,4 @@
-From 2984936fc131503a831888778a324a42ca40b717 Mon Sep 17 00:00:00 2001
+From da03979c9e95546a5625ef14bc796d2a9d04b056 Mon Sep 17 00:00:00 2001
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Thu, 31 Aug 2017 18:19:06 +0200
 Subject: [PATCH 342/370] kernel/hrtimer: don't wakeup a process while holding

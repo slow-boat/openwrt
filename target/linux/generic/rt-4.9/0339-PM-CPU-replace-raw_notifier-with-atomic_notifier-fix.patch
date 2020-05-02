@@ -1,4 +1,4 @@
-From e74c5de4b50ffe0ea14b4fddb4267ba77e4541ad Mon Sep 17 00:00:00 2001
+From 643dc4a2247ca7e06873e5c4586c5b170393ab26 Mon Sep 17 00:00:00 2001
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Thu, 17 Aug 2017 11:38:51 +0200
 Subject: [PATCH 339/370] PM / CPU: replace raw_notifier with atomic_notifier

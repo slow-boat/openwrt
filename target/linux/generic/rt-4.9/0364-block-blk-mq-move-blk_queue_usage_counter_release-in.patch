@@ -1,4 +1,4 @@
-From 014942b9622996c996e4fd090d841bc190f26ae1 Mon Sep 17 00:00:00 2001
+From 99eaf7e2ef5df8cde111eb8a00d211b60cb69812 Mon Sep 17 00:00:00 2001
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Tue, 13 Mar 2018 13:49:16 +0100
 Subject: [PATCH 364/370] block: blk-mq: move blk_queue_usage_counter_release()

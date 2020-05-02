@@ -1,4 +1,4 @@
-From a2ad638110bcea355b4fc479cf6ff3fffbd0a0fc Mon Sep 17 00:00:00 2001
+From 0fe9480e601698980af6a9301ada80add7ff1cb7 Mon Sep 17 00:00:00 2001
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Tue, 31 May 2011 16:59:16 +0200
 Subject: [PATCH 130/370] sched: Move task_struct cleanup to RCU
@@ -13,7 +13,7 @@ Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
  2 files changed, 27 insertions(+), 1 deletion(-)
 
 diff --git a/include/linux/sched.h b/include/linux/sched.h
-index 1247bb4eca06..d7339f027c88 100644
+index 65ed4e1c1874..1ebbca073134 100644
 --- a/include/linux/sched.h
 +++ b/include/linux/sched.h
 @@ -1979,6 +1979,9 @@ struct task_struct {
@@ -51,10 +51,10 @@ index 1247bb4eca06..d7339f027c88 100644
  struct task_struct *task_rcu_dereference(struct task_struct **ptask);
  struct task_struct *try_get_task_struct(struct task_struct **ptask);
 diff --git a/kernel/fork.c b/kernel/fork.c
-index b7761b649469..30ae0eb23067 100644
+index 2572a2547f3e..08a834f25b82 100644
 --- a/kernel/fork.c
 +++ b/kernel/fork.c
-@@ -381,7 +381,9 @@ static inline void put_signal_struct(struct signal_struct *sig)
+@@ -378,7 +378,9 @@ static inline void put_signal_struct(struct signal_struct *sig)
  	if (atomic_dec_and_test(&sig->sigcnt))
  		free_signal_struct(sig);
  }
@@ -65,7 +65,7 @@ index b7761b649469..30ae0eb23067 100644
  void __put_task_struct(struct task_struct *tsk)
  {
  	WARN_ON(!tsk->exit_state);
-@@ -398,7 +400,18 @@ void __put_task_struct(struct task_struct *tsk)
+@@ -395,7 +397,18 @@ void __put_task_struct(struct task_struct *tsk)
  	if (!profile_handoff_task(tsk))
  		free_task(tsk);
  }

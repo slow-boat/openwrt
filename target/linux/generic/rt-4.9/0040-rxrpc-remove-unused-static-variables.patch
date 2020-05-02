@@ -1,4 +1,4 @@
-From 5efdb9e1c5385a8bc2bb19aef8feb741a4c41779 Mon Sep 17 00:00:00 2001
+From 91ac56945d02a1cb058c0a99fef3685cbcc52532 Mon Sep 17 00:00:00 2001
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Fri, 21 Oct 2016 10:54:50 +0200
 Subject: [PATCH 040/370] rxrpc: remove unused static variables

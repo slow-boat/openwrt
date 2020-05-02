@@ -1,4 +1,4 @@
-From 08627cf22a43fb5b4cc052500ca292bb045ddbbe Mon Sep 17 00:00:00 2001
+From 829f8a63a95f03de2f88f97c59ab0d3c5249713d Mon Sep 17 00:00:00 2001
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Wed, 29 Jun 2011 14:58:57 +0200
 Subject: [PATCH 073/370] kconfig: Add PREEMPT_RT_FULL

@@ -1,4 +1,4 @@
-From 42ff7844a36f493530bdf165616bed0a4b686f1d Mon Sep 17 00:00:00 2001
+From 68d8ab54e614a93723a43a396e1ee9e311ef46c6 Mon Sep 17 00:00:00 2001
 From: Peter Zijlstra <peterz@infradead.org>
 Date: Wed, 6 Jun 2018 15:31:29 +0200
 Subject: [PATCH 352/370] futex: Fix OWNER_DEAD fixup
@@ -33,10 +33,10 @@ Signed-off-by: Julia Cartwright <julia@ni.com>
  1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/kernel/futex.c b/kernel/futex.c
-index 5716d3d600aa..196218d1b0f3 100644
+index cdd68ba6e3a6..57038131ad3f 100644
 --- a/kernel/futex.c
 +++ b/kernel/futex.c
-@@ -2309,9 +2309,6 @@ static int fixup_pi_state_owner(u32 __user *uaddr, struct futex_q *q,
+@@ -2301,9 +2301,6 @@ static int fixup_pi_state_owner(u32 __user *uaddr, struct futex_q *q,
  	raw_spin_lock_irq(&pi_state->pi_mutex.wait_lock);
  
  	oldowner = pi_state->owner;
@@ -46,7 +46,7 @@ index 5716d3d600aa..196218d1b0f3 100644
  
  	/*
  	 * We are here because either:
-@@ -2372,6 +2369,9 @@ static int fixup_pi_state_owner(u32 __user *uaddr, struct futex_q *q,
+@@ -2364,6 +2361,9 @@ static int fixup_pi_state_owner(u32 __user *uaddr, struct futex_q *q,
  	}
  
  	newtid = task_pid_vnr(newowner) | FUTEX_WAITERS;

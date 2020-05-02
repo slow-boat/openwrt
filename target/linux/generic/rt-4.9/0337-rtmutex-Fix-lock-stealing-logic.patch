@@ -1,4 +1,4 @@
-From c14cf964d30dbbf78aa2f12956473646fcff0b39 Mon Sep 17 00:00:00 2001
+From 24fd683c4ec38d4172cc87dfc6ae04b2685d729f Mon Sep 17 00:00:00 2001
 From: Mike Galbraith <efault@gmx.de>
 Date: Fri, 23 Jun 2017 09:37:14 +0200
 Subject: [PATCH 337/370] rtmutex: Fix lock stealing logic

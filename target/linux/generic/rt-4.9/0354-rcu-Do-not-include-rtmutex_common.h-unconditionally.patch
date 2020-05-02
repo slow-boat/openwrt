@@ -1,4 +1,4 @@
-From fc42dbdf31cf43b335c41d77fb08f9e09ec5bfa0 Mon Sep 17 00:00:00 2001
+From d22ec7b673599ae2cd1b23a3f810cac86cbd206d Mon Sep 17 00:00:00 2001
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Mon, 9 Jul 2018 11:58:08 +0200
 Subject: [PATCH 354/370] rcu: Do not include rtmutex_common.h unconditionally

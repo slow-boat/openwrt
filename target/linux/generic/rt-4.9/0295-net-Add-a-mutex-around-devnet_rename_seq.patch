@@ -1,4 +1,4 @@
-From 6155ec87d1f0ff3963f77658427614acfc5ab385 Mon Sep 17 00:00:00 2001
+From 0f53969a8877bf6bab5477f2060ccb27577dd501 Mon Sep 17 00:00:00 2001
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Wed, 20 Mar 2013 18:06:20 +0100
 Subject: [PATCH 295/370] net: Add a mutex around devnet_rename_seq
@@ -21,7 +21,7 @@ Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
  1 file changed, 20 insertions(+), 14 deletions(-)
 
 diff --git a/net/core/dev.c b/net/core/dev.c
-index 0e67996f2de5..9ccac1a843c1 100644
+index 75ac547279f5..93995575d23a 100644
 --- a/net/core/dev.c
 +++ b/net/core/dev.c
 @@ -190,6 +190,7 @@ static unsigned int napi_gen_id = NR_CPUS;

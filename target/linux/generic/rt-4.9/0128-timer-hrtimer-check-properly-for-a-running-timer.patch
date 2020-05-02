@@ -1,4 +1,4 @@
-From 72eaebc0ca18cfbf638a113a0f56e69bf5b62e23 Mon Sep 17 00:00:00 2001
+From 3db58cd24eaab962c92add008a3c72400ab1b697 Mon Sep 17 00:00:00 2001
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Wed, 1 Mar 2017 16:30:49 +0100
 Subject: [PATCH 128/370] timer/hrtimer: check properly for a running timer

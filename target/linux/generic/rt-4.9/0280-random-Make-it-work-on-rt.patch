@@ -1,4 +1,4 @@
-From 0095578b847a4b7f9f7bdf7064214bc729acab0a Mon Sep 17 00:00:00 2001
+From c347225c88c03d9251a2e57b903a557707bc9893 Mon Sep 17 00:00:00 2001
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Tue, 21 Aug 2012 20:38:50 +0200
 Subject: [PATCH 280/370] random: Make it work on rt
@@ -19,7 +19,7 @@ Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
  6 files changed, 23 insertions(+), 9 deletions(-)
 
 diff --git a/drivers/char/random.c b/drivers/char/random.c
-index 74300e8896d4..002f6867ceed 100644
+index 68795667a94f..556d6b46d730 100644
 --- a/drivers/char/random.c
 +++ b/drivers/char/random.c
 @@ -1183,28 +1183,27 @@ static __u32 get_reg(struct fast_pool *f, struct pt_regs *regs)
@@ -126,10 +126,10 @@ index d3f24905852c..f87aa8fdcc51 100644
  	if (!noirqdebug)
  		note_interrupt(desc, retval);
 diff --git a/kernel/irq/manage.c b/kernel/irq/manage.c
-index 8867672c6418..4e0f70921292 100644
+index de68d6a39f4f..12e2d7cdfed0 100644
 --- a/kernel/irq/manage.c
 +++ b/kernel/irq/manage.c
-@@ -1027,6 +1027,12 @@ static int irq_thread(void *data)
+@@ -1023,6 +1023,12 @@ static int irq_thread(void *data)
  		if (action_ret == IRQ_WAKE_THREAD)
  			irq_wake_secondary(desc, action);
  

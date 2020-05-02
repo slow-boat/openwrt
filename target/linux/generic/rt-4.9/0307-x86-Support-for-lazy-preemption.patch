@@ -1,4 +1,4 @@
-From 88e786c34a73a90126856ab1a84a40dce41125ff Mon Sep 17 00:00:00 2001
+From cb4897c9671d03435a18c18896a6acdaea93019d Mon Sep 17 00:00:00 2001
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Thu, 1 Nov 2012 11:03:47 +0100
 Subject: [PATCH 307/370] x86: Support for lazy preemption
@@ -17,7 +17,7 @@ Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
  7 files changed, 79 insertions(+), 3 deletions(-)
 
 diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index d3c4be933e7e..4eb6b79c2aa2 100644
+index a63eff28f59d..3e48095121fa 100644
 --- a/arch/x86/Kconfig
 +++ b/arch/x86/Kconfig
 @@ -17,6 +17,7 @@ config X86_64
@@ -81,11 +81,11 @@ index a76dc738ec61..881774ba8732 100644
  	jz	restore_all
  	call	preempt_schedule_irq
 diff --git a/arch/x86/entry/entry_64.S b/arch/x86/entry/entry_64.S
-index 5110dede0fa6..e638ffad2fa2 100644
+index a2d9d29f699b..4ecd24b3966a 100644
 --- a/arch/x86/entry/entry_64.S
 +++ b/arch/x86/entry/entry_64.S
 @@ -488,7 +488,23 @@ retint_kernel:
- 	btl	$9, EFLAGS(%rsp)		/* were interrupts off? */
+ 	bt	$9, EFLAGS(%rsp)		/* were interrupts off? */
  	jnc	1f
  0:	cmpl	$0, PER_CPU_VAR(__preempt_count)
 +#ifndef CONFIG_PREEMPT_LAZY

@@ -1,4 +1,4 @@
-From f1fee6219a0827173e21f90fe49c1a71263d87b8 Mon Sep 17 00:00:00 2001
+From a027ad6181a07db3b226dca8541ff0300551bf7e Mon Sep 17 00:00:00 2001
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Thu, 22 Jun 2017 17:53:34 +0200
 Subject: [PATCH 180/370] kernel/locking: use an exclusive wait_q for sleepers
@@ -43,7 +43,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  4 files changed, 33 insertions(+), 7 deletions(-)
 
 diff --git a/include/linux/sched.h b/include/linux/sched.h
-index b2d993d4c765..49dd774228c3 100644
+index 2ba77aaa93f9..adc702ba7ef9 100644
 --- a/include/linux/sched.h
 +++ b/include/linux/sched.h
 @@ -1026,8 +1026,20 @@ struct wake_q_head {
@@ -78,10 +78,10 @@ index b2d993d4c765..49dd774228c3 100644
  #ifdef CONFIG_RT_MUTEXES
  	/* PI waiters blocked on a rt_mutex held by this task */
 diff --git a/kernel/fork.c b/kernel/fork.c
-index 65c862221921..bb1bdea70572 100644
+index 5bcb777b6913..2529725eefa2 100644
 --- a/kernel/fork.c
 +++ b/kernel/fork.c
-@@ -567,6 +567,7 @@ static struct task_struct *dup_task_struct(struct task_struct *orig, int node)
+@@ -564,6 +564,7 @@ static struct task_struct *dup_task_struct(struct task_struct *orig, int node)
  	tsk->splice_pipe = NULL;
  	tsk->task_frag.page = NULL;
  	tsk->wake_q.next = NULL;
@@ -103,7 +103,7 @@ index b99ddf374df1..c1a3b9f099de 100644
  		wake_q_add(wake_q, waiter->task);
  	raw_spin_unlock(&current->pi_lock);
 diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index a44be3a52095..b5b8946552af 100644
+index 438b632591f4..7000acb7ec68 100644
 --- a/kernel/sched/core.c
 +++ b/kernel/sched/core.c
 @@ -430,9 +430,15 @@ static bool set_nr_if_polling(struct task_struct *p)

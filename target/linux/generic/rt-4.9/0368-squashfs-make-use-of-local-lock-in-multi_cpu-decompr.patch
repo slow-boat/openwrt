@@ -1,4 +1,4 @@
-From c2fac2d929b5e53ed8e9729582dbd364d1eba53c Mon Sep 17 00:00:00 2001
+From f7d784243246cfe41db2dd3c888acee710d9e8a6 Mon Sep 17 00:00:00 2001
 From: Julia Cartwright <julia@ni.com>
 Date: Mon, 7 May 2018 08:58:57 -0500
 Subject: [PATCH 368/370] squashfs: make use of local lock in multi_cpu

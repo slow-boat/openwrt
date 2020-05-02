@@ -1,4 +1,4 @@
-From c2ff7158020a12bfdeb3dc1e9abe785cce65c9f9 Mon Sep 17 00:00:00 2001
+From 4041414886ea4bfed9a13497e92b37c9f636fbe4 Mon Sep 17 00:00:00 2001
 From: Julia Cartwright <julia@ni.com>
 Date: Thu, 26 Apr 2018 15:02:03 -0500
 Subject: [PATCH 369/370] seqlock: provide the same ordering semantics as

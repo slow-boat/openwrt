@@ -1,4 +1,4 @@
-From 3e8307e54650b70191044acf64ba3f62bb58cb27 Mon Sep 17 00:00:00 2001
+From 8b931b44efd5bc6a9ecc496b87fd95db6a817da0 Mon Sep 17 00:00:00 2001
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Thu, 21 Sep 2017 14:42:04 +0200
 Subject: [PATCH 348/370] net: use trylock in icmp_sk

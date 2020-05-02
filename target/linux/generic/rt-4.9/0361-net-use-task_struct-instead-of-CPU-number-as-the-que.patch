@@ -1,4 +1,4 @@
-From 14745c81ea594bd1d243ae4259677f2a6f76fd24 Mon Sep 17 00:00:00 2001
+From 6b96e9acab152f85f8eab12da295638bd854fd24 Mon Sep 17 00:00:00 2001
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Wed, 21 Feb 2018 10:39:54 +0100
 Subject: [PATCH 361/370] net: use task_struct instead of CPU number as the
@@ -22,7 +22,7 @@ Signed-off-by: Julia Cartwright <julia@ni.com>
  2 files changed, 53 insertions(+), 7 deletions(-)
 
 diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
-index 53bda7b6aab1..37dc2de449de 100644
+index 85fc72b8a92b..6f1a3f286c4b 100644
 --- a/include/linux/netdevice.h
 +++ b/include/linux/netdevice.h
 @@ -594,7 +594,11 @@ struct netdev_queue {
@@ -37,7 +37,7 @@ index 53bda7b6aab1..37dc2de449de 100644
  	/*
  	 * Time (in jiffies) of last Tx
  	 */
-@@ -3617,41 +3621,79 @@ static inline u32 netif_msg_init(int debug_value, int default_msg_enable_bits)
+@@ -3610,41 +3614,79 @@ static inline u32 netif_msg_init(int debug_value, int default_msg_enable_bits)
  	return (1 << debug_value) - 1;
  }
  
@@ -124,10 +124,10 @@ index 53bda7b6aab1..37dc2de449de 100644
  }
  
 diff --git a/net/core/dev.c b/net/core/dev.c
-index 9ccac1a843c1..044bb7aef0a1 100644
+index 93995575d23a..e7dc4700e463 100644
 --- a/net/core/dev.c
 +++ b/net/core/dev.c
-@@ -3471,7 +3471,11 @@ static int __dev_queue_xmit(struct sk_buff *skb, void *accel_priv)
+@@ -3449,7 +3449,11 @@ static int __dev_queue_xmit(struct sk_buff *skb, void *accel_priv)
  	if (dev->flags & IFF_UP) {
  		int cpu = smp_processor_id(); /* ok because BHs are off */
  
@@ -139,7 +139,7 @@ index 9ccac1a843c1..044bb7aef0a1 100644
  			if (unlikely(xmit_rec_read() > XMIT_RECURSION_LIMIT))
  				goto recursion_alert;
  
-@@ -7196,7 +7200,7 @@ static void netdev_init_one_queue(struct net_device *dev,
+@@ -7168,7 +7172,7 @@ static void netdev_init_one_queue(struct net_device *dev,
  	/* Initialize queue lock */
  	spin_lock_init(&queue->_xmit_lock);
  	netdev_set_xmit_lockdep_class(&queue->_xmit_lock, dev->type);

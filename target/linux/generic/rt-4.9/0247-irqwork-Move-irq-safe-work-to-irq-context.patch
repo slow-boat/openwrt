@@ -1,4 +1,4 @@
-From 2eefa3e34d7624f88e4281f33f97f7e7b7a1c982 Mon Sep 17 00:00:00 2001
+From e9dd539f67beb2e628ab980e359900152379083b Mon Sep 17 00:00:00 2001
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Sun, 15 Nov 2015 18:40:17 +0100
 Subject: [PATCH 247/370] irqwork: Move irq safe work to irq context
@@ -59,7 +59,7 @@ index 0ddaf1e66d8c..2899ba0d23d1 100644
  /*
   * Synchronize against the irq_work @entry, ensures the entry is not
 diff --git a/kernel/time/timer.c b/kernel/time/timer.c
-index e345117292fe..f8b954f9fe7b 100644
+index cfe9475e0192..00f3db2c6cca 100644
 --- a/kernel/time/timer.c
 +++ b/kernel/time/timer.c
 @@ -1661,7 +1661,7 @@ void update_process_times(int user_tick)
@@ -71,9 +71,9 @@ index e345117292fe..f8b954f9fe7b 100644
  	if (in_irq())
  		irq_work_tick();
  #endif
-@@ -1717,9 +1717,7 @@ static __latent_entropy void run_timer_softirq(struct softirq_action *h)
- {
- 	struct timer_base *base = this_cpu_ptr(&timer_bases[BASE_STD]);
+@@ -1714,9 +1714,7 @@ static __latent_entropy void run_timer_softirq(struct softirq_action *h)
+ 	 */
+ 	base->must_forward_clk = false;
  
 -#if defined(CONFIG_IRQ_WORK) && defined(CONFIG_PREEMPT_RT_FULL)
 -	irq_work_tick();

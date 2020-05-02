@@ -1,4 +1,4 @@
-From 07400a1c5a2de0048797219170b2ca3801d3f269 Mon Sep 17 00:00:00 2001
+From c3b32d93ccdce3420b1229e812139b22c985905f Mon Sep 17 00:00:00 2001
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Wed, 21 Aug 2013 17:48:46 +0200
 Subject: [PATCH 199/370] genirq: Do not invoke the affinity callback via a
@@ -65,7 +65,7 @@ index f323a5109987..6ea17576aa59 100644
  	void (*release)(struct kref *ref);
  };
 diff --git a/kernel/irq/manage.c b/kernel/irq/manage.c
-index 18c90de72f8c..973ba13e1426 100644
+index 77d13a27e609..ff4b57c3076f 100644
 --- a/kernel/irq/manage.c
 +++ b/kernel/irq/manage.c
 @@ -235,7 +235,12 @@ int irq_set_affinity_locked(struct irq_data *data, const struct cpumask *mask,

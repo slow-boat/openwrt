@@ -1,4 +1,4 @@
-From 5a7fe199edfb2d7af2f34facb5c32d1a028307a2 Mon Sep 17 00:00:00 2001
+From 6e94ae3eb5be9ab57a784ccc01ac0a42183fd098 Mon Sep 17 00:00:00 2001
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Wed, 26 Sep 2012 16:21:08 +0200
 Subject: [PATCH 292/370] net: Another local_irq_disable/kmalloc headache
@@ -11,7 +11,7 @@ Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
  1 file changed, 6 insertions(+), 4 deletions(-)
 
 diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-index dca1fed0d7da..09c22f2747a9 100644
+index 8cae7aa4a4ec..e862180f18dd 100644
 --- a/net/core/skbuff.c
 +++ b/net/core/skbuff.c
 @@ -64,6 +64,7 @@

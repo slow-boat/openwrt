@@ -1,4 +1,4 @@
-From c599d0e9328b74bf73d8dbb7615662ce6368a9be Mon Sep 17 00:00:00 2001
+From 03f0211f7e438f53666cf5bf8027173c56bb5362 Mon Sep 17 00:00:00 2001
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Thu, 21 Sep 2017 14:39:56 +0200
 Subject: [PATCH 346/370] rt/locking: allow recursive local_trylock()

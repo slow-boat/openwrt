@@ -1,4 +1,4 @@
-From 41d9b93c2cb1b5e5ec4b1f70b8fbaec56bac4c3d Mon Sep 17 00:00:00 2001
+From bc23895596872308ec942d447f6ddc2d903decf7 Mon Sep 17 00:00:00 2001
 From: Ingo Molnar <mingo@elte.hu>
 Date: Wed, 14 Dec 2011 13:05:54 +0100
 Subject: [PATCH 193/370] rt: Improve the serial console PASS_LIMIT

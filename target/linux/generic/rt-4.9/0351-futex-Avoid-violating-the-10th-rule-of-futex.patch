@@ -1,4 +1,4 @@
-From 203c301ddaa272c6d733a37dc02cada56b0a7a45 Mon Sep 17 00:00:00 2001
+From 3af1de3eb2072820e12d6927b562d4b3c2f1c706 Mon Sep 17 00:00:00 2001
 From: Peter Zijlstra <peterz@infradead.org>
 Date: Wed, 6 Jun 2018 15:31:28 +0200
 Subject: [PATCH 351/370] futex: Avoid violating the 10th rule of futex
@@ -106,10 +106,10 @@ Signed-off-by: Julia Cartwright <julia@ni.com>
  3 files changed, 87 insertions(+), 23 deletions(-)
 
 diff --git a/kernel/futex.c b/kernel/futex.c
-index 49e5a6f27d2e..5716d3d600aa 100644
+index 270148be5647..cdd68ba6e3a6 100644
 --- a/kernel/futex.c
 +++ b/kernel/futex.c
-@@ -2295,21 +2295,17 @@ static void unqueue_me_pi(struct futex_q *q)
+@@ -2287,21 +2287,17 @@ static void unqueue_me_pi(struct futex_q *q)
  	spin_unlock(q->lock_ptr);
  }
  
@@ -136,7 +136,7 @@ index 49e5a6f27d2e..5716d3d600aa 100644
  	raw_spin_lock_irq(&pi_state->pi_mutex.wait_lock);
  
  	oldowner = pi_state->owner;
-@@ -2318,11 +2314,17 @@ static int fixup_pi_state_owner(u32 __user *uaddr, struct futex_q *q,
+@@ -2310,11 +2306,17 @@ static int fixup_pi_state_owner(u32 __user *uaddr, struct futex_q *q,
  		newtid |= FUTEX_OWNER_DIED;
  
  	/*
@@ -158,7 +158,7 @@ index 49e5a6f27d2e..5716d3d600aa 100644
  	 * This must be atomic as we have to preserve the owner died bit here.
  	 *
  	 * Note: We write the user space value _before_ changing the pi_state
-@@ -2335,6 +2337,42 @@ static int fixup_pi_state_owner(u32 __user *uaddr, struct futex_q *q,
+@@ -2327,6 +2329,42 @@ static int fixup_pi_state_owner(u32 __user *uaddr, struct futex_q *q,
  	 * in the PID check in lookup_pi_state.
  	 */
  retry:
@@ -201,7 +201,7 @@ index 49e5a6f27d2e..5716d3d600aa 100644
  	if (get_futex_value_locked(&uval, uaddr))
  		goto handle_fault;
  
-@@ -2435,15 +2473,28 @@ static int fixup_owner(u32 __user *uaddr, struct futex_q *q, int locked)
+@@ -2427,15 +2465,28 @@ static int fixup_owner(u32 __user *uaddr, struct futex_q *q, int locked)
  		 * Got the lock. We might not be the anticipated owner if we
  		 * did a lock-steal - fix up the PI-state in that case:
  		 *

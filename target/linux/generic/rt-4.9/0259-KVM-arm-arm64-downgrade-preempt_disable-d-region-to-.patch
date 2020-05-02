@@ -1,4 +1,4 @@
-From 051a2ff5239225980243b65189ec9167655921ac Mon Sep 17 00:00:00 2001
+From 1efe8d018ffb97f584f9fbca9f7cd73ee960fa51 Mon Sep 17 00:00:00 2001
 From: Josh Cartwright <joshc@ni.com>
 Date: Thu, 11 Feb 2016 11:54:01 -0600
 Subject: [PATCH 259/370] KVM: arm/arm64: downgrade preempt_disable()d region
@@ -23,7 +23,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/arch/arm/kvm/arm.c b/arch/arm/kvm/arm.c
-index a670c70f4def..c45fa921cfec 100644
+index 20436972537f..961e7af8fd5c 100644
 --- a/arch/arm/kvm/arm.c
 +++ b/arch/arm/kvm/arm.c
 @@ -619,7 +619,7 @@ int kvm_arch_vcpu_ioctl_run(struct kvm_vcpu *vcpu, struct kvm_run *run)

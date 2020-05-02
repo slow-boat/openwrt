@@ -1,4 +1,4 @@
-From a260bca1bba8b4d7b25747dd3f09bd0bb80c4b52 Mon Sep 17 00:00:00 2001
+From c340262ec69ff488af059a5f9ccb16f6cebd3a5f Mon Sep 17 00:00:00 2001
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Thu, 30 Nov 2017 13:40:10 +0100
 Subject: [PATCH 357/370] crypto: limit more FPU-enabled sections
@@ -475,10 +475,10 @@ index 1429a7c736db..85428df40a22 100644
  
  /*
 diff --git a/arch/x86/kernel/fpu/core.c b/arch/x86/kernel/fpu/core.c
-index fc965118d2e6..d7f42162cb6f 100644
+index 96d80dfac383..6e473a44afb7 100644
 --- a/arch/x86/kernel/fpu/core.c
 +++ b/arch/x86/kernel/fpu/core.c
-@@ -138,6 +138,18 @@ void kernel_fpu_end(void)
+@@ -158,6 +158,18 @@ void kernel_fpu_end(void)
  }
  EXPORT_SYMBOL_GPL(kernel_fpu_end);
  

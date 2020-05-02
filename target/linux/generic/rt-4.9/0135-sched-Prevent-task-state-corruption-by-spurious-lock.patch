@@ -1,4 +1,4 @@
-From 8e0f8bb3d610e3ef1a92ef12157c1936fd98c827 Mon Sep 17 00:00:00 2001
+From 3f00ee0f6b90b212d43bfc5a7f1d7025ed0b3ea9 Mon Sep 17 00:00:00 2001
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Tue, 6 Jun 2017 14:20:37 +0200
 Subject: [PATCH 135/370] sched: Prevent task state corruption by spurious lock
@@ -67,7 +67,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 535ce47e0432..070c9d2377bf 100644
+index e74eaf6e6a5e..2cea0997dcf0 100644
 --- a/kernel/sched/core.c
 +++ b/kernel/sched/core.c
 @@ -2208,7 +2208,7 @@ EXPORT_SYMBOL(wake_up_process);

@@ -1,4 +1,4 @@
-From 3a49221fd18962d795e6f24d46837f7b5e4743a1 Mon Sep 17 00:00:00 2001
+From c242f3b4845c6ea349d058f7bffdc0e81ae153c1 Mon Sep 17 00:00:00 2001
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Wed, 5 Oct 2011 11:59:38 -0700
 Subject: [PATCH 188/370] rcu: Merge RCU-bh into RCU-preempt

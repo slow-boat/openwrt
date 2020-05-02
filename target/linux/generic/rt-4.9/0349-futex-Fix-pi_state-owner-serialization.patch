@@ -1,4 +1,4 @@
-From d4e941779c546a7faaece81f3c77a1ee74c16dc6 Mon Sep 17 00:00:00 2001
+From b9d9d11ecc1b5ef2d7febd49479884ac95c71c11 Mon Sep 17 00:00:00 2001
 From: Peter Zijlstra <peterz@infradead.org>
 Date: Wed, 6 Jun 2018 15:31:26 +0200
 Subject: [PATCH 349/370] futex: Fix pi_state->owner serialization
@@ -34,7 +34,7 @@ Signed-off-by: Julia Cartwright <julia@ni.com>
  1 file changed, 22 insertions(+), 12 deletions(-)
 
 diff --git a/kernel/futex.c b/kernel/futex.c
-index 12d03af81092..d07f8e79daeb 100644
+index 8ab0ddd4cf8f..47e42faad6c5 100644
 --- a/kernel/futex.c
 +++ b/kernel/futex.c
 @@ -819,8 +819,6 @@ static void get_pi_state(struct futex_pi_state *pi_state)

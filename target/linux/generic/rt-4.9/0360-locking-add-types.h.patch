@@ -1,4 +1,4 @@
-From fb85d710e4e393352c43f298eb0fc3e30f41c2ca Mon Sep 17 00:00:00 2001
+From 9e9f6a3961eff5336fc6bd75441ea9deca59eecd Mon Sep 17 00:00:00 2001
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Tue, 9 Jan 2018 11:02:24 +0100
 Subject: [PATCH 360/370] locking: add types.h

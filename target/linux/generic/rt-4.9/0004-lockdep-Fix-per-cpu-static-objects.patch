@@ -1,4 +1,4 @@
-From 348300b3f1c4c157913e4a9db11ab7ad69213bc0 Mon Sep 17 00:00:00 2001
+From a2252c1be1fa646ca583eb5a32c83b699c18bc8c Mon Sep 17 00:00:00 2001
 From: Peter Zijlstra <peterz@infradead.org>
 Date: Mon, 20 Mar 2017 12:26:55 +0100
 Subject: [PATCH 004/370] lockdep: Fix per-cpu static objects
@@ -72,10 +72,10 @@ index 8e0cb7a0f836..68123c1fe549 100644
  
  /*
 diff --git a/kernel/cpu.c b/kernel/cpu.c
-index b5a0165b7300..49d2a90a448b 100644
+index 967163fb90a8..991533a7ebc5 100644
 --- a/kernel/cpu.c
 +++ b/kernel/cpu.c
-@@ -1348,6 +1348,8 @@ core_initcall(cpu_hotplug_pm_sync_init);
+@@ -1255,6 +1255,8 @@ core_initcall(cpu_hotplug_pm_sync_init);
  
  #endif /* CONFIG_PM_SLEEP_SMP */
  
@@ -84,7 +84,7 @@ index b5a0165b7300..49d2a90a448b 100644
  #endif /* CONFIG_SMP */
  
  /* Boot processor state steps */
-@@ -2194,6 +2196,10 @@ void __init boot_cpu_init(void)
+@@ -1939,6 +1941,10 @@ void __init boot_cpu_init(void)
  	set_cpu_active(cpu, true);
  	set_cpu_present(cpu, true);
  	set_cpu_possible(cpu, true);
@@ -96,7 +96,7 @@ index b5a0165b7300..49d2a90a448b 100644
  
  /*
 diff --git a/kernel/module.c b/kernel/module.c
-index 17456c595ce8..231e0bf0a840 100644
+index 6a6ed7f3e0fc..3a851cb10916 100644
 --- a/kernel/module.c
 +++ b/kernel/module.c
 @@ -677,8 +677,12 @@ bool __is_module_percpu_address(unsigned long addr, unsigned long *can_addr)

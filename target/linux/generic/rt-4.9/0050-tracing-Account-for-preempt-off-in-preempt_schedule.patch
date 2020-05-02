@@ -1,4 +1,4 @@
-From 111dde06a0f2543cc5d6b98975c5c6b2071b3980 Mon Sep 17 00:00:00 2001
+From 86759f94cf4371248b0db3e6c31a1854e49ac6d4 Mon Sep 17 00:00:00 2001
 From: Steven Rostedt <rostedt@goodmis.org>
 Date: Thu, 29 Sep 2011 12:24:30 -0500
 Subject: [PATCH 050/370] tracing: Account for preempt off in
@@ -28,7 +28,7 @@ Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
  1 file changed, 9 insertions(+)
 
 diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 98d3094f81c5..e5f9e164792c 100644
+index 42b5d2fe4ef9..99d7676dda91 100644
 --- a/kernel/sched/core.c
 +++ b/kernel/sched/core.c
 @@ -3585,7 +3585,16 @@ asmlinkage __visible void __sched notrace preempt_schedule_notrace(void)

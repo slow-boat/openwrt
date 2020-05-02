@@ -1,19 +1,19 @@
-From 692f7d0d3ca56e27e5ed583afcdc2955c9208b03 Mon Sep 17 00:00:00 2001
+From 38036a54c1d930740f8e0fa317467ef516634264 Mon Sep 17 00:00:00 2001
 From: Julia Cartwright <julia@ni.com>
 Date: Thu, 20 Dec 2018 14:25:00 -0600
-Subject: [PATCH 370/370] Linux 4.9.146-rt125 REBASE
+Subject: [PATCH 370/370] Linux 4.9.115-rt94 REBASE
 
 ---
  localversion-rt | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/localversion-rt b/localversion-rt
-index 9a218ca23053..9d0cfbcac7f4 100644
+index 9a218ca23053..8d02a9bac500 100644
 --- a/localversion-rt
 +++ b/localversion-rt
 @@ -1 +1 @@
 --rt23
-+-rt125
++-rt94
 -- 
 2.19.1
 

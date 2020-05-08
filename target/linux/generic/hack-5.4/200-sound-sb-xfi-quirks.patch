@@ -49,7 +49,7 @@ Index: linux-4.19.91/sound/usb/quirks.c
 +		}
 +	}
 +
-+	err = usb_reset_configuration(dev);
++//	err = usb_reset_configuration(dev);
 +#if 0
 +	snd_usb_ctl_msg(dev, usb_rcvctrlpipe(dev, 0), 133,
 +		USB_DIR_IN | USB_TYPE_CLASS | USB_RECIP_INTERFACE,

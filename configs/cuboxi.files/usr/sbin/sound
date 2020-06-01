@@ -4,6 +4,9 @@ JACKNAME=default
 MIXERNAME="SoftMaster"
 INIT_VOL="/etc/.soundvolume"
 
+GPIO=504
+GPIO_HOLD=60
+
 exec 1>>/tmp/sound.log
 exec 2>&1
 
@@ -168,6 +171,23 @@ pcm.!default {
    type plug
    slave.pcm "duplex"
 }
+
+pcm.jackdsp {
+    type jack
+    playback_ports {
+        0 jconvolver:in.L
+        1 jconvolver:in.R
+    }
+}
+
+pcm.jack {
+    type plug
+    slave { pcm "jackdsp" }
+    hint {
+ 	description "JACK DSP port"
+    }
+}
+
 EOF
 }
 
@@ -226,6 +246,16 @@ while true; do
 		echo "Started..."		
 		start=3		
 		continue
+	}
+
+	#check that power switch has started
+	[ -z "$GPIO" ] || {
+		meterpid=`pgrep jack_meter` || {
+			echo "Starting power switch"
+			jack_meter -g $GPIO -p$GPIO_HOLD jconvolver:Out-1 jconvolver:Out-2 &
+			start=4
+			continue
+		}
 	}
 
 	# run jack event monitor in background- sending output to named pipe. wait for data on the pipe-

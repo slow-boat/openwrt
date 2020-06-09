@@ -15,9 +15,17 @@ echo "Detected $N_CPUS CPUs"
 
 # increase priority of apps by this amount
 JACK_PRI=70
+APP_PRI=5
+IRQ_PRI=95
 
-# critical interrupts- eg USB
-IRQ_PRI=99
+# round robin CPU affinity- supply PID
+set_cpu_affinity() {
+	[ -n "$N_CPUS" ] && [ $N_CPUS -gt 1 ] || return
+	taskset -p $((0x1<<cpu_offst)) $1
+	cpu_offst=$(((cpu_offst+1)%N_CPUS))
+}
+
+# critical interrupts- eg USB- this can be a cross platform list
 IRQS=
 irq_addrs="2184000 2184200"
 
@@ -25,29 +33,10 @@ for addr in $irq_addrs; do IRQS="$IRQS `pgrep $addr`"; done
 cpu_offst=0
 for irq in $IRQS; do
 	chrt -fp $IRQ_PRI $irq
-	taskset -p $((0x1<<cpu_offst)) $irq
-	cpu_offst=$(((cpu_offst+1)%N_CPUS))
+	set_cpu_affinity $irq
 done
 
 SOUND_VAR_DIR="/var/run/sound"
-ZITA_VAR_DIR="/var/run/zita-n2j"
-check_zita_ports() {
-	zita_ports=`ls ${ZITA_VAR_DIR}/ifaces/`
-	lsp=`jack_lsp -c`
-	active=`echo "$lsp" | grep '   '`
-	for client in $zita_ports; do
-		echo "$lsp" | grep $client >/dev/null || {
-			echo "removing jack client $client from list"
-			rm ${ZITA_VAR_DIR}/ifaces/$client
-			continue
-		}
-		echo "$active" | grep $client >/dev/null || {
-			echo "connecting jack client $client"
-			jack_connect ${client}:out_1 jconvolver:in.L
-			jack_connect ${client}:out_2 jconvolver:in.R
-		}
-	done
-}
 
 # pid, exepath
 checkpid(){
@@ -191,7 +180,6 @@ pcm.jack {
 EOF
 }
 
-
 echo "`date` starting sound service"
 start=
 while true; do
@@ -210,11 +198,10 @@ while true; do
 		amixer sset $MIXERNAME $((init_vol*255/100)) || continue
 		
 		echo "Set mixer $MIXERNAME level to ${init_vol}%... Starting Jack"
-		jackd -R -P$JACK_PRI -d alsa -dduplex -r48000 -zs -s -i2 -o2 -n3 -p2048 &
+		nice -n-$APP_PRI jackd -R -P$JACK_PRI -d alsa -dduplex -r48000 -zs -s -i2 -o2 -n3 -p2048 &
 		jackpid=$!
-		taskset -p $((0x1<<cpu_offst)) $jackpid
 		echo "started jack on CPU $((1+cpu_offst))"
-        cpu_offst=$(((cpu_offst+1)%N_CPUS))
+		set_cpu_affinity $jackpid
 		rm /var/run/sound/jackd 2>/dev/null
 		ln -s /proc/${jackpid}/exe /var/run/sound/jackd || continue
 		start=1
@@ -228,14 +215,20 @@ while true; do
 	# check if jconvolver running
 	checkpid /var/run/sound/jconvolver /usr/bin/jconvolver || {
 		echo "Starting convolver"
-		jconvolver -s $JACKNAME /root/convolver.jconv &
+		nice -n-$APP_PRI jconvolver -s $JACKNAME /root/convolver.jconv &
 		convpid=$!
-		taskset -p $((0x1<<cpu_offst)) $convpid
 		echo "started jconvolver on CPU $((1+cpu_offst))"
-        cpu_offst=$(((cpu_offst+1)%N_CPUS))
+		set_cpu_affinity $convpid
 		rm /var/run/sound/jconvolver 2>/dev/null
 		ln -s /proc/${convpid}/exe /var/run/sound/jconvolver || continue
 		start=2
+		continue
+	}
+	
+	# create DSP alias
+	[ "$start" != "2" ] || jack_lsp -A | grep dsp || {
+		jack_alias jconvolver:in.L dsp.1 && \
+			jack_alias jconvolver:in.R dsp.2
 		continue
 	}
 	
@@ -267,6 +260,5 @@ while true; do
 		mount -a
 		pgrep mpd || /etc/init.d/mpd start
 	}
-	check_zita_ports
 	sleep 3
 done;

@@ -5,8 +5,8 @@
 #
 #              num   port name     connect to 
 # -----------------------------------------------
-/input/name     1     in.L     system:capture_1
-/input/name     2     in.R     system:capture_2
+/input/name     1     in.L
+/input/name     2     in.R
 /output/name    1     Out-1    system:playback_1        
 /output/name    2     Out-2    system:playback_2
 #

@@ -239,13 +239,12 @@ while true; do
 	}
 
 	#check that power switch has started
-	[ -z "$GPIO" ] || {
-		meterpid=`pgrep jack_meter` || {
-			echo "Starting power switch"
-			jack_meter -g $GPIO -p$GPIO_HOLD jconvolver:Out-1 jconvolver:Out-2 &
-			start=4
-			continue
-		}
+	meterpid=`pgrep jack_meter` || {
+		echo "Starting signal monitors"
+		jack_meter -p30 -P dsp.1,dsp.2 system:capture_1 system:capture_2 &
+		[ -z "$GPIO" ] || jack_meter -g $GPIO -p$GPIO_HOLD jconvolver:Out-1 jconvolver:Out-2 &
+		start=4
+		continue
 	}
 
 	# run jack event monitor in background- sending output to named pipe. wait for data on the pipe-
@@ -253,8 +252,7 @@ while true; do
 	# dbus-monitor --monitor  "type=signal,path=/org/jackaudio/Controller,interface='org.jackaudio.JackPatchbay',member=PortAppeared"
 	[ -n "$start" ] && {
 		echo "Started audio ($start) jackd($jackpid) jconvolver($convpid) n2j($zitapid)"
-		alsactl --file /root/asound.audioinjector.no.in restore
-#		alsactl --file /root/asound.audioinjector.line.in restore
+		[ -f "/root/alsa.init" ] && alsactl --file /root/alsa.init restore
 		start=
 		mount -a
 		pgrep mpd || /etc/init.d/mpd start

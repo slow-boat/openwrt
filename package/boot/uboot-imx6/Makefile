@@ -64,7 +64,6 @@ endef
 
 define U-Boot/wandboard
   NAME:=Wandboard Dual Lite/Quad/Solo
-  BUILD_DEVICES:=wandboard
   UBOOT_IMAGE:=SPL u-boot.img
   UBOOT_MAKE_FLAGS:=SPL u-boot.img
 endef

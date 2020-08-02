@@ -98,14 +98,6 @@ define Build/imx6-combined-image
 		1024
 endef
 
-define Build/imx6-wand-sdcard
-	$(Build/imx6-combined-image-prepare)
-	$(Build/imx6-combined-image)
-	dd if=$(STAGING_DIR_IMAGE)/$(UBOOT)-SPL of=$@ bs=1024 seek=1 conv=notrunc
-	dd if=$(STAGING_DIR_IMAGE)/$(UBOOT)-u-boot.img of=$@ seek=69 bs=1k conv=notrunc
-	$(Build/imx6-combined-image-clean)
-endef
-
 define Build/imx6-sdcard
 	$(Build/imx6-combined-image-prepare)
 
@@ -199,7 +191,7 @@ define Device/wandboard
   DEVICE_MODEL := Dual
   KERNEL := kernel-bin
   UBOOT := wandboard
-  BOOT_SCRIPT = ""
+  BOOT_SCRIPT = bootscript-wandboard
   DEVICE_NAME := wandboard
   DEVICE_DTS := \
 	imx6dl-wandboard \
@@ -209,7 +201,7 @@ define Device/wandboard
 	imx6dl-wandboard-revb1
   IMAGES := combined.bin sysupgrade.bin dtb
   FILESYSTEMS := squashfs
-  IMAGE/combined.bin := append-rootfs | pad-extra 128k | imx6-wand-sdcard
+  IMAGE/combined.bin := append-rootfs | pad-extra 128k | imx6-sdcard
   IMAGE/sysupgrade.bin := sysupgrade-tar | append-metadata
   IMAGE/dtb := install-dtb
 endef

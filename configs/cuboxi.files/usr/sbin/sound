@@ -3,6 +3,8 @@
 JACKNAME=default
 MIXERNAME="SoftMaster"
 INIT_VOL="/etc/.soundvolume"
+MPD_DIR="/etc/mpd"
+MPD_EXT_DATABASE="/mnt/music/.mpd/database"
 
 #GPIO to control power amplifier
 AMP_GPIO=504
@@ -293,6 +295,9 @@ while true; do
 		start=
 		mount -a
 		for cifspid in $(pgrep cifs); do chrt -fp $CIFS_PRI $cifspid; done
+		#TODO- shift this to mpd
+		mkdir -p ${MPD_DIR} 2>/dev/null
+		[ -f /etc/mpd/database ] || ln -s ${MPD_EXT_DATABASE} ${MPD_DIR}/database
 		pgrep mpd || /etc/init.d/mpd start
 	}
 	sleep 3

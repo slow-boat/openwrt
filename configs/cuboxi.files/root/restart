@@ -1,0 +1,6 @@
+#!/bin/sh
+/etc/init.d/jackd stop
+/etc/init.d/mpd stop
+pkill jackd
+sleep 2
+/etc/init.d/jackd start

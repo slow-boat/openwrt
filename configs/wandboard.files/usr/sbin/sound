@@ -12,14 +12,23 @@ AMP_GPIO_HOLD=60
 exec 1>>/tmp/sound.log
 exec 2>&1
 
+AUDIO_CHANS_IN=2
+AUDIO_CHANS_OUT=2
+AUDIO_RATE=48000
+AUDIO_PERIOD_SZ=64
+AUDIO_PERIODS=4
+
+AUDIO_BUF_SZ=$((AUDIO_PERIOD_SZ*AUDIO_PERIODS))
+
+
 # SKIP cpu detect if we don't want to assign round robin processes.
-# N_CPUS=`cat /proc/cpuinfo | awk '/^processor/{print $3}'| wc -l`
-# echo "Detected $N_CPUS CPUs"
+N_CPUS=`cat /proc/cpuinfo | awk '/^processor/{print $3}'| wc -l`
 
 # increase priority of apps by this amount
 JACK_PRI=70
 APP_PRI=5
 IRQ_PRI=95
+CIFS_PRI=50
 
 # round robin CPU affinity- supply PID
 set_cpu_affinity() {
@@ -59,6 +68,10 @@ alsa_test() {
 	wait $aplay_pid
 }
 
+# get primary soundcard name
+cardname=`head -n1 /proc/asound/cards | awk -F'[' '{print$2}' | awk -F']' '{print$1}' | sed -e 's/[[:space:]]*$//'`
+echo "Using soundcard \"$cardname\""
+
 set_asla_format() {
 	formats="S32_LE S24_3LE S16_LE"
 	for fmt in $formats; do
@@ -91,10 +104,10 @@ pcm.dmixer {
    slave.pcm "snd_card"
    slave {
       period_time 0
-      period_size 2048
-      buffer_size 8192
+      period_size $AUDIO_PERIOD_SZ
+      buffer_size $AUDIO_BUF_SZ
       format $ALSA_FORMAT
-      rate 48000
+      rate $AUDIO_RATE
    }
 
    bindings {
@@ -141,10 +154,10 @@ pcm.dsnooper {
 
    slave {
       period_time 0
-      period_size 2048
-      buffer_size 8192
+      period_size $AUDIO_PERIOD_SZ
+      buffer_size $AUDIO_BUF_SZ
       format $ALSA_FORMAT
-      rate 48000
+      rate $AUDIO_RATE
    }
 
    bindings {
@@ -201,7 +214,7 @@ while true; do
 		amixer sset $MIXERNAME $((init_vol*255/100)) || continue
 		
 		echo "Set mixer $MIXERNAME level to ${init_vol}%... Starting Jack"
-		nice -n-$APP_PRI jackd -R -P$JACK_PRI -d alsa -dduplex -r48000 -zs -s -i2 -o2 -n3 -p2048 &
+		nice -n-$APP_PRI jackd -R -P$JACK_PRI -d alsa -dduplex -r$AUDIO_RATE -zs -s -i$AUDIO_CHANS_IN -o$AUDIO_CHANS_OUT -n$AUDIO_PERIODS -p$AUDIO_PERIOD_SZ &
 		jackpid=$!
 		echo "started jack on CPU $((1+cpu_offst))"
 		set_cpu_affinity $jackpid
@@ -253,6 +266,25 @@ while true; do
 		continue
 	}
 
+	# run lirc
+	[ "$cardname" != "Pro" ] || {
+		lircpid=`pgrep lirc` || {
+			echo "Starting lirc"
+			mkdir -p /var/run/lirc 2>/dev/null
+			[ -f "/usr/bin/sh" ] || ln -s /bin/sh /usr/bin/sh
+			lircd --driver=alsa_usb --device=hw:"$cardname"
+			start=5
+			sleep 2
+			continue
+		}
+		irexecpid=`pgrep irexec` || {
+			echo "Starting irexec"
+			sh -c "export LIRC_SOCKET_PATH=/var/run/lirc/lircd.socket; irexec -d /etc/lirc/lircrc.conf"
+			start=6
+			continue
+		}
+	}
+
 	# run jack event monitor in background- sending output to named pipe. wait for data on the pipe-
 	# specifically "Client wifi-n2j registered" type events- which we will use to trigger connects
 	# dbus-monitor --monitor  "type=signal,path=/org/jackaudio/Controller,interface='org.jackaudio.JackPatchbay',member=PortAppeared"
@@ -261,6 +293,7 @@ while true; do
 		[ -f "/root/alsa.init" ] && alsactl --file /root/alsa.init restore
 		start=
 		mount -a
+		for cifspid in $(pgrep cifs); do chrt -fp $CIFS_PRI $cifspid; done
 		pgrep mpd || /etc/init.d/mpd start
 	}
 	sleep 3

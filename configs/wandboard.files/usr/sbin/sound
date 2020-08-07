@@ -4,7 +4,7 @@ JACKNAME=default
 MIXERNAME="SoftMaster"
 INIT_VOL="/etc/.soundvolume"
 MPD_DIR="/etc/mpd"
-MPD_EXT_DATABASE="/mnt/music/.mpd/database"
+MPD_EXT_DIR="/mnt/music/.mpd"
 
 #GPIO to control power amplifier
 #wandboard use GPIO_19 whitch maps to gpio101. JP-4 header pin 18. pins 17,19,20 are GND, 1,2,3,5 +5V
@@ -298,7 +298,8 @@ while true; do
 		for cifspid in $(pgrep cifs); do chrt -fp $CIFS_PRI $cifspid; done
 		#TODO- shift this to mpd
 		mkdir -p ${MPD_DIR} 2>/dev/null
-		[ -f /etc/mpd/database ] || ln -s ${MPD_EXT_DATABASE} ${MPD_DIR}/database
+		[ -f ${MPD_DIR}/database ] || ln -s ${MPD_EXT_DIR}/database ${MPD_DIR}/database
+		[ -f ${MPD_DIR}/playlists ] || ln -s ${MPD_EXT_DIR}/playlists ${MPD_DIR}/playlists
 		pgrep mpd || /etc/init.d/mpd start
 	}
 	sleep 3

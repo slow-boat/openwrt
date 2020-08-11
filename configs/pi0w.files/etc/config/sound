@@ -1,0 +1,14 @@
+config alsa
+	option chans_in 2
+	option chans_out 2
+	option rate 48000
+	option period_sz 64
+	option periods 4
+
+config rtprio
+	option jack '70'
+	option default '5'
+	option irq '95'
+	option cifs '50'
+	option affinity '1'
+

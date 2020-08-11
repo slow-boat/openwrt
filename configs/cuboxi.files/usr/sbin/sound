@@ -1,35 +1,74 @@
 #!/bin/sh
-
-JACKNAME=default
-MIXERNAME="SoftMaster"
-INIT_VOL="/etc/.soundvolume"
-MPD_DIR="/etc/mpd"
-MPD_EXT_DIR="/mnt/music/.mpd"
+exec 1>>/tmp/sound.log
+exec 2>&1
 
 #GPIO to control power amplifier
 AMP_GPIO=504
 AMP_GPIO_HOLD=60
 
-exec 1>>/tmp/sound.log
-exec 2>&1
-
 AUDIO_CHANS_IN=2
-AUDIO_CHANS_OUT=2
+AUDIO_CHANS_OUT=6
 AUDIO_RATE=48000
 AUDIO_PERIOD_SZ=64
 AUDIO_PERIODS=4
-
-AUDIO_BUF_SZ=$((AUDIO_PERIOD_SZ*AUDIO_PERIODS))
-
-
-# SKIP cpu detect if we don't want to assign round robin processes.
-N_CPUS=`cat /proc/cpuinfo | awk '/^processor/{print $3}'| wc -l`
 
 # increase priority of apps by this amount
 JACK_PRI=70
 APP_PRI=5
 IRQ_PRI=95
 CIFS_PRI=50
+
+JACKNAME=default
+MIXERNAME="SoftMaster"
+INIT_VOL="/etc/.soundvolume"
+MPD_DIR="/etc/mpd"
+MPD_EXT_DIR="/mnt/music/.mpd"
+SERVICES="mpd zita-n2j"
+
+AUDIO_BUF_SZ=$((AUDIO_PERIOD_SZ*AUDIO_PERIODS))
+
+SOUND_VAR_DIR="/var/run/sound"
+mkdir -p $SOUND_VAR_DIR
+
+thispid=`exec sh -c 'echo $PPID'`
+cardname=`head -n1 /proc/asound/cards | awk -F'[' '{print$2}' | awk -F']' '{print$1}' | sed -e 's/[[:space:]]*$//'`
+echo "Starting Sound service on soundcard \"$cardname\", pid $thispid"
+
+# SKIP cpu detect if we don't want to assign round robin processes.
+N_CPUS=`cat /proc/cpuinfo | awk '/^processor/{print $3}'| wc -l`
+
+# start or stop jack services
+service_control(){
+	local ctl="stop"
+	[ "$1" == "start" ] && ctl="start"
+	for srvc in $SERVICES; do
+		[ -n "$(pgrep $srvc)" ] && { 
+			[ "$ctl" == "start" ] && continue
+			:
+		} || [ "$ctl" == "start" ] || continue
+		echo "$ctl service $srvc"
+		/etc/init.d/$srvc $ctl
+	done
+}
+
+# recursively get list of pids backgrounded from here
+getpids() {
+	local pids
+	pids=$(pgrep -P $1)
+	echo -n $pids" "
+	for pid in $pids; do getpids $pid; done
+}
+
+cleanup() {
+	local pids
+	service_control stop
+	pids=`getpids $thispid 2>/dev/null`
+	echo "Killing spawned processes: $pids"
+	kill $pids &>/dev/null
+	exit
+}
+
+trap cleanup SIGINT SIGTERM SIGHUP SIGQUIT
 
 # round robin CPU affinity- supply PID
 set_cpu_affinity() {
@@ -49,29 +88,23 @@ for irq in $IRQS; do
 	set_cpu_affinity $irq
 done
 
-SOUND_VAR_DIR="/var/run/sound"
-
 # pid, exepath
 checkpid(){
 	local path=`readlink -f $1` && [ "$path" == "$2" ] || return 1
 }
 
-mkdir -p $SOUND_VAR_DIR
-
 ALSA_FORMAT=
 
-# arg 1 is format, arg 2 is additional option- eg device
+# arg 1 is format
+# arg 2 is additional option- eg device
+# arg 3 is output channels
 alsa_test() {
-	aplay $2 -d1 -f$1 -c2 -r48000 /dev/zero &
+	local achans=$3
+	[ -z "$achans" ] && achans=2
+	aplay $2 -s50 -f$1 -c$achans -r48000 /dev/zero &
 	aplay_pid=$!
-	sleep 2
-	pkill aplay
 	wait $aplay_pid
 }
-
-# get primary soundcard name
-cardname=`head -n1 /proc/asound/cards | awk -F'[' '{print$2}' | awk -F']' '{print$1}' | sed -e 's/[[:space:]]*$//'`
-echo "Using soundcard \"$cardname\""
 
 set_asla_format() {
 	formats="S32_LE S24_3LE S16_LE"
@@ -86,8 +119,8 @@ set_asla_format() {
 		ln -s $SOUND_VAR_DIR/asound.conf /etc/asound.conf
 		echo "Created Alsa config symlink"
 	}
-	echo "setting mixer to $ALSA_FORMAT"
-	alsa_test $ALSA_FORMAT -Dduplex
+	echo "setting mixer to $ALSA_FORMAT, $AUDIO_CHANS_OUT channels"
+	alsa_test $ALSA_FORMAT -Dduplex $AUDIO_CHANS_OUT
 }
 
 write_alsa_config() {
@@ -109,11 +142,7 @@ pcm.dmixer {
       buffer_size $AUDIO_BUF_SZ
       format $ALSA_FORMAT
       rate $AUDIO_RATE
-   }
-
-   bindings {
-      0 0
-      1 1
+      channels $AUDIO_CHANS_OUT
    }
 }
 
@@ -159,11 +188,7 @@ pcm.dsnooper {
       buffer_size $AUDIO_BUF_SZ
       format $ALSA_FORMAT
       rate $AUDIO_RATE
-   }
-
-   bindings {
-      0 0
-      1 1
+      channels $AUDIO_CHANS_IN
    }
 }
 
@@ -249,22 +274,25 @@ while true; do
 		continue
 	}
 	
-	# check if zita-n2j running
-	zitapid=`pgrep zita-n2j` || {
-		echo "Starting zita-n2j"
-		/etc/init.d/zita-n2j start
-		echo "Started..."		
-		start=3		
-		continue
-	}
-
 	#check that power switch has started
 	meterpid=`pgrep jack_meter` || {
 		echo "Starting signal monitors"
 		jack_meter -p30 -P dsp.1,dsp.2 system:capture_1 system:capture_2 &
 		[ -z "$AMP_GPIO" ] || jack_meter -g $AMP_GPIO -p$AMP_GPIO_HOLD jconvolver:Out-1 jconvolver:Out-2 &
-		start=4
+		start=3
 		continue
+	}
+
+	[ "$AUDIO_CHANS_OUT" -gt 2 ] && [ -f "/root/xover.conf" ] && {
+		checkpid /var/run/sound/zita-lrx /usr/bin/zita-lrx || {
+			nice -n-$APP_PRI /usr/bin/zita-lrx -s $JACKNAME /root/xover.conf &
+			xoverpid=$!
+			echo "started zita-lrx"
+			rm /var/run/sound/zita-lrx  2>/dev/null
+			ln -s /proc/${xoverpid}/exe /var/run/sound/zita-lrx  || continue
+			start=4
+			continue
+		}
 	}
 
 	# run lirc
@@ -293,13 +321,21 @@ while true; do
 		echo "Started audio ($start) jackd($jackpid) jconvolver($convpid) n2j($zitapid)"
 		[ -f "/root/alsa.init" ] && alsactl --file /root/alsa.init restore
 		start=
+		
+		# connect crossover
+		[ -z "$xoverpid" ] || {
+			jack_connect jconvolver:Out-1 zita-lrx:inp-1
+			jack_connect jconvolver:Out-2 zita-lrx:inp-2
+			echo "Connected crossover inputs"
+		}
+
 		mount -a
 		for cifspid in $(pgrep cifs); do chrt -fp $CIFS_PRI $cifspid; done
-		#TODO- shift this to mpd
-		mkdir -p ${MPD_DIR} 2>/dev/null
+
 		[ -f ${MPD_DIR}/database ] || ln -s ${MPD_EXT_DIR}/database ${MPD_DIR}/database
-		[ -f ${MPD_DIR}/playlists ] || ln -s ${MPD_EXT_DIR}/playlists ${MPD_DIR}/playlists
-		pgrep mpd || /etc/init.d/mpd start
+		[ -d ${MPD_DIR}/playlists ] || ln -s ${MPD_EXT_DIR}/playlists ${MPD_DIR}/playlists
+		
+		service_control start
 	}
 	sleep 3
 done;

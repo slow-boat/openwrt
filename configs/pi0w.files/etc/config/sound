@@ -12,3 +12,9 @@ config rtprio
 	option cifs '50'
 	option affinity '1'
 
+config zita-n2j
+
+config convolver
+	option gain '0.4'
+	option ch_start '0'
+

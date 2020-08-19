@@ -1,3 +1,0 @@
-config service
-	option connect "dsp.1,dsp.2"
-	option buffer "50"

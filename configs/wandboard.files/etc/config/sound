@@ -16,3 +16,10 @@ config rtprio
 config gpio
 	option amp_gpio '101'
 	option amp_hold '90'
+
+config zita-n2j
+
+config convolver
+	option gain '0.4'
+	option ch_start '0'
+

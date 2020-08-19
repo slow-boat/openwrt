@@ -16,6 +16,16 @@ config gpio
 	option amp_gpio '504'
 	option amp_hold '90'
 
-config crossover	
-	option freq '130'
-	option ch_start '2'
+#config crossover	
+#	option freq '130'		# crossover frequencies
+#	option ch_start '0'		# output channel offset to start output sequence
+#	option duplicate '1'	# bands to provide duplicated output pairs (double inputs)
+#	option mono '1'			# bands for mono output- which uses pair of output ports
+#	option balanced '1 2'	# bands for balanced output
+
+config zita-n2j
+
+config convolver
+	option gain '0.4'
+	option ch_start '0'
+

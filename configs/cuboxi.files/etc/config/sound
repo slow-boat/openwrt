@@ -4,6 +4,7 @@ config alsa
 	option rate 48000
 	option period_sz 64
 	option periods 4
+	option format "S24_3LE"	# use this output format if defined- if not supported/undefined it will scan card for next best one
 
 config rtprio
 	option jack '70'
@@ -16,16 +17,19 @@ config gpio
 	option amp_gpio '504'
 	option amp_hold '90'
 
-#config crossover	
-#	option freq '130'		# crossover frequencies
-#	option ch_start '0'		# output channel offset to start output sequence
-#	option duplicate '1'	# bands to provide duplicated output pairs (double inputs)
-#	option mono '1'			# bands for mono output- which uses pair of output ports
-#	option balanced '1 2'	# bands for balanced output
+config crossover
+	option enabled '0'		# allow to disable crossover
+	option freq '130'		# crossover frequencies
+	option ch_start '0'		# output channel offset to start output sequence
+	option duplicate '1'	# band(s) have output ports duplicated, in phase- use for two outputs per channel
+#	option balanced '1 2'	# band(s) have output ports as a balanced pair- use for bridging a stereo amp, or for balanced out.
+#	option mono '1'			# band(s) for mono output- which uses pair of output ports- can be combined with balanced to make balanced mono out
+
 
 config zita-n2j
 
 config convolver
+#	option enabled '1'		# allow to disable convolver
 	option gain '0.4'
-	option ch_start '0'
+	option ch_start '0'		# output channel offset to start output sequence- if undefined the convolver does not output to a system output port
 

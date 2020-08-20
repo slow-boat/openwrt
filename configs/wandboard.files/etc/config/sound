@@ -4,6 +4,7 @@ config alsa
 	option rate 48000
 	option period_sz 64
 	option periods 4
+	option format "S24_LE"
 
 config rtprio
 	option jack '70'
@@ -18,6 +19,9 @@ config gpio
 	option amp_hold '90'
 
 config zita-n2j
+
+config crossover
+	option enabled '0'
 
 config convolver
 	option gain '0.4'

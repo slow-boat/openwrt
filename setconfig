@@ -1,0 +1,6 @@
+#!/bin/sh
+rm .config &>/dev/null
+rm files &>/dev/null
+ln -s configs/${1}.config .config &>/dev/null && ln -s configs/${1}.files files &>/dev/null && echo "set config to $1" && return
+echo failed to set config
+

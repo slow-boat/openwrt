@@ -7,11 +7,6 @@ config alsa
 	option format "S16_LE"
 
 config rtprio
-	option jack '70'
-	option default '5'
-	option irq '95'
-	option cifs '50'
-	option affinity '1'
 
 # wandboard use GPIO_19 which maps to gpio101. JP-4 header pin 18. pins 17,19,20 are GND, 1,2,3,5 +5V
 config gpio
@@ -21,9 +16,8 @@ config gpio
 config zita-n2j
 
 config crossover
-	option enabled '0'
 
 config convolver
+	option enabled '1'
 	option gain '0.4'
-	option ch_start '0'
 

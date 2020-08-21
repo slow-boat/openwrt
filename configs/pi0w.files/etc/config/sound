@@ -4,17 +4,17 @@ config alsa
 	option rate 48000
 	option period_sz 64
 	option periods 4
+	option format "S32_LE"
 
 config rtprio
-	option jack '70'
-	option default '5'
-	option irq '95'
-	option cifs '50'
-	option affinity '1'
+
+config gpio
 
 config zita-n2j
 
+config crossover
+
 config convolver
+	option enabled '1'
 	option gain '0.4'
-	option ch_start '0'
 

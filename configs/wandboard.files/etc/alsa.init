@@ -122,7 +122,7 @@ state.imx6wandboardsg {
 	control.11 {
 		iface MIXER
 		name 'Lineout Playback Switch'
-		value true
+		value false
 		comment {
 			access 'read write'
 			type BOOLEAN
@@ -351,8 +351,8 @@ state.imx6wandboardsg {
 	control.29 {
 		iface MIXER
 		name SoftMaster
-		value.0 109
-		value.1 109
+		value.0 36
+		value.1 36
 		comment {
 			access 'read write user'
 			type INTEGER
@@ -361,8 +361,8 @@ state.imx6wandboardsg {
 			tlv '0000000100000008ffffec1400000014'
 			dbmin -5100
 			dbmax 0
-			dbvalue.0 -2920
-			dbvalue.1 -2920
+			dbvalue.0 -4380
+			dbvalue.1 -4380
 		}
 	}
 }

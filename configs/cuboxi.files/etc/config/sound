@@ -1,10 +1,10 @@
 config alsa
-	option chans_in 2
-	option chans_out 6
-	option rate 48000
-	option period_sz 64
-	option periods 4
-	option format "S24_3LE"
+	option chans_in '2'
+	option chans_out '6'
+	option rate '48000'
+	option period_sz '64'
+	option periods '4'
+	option format 'S24_3LE'
 
 config rtprio
 
@@ -15,8 +15,14 @@ config gpio
 config zita-n2j
 
 config crossover
+	option ch_start '2 0'
+	option duplicate '1'
+	option freq '120'
+	option gain '-18 3'
+	option enabled '1'
 
 config convolver
-	option enabled '1'
 	option gain '0.4'
-
+	option file '/etc/sound/impulse48.wav'
+	option ch_start '-1'
+	option enabled '1'

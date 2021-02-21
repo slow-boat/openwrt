@@ -178,6 +178,15 @@ define Package/cfdisk/description
  cfdisk is a curses-based program for partitioning any hard disk drive
 endef
 
+define Package/chrt
+$(call Package/util-linux/Default)
+  TITLE:=change realtime parameters
+endef
+
+define Package/chrt/description
+ chrt allows realtime scheduler tuning for processes
+endef
+
 define Package/dmesg
 $(call Package/util-linux/Default)
   TITLE:=print or control the kernel ring buffer
@@ -630,6 +639,11 @@ define Package/cfdisk/install
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/cfdisk $(1)/usr/sbin/
 endef
 
+define Package/chrt/install
+	$(INSTALL_DIR) $(1)/usr/bin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/chrt $(1)/usr/bin/
+endef
+
 define Package/dmesg/install
 	$(INSTALL_DIR) $(1)/usr/bin
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/dmesg $(1)/usr/bin/
@@ -802,6 +816,7 @@ $(eval $(call BuildPackage,blkid))
 $(eval $(call BuildPackage,blockdev))
 $(eval $(call BuildPackage,cal))
 $(eval $(call BuildPackage,cfdisk))
+$(eval $(call BuildPackage,chrt))
 $(eval $(call BuildPackage,dmesg))
 $(eval $(call BuildPackage,eject))
 $(eval $(call BuildPackage,fdisk))

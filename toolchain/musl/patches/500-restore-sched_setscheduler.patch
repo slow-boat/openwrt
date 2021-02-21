@@ -1,0 +1,15 @@
+Index: musl-1.1.19/src/sched/sched_setscheduler.c
+===================================================================
+--- musl-1.1.19.orig/src/sched/sched_setscheduler.c
++++ musl-1.1.19/src/sched/sched_setscheduler.c
+@@ -4,5 +4,9 @@
+ 
+ int sched_setscheduler(pid_t pid, int sched, const struct sched_param *param)
+ {
+-	return __syscall_ret(-ENOSYS);
++	if(!param){
++		static const struct sched_param def;
++		return syscall(SYS_sched_setscheduler, pid, sched, &def);
++	}
++	return syscall(SYS_sched_setscheduler, pid, sched, param);
+ }

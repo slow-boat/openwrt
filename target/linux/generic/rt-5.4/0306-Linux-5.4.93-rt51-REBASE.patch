@@ -1,0 +1,19 @@
+From 5c0b0c2fd856778a04ebb24e8d0d3df0314d868f Mon Sep 17 00:00:00 2001
+From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Date: Mon, 21 Dec 2020 14:48:05 -0500
+Subject: [PATCH 306/306] Linux 5.4.93-rt51 REBASE
+
+---
+ localversion-rt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/localversion-rt b/localversion-rt
+index 483ad771f201..75493460c41f 100644
+--- a/localversion-rt
++++ b/localversion-rt
+@@ -1 +1 @@
+--rt19
++-rt51
+-- 
+2.29.2
+

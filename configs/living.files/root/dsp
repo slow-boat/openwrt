@@ -1,0 +1,21 @@
+#!/bin/sh
+
+[ "$1" == "0" ] && { 
+	echo Disabling DSP
+	jack_disconnect zita-n2j.lan:out_1 jconvolver:in.L
+	jack_disconnect zita-n2j.lan:out_2 jconvolver:in.R
+	jack_connect zita-n2j.lan:out_1 system:playback_1
+	jack_connect zita-n2j.lan:out_2 system:playback_2
+	jack_connect zita-n2j.lan:out_1 meter:in
+	jack_connect zita-n2j.lan:out_2 meter:in
+	exit 0
+}
+
+echo enabling DSP
+jack_disconnect zita-n2j.lan:out_1 system:playback_1
+jack_disconnect zita-n2j.lan:out_2 system:playback_2
+jack_disconnect zita-n2j.lan:out_1 meter:in
+jack_disconnect zita-n2j.lan:out_2 meter:in
+jack_connect zita-n2j.lan:out_1 jconvolver:in.L
+jack_connect zita-n2j.lan:out_2 jconvolver:in.R
+

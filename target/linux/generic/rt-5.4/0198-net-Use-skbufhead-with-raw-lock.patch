@@ -1,4 +1,4 @@
-From 7a1641e0c3116f0c8a1bd70bf4c130c7fe9bd5da Mon Sep 17 00:00:00 2001
+From 290212d46317757d58e09983bd82787e929d4628 Mon Sep 17 00:00:00 2001
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Tue, 12 Jul 2011 15:38:34 +0200
 Subject: [PATCH 198/306] net: Use skbufhead with raw lock
@@ -15,7 +15,7 @@ Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
  3 files changed, 28 insertions(+), 6 deletions(-)
 
 diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
-index ec3081ab04c0..ccea330258b5 100644
+index 3e0692fd6282..20378622b4d3 100644
 --- a/include/linux/netdevice.h
 +++ b/include/linux/netdevice.h
 @@ -3018,6 +3018,7 @@ struct softnet_data {
@@ -52,7 +52,7 @@ index 6493c98c8631..86389623bb4c 100644
  		struct lock_class_key *class)
  {
 diff --git a/net/core/dev.c b/net/core/dev.c
-index 956136372f05..6e026eb2b4be 100644
+index 416beb05a23e..a72636c697c1 100644
 --- a/net/core/dev.c
 +++ b/net/core/dev.c
 @@ -218,14 +218,14 @@ static inline struct hlist_head *dev_index_hash(struct net *net, int ifindex)
@@ -72,7 +72,7 @@ index 956136372f05..6e026eb2b4be 100644
  #endif
  }
  
-@@ -5866,7 +5866,9 @@ static int process_backlog(struct napi_struct *napi, int quota)
+@@ -5867,7 +5867,9 @@ static int process_backlog(struct napi_struct *napi, int quota)
  	while (again) {
  		struct sk_buff *skb;
  
@@ -82,7 +82,7 @@ index 956136372f05..6e026eb2b4be 100644
  			rcu_read_lock();
  			__netif_receive_skb(skb);
  			rcu_read_unlock();
-@@ -5874,9 +5876,9 @@ static int process_backlog(struct napi_struct *napi, int quota)
+@@ -5875,9 +5877,9 @@ static int process_backlog(struct napi_struct *napi, int quota)
  			if (++work >= quota)
  				return work;
  
@@ -93,7 +93,7 @@ index 956136372f05..6e026eb2b4be 100644
  		rps_lock(sd);
  		if (skb_queue_empty(&sd->input_pkt_queue)) {
  			/*
-@@ -6359,13 +6361,21 @@ static __latent_entropy void net_rx_action(struct softirq_action *h)
+@@ -6360,13 +6362,21 @@ static __latent_entropy void net_rx_action(struct softirq_action *h)
  	unsigned long time_limit = jiffies +
  		usecs_to_jiffies(netdev_budget_usecs);
  	int budget = netdev_budget;
@@ -115,7 +115,7 @@ index 956136372f05..6e026eb2b4be 100644
  	for (;;) {
  		struct napi_struct *n;
  
-@@ -9896,10 +9906,13 @@ static int dev_cpu_dead(unsigned int oldcpu)
+@@ -9897,10 +9907,13 @@ static int dev_cpu_dead(unsigned int oldcpu)
  		netif_rx_ni(skb);
  		input_queue_head_incr(oldsd);
  	}
@@ -130,7 +130,7 @@ index 956136372f05..6e026eb2b4be 100644
  
  	return 0;
  }
-@@ -10210,8 +10223,9 @@ static int __init net_dev_init(void)
+@@ -10211,8 +10224,9 @@ static int __init net_dev_init(void)
  
  		INIT_WORK(flush, flush_backlog);
  
@@ -143,5 +143,5 @@ index 956136372f05..6e026eb2b4be 100644
  		skb_queue_head_init(&sd->xfrm_backlog);
  #endif
 -- 
-2.29.2
+2.30.0
 

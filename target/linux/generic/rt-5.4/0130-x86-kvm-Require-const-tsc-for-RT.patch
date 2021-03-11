@@ -1,4 +1,4 @@
-From 79aa2b93315e54a456bd89f82c6bab4d9a2e8841 Mon Sep 17 00:00:00 2001
+From 6e6ed640da3a232e3ff1a19f845cdd76f14090ef Mon Sep 17 00:00:00 2001
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Sun, 6 Nov 2011 12:26:18 +0100
 Subject: [PATCH 130/306] x86: kvm Require const tsc for RT
@@ -14,10 +14,10 @@ Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
  1 file changed, 8 insertions(+)
 
 diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 72990c3c6faf..a00ae9125b6b 100644
+index 153659e8f403..55f8ae7bbda9 100644
 --- a/arch/x86/kvm/x86.c
 +++ b/arch/x86/kvm/x86.c
-@@ -7286,6 +7286,14 @@ int kvm_arch_init(void *opaque)
+@@ -7291,6 +7291,14 @@ int kvm_arch_init(void *opaque)
  		goto out;
  	}
  
@@ -33,5 +33,5 @@ index 72990c3c6faf..a00ae9125b6b 100644
  	x86_fpu_cache = kmem_cache_create("x86_fpu", sizeof(struct fpu),
  					  __alignof__(struct fpu), SLAB_ACCOUNT,
 -- 
-2.29.2
+2.30.0
 

@@ -1,4 +1,4 @@
-From eb302d6b3ea48de0210e0576260c811497280172 Mon Sep 17 00:00:00 2001
+From 409f9c698a2bbdf16a4de0cd011e9a62bfacf049 Mon Sep 17 00:00:00 2001
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Thu, 16 Dec 2010 14:25:18 +0100
 Subject: [PATCH 206/306] x86: stackprotector: Avoid random pool on rt
@@ -46,5 +46,5 @@ index 9804a7957f4e..afc3d1e17841 100644
  	canary += tsc + (tsc << 32UL);
  	canary &= CANARY_MASK;
 -- 
-2.29.2
+2.30.0
 

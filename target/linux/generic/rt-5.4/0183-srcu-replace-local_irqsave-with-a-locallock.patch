@@ -1,4 +1,4 @@
-From 2d0a4d5ff8e424026645f82cc13f456b2602e62f Mon Sep 17 00:00:00 2001
+From 28a806f7fcb3aebd4d34fb8768ef3cbbc52d3d9b Mon Sep 17 00:00:00 2001
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Thu, 12 Oct 2017 18:37:12 +0200
 Subject: [PATCH 183/306] srcu: replace local_irqsave() with a locallock
@@ -71,5 +71,5 @@ index 21acdff3bd27..331667d72711 100644
  		srcu_funnel_gp_start(ssp, sdp, s, do_norm);
  	else if (needexp)
 -- 
-2.29.2
+2.30.0
 

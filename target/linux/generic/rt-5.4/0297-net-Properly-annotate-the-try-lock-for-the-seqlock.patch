@@ -1,4 +1,4 @@
-From 4173572e830a5d037308d7d717798c1eb7f4f4eb Mon Sep 17 00:00:00 2001
+From 9b91aa43fee476b73b5ee5c9adebb44bef33e417 Mon Sep 17 00:00:00 2001
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Tue, 8 Sep 2020 16:57:11 +0200
 Subject: [PATCH 297/306] net: Properly annotate the try-lock for the seqlock
@@ -44,7 +44,7 @@ index e5207897c33e..f390293974ea 100644
  {
  	__raw_write_seqcount_end(&sl->seqcount);
 diff --git a/include/net/sch_generic.h b/include/net/sch_generic.h
-index e6afb4b9cede..112d2dca8b08 100644
+index d10477f0e628..25c2ec348d22 100644
 --- a/include/net/sch_generic.h
 +++ b/include/net/sch_generic.h
 @@ -168,8 +168,16 @@ static inline bool qdisc_run_begin(struct Qdisc *qdisc)
@@ -66,5 +66,5 @@ index e6afb4b9cede..112d2dca8b08 100644
  #else
  	/* Variant of write_seqcount_begin() telling lockdep a trylock
 -- 
-2.29.2
+2.30.0
 

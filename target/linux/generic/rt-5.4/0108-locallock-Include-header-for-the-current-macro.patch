@@ -1,4 +1,4 @@
-From 8e2fa7b5ac165c17a563a6e6431a225ca992d96d Mon Sep 17 00:00:00 2001
+From b7eef629299a217370467c49d03d55541f72dc75 Mon Sep 17 00:00:00 2001
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Tue, 4 Feb 2020 13:29:50 +0100
 Subject: [PATCH 108/306] locallock: Include header for the `current' macro
@@ -24,5 +24,5 @@ index 05a15110c8aa..9b6b4def52d4 100644
  #ifdef CONFIG_PREEMPT_RT
  
 -- 
-2.29.2
+2.30.0
 

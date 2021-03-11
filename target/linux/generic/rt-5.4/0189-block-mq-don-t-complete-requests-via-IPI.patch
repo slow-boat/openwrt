@@ -1,4 +1,4 @@
-From 5f5923e1a6c2a0f88b0008386fcab72fd63c32ca Mon Sep 17 00:00:00 2001
+From 06fd59377203bdf83cb33e905df207404227fc99 Mon Sep 17 00:00:00 2001
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Thu, 29 Jan 2015 15:10:08 +0100
 Subject: [PATCH 189/306] block/mq: don't complete requests via IPI
@@ -33,5 +33,5 @@ index 2009713d374c..c34b3581af48 100644
  	if (cpu != ctx->cpu && !shared && cpu_online(ctx->cpu)) {
  		rq->csd.func = __blk_mq_complete_request_remote;
 -- 
-2.29.2
+2.30.0
 

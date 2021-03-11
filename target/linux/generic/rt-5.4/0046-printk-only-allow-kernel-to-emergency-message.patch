@@ -1,4 +1,4 @@
-From ca88a36ca937a3258518175473db563bff757ad0 Mon Sep 17 00:00:00 2001
+From df18ef81c1610b1aeb0ebc4f51eaea86ae3b7713 Mon Sep 17 00:00:00 2001
 From: John Ogness <john.ogness@linutronix.de>
 Date: Sun, 17 Feb 2019 03:11:20 +0100
 Subject: [PATCH 046/306] printk: only allow kernel to emergency message
@@ -69,5 +69,5 @@ index 60bd3b644bdc..0efce0c5715f 100644
  			printk_delay(msg->level);
  		console_unlock();
 -- 
-2.29.2
+2.30.0
 

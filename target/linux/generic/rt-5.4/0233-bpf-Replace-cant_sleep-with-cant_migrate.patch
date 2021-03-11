@@ -1,4 +1,4 @@
-From a9509c871023becf6c0e02b349074b4f27f3b800 Mon Sep 17 00:00:00 2001
+From 36fad9962a9e6ebe52f3d817e4f94451bebf7a2d Mon Sep 17 00:00:00 2001
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Mon, 24 Feb 2020 15:01:42 +0100
 Subject: [PATCH 233/306] bpf: Replace cant_sleep() with cant_migrate()
@@ -20,7 +20,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/include/linux/filter.h b/include/linux/filter.h
-index 5ace8b67e183..f2da788a8fc7 100644
+index 8550fb37f8aa..8eb5ba79422c 100644
 --- a/include/linux/filter.h
 +++ b/include/linux/filter.h
 @@ -555,7 +555,7 @@ DECLARE_STATIC_KEY_FALSE(bpf_stats_enabled_key);
@@ -33,5 +33,5 @@ index 5ace8b67e183..f2da788a8fc7 100644
  		struct bpf_prog_stats *stats;			\
  		u64 start = sched_clock();			\
 -- 
-2.29.2
+2.30.0
 

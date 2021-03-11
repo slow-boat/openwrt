@@ -1,4 +1,4 @@
-From 926e6f8cef22dd5464e670d6674e7a31f4cf574c Mon Sep 17 00:00:00 2001
+From 6070dfacb1204f61c1ff548c8d347523bb77cb89 Mon Sep 17 00:00:00 2001
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Wed, 8 Jul 2015 17:14:48 +0200
 Subject: [PATCH 256/306] jump-label: disable if stop_machine() is used
@@ -37,5 +37,5 @@ index a8323d9f999e..339da288c66a 100644
  	select HAVE_ARCH_MMAP_RND_BITS if MMU
  	select HAVE_ARCH_SECCOMP_FILTER if AEABI && !OABI_COMPAT
 -- 
-2.29.2
+2.30.0
 

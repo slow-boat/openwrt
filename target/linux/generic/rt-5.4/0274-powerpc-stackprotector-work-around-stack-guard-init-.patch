@@ -1,4 +1,4 @@
-From db830767ab6a91756cd2d97df2bc9d0442780efd Mon Sep 17 00:00:00 2001
+From 130ca5f6f436ce746ee814561266f4df52146110 Mon Sep 17 00:00:00 2001
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Tue, 26 Mar 2019 18:31:29 +0100
 Subject: [PATCH 274/306] powerpc/stackprotector: work around stack-guard init
@@ -31,5 +31,5 @@ index 1c8460e23583..b1653c160bab 100644
  	canary ^= LINUX_VERSION_CODE;
  	canary &= CANARY_MASK;
 -- 
-2.29.2
+2.30.0
 

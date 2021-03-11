@@ -1,4 +1,4 @@
-From 49c4a7eaf41a2e5b5bea18cf0ecd11902b37e270 Mon Sep 17 00:00:00 2001
+From add08316bcba2013aea3b29bbb9371ecb2f3b4bd Mon Sep 17 00:00:00 2001
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Fri, 16 Jun 2017 19:03:16 +0200
 Subject: [PATCH 147/306] net/core: use local_bh_disable() in netif_rx_ni()
@@ -18,7 +18,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  1 file changed, 2 insertions(+), 4 deletions(-)
 
 diff --git a/net/core/dev.c b/net/core/dev.c
-index 9e5ab573c9ad..956136372f05 100644
+index 17f86f1ba20e..416beb05a23e 100644
 --- a/net/core/dev.c
 +++ b/net/core/dev.c
 @@ -4466,11 +4466,9 @@ int netif_rx_ni(struct sk_buff *skb)
@@ -36,5 +36,5 @@ index 9e5ab573c9ad..956136372f05 100644
  
  	return err;
 -- 
-2.29.2
+2.30.0
 

@@ -1,4 +1,4 @@
-From 07f73af677ff9e3fc228ad4e595260096ddde3a2 Mon Sep 17 00:00:00 2001
+From 9b787a40d3a8af3001318895bcdac5d06e1b9d75 Mon Sep 17 00:00:00 2001
 From: John Ogness <john.ogness@linutronix.de>
 Date: Tue, 12 Feb 2019 15:29:50 +0100
 Subject: [PATCH 028/306] printk: minimize console locking implementation
@@ -331,5 +331,5 @@ index 0f88dab9615f..2c85d6d1b60e 100644
  EXPORT_SYMBOL(console_unlock);
  
 -- 
-2.29.2
+2.30.0
 

@@ -1,4 +1,4 @@
-From 170f29ea117db1a2968e4065724c0d0622120360 Mon Sep 17 00:00:00 2001
+From 934efe2320686ef8f7d6a231a9bb23a0ad474c4e Mon Sep 17 00:00:00 2001
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Fri, 16 Aug 2019 12:49:36 +0200
 Subject: [PATCH 080/306] cgroup: Acquire cgroup_rstat_lock with enabled
@@ -74,5 +74,5 @@ index 0dc835bead08..49315054a1bc 100644
  
  int cgroup_rstat_init(struct cgroup *cgrp)
 -- 
-2.29.2
+2.30.0
 

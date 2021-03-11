@@ -1,4 +1,4 @@
-From 5941657d33108e42a34a274f48d29b415a9119c7 Mon Sep 17 00:00:00 2001
+From 6a6f08dc3ce7e66f9b3fb0c341f473ab641799c5 Mon Sep 17 00:00:00 2001
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Mon, 24 Feb 2020 19:41:53 +0100
 Subject: [PATCH 232/306] bpf: Provide bpf_prog_run_pin_on_cpu() helper
@@ -31,7 +31,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  1 file changed, 22 insertions(+)
 
 diff --git a/include/linux/filter.h b/include/linux/filter.h
-index 79830bc9e45c..5ace8b67e183 100644
+index c53e2fe3c8f7..8550fb37f8aa 100644
 --- a/include/linux/filter.h
 +++ b/include/linux/filter.h
 @@ -570,6 +570,28 @@ DECLARE_STATIC_KEY_FALSE(bpf_stats_enabled_key);
@@ -64,5 +64,5 @@ index 79830bc9e45c..5ace8b67e183 100644
  
  struct bpf_skb_data_end {
 -- 
-2.29.2
+2.30.0
 

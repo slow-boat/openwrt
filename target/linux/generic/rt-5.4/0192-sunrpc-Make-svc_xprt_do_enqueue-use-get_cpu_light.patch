@@ -1,4 +1,4 @@
-From 318cba27145a68e703bdfcacf175814928c255df Mon Sep 17 00:00:00 2001
+From 569a383f9078608d94b28762af1545e875e1124a Mon Sep 17 00:00:00 2001
 From: Mike Galbraith <umgwanakikbuti@gmail.com>
 Date: Wed, 18 Feb 2015 16:05:28 +0100
 Subject: [PATCH 192/306] sunrpc: Make svc_xprt_do_enqueue() use
@@ -56,5 +56,5 @@ index fe4cd0b4c412..0007698d21f8 100644
  }
  EXPORT_SYMBOL_GPL(svc_xprt_do_enqueue);
 -- 
-2.29.2
+2.30.0
 

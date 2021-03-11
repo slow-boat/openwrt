@@ -1,4 +1,4 @@
-From 7e0e9c8367e8990655bd9c983577e99dff671536 Mon Sep 17 00:00:00 2001
+From 68c81d247391d5ce6fa9511e1773523f27750ab6 Mon Sep 17 00:00:00 2001
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Fri, 26 Oct 2012 18:50:54 +0100
 Subject: [PATCH 249/306] sched: Add support for lazy preemption
@@ -391,7 +391,7 @@ index 8b3ba65eac82..8ae6c9365a47 100644
  }
  EXPORT_SYMBOL(migrate_enable);
 diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 3dd7c10d6a58..fcfc51882976 100644
+index 611adca1e6d0..2388dfd52a4c 100644
 --- a/kernel/sched/fair.c
 +++ b/kernel/sched/fair.c
 @@ -4134,7 +4134,7 @@ check_preempt_tick(struct cfs_rq *cfs_rq, struct sched_entity *curr)
@@ -501,7 +501,7 @@ index 99d8b33ccddd..3c8b10b91181 100644
  extern void init_rt_bandwidth(struct rt_bandwidth *rt_b, u64 period, u64 runtime);
  
 diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index bffc8476ccb9..db090b4ded5f 100644
+index 32e8eadfe733..bd23f6ef7edc 100644
 --- a/kernel/trace/trace.c
 +++ b/kernel/trace/trace.c
 @@ -2344,6 +2344,7 @@ tracing_generic_entry_update(struct trace_entry *entry, unsigned short type,
@@ -622,5 +622,5 @@ index c02fc0082f68..8d357f519767 100644
  		trace_seq_printf(s, "%x", entry->migrate_disable);
  	else
 -- 
-2.29.2
+2.30.0
 

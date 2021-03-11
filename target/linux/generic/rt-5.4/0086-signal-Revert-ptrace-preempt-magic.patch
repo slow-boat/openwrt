@@ -1,4 +1,4 @@
-From d2d94dd994d0cd5e400ef4b3ad07922c1b26485c Mon Sep 17 00:00:00 2001
+From 1b03e69be371bd255ca49692a9e9fe4828dcb909 Mon Sep 17 00:00:00 2001
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Wed, 21 Sep 2011 19:57:12 +0200
 Subject: [PATCH 086/306] signal: Revert ptrace preempt magic
@@ -34,5 +34,5 @@ index 8c97fc72d78b..37423904afd5 100644
  		cgroup_leave_frozen(true);
  	} else {
 -- 
-2.29.2
+2.30.0
 

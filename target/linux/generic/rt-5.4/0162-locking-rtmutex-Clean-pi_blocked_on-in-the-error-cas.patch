@@ -1,4 +1,4 @@
-From db1b0494b216022afa48a1c15f80eab49e611712 Mon Sep 17 00:00:00 2001
+From 215c0dc0137c04156564e11584fab3e3414512f8 Mon Sep 17 00:00:00 2001
 From: Peter Zijlstra <peterz@infradead.org>
 Date: Mon, 30 Sep 2019 18:15:44 +0200
 Subject: [PATCH 162/306] locking/rtmutex: Clean ->pi_blocked_on in the error
@@ -19,10 +19,10 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  1 file changed, 25 insertions(+), 18 deletions(-)
 
 diff --git a/kernel/locking/rtmutex.c b/kernel/locking/rtmutex.c
-index a7641a8c273f..c60671436f4c 100644
+index 77234d2e516c..c6b4c7275bd1 100644
 --- a/kernel/locking/rtmutex.c
 +++ b/kernel/locking/rtmutex.c
-@@ -2137,6 +2137,26 @@ void rt_mutex_proxy_unlock(struct rt_mutex *lock,
+@@ -2136,6 +2136,26 @@ void rt_mutex_proxy_unlock(struct rt_mutex *lock)
  	rt_mutex_set_owner(lock, NULL);
  }
  
@@ -49,7 +49,7 @@ index a7641a8c273f..c60671436f4c 100644
  /**
   * __rt_mutex_start_proxy_lock() - Start lock acquisition for another task
   * @lock:		the rt_mutex to take
-@@ -2209,6 +2229,9 @@ int __rt_mutex_start_proxy_lock(struct rt_mutex *lock,
+@@ -2208,6 +2228,9 @@ int __rt_mutex_start_proxy_lock(struct rt_mutex *lock,
  		ret = 0;
  	}
  
@@ -59,7 +59,7 @@ index a7641a8c273f..c60671436f4c 100644
  	debug_rt_mutex_print_deadlock(waiter);
  
  	return ret;
-@@ -2289,7 +2312,6 @@ int rt_mutex_wait_proxy_lock(struct rt_mutex *lock,
+@@ -2288,7 +2311,6 @@ int rt_mutex_wait_proxy_lock(struct rt_mutex *lock,
  			       struct hrtimer_sleeper *to,
  			       struct rt_mutex_waiter *waiter)
  {
@@ -67,7 +67,7 @@ index a7641a8c273f..c60671436f4c 100644
  	int ret;
  
  	raw_spin_lock_irq(&lock->wait_lock);
-@@ -2301,23 +2323,8 @@ int rt_mutex_wait_proxy_lock(struct rt_mutex *lock,
+@@ -2300,23 +2322,8 @@ int rt_mutex_wait_proxy_lock(struct rt_mutex *lock,
  	 * have to fix that up.
  	 */
  	fixup_rt_mutex_waiters(lock);
@@ -94,5 +94,5 @@ index a7641a8c273f..c60671436f4c 100644
  	raw_spin_unlock_irq(&lock->wait_lock);
  
 -- 
-2.29.2
+2.30.0
 

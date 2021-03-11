@@ -1,4 +1,4 @@
-From 15d0bb070f5eb7201c2eb947fb585020342f81f6 Mon Sep 17 00:00:00 2001
+From a80e16e335e17ae419275a4353faa715ac78e52e Mon Sep 17 00:00:00 2001
 From: Ingo Molnar <mingo@elte.hu>
 Date: Fri, 3 Jul 2009 08:29:51 -0500
 Subject: [PATCH 116/306] mm/swap: Convert to percpu locked
@@ -36,10 +36,10 @@ index 063c0c1e112b..1ddf6a825468 100644
  extern void lru_cache_add_anon(struct page *page);
  extern void lru_cache_add_file(struct page *page);
 diff --git a/mm/compaction.c b/mm/compaction.c
-index c4e69494100c..903aea964dcf 100644
+index 7281538bf058..a2d22fd666f9 100644
 --- a/mm/compaction.c
 +++ b/mm/compaction.c
-@@ -2244,10 +2244,12 @@ compact_zone(struct compact_control *cc, struct capture_control *capc)
+@@ -2242,10 +2242,12 @@ compact_zone(struct compact_control *cc, struct capture_control *capc)
  				block_start_pfn(cc->migrate_pfn, cc->order);
  
  			if (last_migrated_pfn < current_block_start) {
@@ -206,5 +206,5 @@ index 38c3fa4308e2..dc1d98b09c89 100644
  
  #ifdef CONFIG_SMP
 -- 
-2.29.2
+2.30.0
 

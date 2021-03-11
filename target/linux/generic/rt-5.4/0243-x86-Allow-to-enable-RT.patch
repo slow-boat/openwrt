@@ -1,4 +1,4 @@
-From 3868dc007d24bcc52cf71020d0e99dfab8cc763d Mon Sep 17 00:00:00 2001
+From b0d3737ef7d8c9d5bdd0340b7697c6d3c8045b77 Mon Sep 17 00:00:00 2001
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Wed, 7 Aug 2019 18:15:38 +0200
 Subject: [PATCH 243/306] x86: Allow to enable RT
@@ -23,5 +23,5 @@ index 42d8027526e8..4890ac14e480 100644
  	select HAVE_ARCH_SOFT_DIRTY
  	select MODULES_USE_ELF_RELA
 -- 
-2.29.2
+2.30.0
 

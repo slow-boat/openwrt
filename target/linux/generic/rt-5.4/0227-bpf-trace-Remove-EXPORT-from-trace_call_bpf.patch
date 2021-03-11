@@ -1,4 +1,4 @@
-From b60bfe1353292e3651a026feb436b2bc7e44fa0f Mon Sep 17 00:00:00 2001
+From 27b762072a065893be5dcf984a4213a7734a35c5 Mon Sep 17 00:00:00 2001
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Mon, 24 Feb 2020 15:01:36 +0100
 Subject: [PATCH 227/306] bpf/trace: Remove EXPORT from trace_call_bpf()
@@ -24,5 +24,5 @@ index fc626b3b5612..5e06f754f82c 100644
  #ifdef CONFIG_BPF_KPROBE_OVERRIDE
  BPF_CALL_2(bpf_override_return, struct pt_regs *, regs, unsigned long, rc)
 -- 
-2.29.2
+2.30.0
 

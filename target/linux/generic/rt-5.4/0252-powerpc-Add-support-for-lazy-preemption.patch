@@ -1,4 +1,4 @@
-From 99d4a3cb05ee9a8af9bee00f7c59ec39d3c2f539 Mon Sep 17 00:00:00 2001
+From c1c0c14965ed4604557a32666d40a3b8f681acd7 Mon Sep 17 00:00:00 2001
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Thu, 1 Nov 2012 10:14:11 +0100
 Subject: [PATCH 252/306] powerpc: Add support for lazy preemption
@@ -15,7 +15,7 @@ Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
  5 files changed, 47 insertions(+), 18 deletions(-)
 
 diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
-index fa32dc9a265b..2d168a48f57e 100644
+index 58eea75c4b18..a4afe04ba196 100644
 --- a/arch/powerpc/Kconfig
 +++ b/arch/powerpc/Kconfig
 @@ -222,6 +222,7 @@ config PPC
@@ -97,10 +97,10 @@ index 5c0a1e17219b..b28cd3acd674 100644
  #ifdef CONFIG_PPC64
  	OFFSET(DCACHEL1BLOCKSIZE, ppc64_caches, l1d.block_size);
 diff --git a/arch/powerpc/kernel/entry_32.S b/arch/powerpc/kernel/entry_32.S
-index 21e401aaa6e3..b847bcd8c49f 100644
+index 73debb136c1a..1fb0bf3a4132 100644
 --- a/arch/powerpc/kernel/entry_32.S
 +++ b/arch/powerpc/kernel/entry_32.S
-@@ -401,7 +401,9 @@ ret_from_syscall:
+@@ -404,7 +404,9 @@ ret_from_syscall:
  	MTMSRD(r10)
  	lwz	r9,TI_FLAGS(r2)
  	li	r8,-MAX_ERRNO
@@ -111,7 +111,7 @@ index 21e401aaa6e3..b847bcd8c49f 100644
  	bne-	syscall_exit_work
  	cmplw	0,r3,r8
  	blt+	syscall_exit_cont
-@@ -516,13 +518,13 @@ syscall_dotrace:
+@@ -519,13 +521,13 @@ syscall_dotrace:
  	b	syscall_dotrace_cont
  
  syscall_exit_work:
@@ -127,7 +127,7 @@ index 21e401aaa6e3..b847bcd8c49f 100644
  	bne-	1f
  	lwz	r11,_CCR(r1)			/* Load CR */
  	neg	r3,r3
-@@ -531,12 +533,12 @@ syscall_exit_work:
+@@ -534,12 +536,12 @@ syscall_exit_work:
  
  1:	stw	r6,RESULT(r1)	/* Save result */
  	stw	r3,GPR3(r1)	/* Update return value */
@@ -142,7 +142,7 @@ index 21e401aaa6e3..b847bcd8c49f 100644
  	addi	r12,r2,TI_FLAGS
  3:	lwarx	r8,0,r12
  	andc	r8,r8,r11
-@@ -904,7 +906,14 @@ resume_kernel:
+@@ -907,7 +909,14 @@ resume_kernel:
  	cmpwi	0,r0,0		/* if non-zero, just restore regs and return */
  	bne	restore_kuap
  	andi.	r8,r8,_TIF_NEED_RESCHED
@@ -157,7 +157,7 @@ index 21e401aaa6e3..b847bcd8c49f 100644
  	lwz	r3,_MSR(r1)
  	andi.	r0,r3,MSR_EE	/* interrupts off? */
  	beq	restore_kuap	/* don't schedule if so */
-@@ -1225,7 +1234,7 @@ global_dbcr0:
+@@ -1228,7 +1237,7 @@ global_dbcr0:
  #endif /* !(CONFIG_4xx || CONFIG_BOOKE) */
  
  do_work:			/* r10 contains MSR_KERNEL here */
@@ -166,7 +166,7 @@ index 21e401aaa6e3..b847bcd8c49f 100644
  	beq	do_user_signal
  
  do_resched:			/* r10 contains MSR_KERNEL here */
-@@ -1246,7 +1255,7 @@ recheck:
+@@ -1249,7 +1258,7 @@ recheck:
  	SYNC
  	MTMSRD(r10)		/* disable interrupts */
  	lwz	r9,TI_FLAGS(r2)
@@ -250,5 +250,5 @@ index a9a1d3cdb523..dfd96e87d7b6 100644
  	bne	restore
  	ld	r0,SOFTE(r1)
 -- 
-2.29.2
+2.30.0
 

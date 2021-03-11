@@ -1,4 +1,4 @@
-From 39a2a473cdb3aa2a186f5bd0d7678f498c7a3f1d Mon Sep 17 00:00:00 2001
+From cffe461ee32646d394c11bd90f54b36f037b7414 Mon Sep 17 00:00:00 2001
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Sat, 22 Jun 2019 00:09:22 +0200
 Subject: [PATCH 144/306] softirq: Avoid a cancel dead-lock in tasklet handling
@@ -52,5 +52,5 @@ index 2b7b8d9af10a..d975a066d47d 100644
  	}
  	tasklet_unlock_wait(t);
 -- 
-2.29.2
+2.30.0
 

@@ -1,4 +1,4 @@
-From 2fffa5375d27615e5369f44c629374e0e12fc490 Mon Sep 17 00:00:00 2001
+From a5e74a68b38e37ad6be7a8a3b14790bb982b2092 Mon Sep 17 00:00:00 2001
 From: Davidlohr Bueso <dave@stgolabs.net>
 Date: Fri, 31 Jan 2020 16:07:09 +0100
 Subject: [PATCH 060/306] locking/percpu-rwsem: Fold __percpu_up_read()
@@ -91,5 +91,5 @@ index 26d72e0f4d46..94c901b350f4 100644
  ({									\
  	typeof(var) __sum = 0;						\
 -- 
-2.29.2
+2.30.0
 

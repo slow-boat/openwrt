@@ -1,4 +1,4 @@
-From 6d4cc7348574b6b05ec8e6add604bfd95aa17b1d Mon Sep 17 00:00:00 2001
+From 68b9d5b1cbe9bf4ae38614b56733af7202e93407 Mon Sep 17 00:00:00 2001
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Wed, 18 Dec 2019 12:25:09 +0100
 Subject: [PATCH 091/306] userfaultfd: Use a seqlock instead of seqcount
@@ -72,5 +72,5 @@ index d99d166fd892..2deffbc812ee 100644
  
  SYSCALL_DEFINE1(userfaultfd, int, flags)
 -- 
-2.29.2
+2.30.0
 

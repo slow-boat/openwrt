@@ -1,4 +1,4 @@
-From 5443b1fc74d2ba0d75e4e73a3db9a77bdf7e102f Mon Sep 17 00:00:00 2001
+From 06fb9e2bbfdbd4c051a881191770c66ce6961cad Mon Sep 17 00:00:00 2001
 From: Clark Williams <williams@redhat.com>
 Date: Tue, 3 Jul 2018 13:34:30 -0500
 Subject: [PATCH 095/306] fscache: initialize cookie hash table raw spinlocks
@@ -59,5 +59,5 @@ index ad044c0cb1f3..164bfe4d207d 100644
  /**
   * fscache_register_netfs - Register a filesystem as desiring caching services
 -- 
-2.29.2
+2.30.0
 

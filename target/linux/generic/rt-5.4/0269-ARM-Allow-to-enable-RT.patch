@@ -1,4 +1,4 @@
-From a8da0f109ac724c23c7452143c0d0d54d49b8ad8 Mon Sep 17 00:00:00 2001
+From b35f74eae29fde598fd1238ad4f8a01701415e53 Mon Sep 17 00:00:00 2001
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Fri, 11 Oct 2019 13:14:29 +0200
 Subject: [PATCH 269/306] ARM: Allow to enable RT
@@ -23,5 +23,5 @@ index 339da288c66a..af8bbf08f14e 100644
  	select ARCH_USE_CMPXCHG_LOCKREF
  	select ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT if MMU
 -- 
-2.29.2
+2.30.0
 

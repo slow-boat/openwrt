@@ -1,4 +1,4 @@
-From ebe83e3529acc5443a4e6c91c0238898e6b85ad9 Mon Sep 17 00:00:00 2001
+From 84c74c07409f26f0c2d4c53d02a7c12ef0f91afc Mon Sep 17 00:00:00 2001
 From: Ingo Molnar <mingo@elte.hu>
 Date: Fri, 3 Jul 2009 08:44:03 -0500
 Subject: [PATCH 099/306] mm: Allow only SLUB on RT
@@ -42,5 +42,5 @@ index 96fc45d1b686..b520e42df0eb 100644
  	   SLOB replaces the stock allocator with a drastically simpler
  	   allocator. SLOB is generally more space efficient but
 -- 
-2.29.2
+2.30.0
 

@@ -1,4 +1,4 @@
-From 060d3cd2af0610852133c584f834a9aeb27cf5b4 Mon Sep 17 00:00:00 2001
+From d32af8a0afe32f512e97c846de644b8e8cadf598 Mon Sep 17 00:00:00 2001
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Thu, 25 Oct 2012 10:32:35 +0100
 Subject: [PATCH 121/306] mm: Enable SLUB for RT
@@ -13,7 +13,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  1 file changed, 7 insertions(+)
 
 diff --git a/mm/slub.c b/mm/slub.c
-index 8df0bb2ca9e0..a0f4dc7a690c 100644
+index cd794cf021f1..21b0ee5a4612 100644
 --- a/mm/slub.c
 +++ b/mm/slub.c
 @@ -3797,6 +3797,11 @@ static void list_slab_objects(struct kmem_cache *s, struct page *page,
@@ -40,5 +40,5 @@ index 8df0bb2ca9e0..a0f4dc7a690c 100644
   * Attempt to free all partial slabs on a node.
   * This is called from __kmem_cache_shutdown(). We must take list_lock
 -- 
-2.29.2
+2.30.0
 

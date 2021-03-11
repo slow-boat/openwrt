@@ -1,4 +1,4 @@
-From 699616c3e7f7b15e7d29fe25de82026f84adbb88 Mon Sep 17 00:00:00 2001
+From 277333268713970f9f1a96cb6003d5a284e64881 Mon Sep 17 00:00:00 2001
 From: Mike Galbraith <umgwanakikbuti@gmail.com>
 Date: Sat, 27 Feb 2016 09:01:42 +0100
 Subject: [PATCH 214/306] drm,i915: Use local_lock/unlock_irq() in
@@ -123,5 +123,5 @@ index cae25e493128..da71ac8dea35 100644
  	if (intel_vgpu_active(dev_priv))
  		return;
 -- 
-2.29.2
+2.30.0
 

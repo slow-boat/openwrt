@@ -1,4 +1,4 @@
-From 6074cfa84798b1d3eca7bfbf6d9c459c73527efd Mon Sep 17 00:00:00 2001
+From 32fc2942a2e7259e3bf255b488bb81f6119b512b Mon Sep 17 00:00:00 2001
 From: Clark Williams <williams@redhat.com>
 Date: Mon, 15 Jul 2019 15:25:00 -0500
 Subject: [PATCH 063/306] thermal/x86_pkg_temp: Make pkg_temp_lock a
@@ -112,5 +112,5 @@ index ddb4a973c698..e18758a8e911 100644
  	/* Final cleanup if this is the last cpu */
  	if (lastcpu)
 -- 
-2.29.2
+2.30.0
 

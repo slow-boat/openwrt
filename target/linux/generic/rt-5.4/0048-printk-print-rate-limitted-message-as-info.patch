@@ -1,4 +1,4 @@
-From a5f6ab07921790af6ea5f92dca5cba0abd39c18e Mon Sep 17 00:00:00 2001
+From 68f7fdc26b28e4f305110a4f55ad1a718c74a4b6 Mon Sep 17 00:00:00 2001
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Fri, 22 Feb 2019 12:47:13 +0100
 Subject: [PATCH 048/306] printk: print "rate-limitted" message as info
@@ -26,5 +26,5 @@ index 8ddf79e9207a..51e90cea9c45 100644
  		rs->missed = 0;
  	}
 -- 
-2.29.2
+2.30.0
 

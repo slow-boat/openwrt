@@ -1,4 +1,4 @@
-From 778dfe767bd613371dfa186a0d3405394d57b2fa Mon Sep 17 00:00:00 2001
+From eb7723e685cd69d9940f89d1ea4861a4ba39e8e7 Mon Sep 17 00:00:00 2001
 From: Scott Wood <swood@redhat.com>
 Date: Fri, 4 Jan 2019 15:33:21 -0500
 Subject: [PATCH 170/306] locking/rt-mutex: Flush block plug on __down_read()
@@ -41,5 +41,5 @@ index 660e22caf709..f518495bd6cc 100644
  	might_sleep();
  	raw_spin_lock_irq(&m->wait_lock);
 -- 
-2.29.2
+2.30.0
 

@@ -1,4 +1,4 @@
-From 8c0aa091edced2d12360a5154a11a7705347a755 Mon Sep 17 00:00:00 2001
+From bbe92e44449bdc3ce6b4ccad765b4df0c29220aa Mon Sep 17 00:00:00 2001
 From: Peter Zijlstra <peterz@infradead.org>
 Date: Thu, 28 Jul 2011 10:43:51 +0200
 Subject: [PATCH 244/306] mm, rt: kmap_atomic scheduling
@@ -318,5 +318,5 @@ index 107b10f9878e..c7d81eaf48f7 100644
  {
  	struct zone *zone;
 -- 
-2.29.2
+2.30.0
 

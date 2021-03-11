@@ -1,4 +1,4 @@
-From 74e72b64438ac3d88d82593ea229fafd91d1dda3 Mon Sep 17 00:00:00 2001
+From 5a7f42981d6d8e6d47f0d81ddc1168897be6844e Mon Sep 17 00:00:00 2001
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Thu, 12 Oct 2017 17:28:34 +0200
 Subject: [PATCH 165/306] rtmutex: add rwsem implementation based on rtmutex
@@ -422,5 +422,5 @@ index 000000000000..7d3c5cf3d23d
 +	__up_write_unlock(sem, WRITER_BIAS - 1, flags);
 +}
 -- 
-2.29.2
+2.30.0
 

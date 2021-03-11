@@ -1,4 +1,4 @@
-From 83caa32135a3238982eb4cc1e9f5ea4ca82dccc5 Mon Sep 17 00:00:00 2001
+From baf4c9fbf5dc24b14558cdb139af4d06c3ac2099 Mon Sep 17 00:00:00 2001
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Wed, 2 Dec 2015 11:34:07 +0100
 Subject: [PATCH 163/306] rtmutex: trylock is okay on -RT
@@ -13,7 +13,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  1 file changed, 4 insertions(+)
 
 diff --git a/kernel/locking/rtmutex.c b/kernel/locking/rtmutex.c
-index c60671436f4c..cd47a183287f 100644
+index c6b4c7275bd1..4ac184f6ed8f 100644
 --- a/kernel/locking/rtmutex.c
 +++ b/kernel/locking/rtmutex.c
 @@ -1962,7 +1962,11 @@ EXPORT_SYMBOL_GPL(rt_mutex_timed_lock);
@@ -29,5 +29,5 @@ index c60671436f4c..cd47a183287f 100644
  
  	return rt_mutex_fasttrylock(lock, rt_mutex_slowtrylock);
 -- 
-2.29.2
+2.30.0
 

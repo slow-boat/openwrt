@@ -1,4 +1,4 @@
-From 2f74fad89d54cf89c9a0b2bf20683a4e057987f4 Mon Sep 17 00:00:00 2001
+From 2dffc2f4f686a67b2fa15b4191c748c241cf9235 Mon Sep 17 00:00:00 2001
 From: Scott Wood <swood@redhat.com>
 Date: Sat, 12 Oct 2019 01:52:14 -0500
 Subject: [PATCH 175/306] sched: migrate_enable: Use stop_one_cpu_nowait()
@@ -117,5 +117,5 @@ index 998d50ee2d9b..9112fc79d24b 100644
  
  	wake_up_q(&wakeq);
 -- 
-2.29.2
+2.30.0
 

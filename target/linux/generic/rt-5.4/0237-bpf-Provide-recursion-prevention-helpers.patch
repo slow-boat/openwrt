@@ -1,4 +1,4 @@
-From a6cb657cc4efbd0bdbffb2932cc97f34f3f22cf0 Mon Sep 17 00:00:00 2001
+From a96fddaf22b9deb70b735d8722ee61b5ba69f6c4 Mon Sep 17 00:00:00 2001
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Mon, 24 Feb 2020 15:01:47 +0100
 Subject: [PATCH 237/306] bpf: Provide recursion prevention helpers
@@ -25,7 +25,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  1 file changed, 30 insertions(+)
 
 diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index aafa347d1974..576f008f16c0 100644
+index 33c323042835..943fd5028c3f 100644
 --- a/include/linux/bpf.h
 +++ b/include/linux/bpf.h
 @@ -617,6 +617,36 @@ _out:							\
@@ -66,5 +66,5 @@ index aafa347d1974..576f008f16c0 100644
  extern const struct file_operations bpf_prog_fops;
  
 -- 
-2.29.2
+2.30.0
 

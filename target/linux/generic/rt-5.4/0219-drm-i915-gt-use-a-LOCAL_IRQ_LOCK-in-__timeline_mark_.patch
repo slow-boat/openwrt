@@ -1,4 +1,4 @@
-From 4c13c3687471ae1d1d8b680ccd09d6bc01ddd74a Mon Sep 17 00:00:00 2001
+From 9df825a66b470736346ae72820eac49c42e9ae43 Mon Sep 17 00:00:00 2001
 From: Mike Galbraith <efault@gmx.de>
 Date: Fri, 7 Feb 2020 07:11:06 +0100
 Subject: [PATCH 219/306] drm/i915/gt: use a LOCAL_IRQ_LOCK in
@@ -52,5 +52,5 @@ index 65b5ca74b394..0e48a3d8ea22 100644
  
  #else
 -- 
-2.29.2
+2.30.0
 

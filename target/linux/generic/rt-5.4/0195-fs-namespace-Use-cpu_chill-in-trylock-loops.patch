@@ -1,4 +1,4 @@
-From 9a44005dbf71c4254c0f669c1c60d0d2664f60e9 Mon Sep 17 00:00:00 2001
+From 7fc5f0e63a554d595b08a4a1ab814f2d9e2a8b54 Mon Sep 17 00:00:00 2001
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Wed, 7 Mar 2012 21:00:34 +0100
 Subject: [PATCH 195/306] fs: namespace: Use cpu_chill() in trylock loops
@@ -39,5 +39,5 @@ index 76ea92994d26..d32961cf666d 100644
  	 * After the slowpath clears MNT_WRITE_HOLD, mnt_is_readonly will
  	 * be set to match its requirements. So we must not load that until
 -- 
-2.29.2
+2.30.0
 

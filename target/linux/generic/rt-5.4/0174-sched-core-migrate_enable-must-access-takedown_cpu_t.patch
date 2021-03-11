@@ -1,4 +1,4 @@
-From caf03b7490053e0cf056915193c8c38dcc921efb Mon Sep 17 00:00:00 2001
+From f3fd6ad77da1e16553bc48e9a8e2ffe14dcaa539 Mon Sep 17 00:00:00 2001
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Fri, 29 Nov 2019 17:24:55 +0100
 Subject: [PATCH 174/306] sched/core: migrate_enable() must access
@@ -47,5 +47,5 @@ index 7ff7de493993..eee83d5233a4 100644
  	if (!p->migrate_disable_scheduled)
  		goto out;
 -- 
-2.29.2
+2.30.0
 

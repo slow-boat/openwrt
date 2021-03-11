@@ -1,4 +1,4 @@
-From 55104d73ada4bea05ee34bb12932ba1abe4bc927 Mon Sep 17 00:00:00 2001
+From fd12a6242581c2b3e71db7e2f475c9ff939aa962 Mon Sep 17 00:00:00 2001
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Sun, 24 Jul 2011 12:11:43 +0200
 Subject: [PATCH 098/306] kconfig: Disable config options which are not RT
@@ -38,5 +38,5 @@ index fbdc5c70e487..55f540359c70 100644
  	select XARRAY_MULTI
  	help
 -- 
-2.29.2
+2.30.0
 

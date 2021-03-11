@@ -1,4 +1,4 @@
-From a9f6caa9ebfc19e6e80accc3aa585d906bfca290 Mon Sep 17 00:00:00 2001
+From 442365012f80dd37875c42befee86476376f6432 Mon Sep 17 00:00:00 2001
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Mon, 24 Feb 2020 15:01:33 +0100
 Subject: [PATCH 224/306] bpf: Enforce preallocation for instrumentation
@@ -21,7 +21,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  1 file changed, 9 insertions(+), 4 deletions(-)
 
 diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index dbcd41b8c2c7..62e97c231e93 100644
+index e1c73d2ea993..55b89d52c558 100644
 --- a/kernel/bpf/verifier.c
 +++ b/kernel/bpf/verifier.c
 @@ -7982,16 +7982,21 @@ static int check_map_prog_compatibility(struct bpf_verifier_env *env,
@@ -51,5 +51,5 @@ index dbcd41b8c2c7..62e97c231e93 100644
  		verbose(env, "trace type programs with run-time allocated hash maps are unsafe. Switch to preallocated hash maps.\n");
  	}
 -- 
-2.29.2
+2.30.0
 

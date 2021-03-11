@@ -1,4 +1,4 @@
-From 7819bb32757322945cfee0ab74c599eb51cf363f Mon Sep 17 00:00:00 2001
+From b39750607baab6849c40273a588a22fdbc0327d3 Mon Sep 17 00:00:00 2001
 From: Priyanka Jain <Priyanka.Jain@freescale.com>
 Date: Thu, 17 May 2012 09:35:11 +0530
 Subject: [PATCH 208/306] net: Remove preemption disabling in netif_rx()
@@ -35,7 +35,7 @@ Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
  1 file changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/net/core/dev.c b/net/core/dev.c
-index e61cb1629761..6138c76bbf27 100644
+index 1aed0126ed09..f09a11914b54 100644
 --- a/net/core/dev.c
 +++ b/net/core/dev.c
 @@ -4414,7 +4414,7 @@ static int netif_rx_internal(struct sk_buff *skb)
@@ -66,5 +66,5 @@ index e61cb1629761..6138c76bbf27 100644
  	return ret;
  }
 -- 
-2.29.2
+2.30.0
 

@@ -1,4 +1,4 @@
-From d30b1ba172a955b478c9fd8a41392d3d20119718 Mon Sep 17 00:00:00 2001
+From 18ea8949f90af519ba5b7a237bcedab36c487b31 Mon Sep 17 00:00:00 2001
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Thu, 30 Nov 2017 13:40:10 +0100
 Subject: [PATCH 203/306] crypto: limit more FPU-enabled sections
@@ -105,5 +105,5 @@ index 8c9b202f3e6d..4f195957fb37 100644
   * Save the FPU state (mark it for reload if necessary):
   *
 -- 
-2.29.2
+2.30.0
 

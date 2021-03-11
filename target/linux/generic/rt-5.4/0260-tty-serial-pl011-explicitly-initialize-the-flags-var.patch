@@ -1,4 +1,4 @@
-From 1ce3b3bc64d6b988fbdc8d3e2a468444584b24f5 Mon Sep 17 00:00:00 2001
+From 3d09d073b5d51ce363d770ecaba8caa08ccb9296 Mon Sep 17 00:00:00 2001
 From: Kurt Kanzenbach <kurt@linutronix.de>
 Date: Mon, 24 Sep 2018 10:29:01 +0200
 Subject: [PATCH 260/306] tty: serial: pl011: explicitly initialize the flags
@@ -40,5 +40,5 @@ index 3fd60a0cfcef..662adcb2d619 100644
  
  	clk_enable(uap->clk);
 -- 
-2.29.2
+2.30.0
 

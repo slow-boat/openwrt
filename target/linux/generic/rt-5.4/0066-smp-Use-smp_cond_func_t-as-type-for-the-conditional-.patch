@@ -1,4 +1,4 @@
-From 8fe2b559fee1101454d1c4982c22ed8c76b0d7e0 Mon Sep 17 00:00:00 2001
+From ecc74d092bab38869114ce2438dd3e8ebb188f05 Mon Sep 17 00:00:00 2001
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Thu, 16 Jan 2020 12:00:31 +0100
 Subject: [PATCH 066/306] smp: Use smp_cond_func_t as type for the conditional
@@ -104,5 +104,5 @@ index 862b460ab97a..5c0d4f2bece2 100644
  	on_each_cpu_cond_mask(cond_func, func, info, wait, gfp_flags, NULL);
  }
 -- 
-2.29.2
+2.30.0
 

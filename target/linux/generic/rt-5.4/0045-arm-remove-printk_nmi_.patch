@@ -1,4 +1,4 @@
-From e9dcb4645e22c09bd0a5599f2841b8be811e79bf Mon Sep 17 00:00:00 2001
+From 5b1e9ec3846e88a9784fcf026d83deffb835e968 Mon Sep 17 00:00:00 2001
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Fri, 15 Feb 2019 14:34:20 +0100
 Subject: [PATCH 045/306] arm: remove printk_nmi_.*()
@@ -27,5 +27,5 @@ index 46e1be9e57a8..581caf6493a9 100644
  
  	default:
 -- 
-2.29.2
+2.30.0
 

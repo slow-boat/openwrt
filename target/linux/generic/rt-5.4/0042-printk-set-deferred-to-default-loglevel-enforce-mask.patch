@@ -1,4 +1,4 @@
-From 918fe4f5a839c969bb036d3c8ad80a1ca303b993 Mon Sep 17 00:00:00 2001
+From bd888c146361d8c3d9720cf6aa011fe30c5ba7a2 Mon Sep 17 00:00:00 2001
 From: John Ogness <john.ogness@linutronix.de>
 Date: Thu, 14 Feb 2019 23:13:30 +0100
 Subject: [PATCH 042/306] printk: set deferred to default loglevel, enforce
@@ -41,5 +41,5 @@ index 16ceef380243..28c8fa7152b0 100644
  
  int printk_deferred(const char *fmt, ...)
 -- 
-2.29.2
+2.30.0
 

@@ -1,4 +1,4 @@
-From bf3e38cd1ff8e9d9ecb02112b284dcff1f148e06 Mon Sep 17 00:00:00 2001
+From 1ea45ad8b5866a588e988505391f1784d7b4a205 Mon Sep 17 00:00:00 2001
 From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
 Date: Sat, 30 Nov 2019 17:54:33 -0800
 Subject: [PATCH 015/306] mm/vmalloc: remove preempt_disable/enable when doing
@@ -107,5 +107,5 @@ index 5797e1eeaa7e..1b39c0fa2fc5 100644
  	/*
  	 * If an allocation fails, the "vend" address is
 -- 
-2.29.2
+2.30.0
 

@@ -1,4 +1,4 @@
-From 04535be99d32a30fecded4deb645119e91c6c49f Mon Sep 17 00:00:00 2001
+From 709a28f3fe58d168642f39a6e7734bab8962c9d9 Mon Sep 17 00:00:00 2001
 From: Mike Galbraith <umgwanakikbuti@gmail.com>
 Date: Sun, 16 Oct 2016 05:11:54 +0200
 Subject: [PATCH 277/306] connector/cn_proc: Protect send_msg() with a local
@@ -69,5 +69,5 @@ index d58ce664da84..1b2e9f19c98d 100644
  
  void proc_fork_connector(struct task_struct *task)
 -- 
-2.29.2
+2.30.0
 

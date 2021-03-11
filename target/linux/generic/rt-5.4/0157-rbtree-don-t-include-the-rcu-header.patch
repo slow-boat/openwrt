@@ -1,4 +1,4 @@
-From 657c46a9c12e9147681d70c5092f1630f7096b10 Mon Sep 17 00:00:00 2001
+From 9badc922d2fdbceefbb36b212b667a557d2bf7bd Mon Sep 17 00:00:00 2001
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Mon, 30 Mar 2020 16:03:57 +0200
 Subject: [PATCH 157/306] rbtree: don't include the rcu header
@@ -111,7 +111,7 @@ index 000000000000..78c05f606a73
 +
 +#endif
 diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-index 799aed005b00..4b7c52128409 100644
+index a84e0ab2f001..4b1d058c9e5d 100644
 --- a/include/linux/rcupdate.h
 +++ b/include/linux/rcupdate.h
 @@ -29,6 +29,7 @@
@@ -122,7 +122,7 @@ index 799aed005b00..4b7c52128409 100644
  
  #define ULONG_CMP_GE(a, b)	(ULONG_MAX / 2 >= (a) - (b))
  #define ULONG_CMP_LT(a, b)	(ULONG_MAX / 2 < (a) - (b))
-@@ -308,13 +309,6 @@ static inline void rcu_preempt_sleep_check(void) { }
+@@ -310,13 +311,6 @@ static inline void rcu_preempt_sleep_check(void) { }
   * (e.g., __srcu), should this make sense in the future.
   */
  
@@ -136,7 +136,7 @@ index 799aed005b00..4b7c52128409 100644
  #define __rcu_access_pointer(p, space) \
  ({ \
  	typeof(*p) *_________p1 = (typeof(*p) *__force)READ_ONCE(p); \
-@@ -342,54 +336,6 @@ static inline void rcu_preempt_sleep_check(void) { }
+@@ -344,54 +338,6 @@ static inline void rcu_preempt_sleep_check(void) { }
  	((typeof(*p) __force __kernel *)(________p1)); \
  })
  
@@ -192,5 +192,5 @@ index 799aed005b00..4b7c52128409 100644
   * rcu_swap_protected() - swap an RCU and a regular pointer
   * @rcu_ptr: RCU pointer
 -- 
-2.29.2
+2.30.0
 

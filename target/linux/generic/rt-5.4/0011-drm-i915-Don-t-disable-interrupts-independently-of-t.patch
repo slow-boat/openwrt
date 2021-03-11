@@ -1,4 +1,4 @@
-From ba6575858d2d3f17927af314f26909744bff052e Mon Sep 17 00:00:00 2001
+From d1845f3f9394aff0c1e02078866814994322424f Mon Sep 17 00:00:00 2001
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Wed, 10 Apr 2019 11:01:37 +0200
 Subject: [PATCH 011/306] drm/i915: Don't disable interrupts independently of
@@ -72,5 +72,5 @@ index 49d498882cf6..b94d2a1af222 100644
  	remove_from_client(rq);
  	list_del(&rq->link);
 -- 
-2.29.2
+2.30.0
 

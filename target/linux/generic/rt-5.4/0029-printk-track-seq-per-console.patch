@@ -1,4 +1,4 @@
-From 89c22dce0aa1e54c6d16aefae94af5ae9a342805 Mon Sep 17 00:00:00 2001
+From 664a079f20d98784a32d1960d289da4115d4e988 Mon Sep 17 00:00:00 2001
 From: John Ogness <john.ogness@linutronix.de>
 Date: Tue, 12 Feb 2019 15:29:51 +0100
 Subject: [PATCH 029/306] printk: track seq per console
@@ -96,5 +96,5 @@ index 2c85d6d1b60e..ff9ec5cc8fa6 100644
  			printk_delay();
  		}
 -- 
-2.29.2
+2.30.0
 

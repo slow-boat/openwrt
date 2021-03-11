@@ -1,4 +1,4 @@
-From 1a5b68510b53d2fc71b12feebff1d87d2ddee50f Mon Sep 17 00:00:00 2001
+From 6dc161b8fff25078e9e1c533df9fd66306238a2b Mon Sep 17 00:00:00 2001
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Thu, 9 Jun 2011 11:43:52 +0200
 Subject: [PATCH 153/306] rtmutex: Add rtmutex_lock_killable()
@@ -25,7 +25,7 @@ index 6fd615a0eea9..81ece6a8291a 100644
  			       struct hrtimer_sleeper *timeout);
  
 diff --git a/kernel/locking/rtmutex.c b/kernel/locking/rtmutex.c
-index 2f9f57480d8b..1d5cd09e2498 100644
+index 348bd535e1f2..e067cb74e00c 100644
 --- a/kernel/locking/rtmutex.c
 +++ b/kernel/locking/rtmutex.c
 @@ -1561,6 +1561,25 @@ int __sched __rt_mutex_futex_trylock(struct rt_mutex *lock)
@@ -55,5 +55,5 @@ index 2f9f57480d8b..1d5cd09e2498 100644
   * rt_mutex_timed_lock - lock a rt_mutex interruptible
   *			the timeout structure is provided
 -- 
-2.29.2
+2.30.0
 

@@ -1,4 +1,4 @@
-From dc70e95224713e7d9977c9db8f8791140d0017f8 Mon Sep 17 00:00:00 2001
+From 234ad5d3cbad71d6426e45c1c710d5b4634d4eb1 Mon Sep 17 00:00:00 2001
 From: John Ogness <john.ogness@linutronix.de>
 Date: Tue, 12 Feb 2019 15:29:58 +0100
 Subject: [PATCH 036/306] serial: 8250: implement write_atomic
@@ -494,5 +494,5 @@ index bb2bc99388ca..be74bb7cae64 100644
  
  extern void serial8250_set_isa_configurator(void (*v)
 -- 
-2.29.2
+2.30.0
 

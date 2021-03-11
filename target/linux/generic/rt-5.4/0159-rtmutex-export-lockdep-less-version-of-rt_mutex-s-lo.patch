@@ -1,4 +1,4 @@
-From 5b3044895af37e89efe037119574c5c4af8706cb Mon Sep 17 00:00:00 2001
+From 001f0ee0abe3b958f0e12d99a0086b2b44c88844 Mon Sep 17 00:00:00 2001
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Thu, 12 Oct 2017 16:36:39 +0200
 Subject: [PATCH 159/306] rtmutex: export lockdep-less version of rt_mutex's
@@ -14,7 +14,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  2 files changed, 42 insertions(+), 20 deletions(-)
 
 diff --git a/kernel/locking/rtmutex.c b/kernel/locking/rtmutex.c
-index f2377d74c705..509e9095bf13 100644
+index b322e5b72f85..d1ebbdd40373 100644
 --- a/kernel/locking/rtmutex.c
 +++ b/kernel/locking/rtmutex.c
 @@ -1493,12 +1493,33 @@ rt_mutex_fastunlock(struct rt_mutex *lock,
@@ -126,10 +126,10 @@ index f2377d74c705..509e9095bf13 100644
   * rt_mutex_unlock - unlock a rt_mutex
   *
 diff --git a/kernel/locking/rtmutex_common.h b/kernel/locking/rtmutex_common.h
-index cb9815f0c766..5955ad2aa2a8 100644
+index 66deb94765fb..53a8c5d03d28 100644
 --- a/kernel/locking/rtmutex_common.h
 +++ b/kernel/locking/rtmutex_common.h
-@@ -162,6 +162,9 @@ extern bool __rt_mutex_futex_unlock(struct rt_mutex *lock,
+@@ -161,6 +161,9 @@ extern bool __rt_mutex_futex_unlock(struct rt_mutex *lock,
  extern void rt_mutex_postunlock(struct wake_q_head *wake_q);
  /* RW semaphore special interface */
  
@@ -140,5 +140,5 @@ index cb9815f0c766..5955ad2aa2a8 100644
  				     struct hrtimer_sleeper *timeout,
  				     enum rtmutex_chainwalk chwalk,
 -- 
-2.29.2
+2.30.0
 

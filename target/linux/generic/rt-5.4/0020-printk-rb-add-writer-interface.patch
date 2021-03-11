@@ -1,4 +1,4 @@
-From c684d8c9b9aea484b99593a23b19c402c838ff28 Mon Sep 17 00:00:00 2001
+From c6340003fc4e1c4aea7aa49ac9bc0911b7fd3ca4 Mon Sep 17 00:00:00 2001
 From: John Ogness <john.ogness@linutronix.de>
 Date: Tue, 12 Feb 2019 15:29:42 +0100
 Subject: [PATCH 020/306] printk-rb: add writer interface
@@ -237,5 +237,5 @@ index 28958b0cf774..90c7f9a9f861 100644
 +	return &h->entry->data[0];
 +}
 -- 
-2.29.2
+2.30.0
 

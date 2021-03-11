@@ -1,4 +1,4 @@
-From be51fdfa69453699f9c0fc21948425227248a3c8 Mon Sep 17 00:00:00 2001
+From 485043d5cf5188be98fb5d21fa20c2995411f9d8 Mon Sep 17 00:00:00 2001
 From: John Ogness <john.ogness@linutronix.de>
 Date: Tue, 12 Feb 2019 15:29:57 +0100
 Subject: [PATCH 035/306] printk: introduce emergency messages
@@ -278,5 +278,5 @@ index ee00c6c8a373..bb30740f8cb5 100644
  	int "Default message log level (1-7)"
  	range 1 7
 -- 
-2.29.2
+2.30.0
 

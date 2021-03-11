@@ -1,4 +1,4 @@
-From 32dc0b5e88cfb1289185080a72d571b0ca3acb1f Mon Sep 17 00:00:00 2001
+From 42aa5fc528af420da61dfc0af64a1a8a1f87fb80 Mon Sep 17 00:00:00 2001
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Mon, 28 May 2018 15:24:22 +0200
 Subject: [PATCH 113/306] mm/SLxB: change list_lock to raw_spinlock_t
@@ -382,7 +382,7 @@ index b2b01694dc43..e972b6e21c0c 100644
  #ifdef CONFIG_SLAB
  	struct list_head slabs_partial;	/* partial list first, better asm code */
 diff --git a/mm/slub.c b/mm/slub.c
-index 58690c525faf..4f5b93e0a76b 100644
+index 70671a50d834..f2df45e00edc 100644
 --- a/mm/slub.c
 +++ b/mm/slub.c
 @@ -1200,7 +1200,7 @@ static noinline int free_debug_processing(
@@ -598,5 +598,5 @@ index 58690c525faf..4f5b93e0a76b 100644
  
  	for (i = 0; i < t.count; i++) {
 -- 
-2.29.2
+2.30.0
 

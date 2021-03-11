@@ -1,4 +1,4 @@
-From 3df85b9b3c6aeeacce0305b0e8c63403939534fb Mon Sep 17 00:00:00 2001
+From 098ad1a50c0ad9695ef4b7ef9f11150776cb4e7e Mon Sep 17 00:00:00 2001
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Thu, 28 Jul 2011 13:32:57 +0200
 Subject: [PATCH 258/306] tty/serial/omap: Make the locking RT aware
@@ -44,5 +44,5 @@ index 6420ae581a80..0f4f41ed9ffa 100644
  
  static int __init
 -- 
-2.29.2
+2.30.0
 

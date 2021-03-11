@@ -1,4 +1,4 @@
-From c734878e1961e87175ee7fd876f736c6f746174c Mon Sep 17 00:00:00 2001
+From 0e8851081ae0f4db64faf308584774950e3039e0 Mon Sep 17 00:00:00 2001
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Fri, 8 Nov 2019 12:55:47 +0100
 Subject: [PATCH 071/306] mm/compaction: Disable compact_unevictable_allowed on
@@ -93,10 +93,10 @@ index 91b23fd4df9f..8221219d65c3 100644
   * proc_douintvec - read a vector of unsigned integers
   * @table: the sysctl table
 diff --git a/mm/compaction.c b/mm/compaction.c
-index 92470625f0b1..c4e69494100c 100644
+index d686887856fe..7281538bf058 100644
 --- a/mm/compaction.c
 +++ b/mm/compaction.c
-@@ -1590,7 +1590,11 @@ typedef enum {
+@@ -1591,7 +1591,11 @@ typedef enum {
   * Allow userspace to control policy on scanning the unevictable LRU for
   * compactable pages.
   */
@@ -109,5 +109,5 @@ index 92470625f0b1..c4e69494100c 100644
  static inline void
  update_fast_start_pfn(struct compact_control *cc, unsigned long pfn)
 -- 
-2.29.2
+2.30.0
 

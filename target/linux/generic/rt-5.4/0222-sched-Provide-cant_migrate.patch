@@ -1,4 +1,4 @@
-From 12f70ee1b54495b91e5bb9a959299fdf07ceec6a Mon Sep 17 00:00:00 2001
+From a37f056685129a2f87c1ae2bb92d12898df25946 Mon Sep 17 00:00:00 2001
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Fri, 14 Feb 2020 14:39:19 +0100
 Subject: [PATCH 222/306] sched: Provide cant_migrate()
@@ -41,5 +41,5 @@ index 2f9abc6aab0b..f5ec1ddbfe07 100644
   * abs - return absolute value of an argument
   * @x: the value.  If it is unsigned type, it is converted to signed type first.
 -- 
-2.29.2
+2.30.0
 

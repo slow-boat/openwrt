@@ -1,4 +1,4 @@
-From 0847ad283d0d45f5dc99bffda1cd223c441b36aa Mon Sep 17 00:00:00 2001
+From 7aa493e8fd2148f3b284703afabe6e697e8bdeca Mon Sep 17 00:00:00 2001
 From: John Ogness <john.ogness@linutronix.de>
 Date: Tue, 12 Feb 2019 15:30:03 +0100
 Subject: [PATCH 041/306] printk: remove unused code
@@ -379,5 +379,5 @@ index 8be59f84eaea..c6e083323d1b 100644
  	}
  }
 -- 
-2.29.2
+2.30.0
 

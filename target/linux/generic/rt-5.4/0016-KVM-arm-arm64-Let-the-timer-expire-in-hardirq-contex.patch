@@ -1,4 +1,4 @@
-From 565cc8e7673ef88d8bad4ae0eac4da274bcb9796 Mon Sep 17 00:00:00 2001
+From 6f2aa43bc9054b92bb4f367e3b3bf26d0a6512d7 Mon Sep 17 00:00:00 2001
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Tue, 13 Aug 2019 14:29:41 +0200
 Subject: [PATCH 016/306] KVM: arm/arm64: Let the timer expire in hardirq
@@ -48,5 +48,5 @@ index 6b222100608f..c6c2a9dde00c 100644
  	ptimer->hrtimer.function = kvm_hrtimer_expire;
  
 -- 
-2.29.2
+2.30.0
 

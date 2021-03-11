@@ -1,4 +1,4 @@
-From 7665027c62a22b4140ab000aedd9ff6881177f01 Mon Sep 17 00:00:00 2001
+From c6a787268a6e37a075df31ad18b489edf8f40bba Mon Sep 17 00:00:00 2001
 From: Mikulas Patocka <mpatocka@redhat.com>
 Date: Mon, 13 Nov 2017 12:56:53 -0500
 Subject: [PATCH 169/306] locking/rt-mutex: fix deadlock in device mapper /
@@ -38,7 +38,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  1 file changed, 13 insertions(+)
 
 diff --git a/kernel/locking/rtmutex.c b/kernel/locking/rtmutex.c
-index cd8006596cc3..ddc9ba0505e9 100644
+index 385c9b8951f4..5f43d4b69be4 100644
 --- a/kernel/locking/rtmutex.c
 +++ b/kernel/locking/rtmutex.c
 @@ -25,6 +25,7 @@
@@ -76,5 +76,5 @@ index cd8006596cc3..ddc9ba0505e9 100644
  }
  
 -- 
-2.29.2
+2.30.0
 

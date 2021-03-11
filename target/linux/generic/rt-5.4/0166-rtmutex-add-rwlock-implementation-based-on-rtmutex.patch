@@ -1,4 +1,4 @@
-From 31cd5fe1d35cf5d8e44fbde5aa57b1d10cb37fad Mon Sep 17 00:00:00 2001
+From 1ee635d9e29526b35f13fb2680529562f17f06ae Mon Sep 17 00:00:00 2001
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Thu, 12 Oct 2017 17:18:06 +0200
 Subject: [PATCH 166/306] rtmutex: add rwlock implementation based on rtmutex
@@ -577,5 +577,5 @@ index 000000000000..8f90afe111ce
 +}
 +EXPORT_SYMBOL(__rt_rwlock_init);
 -- 
-2.29.2
+2.30.0
 

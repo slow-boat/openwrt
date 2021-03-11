@@ -1,4 +1,4 @@
-From 079023b76fb5ba35c0b5d52ef9af14631f396ca0 Mon Sep 17 00:00:00 2001
+From f783fecb73e23bf1e9054acb5a9e4553d94c161a Mon Sep 17 00:00:00 2001
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Fri, 15 Nov 2019 21:37:22 +0100
 Subject: [PATCH 012/306] block: Don't disable interrupts in trigger_softirq()
@@ -37,5 +37,5 @@ index 457d9ba3eb20..6e7ec87d49fa 100644
  
  /*
 -- 
-2.29.2
+2.30.0
 

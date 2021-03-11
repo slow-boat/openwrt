@@ -1,4 +1,4 @@
-From 2ee740d00477d38ce474f57676e7318b1e2bc2e5 Mon Sep 17 00:00:00 2001
+From a5cef0b01c0ef72f62d95805cd187a0acccaca7d Mon Sep 17 00:00:00 2001
 From: John Ogness <john.ogness@linutronix.de>
 Date: Tue, 12 Feb 2019 15:30:01 +0100
 Subject: [PATCH 039/306] printk: implement syslog
@@ -494,5 +494,5 @@ index 4342e643dd4e..fb05783470e2 100644
  static u32 log_first_idx;
  static u64 log_next_seq;
 -- 
-2.29.2
+2.30.0
 

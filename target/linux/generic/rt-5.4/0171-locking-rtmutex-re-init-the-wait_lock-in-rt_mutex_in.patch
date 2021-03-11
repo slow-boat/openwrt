@@ -1,4 +1,4 @@
-From 3fdc17ee148868886f35f0932e69371eb3e0f2ab Mon Sep 17 00:00:00 2001
+From 855b9caac96eb7866da17764b55eb70523d8447a Mon Sep 17 00:00:00 2001
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Thu, 16 Nov 2017 16:48:48 +0100
 Subject: [PATCH 171/306] locking/rtmutex: re-init the wait_lock in
@@ -15,7 +15,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  1 file changed, 8 insertions(+)
 
 diff --git a/kernel/locking/rtmutex.c b/kernel/locking/rtmutex.c
-index ddc9ba0505e9..62d3de96a39a 100644
+index 5f43d4b69be4..2cd6a7c57aa3 100644
 --- a/kernel/locking/rtmutex.c
 +++ b/kernel/locking/rtmutex.c
 @@ -2280,6 +2280,14 @@ void rt_mutex_init_proxy_locked(struct rt_mutex *lock,
@@ -34,5 +34,5 @@ index ddc9ba0505e9..62d3de96a39a 100644
  	rt_mutex_set_owner(lock, proxy_owner);
  }
 -- 
-2.29.2
+2.30.0
 

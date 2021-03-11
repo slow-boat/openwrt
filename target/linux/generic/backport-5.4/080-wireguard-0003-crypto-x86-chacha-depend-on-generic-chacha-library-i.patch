@@ -25,9 +25,11 @@ Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
  crypto/Kconfig                |  2 +-
  2 files changed, 36 insertions(+), 56 deletions(-)
 
---- a/arch/x86/crypto/chacha_glue.c
-+++ b/arch/x86/crypto/chacha_glue.c
-@@ -123,37 +123,38 @@ static void chacha_dosimd(u32 *state, u8
+Index: linux-5.4.102/arch/x86/crypto/chacha_glue.c
+===================================================================
+--- linux-5.4.102.orig/arch/x86/crypto/chacha_glue.c
++++ linux-5.4.102/arch/x86/crypto/chacha_glue.c
+@@ -123,30 +123,37 @@ static void chacha_dosimd(u32 *state, u8
  	}
  }
  
@@ -36,7 +38,6 @@ Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
  				  const struct chacha_ctx *ctx, const u8 *iv)
  {
  	u32 *state, state_buf[16 + 2] __aligned(8);
--	int next_yield = 4096; /* bytes until next FPU yield */
 -	int err = 0;
 +	struct skcipher_walk walk;
 +	int err;
@@ -47,54 +48,51 @@ Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
  	state = PTR_ALIGN(state_buf + 0, CHACHA_STATE_ALIGN);
  
 -	crypto_chacha_init(state, ctx, iv);
-+	chacha_init_generic(state, ctx->key, iv);
- 
+-
 -	while (walk->nbytes > 0) {
 -		unsigned int nbytes = walk->nbytes;
-+	while (walk.nbytes > 0) {
-+		unsigned int nbytes = walk.nbytes;
++	chacha_init_generic(state, ctx->key, iv);
  
 -		if (nbytes < walk->total) {
 -			nbytes = round_down(nbytes, walk->stride);
--			next_yield -= nbytes;
 -		}
 -
 -		chacha_dosimd(state, walk->dst.virt.addr, walk->src.virt.addr,
 -			      nbytes, ctx->nrounds);
+-
+-		kernel_fpu_end();
+-		err = skcipher_walk_done(walk, walk->nbytes - nbytes);
+-		kernel_fpu_begin();
++	while (walk.nbytes > 0) {
++		unsigned int nbytes = walk.nbytes;
 +		if (nbytes < walk.total)
 +			nbytes = round_down(nbytes, walk.stride);
- 
--		if (next_yield <= 0) {
--			/* temporarily allow preemption */
--			kernel_fpu_end();
++
 +		if (!crypto_simd_usable()) {
 +			chacha_crypt_generic(state, walk.dst.virt.addr,
 +					     walk.src.virt.addr, nbytes,
 +					     ctx->nrounds);
 +		} else {
- 			kernel_fpu_begin();
--			next_yield = 4096;
++ 			kernel_fpu_begin();
 +			chacha_dosimd(state, walk.dst.virt.addr,
 +				      walk.src.virt.addr, nbytes,
 +				      ctx->nrounds);
 +			kernel_fpu_end();
- 		}
--
--		err = skcipher_walk_done(walk, walk->nbytes - nbytes);
++ 		}
 +		err = skcipher_walk_done(&walk, walk.nbytes - nbytes);
  	}
  
  	return err;
-@@ -163,55 +164,34 @@ static int chacha_simd(struct skcipher_r
+@@ -156,55 +163,34 @@ static int chacha_simd(struct skcipher_r
  {
  	struct crypto_skcipher *tfm = crypto_skcipher_reqtfm(req);
  	struct chacha_ctx *ctx = crypto_skcipher_ctx(tfm);
 -	struct skcipher_walk walk;
 -	int err;
--
+ 
 -	if (req->cryptlen <= CHACHA_BLOCK_SIZE || !crypto_simd_usable())
 -		return crypto_chacha_crypt(req);
- 
+-
 -	err = skcipher_walk_virt(&walk, req, true);
 -	if (err)
 -		return err;
@@ -127,10 +125,10 @@ Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
  	BUILD_BUG_ON(CHACHA_STATE_ALIGN != 16);
  	state = PTR_ALIGN(state_buf + 0, CHACHA_STATE_ALIGN);
 -	crypto_chacha_init(state, ctx, req->iv);
+-
+-	kernel_fpu_begin();
 +	chacha_init_generic(state, ctx->key, req->iv);
  
--	kernel_fpu_begin();
--
 -	hchacha_block_ssse3(state, subctx.key, ctx->nrounds);
 +	if (req->cryptlen > CHACHA_BLOCK_SIZE && crypto_simd_usable()) {
 +		kernel_fpu_begin();
@@ -152,7 +150,7 @@ Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
  }
  
  static struct skcipher_alg algs[] = {
-@@ -227,7 +207,7 @@ static struct skcipher_alg algs[] = {
+@@ -220,7 +206,7 @@ static struct skcipher_alg algs[] = {
  		.max_keysize		= CHACHA_KEY_SIZE,
  		.ivsize			= CHACHA_IV_SIZE,
  		.chunksize		= CHACHA_BLOCK_SIZE,
@@ -161,7 +159,7 @@ Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
  		.encrypt		= chacha_simd,
  		.decrypt		= chacha_simd,
  	}, {
-@@ -242,7 +222,7 @@ static struct skcipher_alg algs[] = {
+@@ -235,7 +221,7 @@ static struct skcipher_alg algs[] = {
  		.max_keysize		= CHACHA_KEY_SIZE,
  		.ivsize			= XCHACHA_IV_SIZE,
  		.chunksize		= CHACHA_BLOCK_SIZE,
@@ -170,7 +168,7 @@ Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
  		.encrypt		= xchacha_simd,
  		.decrypt		= xchacha_simd,
  	}, {
-@@ -257,7 +237,7 @@ static struct skcipher_alg algs[] = {
+@@ -250,7 +236,7 @@ static struct skcipher_alg algs[] = {
  		.max_keysize		= CHACHA_KEY_SIZE,
  		.ivsize			= XCHACHA_IV_SIZE,
  		.chunksize		= CHACHA_BLOCK_SIZE,
@@ -179,8 +177,10 @@ Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
  		.encrypt		= xchacha_simd,
  		.decrypt		= xchacha_simd,
  	},
---- a/crypto/Kconfig
-+++ b/crypto/Kconfig
+Index: linux-5.4.102/crypto/Kconfig
+===================================================================
+--- linux-5.4.102.orig/crypto/Kconfig
++++ linux-5.4.102/crypto/Kconfig
 @@ -1417,7 +1417,7 @@ config CRYPTO_CHACHA20_X86_64
  	tristate "ChaCha stream cipher algorithms (x86_64/SSSE3/AVX2/AVX-512VL)"
  	depends on X86 && 64BIT

@@ -1,4 +1,4 @@
-From 73acedd11ac2f5b2640ef3a9d25486d26358109c Mon Sep 17 00:00:00 2001
+From 3b8e2e02ac38e2d6d95a042b5a10c006f017707c Mon Sep 17 00:00:00 2001
 From: David Miller <davem@davemloft.net>
 Date: Mon, 24 Feb 2020 15:01:46 +0100
 Subject: [PATCH 236/306] bpf: Use migrate_disable/enable in array macros and
@@ -20,7 +20,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  2 files changed, 7 insertions(+), 6 deletions(-)
 
 diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 7aa0d8b5aaf0..aafa347d1974 100644
+index 007147f64390..33c323042835 100644
 --- a/include/linux/bpf.h
 +++ b/include/linux/bpf.h
 @@ -541,7 +541,7 @@ int bpf_prog_array_copy(struct bpf_prog_array *old_array,
@@ -60,7 +60,7 @@ index 7aa0d8b5aaf0..aafa347d1974 100644
  			_ret = (_cn ? NET_XMIT_CN : NET_XMIT_SUCCESS);	\
  		else					\
 diff --git a/include/linux/filter.h b/include/linux/filter.h
-index be376e167b2c..c466b3b8552f 100644
+index 06b680f508d8..81ece78f77fc 100644
 --- a/include/linux/filter.h
 +++ b/include/linux/filter.h
 @@ -669,6 +669,7 @@ static inline u8 *bpf_skb_cb(struct sk_buff *skb)
@@ -84,5 +84,5 @@ index be376e167b2c..c466b3b8552f 100644
  }
  
 -- 
-2.29.2
+2.30.0
 

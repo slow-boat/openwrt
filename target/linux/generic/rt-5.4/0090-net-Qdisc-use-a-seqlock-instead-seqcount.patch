@@ -1,4 +1,4 @@
-From 5d8d26e8e878095c13f859c25f1dbb2cc4704284 Mon Sep 17 00:00:00 2001
+From a01fb9062bd166da1e048e06014bbd1cd3cdf0b2 Mon Sep 17 00:00:00 2001
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Wed, 14 Sep 2016 17:36:35 +0200
 Subject: [PATCH 090/306] net/Qdisc: use a seqlock instead seqcount
@@ -110,7 +110,7 @@ index 000000000000..67710bace741
 +
 +#endif
 diff --git a/include/net/sch_generic.h b/include/net/sch_generic.h
-index 3d03756e1069..e6afb4b9cede 100644
+index b2ceec7b280d..d10477f0e628 100644
 --- a/include/net/sch_generic.h
 +++ b/include/net/sch_generic.h
 @@ -10,6 +10,7 @@
@@ -180,7 +180,7 @@ index 3d03756e1069..e6afb4b9cede 100644
  	struct Qdisc *root = qdisc_root_sleeping(qdisc);
  
 diff --git a/net/core/gen_estimator.c b/net/core/gen_estimator.c
-index bfe7bdd4c340..aa6d9e3d2705 100644
+index 98c396769be9..3deab9ef120a 100644
 --- a/net/core/gen_estimator.c
 +++ b/net/core/gen_estimator.c
 @@ -42,7 +42,7 @@
@@ -201,7 +201,7 @@ index bfe7bdd4c340..aa6d9e3d2705 100644
  		      struct nlattr *opt)
  {
  	struct gnet_estimator *parm = nla_data(opt);
-@@ -223,7 +223,7 @@ int gen_replace_estimator(struct gnet_stats_basic_packed *bstats,
+@@ -226,7 +226,7 @@ int gen_replace_estimator(struct gnet_stats_basic_packed *bstats,
  			  struct gnet_stats_basic_cpu __percpu *cpu_bstats,
  			  struct net_rate_estimator __rcu **rate_est,
  			  spinlock_t *lock,
@@ -315,5 +315,5 @@ index 981f699730ce..5d9f14dc5c2a 100644
  
  	return sch;
 -- 
-2.29.2
+2.30.0
 

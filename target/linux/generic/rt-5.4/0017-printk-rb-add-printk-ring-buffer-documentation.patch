@@ -1,4 +1,4 @@
-From 552a5c9d75bd1ab01b8f96687a0388f516257caf Mon Sep 17 00:00:00 2001
+From 434312ba0bd69883c3162fb96a7b2856af1068ce Mon Sep 17 00:00:00 2001
 From: John Ogness <john.ogness@linutronix.de>
 Date: Tue, 12 Feb 2019 15:29:39 +0100
 Subject: [PATCH 017/306] printk-rb: add printk ring buffer documentation
@@ -396,5 +396,5 @@ index 000000000000..6bde5dbd8545
 +are added. This was the purpose of pinning 2 readers to 1 CPU: to observe how
 +maximum reader performance changes.
 -- 
-2.29.2
+2.30.0
 

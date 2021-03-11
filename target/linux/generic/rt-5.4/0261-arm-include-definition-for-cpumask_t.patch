@@ -1,4 +1,4 @@
-From e8d4e037d176782e7a7f122e96e45d595aa9995a Mon Sep 17 00:00:00 2001
+From 7f483b562deb7fe3aaf48e63d33b5c864f982496 Mon Sep 17 00:00:00 2001
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Thu, 22 Dec 2016 17:28:33 +0100
 Subject: [PATCH 261/306] arm: include definition for cpumask_t
@@ -26,5 +26,5 @@ index 46d41140df27..c421b5b81946 100644
  struct pt_regs;
  
 -- 
-2.29.2
+2.30.0
 

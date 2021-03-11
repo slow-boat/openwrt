@@ -1,4 +1,4 @@
-From 4ae06f0d827d5b4f204df2b1115b30e761456cc4 Mon Sep 17 00:00:00 2001
+From 5d35ddaa94fa3ecc813f1ed02d6826505f105732 Mon Sep 17 00:00:00 2001
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Fri, 11 Dec 2020 17:39:54 +0100
 Subject: [PATCH 302/306] Revert "hrtimer: Allow raw wakeups during boot"
@@ -26,5 +26,5 @@ index 41cc1c8530d8..42705a04c808 100644
  	}
  
 -- 
-2.29.2
+2.30.0
 

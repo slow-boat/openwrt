@@ -1,4 +1,4 @@
-From f971bb8af00185b81e9a87bdc030c1437e98ad10 Mon Sep 17 00:00:00 2001
+From a2f80c1bf3e423cef0f14ec57fddd7a434cf687a Mon Sep 17 00:00:00 2001
 From: Jan Kara <jack@suse.cz>
 Date: Fri, 9 Aug 2019 14:42:30 +0200
 Subject: [PATCH 005/306] jbd2: Drop unnecessary branch from
@@ -30,5 +30,5 @@ index a3a1c7da1e93..8f392add270d 100644
  		spin_unlock(&journal->j_list_lock);
  	} else if (jh->b_transaction) {
 -- 
-2.29.2
+2.30.0
 

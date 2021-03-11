@@ -1,4 +1,4 @@
-From f48914b4e3e1a33a6f24918cf24985dd112ce876 Mon Sep 17 00:00:00 2001
+From 0abd2294329d4bdfc4d8b6bb5cd021f588714fcd Mon Sep 17 00:00:00 2001
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Thu, 1 Nov 2012 11:03:47 +0100
 Subject: [PATCH 250/306] x86: Support for lazy preemption
@@ -241,5 +241,5 @@ index 5c7ee3df4d0b..24bcc28f68d4 100644
  	/* TLB state for the entry code */
  	OFFSET(TLB_STATE_user_pcid_flush_mask, tlb_state, user_pcid_flush_mask);
 -- 
-2.29.2
+2.30.0
 

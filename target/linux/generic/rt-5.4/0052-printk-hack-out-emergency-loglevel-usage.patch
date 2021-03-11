@@ -1,4 +1,4 @@
-From 8f8e58ab46c16a409b6cffbc251116237d159583 Mon Sep 17 00:00:00 2001
+From b2d54da6285f41d4cf4b96c5a15793ad8a212581 Mon Sep 17 00:00:00 2001
 From: John Ogness <john.ogness@linutronix.de>
 Date: Tue, 3 Dec 2019 09:14:57 +0100
 Subject: [PATCH 052/306] printk: hack out emergency loglevel usage
@@ -54,5 +54,5 @@ index f1e43ca2d09b..98776feea2e0 100644
  			continue;
  		}
 -- 
-2.29.2
+2.30.0
 

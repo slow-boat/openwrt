@@ -1,4 +1,4 @@
-From 922bed734a44716def37b71e63a8829fe07315c3 Mon Sep 17 00:00:00 2001
+From de7f5fe5f4dd6e8d96da42467ab2a5f53ce0b16e Mon Sep 17 00:00:00 2001
 From: John Ogness <john.ogness@linutronix.de>
 Date: Tue, 12 Feb 2019 15:29:52 +0100
 Subject: [PATCH 030/306] printk: do boot_delay_msec inside printk_delay
@@ -73,5 +73,5 @@ index ff9ec5cc8fa6..6d02f07f47cf 100644
  	}
  
 -- 
-2.29.2
+2.30.0
 

@@ -1,4 +1,4 @@
-From 19996320a69ed666e67698df81dae6b2bf9b749c Mon Sep 17 00:00:00 2001
+From 592d88aa8c3e22eb37b7e5328621db8ac503a235 Mon Sep 17 00:00:00 2001
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Mon, 24 Feb 2020 15:01:32 +0100
 Subject: [PATCH 223/306] bpf: Tighten the requirements for preallocated hash
@@ -51,7 +51,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  1 file changed, 28 insertions(+), 11 deletions(-)
 
 diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index a67bfa803d98..dbcd41b8c2c7 100644
+index e6a43c0fdee8..e1c73d2ea993 100644
 --- a/kernel/bpf/verifier.c
 +++ b/kernel/bpf/verifier.c
 @@ -7957,26 +7957,43 @@ static bool is_tracing_prog_type(enum bpf_prog_type type)
@@ -110,5 +110,5 @@ index a67bfa803d98..dbcd41b8c2c7 100644
  
  	if ((is_tracing_prog_type(prog->type) ||
 -- 
-2.29.2
+2.30.0
 

@@ -1,4 +1,4 @@
-From 36d24dcba4b3f5692aba4c7da5f0dddfb9bc55d2 Mon Sep 17 00:00:00 2001
+From a87aad38c5cb3692d963808fcfc4bad10bd4cc0f Mon Sep 17 00:00:00 2001
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Wed, 31 Oct 2012 12:04:11 +0100
 Subject: [PATCH 251/306] arm: Add support for lazy preemption
@@ -68,10 +68,10 @@ index 0d0d5178e2c3..13be9c2137e2 100644
  #endif /* __KERNEL__ */
  #endif /* __ASM_ARM_THREAD_INFO_H */
 diff --git a/arch/arm/kernel/asm-offsets.c b/arch/arm/kernel/asm-offsets.c
-index c773b829ee8e..f3a0e1cd1f04 100644
+index bfb05c93494d..b6947f568182 100644
 --- a/arch/arm/kernel/asm-offsets.c
 +++ b/arch/arm/kernel/asm-offsets.c
-@@ -53,6 +53,7 @@ int main(void)
+@@ -54,6 +54,7 @@ int main(void)
    BLANK();
    DEFINE(TI_FLAGS,		offsetof(struct thread_info, flags));
    DEFINE(TI_PREEMPT,		offsetof(struct thread_info, preempt_count));
@@ -149,7 +149,7 @@ index 271cb8a1eba1..fd039b1b3731 100644
  ENDPROC(ret_fast_syscall)
  
 diff --git a/arch/arm/kernel/signal.c b/arch/arm/kernel/signal.c
-index ab2568996ddb..50d43ce823bf 100644
+index c01f76cd0242..12cfa1ddd223 100644
 --- a/arch/arm/kernel/signal.c
 +++ b/arch/arm/kernel/signal.c
 @@ -649,7 +649,8 @@ do_work_pending(struct pt_regs *regs, unsigned int thread_flags, int syscall)
@@ -163,5 +163,5 @@ index ab2568996ddb..50d43ce823bf 100644
  		} else {
  			if (unlikely(!user_mode(regs)))
 -- 
-2.29.2
+2.30.0
 

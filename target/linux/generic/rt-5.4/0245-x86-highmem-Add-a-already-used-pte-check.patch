@@ -1,4 +1,4 @@
-From 98ce27b3cc6251d132e246fcbb89a60900598e5b Mon Sep 17 00:00:00 2001
+From 974062ab0d5bcd87ac0c3a6b7363a983a70bb172 Mon Sep 17 00:00:00 2001
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Mon, 11 Mar 2013 17:09:55 +0100
 Subject: [PATCH 245/306] x86/highmem: Add a "already used pte" check
@@ -24,5 +24,5 @@ index c57d15fc63fb..54e2f28fe189 100644
  	current->kmap_pte[type] = pte;
  #endif
 -- 
-2.29.2
+2.30.0
 

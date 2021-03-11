@@ -1,4 +1,4 @@
-From 88596b6404090968dc65b3b337ddecf5240e987b Mon Sep 17 00:00:00 2001
+From ae707e6529d34e0459cd77d0ad057b3538c8cd56 Mon Sep 17 00:00:00 2001
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Wed, 14 Aug 2019 16:38:43 +0200
 Subject: [PATCH 087/306] dma-buf: Use seqlock_t instread disabling preemption
@@ -271,5 +271,5 @@ index ee50d10f052b..81272ca122ee 100644
  	struct dma_fence __rcu *fence_excl;
  	struct dma_resv_list __rcu *fence;
 -- 
-2.29.2
+2.30.0
 

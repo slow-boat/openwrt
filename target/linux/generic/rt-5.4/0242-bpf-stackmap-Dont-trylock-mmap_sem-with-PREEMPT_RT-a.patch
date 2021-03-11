@@ -1,4 +1,4 @@
-From 9c03a0f30810ff5a012bb008e5fcdf11ec71eb89 Mon Sep 17 00:00:00 2001
+From 385689f58a5ec75496e95fc57c3378eaa2825c2e Mon Sep 17 00:00:00 2001
 From: David Miller <davem@davemloft.net>
 Date: Mon, 24 Feb 2020 15:01:53 +0100
 Subject: [PATCH 242/306] bpf/stackmap: Dont trylock mmap_sem with PREEMPT_RT
@@ -25,7 +25,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  1 file changed, 14 insertions(+), 3 deletions(-)
 
 diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
-index 173e983619d7..e753900ff137 100644
+index fba2ade28fb3..a9aca670b955 100644
 --- a/kernel/bpf/stackmap.c
 +++ b/kernel/bpf/stackmap.c
 @@ -40,6 +40,9 @@ static void do_up_read(struct irq_work *entry)
@@ -38,7 +38,7 @@ index 173e983619d7..e753900ff137 100644
  	work = container_of(entry, struct stack_map_irq_work, irq_work);
  	up_read_non_owner(work->sem);
  	work->sem = NULL;
-@@ -288,10 +291,18 @@ static void stack_map_get_build_id_offset(struct bpf_stack_build_id *id_offs,
+@@ -290,10 +293,18 @@ static void stack_map_get_build_id_offset(struct bpf_stack_build_id *id_offs,
  	struct stack_map_irq_work *work = NULL;
  
  	if (irqs_disabled()) {
@@ -61,5 +61,5 @@ index 173e983619d7..e753900ff137 100644
  
  	/*
 -- 
-2.29.2
+2.30.0
 

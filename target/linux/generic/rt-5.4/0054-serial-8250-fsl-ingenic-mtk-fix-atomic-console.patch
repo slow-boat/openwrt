@@ -1,4 +1,4 @@
-From a23cd0b61cf5179ea47955aa6b60d13f036c6354 Mon Sep 17 00:00:00 2001
+From b8ffa87ff37a136c482b81b9992d65473225cfb8 Mon Sep 17 00:00:00 2001
 From: John Ogness <john.ogness@linutronix.de>
 Date: Fri, 10 Jan 2020 16:45:32 +0106
 Subject: [PATCH 054/306] serial: 8250: fsl/ingenic/mtk: fix atomic console
@@ -108,5 +108,5 @@ index e9eb454c2472..221e0c9efc36 100644
  
  static void mtk8250_set_flow_ctrl(struct uart_8250_port *up, int mode)
 -- 
-2.29.2
+2.30.0
 

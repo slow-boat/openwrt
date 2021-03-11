@@ -1,4 +1,4 @@
-From 2968bda164ee37f6ec88b0a14be9929a160fa27c Mon Sep 17 00:00:00 2001
+From 5d5b8da183a849126048591d6aea2ec39da0b980 Mon Sep 17 00:00:00 2001
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Sat, 16 Feb 2019 09:02:00 +0100
 Subject: [PATCH 044/306] serial: 8250: export symbols which are used by
@@ -43,5 +43,5 @@ index 28c8fa7152b0..60bd3b644bdc 100644
  /**
   * console_unlock - unlock the console system
 -- 
-2.29.2
+2.30.0
 

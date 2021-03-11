@@ -1,4 +1,4 @@
-From c49cd4bbf1321da40c220d6c44d826b80f9eed19 Mon Sep 17 00:00:00 2001
+From a4ef0c56146cfa527d29f0e94ca8a33b6aa197e9 Mon Sep 17 00:00:00 2001
 From: John Ogness <john.ogness@linutronix.de>
 Date: Mon, 7 Oct 2019 16:20:39 +0200
 Subject: [PATCH 051/306] printk: handle iterating while buffer changing
@@ -45,5 +45,5 @@ index 4a5ef5258326..f1e43ca2d09b 100644
  			goto retry;
  		}
 -- 
-2.29.2
+2.30.0
 

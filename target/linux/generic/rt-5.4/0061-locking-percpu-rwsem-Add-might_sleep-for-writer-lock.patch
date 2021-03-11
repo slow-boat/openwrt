@@ -1,4 +1,4 @@
-From adf3d46c100da998f0687d5183b23d4ac215daaa Mon Sep 17 00:00:00 2001
+From 37c1e6f115b9c778243cc1fa34f8d9e4cdc2fb49 Mon Sep 17 00:00:00 2001
 From: Davidlohr Bueso <dave@stgolabs.net>
 Date: Fri, 31 Jan 2020 16:07:10 +0100
 Subject: [PATCH 061/306] locking/percpu-rwsem: Add might_sleep() for writer
@@ -28,5 +28,5 @@ index 94c901b350f4..e4a4a56037bb 100644
  
  	/* Notify readers to take the slow path. */
 -- 
-2.29.2
+2.30.0
 

@@ -1,4 +1,4 @@
-From 8196e30a52aa637a41302c022ae29ab8f7146d59 Mon Sep 17 00:00:00 2001
+From f0d5f97ccbf18b9c71e063d9931886ec67852120 Mon Sep 17 00:00:00 2001
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Thu, 16 Jan 2020 13:13:41 +0100
 Subject: [PATCH 068/306] smp: Remove allocation mask from on_each_cpu_cond.*()
@@ -126,7 +126,7 @@ index 5c0d4f2bece2..53144d056252 100644
  EXPORT_SYMBOL(on_each_cpu_cond);
  
 diff --git a/mm/slub.c b/mm/slub.c
-index 8b3ef45a0f10..320d721fec1b 100644
+index e622e8f4c2ac..23386ec51373 100644
 --- a/mm/slub.c
 +++ b/mm/slub.c
 @@ -2375,7 +2375,7 @@ static bool has_cpu_slab(int cpu, void *info)
@@ -139,5 +139,5 @@ index 8b3ef45a0f10..320d721fec1b 100644
  
  /*
 -- 
-2.29.2
+2.30.0
 

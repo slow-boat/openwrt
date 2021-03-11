@@ -1,4 +1,4 @@
-From eb5979650cbde2d24cf7df2de0b723726879dff5 Mon Sep 17 00:00:00 2001
+From 9e5d455b82bed4a996a9f1dbc1225a4b6077d6c9 Mon Sep 17 00:00:00 2001
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Fri, 12 Jun 2020 16:51:50 +0200
 Subject: [PATCH 296/306] rwsem: Provide down_read_non_owner() and
@@ -54,5 +54,5 @@ index 560943e5b626..8dffbfa3bcd9 100644
  
  #endif
 -- 
-2.29.2
+2.30.0
 

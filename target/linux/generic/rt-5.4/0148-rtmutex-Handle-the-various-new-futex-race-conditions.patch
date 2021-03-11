@@ -1,4 +1,4 @@
-From 5e3c4d1a3c306d5660df686d6d35ce765ed40397 Mon Sep 17 00:00:00 2001
+From 85717d9065f24c6790dc6495c0aa992304bc6844 Mon Sep 17 00:00:00 2001
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Fri, 10 Jun 2011 11:04:15 +0200
 Subject: [PATCH 148/306] rtmutex: Handle the various new futex race conditions
@@ -14,11 +14,11 @@ Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
  kernel/locking/rtmutex_common.h |  2 +
  3 files changed, 94 insertions(+), 21 deletions(-)
 
-Index: linux-5.4.96/kernel/futex.c
-===================================================================
---- linux-5.4.96.orig/kernel/futex.c
-+++ linux-5.4.96/kernel/futex.c
-@@ -2270,6 +2270,16 @@ retry_private:
+diff --git a/kernel/futex.c b/kernel/futex.c
+index 042c2707e913..801b28af6647 100644
+--- a/kernel/futex.c
++++ b/kernel/futex.c
+@@ -2270,6 +2270,16 @@ static int futex_requeue(u32 __user *uaddr1, unsigned int flags,
  				requeue_pi_wake_futex(this, &key2, hb2);
  				drop_count++;
  				continue;
@@ -35,7 +35,7 @@ Index: linux-5.4.96/kernel/futex.c
  			} else if (ret) {
  				/*
  				 * rt_mutex_start_proxy_lock() detected a
-@@ -3317,7 +3327,7 @@ static int futex_wait_requeue_pi(u32 __u
+@@ -3317,7 +3327,7 @@ static int futex_wait_requeue_pi(u32 __user *uaddr, unsigned int flags,
  {
  	struct hrtimer_sleeper timeout, *to;
  	struct rt_mutex_waiter rt_waiter;
@@ -44,7 +44,7 @@ Index: linux-5.4.96/kernel/futex.c
  	union futex_key key2 = FUTEX_KEY_INIT;
  	struct futex_q q = futex_q_init;
  	int res, ret;
-@@ -3369,20 +3379,55 @@ static int futex_wait_requeue_pi(u32 __u
+@@ -3369,20 +3379,55 @@ static int futex_wait_requeue_pi(u32 __user *uaddr, unsigned int flags,
  	/* Queue the futex_q, drop the hb lock, wait for wakeup. */
  	futex_wait_queue_me(hb, &q, to);
  
@@ -111,7 +111,7 @@ Index: linux-5.4.96/kernel/futex.c
  
  	/* Check if the requeue code acquired the second futex for us. */
  	if (!q.rt_waiter) {
-@@ -3391,14 +3436,15 @@ static int futex_wait_requeue_pi(u32 __u
+@@ -3391,14 +3436,15 @@ static int futex_wait_requeue_pi(u32 __user *uaddr, unsigned int flags,
  		 * did a lock-steal - fix up the PI-state in that case.
  		 */
  		if (q.pi_state && (q.pi_state->owner != current)) {
@@ -129,7 +129,7 @@ Index: linux-5.4.96/kernel/futex.c
  			/*
  			 * Adjust the return value. It's either -EFAULT or
  			 * success (1) but the caller expects 0 for success.
-@@ -3417,7 +3463,8 @@ static int futex_wait_requeue_pi(u32 __u
+@@ -3417,7 +3463,8 @@ static int futex_wait_requeue_pi(u32 __user *uaddr, unsigned int flags,
  		pi_mutex = &q.pi_state->pi_mutex;
  		ret = rt_mutex_wait_proxy_lock(pi_mutex, to, &rt_waiter);
  
@@ -139,11 +139,11 @@ Index: linux-5.4.96/kernel/futex.c
  		if (ret && !rt_mutex_cleanup_proxy_lock(pi_mutex, &rt_waiter))
  			ret = 0;
  
-Index: linux-5.4.96/kernel/locking/rtmutex.c
-===================================================================
---- linux-5.4.96.orig/kernel/locking/rtmutex.c
-+++ linux-5.4.96/kernel/locking/rtmutex.c
-@@ -136,6 +136,11 @@ static void fixup_rt_mutex_waiters(struc
+diff --git a/kernel/locking/rtmutex.c b/kernel/locking/rtmutex.c
+index 734698aec5f9..0166dc4f995a 100644
+--- a/kernel/locking/rtmutex.c
++++ b/kernel/locking/rtmutex.c
+@@ -136,6 +136,11 @@ static void fixup_rt_mutex_waiters(struct rt_mutex *lock)
  		WRITE_ONCE(*p, owner & ~RT_MUTEX_HAS_WAITERS);
  }
  
@@ -165,7 +165,7 @@ Index: linux-5.4.96/kernel/locking/rtmutex.c
  }
  
  /*
-@@ -516,7 +522,7 @@ static int rt_mutex_adjust_prio_chain(st
+@@ -516,7 +522,7 @@ static int rt_mutex_adjust_prio_chain(struct task_struct *task,
  	 * reached or the state of the chain has changed while we
  	 * dropped the locks.
  	 */
@@ -174,7 +174,7 @@ Index: linux-5.4.96/kernel/locking/rtmutex.c
  		goto out_unlock_pi;
  
  	/*
-@@ -950,6 +956,22 @@ static int task_blocks_on_rt_mutex(struc
+@@ -950,6 +956,22 @@ static int task_blocks_on_rt_mutex(struct rt_mutex *lock,
  		return -EDEADLK;
  
  	raw_spin_lock(&task->pi_lock);
@@ -197,7 +197,7 @@ Index: linux-5.4.96/kernel/locking/rtmutex.c
  	waiter->task = task;
  	waiter->lock = lock;
  	waiter->prio = task->prio;
-@@ -973,7 +995,7 @@ static int task_blocks_on_rt_mutex(struc
+@@ -973,7 +995,7 @@ static int task_blocks_on_rt_mutex(struct rt_mutex *lock,
  		rt_mutex_enqueue_pi(owner, waiter);
  
  		rt_mutex_adjust_prio(owner);
@@ -206,7 +206,7 @@ Index: linux-5.4.96/kernel/locking/rtmutex.c
  			chain_walk = 1;
  	} else if (rt_mutex_cond_detect_deadlock(waiter, chwalk)) {
  		chain_walk = 1;
-@@ -1069,7 +1091,7 @@ static void remove_waiter(struct rt_mute
+@@ -1069,7 +1091,7 @@ static void remove_waiter(struct rt_mutex *lock,
  {
  	bool is_top_waiter = (waiter == rt_mutex_top_waiter(lock));
  	struct task_struct *owner = rt_mutex_owner(lock);
@@ -215,7 +215,7 @@ Index: linux-5.4.96/kernel/locking/rtmutex.c
  
  	lockdep_assert_held(&lock->wait_lock);
  
-@@ -1095,7 +1117,8 @@ static void remove_waiter(struct rt_mute
+@@ -1095,7 +1117,8 @@ static void remove_waiter(struct rt_mutex *lock,
  	rt_mutex_adjust_prio(owner);
  
  	/* Store the lock on which owner is blocked or NULL */
@@ -225,7 +225,7 @@ Index: linux-5.4.96/kernel/locking/rtmutex.c
  
  	raw_spin_unlock(&owner->pi_lock);
  
-@@ -1131,7 +1154,8 @@ void rt_mutex_adjust_pi(struct task_stru
+@@ -1131,7 +1154,8 @@ void rt_mutex_adjust_pi(struct task_struct *task)
  	raw_spin_lock_irqsave(&task->pi_lock, flags);
  
  	waiter = task->pi_blocked_on;
@@ -235,10 +235,10 @@ Index: linux-5.4.96/kernel/locking/rtmutex.c
  		raw_spin_unlock_irqrestore(&task->pi_lock, flags);
  		return;
  	}
-Index: linux-5.4.96/kernel/locking/rtmutex_common.h
-===================================================================
---- linux-5.4.96.orig/kernel/locking/rtmutex_common.h
-+++ linux-5.4.96/kernel/locking/rtmutex_common.h
+diff --git a/kernel/locking/rtmutex_common.h b/kernel/locking/rtmutex_common.h
+index ca6fb489007b..8f39bc139735 100644
+--- a/kernel/locking/rtmutex_common.h
++++ b/kernel/locking/rtmutex_common.h
 @@ -130,6 +130,8 @@ enum rtmutex_chainwalk {
  /*
   * PI-futex support (proxy locking functions, etc.):
@@ -248,3 +248,6 @@ Index: linux-5.4.96/kernel/locking/rtmutex_common.h
  extern struct task_struct *rt_mutex_next_owner(struct rt_mutex *lock);
  extern void rt_mutex_init_proxy_locked(struct rt_mutex *lock,
  				       struct task_struct *proxy_owner);
+-- 
+2.30.0
+

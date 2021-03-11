@@ -1,4 +1,4 @@
-From f3e38fabfbf77e2d1f462b0080c34b3fa1752a13 Mon Sep 17 00:00:00 2001
+From fe9ae6c6270654e2754141dfff95ef101112814f Mon Sep 17 00:00:00 2001
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Thu, 16 Jan 2020 12:14:38 +0100
 Subject: [PATCH 067/306] smp: Add a smp_cond_func_t argument to
@@ -143,5 +143,5 @@ index c64044d68bc6..bf374d9533f8 100644
  EXPORT_SYMBOL(on_each_cpu_cond_mask);
  
 -- 
-2.29.2
+2.30.0
 

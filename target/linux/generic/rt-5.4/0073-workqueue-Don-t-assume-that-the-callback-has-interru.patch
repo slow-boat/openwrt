@@ -1,4 +1,4 @@
-From 2319d6c81c040a3c1ac034be0b111a6961df6958 Mon Sep 17 00:00:00 2001
+From 8053c2bbfbc1688bb3da0375b03de0d2df8ff690 Mon Sep 17 00:00:00 2001
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Tue, 11 Jun 2019 11:21:02 +0200
 Subject: [PATCH 073/306] workqueue: Don't assume that the callback has
@@ -20,7 +20,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  1 file changed, 3 insertions(+), 1 deletion(-)
 
 diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-index e9db630bd0fd..8f4ca0b6dea1 100644
+index 85d8e70bfc5a..6230e5e00819 100644
 --- a/kernel/workqueue.c
 +++ b/kernel/workqueue.c
 @@ -1616,9 +1616,11 @@ EXPORT_SYMBOL_GPL(queue_work_node);
@@ -37,5 +37,5 @@ index e9db630bd0fd..8f4ca0b6dea1 100644
  EXPORT_SYMBOL(delayed_work_timer_fn);
  
 -- 
-2.29.2
+2.30.0
 

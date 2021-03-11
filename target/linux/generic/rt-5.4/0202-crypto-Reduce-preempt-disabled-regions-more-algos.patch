@@ -1,4 +1,4 @@
-From 45a9ec2f873ce45c2dd180d094f73d351a13bfe2 Mon Sep 17 00:00:00 2001
+From 059294f17e9a936a0922c7690fee1e888b223558 Mon Sep 17 00:00:00 2001
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Fri, 21 Feb 2014 17:24:04 +0100
 Subject: [PATCH 202/306] crypto: Reduce preempt disabled regions, more algos
@@ -236,5 +236,5 @@ index d15b99397480..36c28b295b8e 100644
  		nbytes = walk.nbytes;
  	}
 -- 
-2.29.2
+2.30.0
 

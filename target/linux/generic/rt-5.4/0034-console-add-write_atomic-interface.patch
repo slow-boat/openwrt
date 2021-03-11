@@ -1,4 +1,4 @@
-From 3cd7315fe4046075901efd17801897b01c8d3ff4 Mon Sep 17 00:00:00 2001
+From b96beb4e5254bb8f67ba86bd4df2e50df7b1f4b4 Mon Sep 17 00:00:00 2001
 From: John Ogness <john.ogness@linutronix.de>
 Date: Tue, 12 Feb 2019 15:29:56 +0100
 Subject: [PATCH 034/306] console: add write_atomic interface
@@ -68,5 +68,5 @@ index d85e2d77a106..783c03a0ad0a 100644
 +}
 +EXPORT_SYMBOL(console_atomic_unlock);
 -- 
-2.29.2
+2.30.0
 

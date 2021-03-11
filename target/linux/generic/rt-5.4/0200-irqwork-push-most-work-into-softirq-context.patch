@@ -1,4 +1,4 @@
-From ce6894a4de507d9a688f5c8b4447b1a835b2e7b8 Mon Sep 17 00:00:00 2001
+From 27dba43d0caff8ab5074e3e5548a9aef78d6c051 Mon Sep 17 00:00:00 2001
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Tue, 23 Jun 2015 15:32:51 +0200
 Subject: [PATCH 200/306] irqwork: push most work into softirq context
@@ -173,10 +173,10 @@ index d42acaf81886..aab68fdbcb8d 100644
  /*
   * Synchronize against the irq_work @entry, ensures the entry is not
 diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 3d911eb319f8..ca917ea4f6ed 100644
+index 6f7a511a9b55..81ebc478f1ba 100644
 --- a/kernel/rcu/tree.c
 +++ b/kernel/rcu/tree.c
-@@ -1097,6 +1097,7 @@ static int rcu_implicit_dynticks_qs(struct rcu_data *rdp)
+@@ -1103,6 +1103,7 @@ static int rcu_implicit_dynticks_qs(struct rcu_data *rdp)
  		    !rdp->rcu_iw_pending && rdp->rcu_iw_gp_seq != rnp->gp_seq &&
  		    (rnp->ffmask & rdp->grpmask)) {
  			init_irq_work(&rdp->rcu_iw, rcu_iw_handler);
@@ -222,5 +222,5 @@ index 87fa73cdb90f..2279c1e04d0c 100644
  	if (IS_ENABLED(CONFIG_NO_HZ_COMMON))
  		__run_timers(this_cpu_ptr(&timer_bases[BASE_DEF]));
 -- 
-2.29.2
+2.30.0
 

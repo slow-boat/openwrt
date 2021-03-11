@@ -1,4 +1,4 @@
-From 6731fec933edccbf9e45a333f2b5bc525d2b6e92 Mon Sep 17 00:00:00 2001
+From 2b03c997c80573a5d244e88fdc65f056bd058184 Mon Sep 17 00:00:00 2001
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Thu, 15 Aug 2019 18:14:16 +0200
 Subject: [PATCH 077/306] cgroup: Remove ->css_rstat_flush()
@@ -48,7 +48,7 @@ index 1ccfa3779e18..1162ab71f919 100644
  				   struct cgroup_subsys_state *css);
  
 diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index 35faf082a709..806fc9d46ddd 100644
+index 37db8eba149a..7076bb5b48b7 100644
 --- a/kernel/cgroup/cgroup.c
 +++ b/kernel/cgroup/cgroup.c
 @@ -1957,7 +1957,6 @@ static void init_cgroup_housekeeping(struct cgroup *cgrp)
@@ -59,7 +59,7 @@ index 35faf082a709..806fc9d46ddd 100644
  	prev_cputime_init(&cgrp->prev_cputime);
  
  	for_each_subsys(ss, ssid)
-@@ -5027,12 +5026,6 @@ static void css_release_work_fn(struct work_struct *work)
+@@ -5029,12 +5028,6 @@ static void css_release_work_fn(struct work_struct *work)
  	list_del_rcu(&css->sibling);
  
  	if (ss) {
@@ -72,7 +72,7 @@ index 35faf082a709..806fc9d46ddd 100644
  		cgroup_idr_replace(&ss->css_idr, NULL, css->id);
  		if (ss->css_released)
  			ss->css_released(css);
-@@ -5094,7 +5087,6 @@ static void init_and_link_css(struct cgroup_subsys_state *css,
+@@ -5096,7 +5089,6 @@ static void init_and_link_css(struct cgroup_subsys_state *css,
  	css->id = -1;
  	INIT_LIST_HEAD(&css->sibling);
  	INIT_LIST_HEAD(&css->children);
@@ -80,7 +80,7 @@ index 35faf082a709..806fc9d46ddd 100644
  	css->serial_nr = css_serial_nr_next++;
  	atomic_set(&css->online_cnt, 0);
  
-@@ -5103,9 +5095,6 @@ static void init_and_link_css(struct cgroup_subsys_state *css,
+@@ -5105,9 +5097,6 @@ static void init_and_link_css(struct cgroup_subsys_state *css,
  		css_get(css->parent);
  	}
  
@@ -90,7 +90,7 @@ index 35faf082a709..806fc9d46ddd 100644
  	BUG_ON(cgroup_css(cgrp, ss));
  }
  
-@@ -5207,7 +5196,6 @@ static struct cgroup_subsys_state *css_create(struct cgroup *cgrp,
+@@ -5209,7 +5198,6 @@ static struct cgroup_subsys_state *css_create(struct cgroup *cgrp,
  err_list_del:
  	list_del_rcu(&css->sibling);
  err_free_css:
@@ -122,5 +122,5 @@ index 4a942d4e9763..a64b221886b1 100644
  
  		/* if @may_sleep, play nice and yield if necessary */
 -- 
-2.29.2
+2.30.0
 

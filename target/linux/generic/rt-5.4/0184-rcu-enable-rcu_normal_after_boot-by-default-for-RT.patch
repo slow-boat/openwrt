@@ -1,4 +1,4 @@
-From c0f9ea63a99b62e98191857694c4988714f44a3d Mon Sep 17 00:00:00 2001
+From 4c43d6b6bb1065dde82b802afdcc286474cfe635 Mon Sep 17 00:00:00 2001
 From: Julia Cartwright <julia@ni.com>
 Date: Wed, 12 Oct 2016 11:21:14 -0500
 Subject: [PATCH 184/306] rcu: enable rcu_normal_after_boot by default for RT
@@ -35,5 +35,5 @@ index 1861103662db..5ed14f191dc8 100644
  
  #ifdef CONFIG_DEBUG_LOCK_ALLOC
 -- 
-2.29.2
+2.30.0
 

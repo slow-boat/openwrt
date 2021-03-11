@@ -1,4 +1,4 @@
-From 5a291399c20bb417d01081d228a1ca200dae5cbc Mon Sep 17 00:00:00 2001
+From 1fd5e4f8c2336d75504c3168c9679306226fa32a Mon Sep 17 00:00:00 2001
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Thu, 28 May 2020 14:35:12 +0200
 Subject: [PATCH 294/306] Bluetooth: Acquire sk_lock.slock without disabling
@@ -62,5 +62,5 @@ index 90bb53aa4bee..2c27aa2acf1c 100644
  	if (parent && sock_flag(sk, SOCK_ZAPPED)) {
  		/* We have to drop DLC lock here, otherwise
 -- 
-2.29.2
+2.30.0
 

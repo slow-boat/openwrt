@@ -1,4 +1,4 @@
-From c129c6ea831d0030f3dce6a7b3fd1cb9af5ff141 Mon Sep 17 00:00:00 2001
+From 52bf47fe8d9bdf51d1f596a371e5d8000f746530 Mon Sep 17 00:00:00 2001
 From: John Ogness <john.ogness@linutronix.de>
 Date: Tue, 12 Feb 2019 15:29:47 +0100
 Subject: [PATCH 025/306] printk: remove exclusive console hack
@@ -103,5 +103,5 @@ index 591f80fb92ad..a67836c4cfb4 100644
  	pr_info("%sconsole [%s%d] enabled\n",
  		(newcon->flags & CON_BOOT) ? "boot" : "" ,
 -- 
-2.29.2
+2.30.0
 

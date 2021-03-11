@@ -1,4 +1,4 @@
-From 948447e588e2551bf823654310ae4674891124dd Mon Sep 17 00:00:00 2001
+From 894c0c4f62a7e51093371f99040481dabc51b0a8 Mon Sep 17 00:00:00 2001
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Thu, 7 Nov 2019 17:49:20 +0100
 Subject: [PATCH 268/306] x86: Enable RT also on 32bit
@@ -29,5 +29,5 @@ index 7282956fa25a..4b77b3273051 100644
  	select ARCH_USE_QUEUED_RWLOCKS
  	select ARCH_USE_QUEUED_SPINLOCKS
 -- 
-2.29.2
+2.30.0
 

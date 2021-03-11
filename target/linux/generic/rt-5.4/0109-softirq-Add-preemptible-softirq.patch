@@ -1,4 +1,4 @@
-From 681ce9da5cdd5f96431873df2cb0474bdb6e634e Mon Sep 17 00:00:00 2001
+From 2ab266b07e03fec59c845b0a690b25ddc2e35c33 Mon Sep 17 00:00:00 2001
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Mon, 20 May 2019 13:09:08 +0200
 Subject: [PATCH 109/306] softirq: Add preemptible softirq
@@ -100,10 +100,10 @@ index bbb68dba37cc..c5c682b2aac4 100644
  /*
   * The preempt_count offset after preempt_disable();
 diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-index 1e3dad252d61..107044d12146 100644
+index 070ef38657ca..d5d252488211 100644
 --- a/include/linux/rcupdate.h
 +++ b/include/linux/rcupdate.h
-@@ -279,7 +279,8 @@ static inline void rcu_preempt_sleep_check(void) { }
+@@ -281,7 +281,8 @@ static inline void rcu_preempt_sleep_check(void) { }
  #define rcu_sleep_check()						\
  	do {								\
  		rcu_preempt_sleep_check();				\
@@ -497,5 +497,5 @@ index da8b4f3c266e..61eb19b55241 100644
  	}
  
 -- 
-2.29.2
+2.30.0
 

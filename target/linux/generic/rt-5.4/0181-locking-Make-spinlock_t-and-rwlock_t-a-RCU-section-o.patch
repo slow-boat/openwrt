@@ -1,4 +1,4 @@
-From 719bac7362dc841e349c6e91b9228952da4b579f Mon Sep 17 00:00:00 2001
+From 3e9b1102b3dbf5add5c07b4979b297f7238ac727 Mon Sep 17 00:00:00 2001
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Tue, 19 Nov 2019 09:25:04 +0100
 Subject: [PATCH 181/306] locking: Make spinlock_t and rwlock_t a RCU section
@@ -17,7 +17,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  2 files changed, 12 insertions(+)
 
 diff --git a/kernel/locking/rtmutex.c b/kernel/locking/rtmutex.c
-index cf09f8e7ed0f..602eb7821a1b 100644
+index 3a2d7919ecd9..b9895b574a57 100644
 --- a/kernel/locking/rtmutex.c
 +++ b/kernel/locking/rtmutex.c
 @@ -1141,6 +1141,7 @@ void __sched rt_spin_lock_slowunlock(struct rt_mutex *lock)
@@ -121,5 +121,5 @@ index c3b91205161c..0ae8c62ea832 100644
  }
  EXPORT_SYMBOL(rt_write_unlock);
 -- 
-2.29.2
+2.30.0
 

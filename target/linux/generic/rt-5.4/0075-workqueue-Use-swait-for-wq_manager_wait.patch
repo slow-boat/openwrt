@@ -1,4 +1,4 @@
-From b515c22b7537f3768ee6d6a76fbdd2a67587848a Mon Sep 17 00:00:00 2001
+From 1317f9a28cc0bd3f8dca7a67c9e9e21f36579bd7 Mon Sep 17 00:00:00 2001
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Tue, 11 Jun 2019 11:21:09 +0200
 Subject: [PATCH 075/306] workqueue: Use swait for wq_manager_wait
@@ -16,7 +16,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  1 file changed, 4 insertions(+), 3 deletions(-)
 
 diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-index 8f4ca0b6dea1..5c0d02a8de59 100644
+index 6230e5e00819..d27ade16f772 100644
 --- a/kernel/workqueue.c
 +++ b/kernel/workqueue.c
 @@ -50,6 +50,7 @@
@@ -36,7 +36,7 @@ index 8f4ca0b6dea1..5c0d02a8de59 100644
  
  static LIST_HEAD(workqueues);		/* PR: list of all workqueues */
  static bool workqueue_freezing;		/* PL: have wqs started freezing? */
-@@ -2148,7 +2149,7 @@ static bool manage_workers(struct worker *worker)
+@@ -2145,7 +2146,7 @@ static bool manage_workers(struct worker *worker)
  
  	pool->manager = NULL;
  	pool->flags &= ~POOL_MANAGER_ACTIVE;
@@ -45,7 +45,7 @@ index 8f4ca0b6dea1..5c0d02a8de59 100644
  	return true;
  }
  
-@@ -3549,7 +3550,7 @@ static void put_unbound_pool(struct worker_pool *pool)
+@@ -3546,7 +3547,7 @@ static void put_unbound_pool(struct worker_pool *pool)
  	 * manager and @pool gets freed with the flag set.
  	 */
  	spin_lock_irq(&pool->lock);
@@ -55,5 +55,5 @@ index 8f4ca0b6dea1..5c0d02a8de59 100644
  	pool->flags |= POOL_MANAGER_ACTIVE;
  
 -- 
-2.29.2
+2.30.0
 

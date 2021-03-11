@@ -1,4 +1,4 @@
-From be7e0c6078368c6826feffc4a79d87516cae74bb Mon Sep 17 00:00:00 2001
+From 43b287cdd9d995772557771b9bfb9f1e72369533 Mon Sep 17 00:00:00 2001
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Thu, 26 Jul 2018 15:06:10 +0200
 Subject: [PATCH 105/306] efi: Allow efi=runtime
@@ -27,5 +27,5 @@ index a299e6acf9cc..354953ef4be3 100644
  }
  early_param("efi", parse_efi_cmdline);
 -- 
-2.29.2
+2.30.0
 

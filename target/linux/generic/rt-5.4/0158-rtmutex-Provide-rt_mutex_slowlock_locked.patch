@@ -1,4 +1,4 @@
-From f8c8e54aa4806e3c9ec348ff52e63e4d95aa9a9e Mon Sep 17 00:00:00 2001
+From 982351d7f62773d651de9ca2780f5c62c038192d Mon Sep 17 00:00:00 2001
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Thu, 12 Oct 2017 16:14:22 +0200
 Subject: [PATCH 158/306] rtmutex: Provide rt_mutex_slowlock_locked()
@@ -13,7 +13,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  2 files changed, 45 insertions(+), 29 deletions(-)
 
 diff --git a/kernel/locking/rtmutex.c b/kernel/locking/rtmutex.c
-index 3fc4d1a57e55..f2377d74c705 100644
+index 9f133a32dd03..b322e5b72f85 100644
 --- a/kernel/locking/rtmutex.c
 +++ b/kernel/locking/rtmutex.c
 @@ -1243,35 +1243,16 @@ static void rt_mutex_handle_deadlock(int res, int detect_deadlock,
@@ -115,7 +115,7 @@ index 3fc4d1a57e55..f2377d74c705 100644
  	raw_spin_unlock_irqrestore(&lock->wait_lock, flags);
  
 diff --git a/kernel/locking/rtmutex_common.h b/kernel/locking/rtmutex_common.h
-index 461527f3f7af..cb9815f0c766 100644
+index 202e2b0d1251..66deb94765fb 100644
 --- a/kernel/locking/rtmutex_common.h
 +++ b/kernel/locking/rtmutex_common.h
 @@ -15,6 +15,7 @@
@@ -126,7 +126,7 @@ index 461527f3f7af..cb9815f0c766 100644
  
  /*
   * This is the control structure for tasks blocked on a rt_mutex,
-@@ -159,6 +160,12 @@ extern bool __rt_mutex_futex_unlock(struct rt_mutex *lock,
+@@ -158,6 +159,12 @@ extern bool __rt_mutex_futex_unlock(struct rt_mutex *lock,
  				 struct wake_q_head *wqh);
  
  extern void rt_mutex_postunlock(struct wake_q_head *wake_q);
@@ -140,5 +140,5 @@ index 461527f3f7af..cb9815f0c766 100644
  #ifdef CONFIG_DEBUG_RT_MUTEXES
  # include "rtmutex-debug.h"
 -- 
-2.29.2
+2.30.0
 

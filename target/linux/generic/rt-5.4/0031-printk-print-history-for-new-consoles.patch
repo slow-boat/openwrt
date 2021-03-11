@@ -1,4 +1,4 @@
-From f4d499e04b40426d3838485ac77987e3ed0a516e Mon Sep 17 00:00:00 2001
+From 003a1d6569daca504d6963b58cd6862ef2d97bf9 Mon Sep 17 00:00:00 2001
 From: John Ogness <john.ogness@linutronix.de>
 Date: Tue, 12 Feb 2019 15:29:53 +0100
 Subject: [PATCH 031/306] printk: print history for new consoles
@@ -122,5 +122,5 @@ index 6d02f07f47cf..7aa0ab0c9e1f 100644
  			continue;
  		if (!cpu_online(raw_smp_processor_id()) &&
 -- 
-2.29.2
+2.30.0
 

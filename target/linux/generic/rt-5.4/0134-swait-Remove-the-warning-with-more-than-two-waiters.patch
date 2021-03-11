@@ -1,4 +1,4 @@
-From fcf769d4438bd8daf6c564cbc3491ed4ffc773c7 Mon Sep 17 00:00:00 2001
+From 7523fbc37685a9b54d1bde48444d975bcb364817 Mon Sep 17 00:00:00 2001
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Fri, 20 Mar 2020 13:28:35 +0100
 Subject: [PATCH 134/306] swait: Remove the warning with more than two waiters
@@ -130,5 +130,5 @@ index c58068d2ee06..c56c315524ae 100644
  EXPORT_SYMBOL(swake_up_all_locked);
  
 -- 
-2.29.2
+2.30.0
 

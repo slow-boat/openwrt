@@ -1,4 +1,4 @@
-From 53b0a42547329a4192f0a77b37a26baf014b159b Mon Sep 17 00:00:00 2001
+From 97bcb13daa02e4a9d9875c82f5fb6b9dad5607a0 Mon Sep 17 00:00:00 2001
 From: Jan Kara <jack@suse.cz>
 Date: Fri, 9 Aug 2019 14:42:31 +0200
 Subject: [PATCH 006/306] jbd2: Don't call __bforget() unnecessarily
@@ -60,5 +60,5 @@ index 8f392add270d..215552d955be 100644
  		/* no need to reserve log space for this block -bzzz */
  		handle->h_buffer_credits++;
 -- 
-2.29.2
+2.30.0
 

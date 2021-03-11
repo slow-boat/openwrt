@@ -1,4 +1,4 @@
-From 034998b3ad60bc3c2e897a7d4dd8671236a65a5a Mon Sep 17 00:00:00 2001
+From c58617a05379145bc2021a86adf41d7a0170c8be Mon Sep 17 00:00:00 2001
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Wed, 11 Oct 2017 17:43:49 +0200
 Subject: [PATCH 221/306] apparmor: use a locallock instead preempt_disable()
@@ -80,5 +80,5 @@ index e31965dc6dd1..56510f26d32f 100644
  /*
   * LSM hook functions
 -- 
-2.29.2
+2.30.0
 

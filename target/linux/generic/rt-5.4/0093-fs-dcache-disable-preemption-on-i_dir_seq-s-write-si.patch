@@ -1,4 +1,4 @@
-From 13c2fee06f46d90e524dfa321314b144e8cf4655 Mon Sep 17 00:00:00 2001
+From 5f8cce44cedadd874275790bed806f3ea4eca084 Mon Sep 17 00:00:00 2001
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Fri, 20 Oct 2017 11:29:53 +0200
 Subject: [PATCH 093/306] fs/dcache: disable preemption on i_dir_seq's write
@@ -81,7 +81,7 @@ index c5267a4db0f5..4ef9239abd82 100644
  	inode->dirtied_when = 0;
  
 diff --git a/include/linux/fs.h b/include/linux/fs.h
-index 9b7524f8063f..a0f3b71f040b 100644
+index bddfa3a41882..2bf12a47ddb2 100644
 --- a/include/linux/fs.h
 +++ b/include/linux/fs.h
 @@ -717,7 +717,7 @@ struct inode {
@@ -94,5 +94,5 @@ index 9b7524f8063f..a0f3b71f040b 100644
  
  	__u32			i_generation;
 -- 
-2.29.2
+2.30.0
 

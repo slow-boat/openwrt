@@ -1,4 +1,4 @@
-From b0cd4bf359c564f22233ecb7257558a305880744 Mon Sep 17 00:00:00 2001
+From af4c264a457062701a845318f5074eabb64d5336 Mon Sep 17 00:00:00 2001
 From: Benedikt Spranger <b.spranger@linutronix.de>
 Date: Mon, 8 Mar 2010 18:57:04 +0100
 Subject: [PATCH 267/306] clocksource: TCLIB: Allow higher clock rates for
@@ -20,10 +20,10 @@ Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
  2 files changed, 30 insertions(+), 17 deletions(-)
 
 diff --git a/drivers/clocksource/Kconfig b/drivers/clocksource/Kconfig
-index f35a53ce8988..d02f9c8d2848 100644
+index 3bb5625504e2..ff99499a607e 100644
 --- a/drivers/clocksource/Kconfig
 +++ b/drivers/clocksource/Kconfig
-@@ -434,6 +434,13 @@ config ATMEL_TCB_CLKSRC
+@@ -435,6 +435,13 @@ config ATMEL_TCB_CLKSRC
  	help
  	  Support for Timer Counter Blocks on Atmel SoCs.
  
@@ -164,5 +164,5 @@ index d7642bba4875..ce6627ee161f 100644
  		goto err_unregister_clksrc;
  
 -- 
-2.29.2
+2.30.0
 

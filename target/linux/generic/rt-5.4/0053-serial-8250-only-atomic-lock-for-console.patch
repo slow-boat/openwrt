@@ -1,4 +1,4 @@
-From eaa39d1d777bb56a1d43dee0ed6f1973379a3144 Mon Sep 17 00:00:00 2001
+From 70875e8dcf9cd516c83c834e459f44f724ca54c0 Mon Sep 17 00:00:00 2001
 From: John Ogness <john.ogness@linutronix.de>
 Date: Fri, 10 Jan 2020 16:45:31 +0106
 Subject: [PATCH 053/306] serial: 8250: only atomic lock for console
@@ -392,5 +392,5 @@ index e31368f6de51..1fc608598382 100644
  	/*
  	 *	The receive handling will happen properly because the
 -- 
-2.29.2
+2.30.0
 

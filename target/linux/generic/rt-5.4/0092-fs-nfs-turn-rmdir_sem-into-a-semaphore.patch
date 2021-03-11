@@ -1,4 +1,4 @@
-From e64ab8e6f9bd50ed3092141edccb16277c5cb186 Mon Sep 17 00:00:00 2001
+From 8bbcf7e687969005641b72bce867703719efdbbc Mon Sep 17 00:00:00 2001
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Thu, 15 Sep 2016 10:51:27 +0200
 Subject: [PATCH 092/306] fs/nfs: turn rmdir_sem into a semaphore
@@ -146,5 +146,5 @@ index ad09c0cc5464..edb356ef09ae 100644
  
  #if IS_ENABLED(CONFIG_NFS_V4)
 -- 
-2.29.2
+2.30.0
 

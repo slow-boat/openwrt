@@ -1,4 +1,4 @@
-From f1038f83405654d63afcf011a6f3e3b863b68b32 Mon Sep 17 00:00:00 2001
+From 0a6df9342b4c2cd6814a0f2f1c86228f9423f7aa Mon Sep 17 00:00:00 2001
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Wed, 22 May 2019 12:42:26 +0200
 Subject: [PATCH 074/306] sched/swait: Add swait_event_lock_irq()
@@ -35,5 +35,5 @@ index 73e06e9986d4..12612823c2cb 100644
 +
  #endif /* _LINUX_SWAIT_H */
 -- 
-2.29.2
+2.30.0
 

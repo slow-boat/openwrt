@@ -1,4 +1,4 @@
-From fdc0ece37d70e2fe33a91c983f3cf0628005d909 Mon Sep 17 00:00:00 2001
+From 18e94eec58e542d4682503a52bc220874eb2abc1 Mon Sep 17 00:00:00 2001
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Thu, 29 Aug 2013 11:48:57 +0200
 Subject: [PATCH 103/306] md: disable bcache
@@ -37,5 +37,5 @@ index 6dfa653d30db..29c35eb52414 100644
  	help
  	Allows a block device to be used as cache for other devices; uses
 -- 
-2.29.2
+2.30.0
 

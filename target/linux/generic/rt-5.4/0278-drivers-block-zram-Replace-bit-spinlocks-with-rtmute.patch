@@ -1,4 +1,4 @@
-From 9c397a6d7f293ea760860dba9925c00317306b4f Mon Sep 17 00:00:00 2001
+From 8ca26dbc7231104f1a2f7ba930bfaeed941cc885 Mon Sep 17 00:00:00 2001
 From: Mike Galbraith <umgwanakikbuti@gmail.com>
 Date: Thu, 31 Mar 2016 04:08:28 +0200
 Subject: [PATCH 278/306] drivers/block/zram: Replace bit spinlocks with
@@ -88,5 +88,5 @@ index f2fd46daa760..7e4dd447e1dd 100644
  	ktime_t ac_time;
  #endif
 -- 
-2.29.2
+2.30.0
 

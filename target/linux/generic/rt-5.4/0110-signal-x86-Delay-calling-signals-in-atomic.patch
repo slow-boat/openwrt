@@ -1,4 +1,4 @@
-From 3458185af3965a2b3ccfe88fa278e666514408fe Mon Sep 17 00:00:00 2001
+From c4343f947c0064e73fd80d0fd37a30635255e0a9 Mon Sep 17 00:00:00 2001
 From: Oleg Nesterov <oleg@redhat.com>
 Date: Tue, 14 Jul 2015 14:26:34 +0200
 Subject: [PATCH 110/306] signal/x86: Delay calling signals in atomic
@@ -135,5 +135,5 @@ index 37423904afd5..3c80c74138dd 100644
  	action = &t->sighand->action[sig-1];
  	ignored = action->sa.sa_handler == SIG_IGN;
 -- 
-2.29.2
+2.30.0
 

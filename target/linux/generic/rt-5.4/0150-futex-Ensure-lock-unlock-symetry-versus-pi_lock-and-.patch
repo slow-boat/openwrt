@@ -1,4 +1,4 @@
-From 017de475b84ee24b6722598ec66d9deba35a91b5 Mon Sep 17 00:00:00 2001
+From 93ccb7e644e2f7b9775ab4749ef89db9385da212 Mon Sep 17 00:00:00 2001
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Fri, 1 Mar 2013 11:17:42 +0100
 Subject: [PATCH 150/306] futex: Ensure lock/unlock symetry versus pi_lock and
@@ -31,10 +31,10 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  1 file changed, 2 insertions(+)
 
 diff --git a/kernel/futex.c b/kernel/futex.c
-index b0a14697cec4..cafbf4d78040 100644
+index 801b28af6647..dd25bca36011 100644
 --- a/kernel/futex.c
 +++ b/kernel/futex.c
-@@ -963,7 +963,9 @@ static void exit_pi_state_list(struct task_struct *curr)
+@@ -980,7 +980,9 @@ static void exit_pi_state_list(struct task_struct *curr)
  		if (head->next != next) {
  			/* retain curr->pi_lock for the loop invariant */
  			raw_spin_unlock(&pi_state->pi_mutex.wait_lock);
@@ -45,5 +45,5 @@ index b0a14697cec4..cafbf4d78040 100644
  			continue;
  		}
 -- 
-2.29.2
+2.30.0
 

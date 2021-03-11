@@ -1,4 +1,4 @@
-From b44e2e3b16cbb94ee94878ea25cb4fbbd2e8aeb5 Mon Sep 17 00:00:00 2001
+From 08775e974dd0bc440b7c808a551db2406e6eb4c0 Mon Sep 17 00:00:00 2001
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Fri, 21 Feb 2020 18:57:11 +0100
 Subject: [PATCH 069/306] drm/vmwgfx: Drop preempt_disable() in
@@ -37,5 +37,5 @@ index e5252ef3812f..6941689085ed 100644
  
  void vmw_fifo_release(struct vmw_private *dev_priv, struct vmw_fifo_state *fifo)
 -- 
-2.29.2
+2.30.0
 

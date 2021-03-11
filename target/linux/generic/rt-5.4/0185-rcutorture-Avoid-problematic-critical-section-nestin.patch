@@ -1,4 +1,4 @@
-From 286a03b9f89cc4c0b635403d6d6a8d354368d4d2 Mon Sep 17 00:00:00 2001
+From 6d003043f4736909d1d7eaaa2c9462ab995575b1 Mon Sep 17 00:00:00 2001
 From: Scott Wood <swood@redhat.com>
 Date: Wed, 11 Sep 2019 17:57:29 +0100
 Subject: [PATCH 185/306] rcutorture: Avoid problematic critical section
@@ -190,5 +190,5 @@ index c070d103f34d..a90d6981e1e4 100644
  }
  
 -- 
-2.29.2
+2.30.0
 

@@ -1,4 +1,4 @@
-From 98950df40f318ad90697efcf7cf85abbb484d6e3 Mon Sep 17 00:00:00 2001
+From 8c852173214232526cc219d75bd50eda6a7ffbf7 Mon Sep 17 00:00:00 2001
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Wed, 8 Mar 2017 14:23:35 +0100
 Subject: [PATCH 179/306] futex: workaround migrate_disable/enable in different
@@ -22,10 +22,10 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  1 file changed, 18 insertions(+)
 
 diff --git a/kernel/futex.c b/kernel/futex.c
-index d6b498d79904..3b929974d01a 100644
+index 273ab10a1547..1038c2c54b5a 100644
 --- a/kernel/futex.c
 +++ b/kernel/futex.c
-@@ -3012,6 +3012,14 @@ static int futex_lock_pi(u32 __user *uaddr, unsigned int flags,
+@@ -3015,6 +3015,14 @@ static int futex_lock_pi(u32 __user *uaddr, unsigned int flags,
  	 * before __rt_mutex_start_proxy_lock() is done.
  	 */
  	raw_spin_lock_irq(&q.pi_state->pi_mutex.wait_lock);
@@ -40,7 +40,7 @@ index d6b498d79904..3b929974d01a 100644
  	spin_unlock(q.lock_ptr);
  	/*
  	 * __rt_mutex_start_proxy_lock() unconditionally enqueues the @rt_waiter
-@@ -3020,6 +3028,7 @@ static int futex_lock_pi(u32 __user *uaddr, unsigned int flags,
+@@ -3023,6 +3031,7 @@ static int futex_lock_pi(u32 __user *uaddr, unsigned int flags,
  	 */
  	ret = __rt_mutex_start_proxy_lock(&q.pi_state->pi_mutex, &rt_waiter, current);
  	raw_spin_unlock_irq(&q.pi_state->pi_mutex.wait_lock);
@@ -48,7 +48,7 @@ index d6b498d79904..3b929974d01a 100644
  
  	if (ret) {
  		if (ret == 1)
-@@ -3168,10 +3177,19 @@ static int futex_unlock_pi(u32 __user *uaddr, unsigned int flags)
+@@ -3157,10 +3166,19 @@ static int futex_unlock_pi(u32 __user *uaddr, unsigned int flags)
  		 * rt_waiter. Also see the WARN in wake_futex_pi().
  		 */
  		raw_spin_lock_irq(&pi_state->pi_mutex.wait_lock);
@@ -69,5 +69,5 @@ index d6b498d79904..3b929974d01a 100644
  		put_pi_state(pi_state);
  
 -- 
-2.29.2
+2.30.0
 

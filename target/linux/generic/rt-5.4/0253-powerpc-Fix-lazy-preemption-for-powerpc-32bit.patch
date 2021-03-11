@@ -1,4 +1,4 @@
-From 08246f6f3cfe46ce80b6ba856c788a8edefc620d Mon Sep 17 00:00:00 2001
+From 61998da165659eb603fa3839172054fc2ca61163 Mon Sep 17 00:00:00 2001
 From: Thomas Graziadei <thomas.graziadei@omicronenergy.com>
 Date: Wed, 18 Mar 2020 21:26:40 +0100
 Subject: [PATCH 253/306] powerpc: Fix lazy preemption for powerpc 32bit
@@ -17,10 +17,10 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/arch/powerpc/kernel/entry_32.S b/arch/powerpc/kernel/entry_32.S
-index b847bcd8c49f..5c82f597d4fa 100644
+index 1fb0bf3a4132..5db59fc7ac60 100644
 --- a/arch/powerpc/kernel/entry_32.S
 +++ b/arch/powerpc/kernel/entry_32.S
-@@ -533,12 +533,12 @@ syscall_exit_work:
+@@ -536,12 +536,12 @@ syscall_exit_work:
  
  1:	stw	r6,RESULT(r1)	/* Save result */
  	stw	r3,GPR3(r1)	/* Update return value */
@@ -36,5 +36,5 @@ index b847bcd8c49f..5c82f597d4fa 100644
  3:	lwarx	r8,0,r12
  	andc	r8,r8,r11
 -- 
-2.29.2
+2.30.0
 

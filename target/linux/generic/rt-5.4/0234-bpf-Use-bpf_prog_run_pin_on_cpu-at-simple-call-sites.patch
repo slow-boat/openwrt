@@ -1,4 +1,4 @@
-From 3788e003c91fd491ef9a6a73efaa82c82c619730 Mon Sep 17 00:00:00 2001
+From a6382068b757d4becb47e771113a36d15cbb6bf3 Mon Sep 17 00:00:00 2001
 From: David Miller <davem@davemloft.net>
 Date: Mon, 24 Feb 2020 15:01:43 +0100
 Subject: [PATCH 234/306] bpf: Use bpf_prog_run_pin_on_cpu() at simple call
@@ -42,7 +42,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  5 files changed, 6 insertions(+), 18 deletions(-)
 
 diff --git a/include/linux/filter.h b/include/linux/filter.h
-index f2da788a8fc7..be376e167b2c 100644
+index 8eb5ba79422c..06b680f508d8 100644
 --- a/include/linux/filter.h
 +++ b/include/linux/filter.h
 @@ -709,9 +709,7 @@ static inline u32 bpf_prog_run_clear_cb(const struct bpf_prog *prog,
@@ -57,7 +57,7 @@ index f2da788a8fc7..be376e167b2c 100644
  }
  
 diff --git a/kernel/seccomp.c b/kernel/seccomp.c
-index 4221a4383cfc..d2abe2af82f2 100644
+index 1d62fa2b6b91..6a95761a62e0 100644
 --- a/kernel/seccomp.c
 +++ b/kernel/seccomp.c
 @@ -275,16 +275,14 @@ static u32 seccomp_run_filters(const struct seccomp_data *sd,
@@ -149,5 +149,5 @@ index ea9e73428ed9..56fac24a627a 100644
  }
  
 -- 
-2.29.2
+2.30.0
 

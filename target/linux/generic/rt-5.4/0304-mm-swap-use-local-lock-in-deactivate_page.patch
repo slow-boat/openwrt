@@ -1,4 +1,4 @@
-From 401d0cc1cfa404550eb3f03f4629bc7cb2e19b0a Mon Sep 17 00:00:00 2001
+From b64165b08f8650efa50668213095e135696ee2e5 Mon Sep 17 00:00:00 2001
 From: Zanxiong Qiu <zqiu2000@126.com>
 Date: Fri, 27 Nov 2020 21:54:56 +0800
 Subject: [PATCH 304/306] mm/swap: use local lock in deactivate_page()
@@ -42,5 +42,5 @@ index cdb4f1fa3a48..463cac334fcf 100644
  }
  
 -- 
-2.29.2
+2.30.0
 

@@ -1,0 +1,21 @@
+[all]
+
+#GPIO Expander on I2C
+dtparam=i2c_arm=on
+dtoverlay=i2c-gpio-pcf857x
+
+# SPI display
+dtparam=spi=on
+dtoverlay=rpi-backlight
+dtoverlay=spi0-hw-cs
+dtoverlay=rpi-display-slow-boat
+
+[pi0w]
+
+force_turbo=1
+boot_delay=1
+
+#audioinjector hat
+dtparam=i2c_arm=on
+dtparam=i2s=on
+dtoverlay=audioinjector-wm8731-audio

@@ -9,6 +9,7 @@
 
 # OpenWrt config
 include distroconfig.txt
+include audioconfig.txt
 
 [all]
 # Place your custom settings here.

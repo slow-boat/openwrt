@@ -8,6 +8,17 @@
 # See https://www.raspberrypi.org/documentation/configuration/uart.md
 [pi0w]
 dtoverlay=disable-bt
+force_turbo=1
+boot_delay=1
+dtparam=i2c_arm=on
+dtparam=i2s=on
+dtoverlay=audioinjector-wm8731-audio
+dtoverlay=i2c-gpio-pcf857x
+dtparam=spi=on
+dtoverlay=rpi-backlight
+dtoverlay=spi0-hw-cs
+dtoverlay=rpi-display-slow-boat
+
 [pi3]
 dtoverlay=disable-bt
 [pi4]

@@ -1,0 +1,28 @@
+
+config alsa
+	option chans_in '2'
+	option chans_out '6'
+	option rate '48000'
+	option period_sz '64'
+	option periods '4'
+	option format 'S24_3LE'
+
+config rtprio
+
+config gpio
+	option amp_gpio '504'
+	option amp_hold '90'
+
+config zita-n2j
+
+config crossover
+	option enabled '1'
+	option freq '110 2200'
+	option gain '0 0 0'
+	option ch_start '2 4 0'
+	option mono '0'
+
+config convolver
+	option gain '0.4'
+	option ch_start '-1'
+

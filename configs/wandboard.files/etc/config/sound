@@ -1,0 +1,23 @@
+config alsa
+	option chans_in 2
+	option chans_out 2
+	option rate 48000
+	option period_sz 1024
+	option periods 3
+	option format "S16_LE"
+
+config rtprio
+
+# wandboard use GPIO_19 which maps to gpio101. JP-4 header pin 18. pins 17,19,20 are GND, 1,2,3,5 +5V
+config gpio
+	option amp_gpio '101'
+	option amp_hold '90'
+
+config zita-n2j
+
+config crossover
+
+config convolver
+	option enabled '1'
+	option gain '0.4'
+

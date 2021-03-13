@@ -1,0 +1,22 @@
+
+config alsa
+	option chans_in '2'
+	option chans_out '2'
+	option rate '48000'
+	option period_sz '2048'
+	option periods '3'
+	option format 'S32_LE'
+
+config rtprio
+
+config gpio
+	option amp_gpio '13'
+
+config zita-n2j
+	option buffer '100'
+
+config crossover
+
+config convolver
+	option enabled '1'
+	option gain '0.25'

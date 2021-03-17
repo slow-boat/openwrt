@@ -24,9 +24,18 @@ DEFAULT_PACKAGES := $(filter-out urngd,$(DEFAULT_PACKAGES))
 DEFAULT_PACKAGES += \
 	bcm27xx-gpu-fw \
 	kmod-usb-hid \
-	kmod-sound-core kmod-sound-arm-bcm2835 \
 	kmod-fs-vfat kmod-nls-cp437 kmod-nls-iso8859-1 \
-	partx-utils mkf2fs e2fsprogs
+	partx-utils mkf2fs e2fsprogs \
+	libiwinfo-lua \
+	kmod-gpio-dev kmod-gpio-pcf857x kmod-rc-gpio kmod-input-gpio-encoder kmod-input-gpio-keys \
+	kmod-random-core kmod-regmap-core \
+	kmod-hwmon-core kmod-hwmon-raspberrypi \
+	kmod-i2c-core kmod-i2c-bcm2835 kmod-i2c-gpio kmod-i2c-mux kmod-i2c-mux-gpio libi2c i2c-tools \
+	kmod-i2c-algo-bit kmod-i2c-smbus kmod-regmap-i2c kmod-smi-bcm2835 kmod-smi-bcm2835-dev \
+	kmod-spi-bcm2835 kmod-spi-bcm2835-aux kmod-spi-bitbang kmod-spi-dev kmod-regmap-spi \
+	kmod-backlight kmod-backlight-pwm kmod-fb kmod-fb-cfb-copyarea kmod-fb-cfb-fillrect kmod-fb-cfb-imgblt \
+	kmod-fb-sys-fops kmod-fb-sys-ram kmod-fb-tft kmod-fb-tft-ili9341 libsensors lm-sensors \
+	kmod-sound-core kmod-sound-soc-bcm2835-i2s kmod-sound-soc-audioinjector-pi-soundcard
 
 KERNELNAME:=Image dtbs
 

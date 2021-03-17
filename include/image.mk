@@ -637,6 +637,11 @@ define Device/Build/artifact
 
 endef
 
+BOOT_UPGRADE_SOURCE := $(TOPDIR)/configs/$(ARCH)-$(PROFILE_SANITIZED).files
+ifneq (,$(wildcard $(BOOT_UPGRADE_SOURCE)))
+	BOOT_UPGRADE := $(BOOT_UPGRADE_SOURCE)
+endif
+
 define Device/Build
   $(if $(CONFIG_TARGET_ROOTFS_INITRAMFS),$(call Device/Build/initramfs,$(1)))
   $(call Device/Build/kernel,$(1))

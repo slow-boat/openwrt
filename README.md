@@ -1,5 +1,44 @@
 ![OpenWrt logo](include/logo.png)
 
+## Audio Overlay
+To add audio overlay, we need to make a config file for the target you wish to use.
+There are several critical config overrides for the audio application to work, these
+are appended to the base config, and like magic it should just work on your selected platform.
+Then run `cat configs/audio-overlay.config >> .config`, followed by `make defconfig` to clean up.
+It might be necessary to run `rm -f tmp` and `make clean` if build was done previously
+due to the deselection of IPV6 support.
+
+File overlays are added in a configs subdirectory defined by `configs/<arch>-<profile>`.
+For example `configs/x86_64-generic.files` for x86, `configs/arm-rpi.files` for a Rpi.
+The specified directory is recursively copied to `upgrade` directory in the boot partition
+during the image creation stage.
+
+On boot, the system mounts the boot partition as `/boot`.
+
+`/boot/upgrades/*` is recursively copied over the root directory,
+before expansion and overlay of any `/sysupgrade.tgz` archive that might have been added.
+File permissions are forced to `0x600` for all files, since the file system is usually FAT,
+so original linux permissions are lost.
+
+The purpose of this additional overlay is to have a target-specific base config setup that can
+be manually edited offline, by removing the storage and accessing it on another host.
+
+By mounting the image boot partition on another host, the user can modify the default settings
+included in the build files overlay specified in `configs/<arch>-<profile>`.
+
+It allows things such as wifi authentication and hostname to be configured so that the device can be
+brought online without an ethernet port or other provisioning, and accessed via dhcp servers
+dns entry based on hostname.
+
+For convenience, on SD card based images, the "upgrade" folder can be added and new files
+installed as a means to inject packages or upgrade system files. This is important since the 
+root partition is usually read only squashfs.
+
+For more complex upgrades, the package should be archived as a tar.gz file, and copied to boot
+partition `upgrades/sysupgrade.tgz` such that the normal sysupgrade process can be invoked.
+
+## Default
+
 OpenWrt Project is a Linux operating system targeting embedded devices. Instead
 of trying to create a single, static firmware, OpenWrt provides a fully
 writable filesystem with package management. This frees you from the

@@ -18,6 +18,7 @@ define Build/boot-common
 
 	$(CP) $(DTS_DIR)/$(DEVICE_DTS).dtb $@.boot/rockchip.dtb
 	$(CP) $(IMAGE_KERNEL) $@.boot/kernel.img
+	$(if $(BOOT_UPGRADE), $(CP) $(BOOT_UPGRADE) $@.boot/upgrade; )
 endef
 
 define Build/boot-script

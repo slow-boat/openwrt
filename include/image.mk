@@ -656,6 +656,9 @@ define Device/Build
   $$(eval $$(foreach artifact,$$(ARTIFACTS), \
     $$(call Device/Build/artifact,$$(artifact))))
 
+  ifeq (,$(wildcard $(BOOT_UPGRADE_SOURCE)))
+    $(shell mkdir -p $(BOOT_UPGRADE_SOURCE))
+  endif
 endef
 
 define Device/DumpInfo

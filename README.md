@@ -1,17 +1,35 @@
 ![OpenWrt logo](include/logo.png)
 
 ## Audio Overlay
-To add audio overlay, we need to make a config file for the target you wish to use.
-There are several critical config overrides for the audio application to work, these
-are appended to the base config, and like magic it should just work on your selected platform.
-Then run `cat configs/audio-overlay.config >> .config`, followed by `make defconfig` to clean up.
+This is the audio branch
+
+To add audio overlay, we need to make a seed config file for the target you wish to use.
+
+First, follow the standard openwrt instructions to create the build environment.
+
+Start with a blank config: `rm .config` if it exists already. Run `make menuconfig`, select:
+Target System
+Subtarget
+Target Profile
+Target Images ---> deselect the images you don't need to save some space on the host.
+
+Save the config.
+
+Then run `scripts/audioconfig`
+
+Then `make -j13` (13 = CPU threads for parallel build)
+
 It might be necessary to run `rm -f tmp` and `make clean` if build was done previously
-due to the deselection of IPV6 support.
+for selected target due to the explicit deselection of IPV6 support.
 
 File overlays are added in a configs subdirectory defined by `configs/<arch>-<profile>`.
-For example `configs/x86_64-generic.files` for x86, `configs/arm-rpi.files` for a Rpi.
-The specified directory is recursively copied to `upgrade` directory in the boot partition
-during the image creation stage.
+For example `configs/x86_64-generic.files` for x86_64 build. The directory is created
+by the makefile if not present, for a given target. This is for convenience. First build the target
+and then add in the files of interest. For some targets there might be some files already in there
+for things such as standard wifi configuration.
+
+On build, if the directory is present in configs/ it is recursively copied to `upgrade`
+directory in the boot partition during the image creation stage.
 
 On boot, the system mounts the boot partition as `/boot`.
 

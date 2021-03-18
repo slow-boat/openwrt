@@ -1,0 +1,5 @@
+#!/bin/sh
+
+echo "Applying audio overlay"
+cat configs/audio-overlay.config >> .config
+make defconfig

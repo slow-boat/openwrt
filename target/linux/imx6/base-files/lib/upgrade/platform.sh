@@ -69,6 +69,12 @@ platform_check_image() {
 	toradex,apalis_imx6q-ixora-v1.1 )
 		return 0
 		;;
+	wand,wandboard |\
+	solidrun,cubox-i/dl |\
+	solidrun,cubox-i/q )
+		platform_check_image_sdcard "$1"
+		return $?
+		;;
 	esac
 
 	echo "Sysupgrade is not yet supported on $board."
@@ -123,6 +129,11 @@ platform_copy_config() {
 	toradex,apalis_imx6q-ixora-v1.1 )
 		apalis_copy_config
 		;;
+	wand,wandboard |\
+	solidrun,cubox-i/dl |\
+	solidrun,cubox-i/q )
+		platform_copy_config_sdcard "$1"
+		;;			
 	esac
 }
 

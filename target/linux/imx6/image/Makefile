@@ -79,12 +79,12 @@ define Build/imx6-combined-image
 			$(DTS_DIR)/$(dts).dtb \
 			$@.boot/;
 	)
-
-	mkimage -A arm -O linux -T script -C none -a 0 -e 0 \
-		-n '$(DEVICE_ID) OpenWrt bootscript' \
-		-d $(BOOT_SCRIPT) \
-		$@.boot/boot.scr
-
+	$(if $(BOOT_SCRIPT), \
+		mkimage -A arm -O linux -T script -C none -a 0 -e 0 \
+			-n '$(DEVICE_ID) OpenWrt bootscript' \
+			-d $(BOOT_SCRIPT) \
+			$@.boot/boot.scr; \
+	)
 	cp $@ $@.fs
 
 	$(SCRIPT_DIR)/gen_image_generic.sh $@ \
@@ -157,6 +157,7 @@ define Device/ventana
 	imx6q-gw5910 \
 	imx6q-gw5912 \
 	imx6q-gw5913
+  FEATURES += pcie rtc usbgadget nand ubifs display
   DEVICE_PACKAGES := kmod-sky2 kmod-sound-core kmod-sound-soc-imx kmod-sound-soc-imx-sgtl5000 \
 	kmod-can kmod-can-flexcan kmod-can-raw \
 	kmod-hwmon-gsc \
@@ -189,24 +190,45 @@ endef
 TARGET_DEVICES += ventana-large
 
 define Device/wandboard
+  DEVICE_PACKAGES := kmod-hwmon-core \
+	kmod-sound-core kmod-sound-soc-imx kmod-sound-soc-imx-sgtl5000 \
+	kmod-mmc kmod-brcmfmac brcmfmac-firmware-4329-sdio kmod-brcmutil kmod-cfg80211 iw wpad-basic iwinfo
   DEVICE_VENDOR := Wandboard
   DEVICE_MODEL := Dual
-  DEVICE_DTS := imx6dl-wandboard
+  SUPPORTED_DEVICES := wand,wandboard
+  KERNEL := kernel-bin
+  UBOOT := wandboard
+  BOOT_SCRIPT = bootscript-wandboard
+  DEVICE_NAME := wandboard
+  DEVICE_DTS := \
+	imx6dl-wandboard \
+	imx6q-wandboard \
+	imx6dl-wandboard \
+	imx6q-wandboard-revb1 \
+	imx6dl-wandboard-revb1
+  IMAGES := combined.bin dtb sysupgrade.bin
+  FILESYSTEMS := squashfs
+  IMAGE/combined.bin := append-rootfs | pad-extra 128k | imx6-sdcard
+  IMAGE/sysupgrade.bin := append-rootfs | pad-extra 128k | imx6-sdcard | append-metadata
+  IMAGE/dtb := install-dtb
 endef
 TARGET_DEVICES += wandboard
 
 define Device/cubox-i
   DEVICE_VENDOR := SolidRun
   DEVICE_MODEL := CuBox-i
+  SUPPORTED_DEVICES := solidrun,cubox-i/dl solidrun,cubox-i/q
   KERNEL := kernel-bin
   UBOOT := mx6cuboxi
   BOOT_SCRIPT = bootscript-cubox
   DEVICE_NAME := cubox
-  DEVICE_PACKAGES := kmod-drm-imx kmod-drm-imx-hdmi kmod-usb-hid
+  DEVICE_PACKAGES := kmod-hwmon-core \
+	kmod-mmc kmod-brcmfmac brcmfmac-firmware-4330-sdio kmod-brcmutil kmod-cfg80211 iw wpad-basic iwinfo
   DEVICE_DTS := imx6q-cubox-i imx6dl-cubox-i imx6q-hummingboard imx6dl-hummingboard
-  IMAGES := combined.bin dtb
+  IMAGES := combined.bin dtb sysupgrade.bin
   FILESYSTEMS := squashfs
   IMAGE/combined.bin := append-rootfs | pad-extra 128k | imx6-sdcard
+  IMAGE/sysupgrade.bin := append-rootfs | pad-extra 128k | imx6-sdcard | append-metadata
   IMAGE/dtb := install-dtb
 endef
 TARGET_DEVICES += cubox-i
@@ -226,6 +248,7 @@ define Device/apalis
   BOOT_SCRIPT := bootscript-apalis
   UBOOT := apalis_imx6
   FILESYSTEMS := squashfs
+  FEATURES += pcie rtc usbgadget nand ubifs display
   IMAGES := combined.bin sysupgrade.bin
   DEVICE_IMG_NAME = $$(DEVICE_IMG_PREFIX)-$$(1).$$(2)
   IMAGE/combined.bin := append-rootfs | pad-extra 128k | apalis-emmc

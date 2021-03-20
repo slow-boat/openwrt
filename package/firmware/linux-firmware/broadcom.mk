@@ -1,3 +1,21 @@
+Package/brcmfmac-firmware-4329-sdio = $(call Package/firmware-default,Broadcom BCM4329 FullMac SDIO firmware)
+define Package/brcmfmac-firmware-4329-sdio/install
+	$(INSTALL_DIR) $(1)/lib/firmware/brcm
+	$(INSTALL_DATA) \
+		$(PKG_BUILD_DIR)/brcm/brcmfmac4329-sdio.bin \
+		$(1)/lib/firmware/brcm/brcmfmac4329-sdio.bin
+endef
+$(eval $(call BuildPackage,brcmfmac-firmware-4329-sdio))
+
+Package/brcmfmac-firmware-4330-sdio = $(call Package/firmware-default,Broadcom BCM4330 FullMac SDIO firmware)
+define Package/brcmfmac-firmware-4330-sdio/install
+	$(INSTALL_DIR) $(1)/lib/firmware/brcm
+	$(INSTALL_DATA) \
+		$(PKG_BUILD_DIR)/brcm/brcmfmac4330-sdio.bin \
+		$(1)/lib/firmware/brcm/brcmfmac4330-sdio.bin
+endef
+$(eval $(call BuildPackage,brcmfmac-firmware-4330-sdio))
+
 Package/brcmfmac-firmware-43602a1-pcie = $(call Package/firmware-default,Broadcom 43602a1 FullMAC PCIe firmware)
 define Package/brcmfmac-firmware-43602a1-pcie/install
 	$(INSTALL_DIR) $(1)/lib/firmware/brcm
@@ -24,15 +42,6 @@ define Package/brcmfmac-firmware-4366c0-pcie/install
 		$(1)/lib/firmware/brcm/
 endef
 $(eval $(call BuildPackage,brcmfmac-firmware-4366c0-pcie))
-
-Package/brcmfmac-firmware-4329-sdio = $(call Package/firmware-default,Broadcom BCM4329 FullMac SDIO firmware)
-define Package/brcmfmac-firmware-4329-sdio/install
-	$(INSTALL_DIR) $(1)/lib/firmware/brcm
-	$(INSTALL_DATA) \
-		$(PKG_BUILD_DIR)/brcm/brcmfmac4329-sdio.bin \
-		$(1)/lib/firmware/brcm/brcmfmac4329-sdio.bin
-endef
-$(eval $(call BuildPackage,brcmfmac-firmware-4329-sdio))
 
 Package/brcmfmac-firmware-43362-sdio = $(call Package/firmware-default,Broadcom BCM43362 FullMac SDIO firmware)
 define Package/brcmfmac-firmware-43362-sdio/install

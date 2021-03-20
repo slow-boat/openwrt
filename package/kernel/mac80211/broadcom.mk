@@ -451,6 +451,7 @@ define KernelPackage/brcmfmac/config
 		bool "Enable SDIO bus interface support"
 		default y if TARGET_bcm27xx
 		default y if TARGET_sunxi
+		default y if TARGET_imx6
 		default n
 		help
 		  Enable support for cards attached to an SDIO bus.
@@ -461,6 +462,7 @@ define KernelPackage/brcmfmac/config
 	config BRCMFMAC_USB
 		bool "Enable USB bus interface support"
 		depends on USB_SUPPORT
+		default n if TARGET_imx6
 		default y
 		help
 		  Supported USB connected chipsets:
@@ -470,6 +472,7 @@ define KernelPackage/brcmfmac/config
 	config BRCMFMAC_PCIE
 		bool "Enable PCIE bus interface support"
 		depends on PCI_SUPPORT
+		default n if TARGET_imx6
 		default y
 		help
 		  Supported PCIe connected chipsets:

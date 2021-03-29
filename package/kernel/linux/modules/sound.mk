@@ -267,6 +267,17 @@ endef
 
 $(eval $(call KernelPackage,sound-soc-spdif))
 
+define KernelPackage/sound-soc-spdif-imx
+  TITLE:=SoC S/PDIF codec support
+  KCONFIG:=CONFIG_SND_SOC_IMX_SPDIF
+  FILES:= \
+	$(LINUX_DIR)/sound/soc/fsl/snd-soc-imx-spdif.ko
+  DEPENDS:=@TARGET_imx6 +kmod-sound-soc-imx
+  AUTOLOAD:=$(call AutoProbe,snd-soc-imx-spdif)
+  $(call AddDepends/sound)
+endef
+
+$(eval $(call KernelPackage,sound-soc-spdif-imx))
 
 define KernelPackage/pcspkr
   DEPENDS:=@TARGET_x86 +kmod-input-core

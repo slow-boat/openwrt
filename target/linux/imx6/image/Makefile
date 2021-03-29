@@ -85,6 +85,9 @@ define Build/imx6-combined-image
 			-d $(BOOT_SCRIPT) \
 			$@.boot/boot.scr; \
 	)
+	$(if $(BOOT_UPGRADE), \
+		cp -r $(BOOT_UPGRADE) $@.boot/upgrade; \
+	)
 	cp $@ $@.fs
 
 	$(SCRIPT_DIR)/gen_image_generic.sh $@ \

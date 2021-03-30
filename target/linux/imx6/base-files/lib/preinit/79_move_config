@@ -25,7 +25,6 @@ move_config() {
 			[ -f /boot/uImage ] || mount -o rw,noatime "/dev/$partdev" /boot
 			[ -f "/boot/$BACKUP_FILE" ] && mv -f "/boot/$BACKUP_FILE" /
 			sync
-			umount /boot
 		fi	
 		;;
 	esac

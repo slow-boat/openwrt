@@ -66,11 +66,13 @@ define U-Boot/wandboard
   NAME:=Wandboard Dual Lite/Quad/Solo
   UBOOT_IMAGE:=SPL u-boot.img
   UBOOT_MAKE_FLAGS:=SPL u-boot.img
+  BUILD_DEVICES:=wandboard
 endef
 
 UBOOT_TARGETS := \
 	apalis_imx6 \
 	mx6cuboxi \
+	wandboard \
 	mx6sabresd \
 	nitrogen6dl \
 	nitrogen6dl2g \
@@ -78,7 +80,6 @@ UBOOT_TARGETS := \
 	nitrogen6q2g \
 	nitrogen6s \
 	nitrogen6s1g \
-	wandboard
 
 UBOOT_MAKE_FLAGS += u-boot.imx
 

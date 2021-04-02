@@ -1,0 +1,16 @@
+
+config wifi-device 'radio0'
+	option type 'mac80211'
+	option path 'soc0/soc/2100000.aips-bus/2194000.usdhc/mmc_host/mmc1/mmc1:0001/mmc1:0001:1'
+	option htmode 'HT20'
+	option cell_density '0'
+	option channel 'auto'
+	option hwmode '11g'
+
+config wifi-iface 'wifinet0'
+	option device 'radio0'
+	option mode 'sta'
+	option network 'wifi'
+	option encryption 'psk2'
+	option ssid 'put_your_ssid_in_here'
+	option key 'put_your_key_in_here'

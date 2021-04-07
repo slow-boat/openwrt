@@ -15,12 +15,12 @@ define Build/bcm4908img
 	rm -fr $@-bootfs
 	mkdir -p $@-bootfs
 	cp -r $(DEVICE_NAME)/* $@-bootfs/
-	touch $@-bootfs/1-dummy
+	touch $@-bootfs/1-openwrt
 	cp $(DTS_DIR)/$(firstword $(DEVICE_DTS)).dtb $@-bootfs/94908.dtb
 	cp $(KDIR)/bcm63xx-cfe/$(subst _,$(comma),$(DEVICE_NAME))/cferam.000 $@-bootfs/
 	cp $(IMAGE_KERNEL) $@-bootfs/vmlinux.lz
 
-	$(STAGING_DIR_HOST)/bin/mkfs.jffs2 --pad --little-endian --squash-uids \
+	$(STAGING_DIR_HOST)/bin/mkfs.jffs2 --pad=0x800000 --little-endian --squash-uids \
 		-v -e 128KiB -o $@-bootfs.jffs2 -d $@-bootfs -m none -n
 	$(STAGING_DIR_HOST)/bin/bcm4908img create $@.new -f $@-bootfs.jffs2 \
 		-a 0x20000 -f $@

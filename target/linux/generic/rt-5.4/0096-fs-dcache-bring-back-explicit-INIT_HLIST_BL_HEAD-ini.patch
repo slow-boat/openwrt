@@ -1,4 +1,7 @@
-From db9d86721b05ea074843cf5a98843815fc804532 Mon Sep 17 00:00:00 2001
+From be0c8cdef441ecb95f1d4ccf8c6dd71a343be19c Mon Sep 17 00:00:00 2001
+Message-Id: <be0c8cdef441ecb95f1d4ccf8c6dd71a343be19c.1617652878.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Wed, 13 Sep 2017 12:32:34 +0200
 Subject: [PATCH 096/306] fs/dcache: bring back explicit INIT_HLIST_BL_HEAD
@@ -56,5 +59,5 @@ index 4f38c63ab356..4c4cdd7952ee 100644
  }
  
 -- 
-2.30.0
+2.17.1
 

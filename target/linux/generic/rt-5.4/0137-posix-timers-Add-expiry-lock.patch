@@ -1,4 +1,7 @@
-From 8dc04db1ed0d8fedacafbd912df2b025dcac0fc2 Mon Sep 17 00:00:00 2001
+From b6c4bd8abaab03f197764e6a70ea8fc30ed2ae9c Mon Sep 17 00:00:00 2001
+Message-Id: <b6c4bd8abaab03f197764e6a70ea8fc30ed2ae9c.1617652878.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Anna-Maria Gleixner <anna-maria@linutronix.de>
 Date: Mon, 27 May 2019 16:54:06 +0200
 Subject: [PATCH 137/306] posix-timers: Add expiry lock
@@ -34,7 +37,7 @@ index 6fb10cb201ee..bad09364b20a 100644
  
  static inline bool cpu_timer_enqueue(struct timerqueue_head *head,
 diff --git a/kernel/time/posix-cpu-timers.c b/kernel/time/posix-cpu-timers.c
-index 74b3efc3de90..327300eb2770 100644
+index 0d22f5cc834a..4cdcdf7382b1 100644
 --- a/kernel/time/posix-cpu-timers.c
 +++ b/kernel/time/posix-cpu-timers.c
 @@ -446,6 +446,20 @@ static int posix_cpu_timer_del(struct k_itimer *timer)
@@ -123,5 +126,5 @@ index 74b3efc3de90..327300eb2770 100644
  
  const struct k_clock clock_process = {
 -- 
-2.30.0
+2.17.1
 

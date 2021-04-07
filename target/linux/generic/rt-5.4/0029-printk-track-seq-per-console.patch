@@ -1,4 +1,7 @@
-From 664a079f20d98784a32d1960d289da4115d4e988 Mon Sep 17 00:00:00 2001
+From eeac7f3694fed8ff20e6049de3c81d0cc43c7325 Mon Sep 17 00:00:00 2001
+Message-Id: <eeac7f3694fed8ff20e6049de3c81d0cc43c7325.1617652877.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: John Ogness <john.ogness@linutronix.de>
 Date: Tue, 12 Feb 2019 15:29:51 +0100
 Subject: [PATCH 029/306] printk: track seq per console
@@ -96,5 +99,5 @@ index 2c85d6d1b60e..ff9ec5cc8fa6 100644
  			printk_delay();
  		}
 -- 
-2.30.0
+2.17.1
 

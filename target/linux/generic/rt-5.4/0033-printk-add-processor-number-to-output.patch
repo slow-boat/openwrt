@@ -1,4 +1,7 @@
-From cd02a7d937db36d39ec97b54797b2ff4721e6f44 Mon Sep 17 00:00:00 2001
+From 46a529651191d07eaf20918765228632bd60799d Mon Sep 17 00:00:00 2001
+Message-Id: <46a529651191d07eaf20918765228632bd60799d.1617652877.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: John Ogness <john.ogness@linutronix.de>
 Date: Tue, 12 Feb 2019 15:29:55 +0100
 Subject: [PATCH 033/306] printk: add processor number to output
@@ -101,5 +104,5 @@ index eb568567f3f4..d85e2d77a106 100644
  
  	prb_commit(&h);
 -- 
-2.30.0
+2.17.1
 

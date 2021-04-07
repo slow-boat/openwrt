@@ -1,4 +1,7 @@
-From 1b03e69be371bd255ca49692a9e9fe4828dcb909 Mon Sep 17 00:00:00 2001
+From 71dc8321d0510d6a4864fdc8a76b01445d655fee Mon Sep 17 00:00:00 2001
+Message-Id: <71dc8321d0510d6a4864fdc8a76b01445d655fee.1617652878.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Wed, 21 Sep 2011 19:57:12 +0200
 Subject: [PATCH 086/306] signal: Revert ptrace preempt magic
@@ -34,5 +37,5 @@ index 8c97fc72d78b..37423904afd5 100644
  		cgroup_leave_frozen(true);
  	} else {
 -- 
-2.30.0
+2.17.1
 

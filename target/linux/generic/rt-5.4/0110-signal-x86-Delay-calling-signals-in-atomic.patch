@@ -1,4 +1,7 @@
-From c4343f947c0064e73fd80d0fd37a30635255e0a9 Mon Sep 17 00:00:00 2001
+From 995a0c9923717131781d3d7f1cf0ce7b7d3a68aa Mon Sep 17 00:00:00 2001
+Message-Id: <995a0c9923717131781d3d7f1cf0ce7b7d3a68aa.1617652878.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Oleg Nesterov <oleg@redhat.com>
 Date: Tue, 14 Jul 2015 14:26:34 +0200
 Subject: [PATCH 110/306] signal/x86: Delay calling signals in atomic
@@ -135,5 +138,5 @@ index 37423904afd5..3c80c74138dd 100644
  	action = &t->sighand->action[sig-1];
  	ignored = action->sa.sa_handler == SIG_IGN;
 -- 
-2.30.0
+2.17.1
 

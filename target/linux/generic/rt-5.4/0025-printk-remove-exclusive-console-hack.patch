@@ -1,4 +1,7 @@
-From 52bf47fe8d9bdf51d1f596a371e5d8000f746530 Mon Sep 17 00:00:00 2001
+From fe95853140303c9fffc7ff537dbd5f4a3f946c9a Mon Sep 17 00:00:00 2001
+Message-Id: <fe95853140303c9fffc7ff537dbd5f4a3f946c9a.1617652877.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: John Ogness <john.ogness@linutronix.de>
 Date: Tue, 12 Feb 2019 15:29:47 +0100
 Subject: [PATCH 025/306] printk: remove exclusive console hack
@@ -103,5 +106,5 @@ index 591f80fb92ad..a67836c4cfb4 100644
  	pr_info("%sconsole [%s%d] enabled\n",
  		(newcon->flags & CON_BOOT) ? "boot" : "" ,
 -- 
-2.30.0
+2.17.1
 

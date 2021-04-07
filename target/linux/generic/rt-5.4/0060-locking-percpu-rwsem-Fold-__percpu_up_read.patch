@@ -1,4 +1,7 @@
-From a5e74a68b38e37ad6be7a8a3b14790bb982b2092 Mon Sep 17 00:00:00 2001
+From bb099f659039f0d229599c015c50d13557ad68ee Mon Sep 17 00:00:00 2001
+Message-Id: <bb099f659039f0d229599c015c50d13557ad68ee.1617652877.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Davidlohr Bueso <dave@stgolabs.net>
 Date: Fri, 31 Jan 2020 16:07:09 +0100
 Subject: [PATCH 060/306] locking/percpu-rwsem: Fold __percpu_up_read()
@@ -91,5 +94,5 @@ index 26d72e0f4d46..94c901b350f4 100644
  ({									\
  	typeof(var) __sum = 0;						\
 -- 
-2.30.0
+2.17.1
 

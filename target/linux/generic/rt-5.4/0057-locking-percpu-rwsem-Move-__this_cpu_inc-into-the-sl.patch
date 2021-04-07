@@ -1,4 +1,7 @@
-From bf1315a1928607f551ed19879f848139950af12e Mon Sep 17 00:00:00 2001
+From bede670ee5883bafe1d563a87a835b4e3d6eeace Mon Sep 17 00:00:00 2001
+Message-Id: <bede670ee5883bafe1d563a87a835b4e3d6eeace.1617652877.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Peter Zijlstra <peterz@infradead.org>
 Date: Fri, 31 Jan 2020 16:07:06 +0100
 Subject: [PATCH 057/306] locking/percpu-rwsem: Move __this_cpu_inc() into the
@@ -57,5 +60,5 @@ index edd2c8a15970..d0d8f44b2f36 100644
  	 * Due to having preemption disabled the decrement happens on
  	 * the same CPU as the increment, avoiding the
 -- 
-2.30.0
+2.17.1
 

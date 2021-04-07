@@ -1,4 +1,7 @@
-From 32fc2942a2e7259e3bf255b488bb81f6119b512b Mon Sep 17 00:00:00 2001
+From 5f574696a01a49f260675571e19dfaf129b77dc8 Mon Sep 17 00:00:00 2001
+Message-Id: <5f574696a01a49f260675571e19dfaf129b77dc8.1617652877.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Clark Williams <williams@redhat.com>
 Date: Mon, 15 Jul 2019 15:25:00 -0500
 Subject: [PATCH 063/306] thermal/x86_pkg_temp: Make pkg_temp_lock a
@@ -112,5 +115,5 @@ index ddb4a973c698..e18758a8e911 100644
  	/* Final cleanup if this is the last cpu */
  	if (lastcpu)
 -- 
-2.30.0
+2.17.1
 

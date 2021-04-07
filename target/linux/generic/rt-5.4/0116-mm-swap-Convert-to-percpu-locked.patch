@@ -1,4 +1,7 @@
-From a80e16e335e17ae419275a4353faa715ac78e52e Mon Sep 17 00:00:00 2001
+From ab06ac2b4ef3e48d861c648e7e67aba4ed2eb19d Mon Sep 17 00:00:00 2001
+Message-Id: <ab06ac2b4ef3e48d861c648e7e67aba4ed2eb19d.1617652878.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Ingo Molnar <mingo@elte.hu>
 Date: Fri, 3 Jul 2009 08:29:51 -0500
 Subject: [PATCH 116/306] mm/swap: Convert to percpu locked
@@ -16,7 +19,7 @@ Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
  4 files changed, 30 insertions(+), 19 deletions(-)
 
 diff --git a/include/linux/swap.h b/include/linux/swap.h
-index 063c0c1e112b..1ddf6a825468 100644
+index 136a929648ef..551fa0038945 100644
 --- a/include/linux/swap.h
 +++ b/include/linux/swap.h
 @@ -12,6 +12,7 @@
@@ -206,5 +209,5 @@ index 38c3fa4308e2..dc1d98b09c89 100644
  
  #ifdef CONFIG_SMP
 -- 
-2.30.0
+2.17.1
 

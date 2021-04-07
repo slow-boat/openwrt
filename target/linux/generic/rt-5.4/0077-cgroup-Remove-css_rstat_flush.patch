@@ -1,4 +1,7 @@
-From 2b03c997c80573a5d244e88fdc65f056bd058184 Mon Sep 17 00:00:00 2001
+From 17a381c8fe0983a7f345da7392c98eaebff03111 Mon Sep 17 00:00:00 2001
+Message-Id: <17a381c8fe0983a7f345da7392c98eaebff03111.1617652878.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Thu, 15 Aug 2019 18:14:16 +0200
 Subject: [PATCH 077/306] cgroup: Remove ->css_rstat_flush()
@@ -122,5 +125,5 @@ index 4a942d4e9763..a64b221886b1 100644
  
  		/* if @may_sleep, play nice and yield if necessary */
 -- 
-2.30.0
+2.17.1
 

@@ -1,4 +1,7 @@
-From d13bb1b305bafc6eada39fe08d391d3992645522 Mon Sep 17 00:00:00 2001
+From f51bed4bf88ae52ef6c86bb76a47753a93d6dab4 Mon Sep 17 00:00:00 2001
+Message-Id: <f51bed4bf88ae52ef6c86bb76a47753a93d6dab4.1617652878.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Fri, 4 Aug 2017 17:40:42 +0200
 Subject: [PATCH 180/306] locking: don't check for __LINUX_SPINLOCK_TYPES_H on
@@ -177,5 +180,5 @@ index c09b6407ae1b..b0243ba07fb7 100644
   * include/linux/spinlock_types_up.h - spinlock type definitions for UP
   *
 -- 
-2.30.0
+2.17.1
 

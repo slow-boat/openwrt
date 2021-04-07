@@ -1,4 +1,7 @@
-From 934efe2320686ef8f7d6a231a9bb23a0ad474c4e Mon Sep 17 00:00:00 2001
+From ae9115c39ef19d7585b91a64e93b81a2c049143e Mon Sep 17 00:00:00 2001
+Message-Id: <ae9115c39ef19d7585b91a64e93b81a2c049143e.1617652878.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Fri, 16 Aug 2019 12:49:36 +0200
 Subject: [PATCH 080/306] cgroup: Acquire cgroup_rstat_lock with enabled
@@ -74,5 +77,5 @@ index 0dc835bead08..49315054a1bc 100644
  
  int cgroup_rstat_init(struct cgroup *cgrp)
 -- 
-2.30.0
+2.17.1
 

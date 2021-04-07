@@ -1,4 +1,7 @@
-From dd5961635ad7074eb4608ba4d7e8f0a703451844 Mon Sep 17 00:00:00 2001
+From ee375e63d5308c035ec7ba20182436bc95c318be Mon Sep 17 00:00:00 2001
+Message-Id: <ee375e63d5308c035ec7ba20182436bc95c318be.1617652878.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Thu, 21 Jun 2018 17:29:19 +0200
 Subject: [PATCH 114/306] mm/SLUB: delay giving back empty slubs to IRQ enabled
@@ -17,7 +20,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  1 file changed, 69 insertions(+), 5 deletions(-)
 
 diff --git a/mm/slub.c b/mm/slub.c
-index f2df45e00edc..cd794cf021f1 100644
+index e98669bae3f0..361b94acfdf5 100644
 --- a/mm/slub.c
 +++ b/mm/slub.c
 @@ -1410,6 +1410,12 @@ static bool freelist_corrupted(struct kmem_cache *s, struct page *page,
@@ -218,5 +221,5 @@ index f2df45e00edc..cd794cf021f1 100644
  	if (debug_guardpage_minorder())
  		slub_max_order = 0;
 -- 
-2.30.0
+2.17.1
 

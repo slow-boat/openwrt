@@ -1,4 +1,7 @@
-From 2ab266b07e03fec59c845b0a690b25ddc2e35c33 Mon Sep 17 00:00:00 2001
+From c3d7b9da329d3dda2e2191eb66f40656423745ed Mon Sep 17 00:00:00 2001
+Message-Id: <c3d7b9da329d3dda2e2191eb66f40656423745ed.1617652878.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Mon, 20 May 2019 13:09:08 +0200
 Subject: [PATCH 109/306] softirq: Add preemptible softirq
@@ -497,5 +500,5 @@ index da8b4f3c266e..61eb19b55241 100644
  	}
  
 -- 
-2.30.0
+2.17.1
 

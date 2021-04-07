@@ -1,4 +1,7 @@
-From d1845f3f9394aff0c1e02078866814994322424f Mon Sep 17 00:00:00 2001
+From 95fae2e74eb70622824cbec46a00262832a1c25e Mon Sep 17 00:00:00 2001
+Message-Id: <95fae2e74eb70622824cbec46a00262832a1c25e.1617652877.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Wed, 10 Apr 2019 11:01:37 +0200
 Subject: [PATCH 011/306] drm/i915: Don't disable interrupts independently of
@@ -72,5 +75,5 @@ index 49d498882cf6..b94d2a1af222 100644
  	remove_from_client(rq);
  	list_del(&rq->link);
 -- 
-2.30.0
+2.17.1
 

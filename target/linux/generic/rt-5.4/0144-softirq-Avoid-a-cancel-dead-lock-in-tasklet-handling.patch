@@ -1,4 +1,7 @@
-From cffe461ee32646d394c11bd90f54b36f037b7414 Mon Sep 17 00:00:00 2001
+From e3add0f38676f7a081e53da46526f29b53d5d7fc Mon Sep 17 00:00:00 2001
+Message-Id: <e3add0f38676f7a081e53da46526f29b53d5d7fc.1617652878.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Sat, 22 Jun 2019 00:09:22 +0200
 Subject: [PATCH 144/306] softirq: Avoid a cancel dead-lock in tasklet handling
@@ -52,5 +55,5 @@ index 2b7b8d9af10a..d975a066d47d 100644
  	}
  	tasklet_unlock_wait(t);
 -- 
-2.30.0
+2.17.1
 

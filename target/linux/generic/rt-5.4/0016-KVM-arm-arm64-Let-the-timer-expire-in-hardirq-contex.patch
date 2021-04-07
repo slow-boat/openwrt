@@ -1,4 +1,7 @@
-From 6f2aa43bc9054b92bb4f367e3b3bf26d0a6512d7 Mon Sep 17 00:00:00 2001
+From 0c59753ef12fd508ae2b6caf3f7f6c2f99da6b1c Mon Sep 17 00:00:00 2001
+Message-Id: <0c59753ef12fd508ae2b6caf3f7f6c2f99da6b1c.1617652877.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Tue, 13 Aug 2019 14:29:41 +0200
 Subject: [PATCH 016/306] KVM: arm/arm64: Let the timer expire in hardirq
@@ -48,5 +51,5 @@ index 6b222100608f..c6c2a9dde00c 100644
  	ptimer->hrtimer.function = kvm_hrtimer_expire;
  
 -- 
-2.30.0
+2.17.1
 

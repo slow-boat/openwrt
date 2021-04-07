@@ -1,4 +1,7 @@
-From 316d38687ec814377055bcb9adcce38c04a9eca9 Mon Sep 17 00:00:00 2001
+From ee936afea77af7fb86207916f0bfa2a44def2ae6 Mon Sep 17 00:00:00 2001
+Message-Id: <ee936afea77af7fb86207916f0bfa2a44def2ae6.1617652878.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Mon, 6 Jun 2011 12:20:33 +0200
 Subject: [PATCH 139/306] sched: Move mmdrop to RCU on RT
@@ -37,7 +40,7 @@ index 270aa8fd2800..497440fe047c 100644
  		atomic_long_t hugetlb_usage;
  #endif
 diff --git a/include/linux/sched/mm.h b/include/linux/sched/mm.h
-index a132d875d351..af8d898cc840 100644
+index 3a1d899019af..aaf64d541c82 100644
 --- a/include/linux/sched/mm.h
 +++ b/include/linux/sched/mm.h
 @@ -49,6 +49,16 @@ static inline void mmdrop(struct mm_struct *mm)
@@ -82,10 +85,10 @@ index 50f37d5afb32..4a4644db7af8 100644
  {
  	struct mm_struct *mm;
 diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 218a8ebc517e..517de74a9438 100644
+index 892300b2eea1..2cd0ad964ff1 100644
 --- a/kernel/sched/core.c
 +++ b/kernel/sched/core.c
-@@ -3327,9 +3327,13 @@ static struct rq *finish_task_switch(struct task_struct *prev)
+@@ -3325,9 +3325,13 @@ static struct rq *finish_task_switch(struct task_struct *prev)
  	 *   provided by mmdrop(),
  	 * - a sync_core for SYNC_CORE.
  	 */
@@ -100,7 +103,7 @@ index 218a8ebc517e..517de74a9438 100644
  	}
  	if (unlikely(prev_state == TASK_DEAD)) {
  		if (prev->sched_class->task_dead)
-@@ -6260,6 +6264,8 @@ void sched_setnuma(struct task_struct *p, int nid)
+@@ -6258,6 +6262,8 @@ void sched_setnuma(struct task_struct *p, int nid)
  #endif /* CONFIG_NUMA_BALANCING */
  
  #ifdef CONFIG_HOTPLUG_CPU
@@ -109,7 +112,7 @@ index 218a8ebc517e..517de74a9438 100644
  /*
   * Ensure that the idle task is using init_mm right before its CPU goes
   * offline.
-@@ -6582,6 +6588,10 @@ int sched_cpu_dying(unsigned int cpu)
+@@ -6580,6 +6586,10 @@ int sched_cpu_dying(unsigned int cpu)
  	update_max_interval();
  	nohz_balance_exit_idle(rq);
  	hrtick_clear(rq);
@@ -121,5 +124,5 @@ index 218a8ebc517e..517de74a9438 100644
  }
  #endif
 -- 
-2.30.0
+2.17.1
 

@@ -1,4 +1,7 @@
-From 37c1e6f115b9c778243cc1fa34f8d9e4cdc2fb49 Mon Sep 17 00:00:00 2001
+From 85cd84fcb3f498b065ecb6c4360fea215b37c296 Mon Sep 17 00:00:00 2001
+Message-Id: <85cd84fcb3f498b065ecb6c4360fea215b37c296.1617652877.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Davidlohr Bueso <dave@stgolabs.net>
 Date: Fri, 31 Jan 2020 16:07:10 +0100
 Subject: [PATCH 061/306] locking/percpu-rwsem: Add might_sleep() for writer
@@ -28,5 +31,5 @@ index 94c901b350f4..e4a4a56037bb 100644
  
  	/* Notify readers to take the slow path. */
 -- 
-2.30.0
+2.17.1
 

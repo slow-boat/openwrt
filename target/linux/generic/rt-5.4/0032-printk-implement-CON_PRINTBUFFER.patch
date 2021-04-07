@@ -1,4 +1,7 @@
-From ce5fdbc1814de28b5f36e354f8c3751d72152cae Mon Sep 17 00:00:00 2001
+From 9102fca522144960fc7a6b00c9eed3d056bbbfa5 Mon Sep 17 00:00:00 2001
+Message-Id: <9102fca522144960fc7a6b00c9eed3d056bbbfa5.1617652877.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: John Ogness <john.ogness@linutronix.de>
 Date: Tue, 12 Feb 2019 15:29:54 +0100
 Subject: [PATCH 032/306] printk: implement CON_PRINTBUFFER
@@ -93,5 +96,5 @@ index 7aa0ab0c9e1f..eb568567f3f4 100644
  	console_sysfs_notify();
  
 -- 
-2.30.0
+2.17.1
 

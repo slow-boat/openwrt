@@ -1,4 +1,7 @@
-From f783fecb73e23bf1e9054acb5a9e4553d94c161a Mon Sep 17 00:00:00 2001
+From b1afd4769a0e1d278320ffd1110140c2de4b9f2f Mon Sep 17 00:00:00 2001
+Message-Id: <b1afd4769a0e1d278320ffd1110140c2de4b9f2f.1617652877.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Fri, 15 Nov 2019 21:37:22 +0100
 Subject: [PATCH 012/306] block: Don't disable interrupts in trigger_softirq()
@@ -37,5 +40,5 @@ index 457d9ba3eb20..6e7ec87d49fa 100644
  
  /*
 -- 
-2.30.0
+2.17.1
 

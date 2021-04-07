@@ -1,4 +1,7 @@
-From 5cfea9c871946ea825f2d0df94f6af7eb7de33e4 Mon Sep 17 00:00:00 2001
+From e8cbe1a6e375d76f73e71cea6a2ca400ba6805e9 Mon Sep 17 00:00:00 2001
+Message-Id: <e8cbe1a6e375d76f73e71cea6a2ca400ba6805e9.1617652877.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: John Ogness <john.ogness@linutronix.de>
 Date: Tue, 12 Feb 2019 15:29:44 +0100
 Subject: [PATCH 022/306] printk-rb: add blocking reader support
@@ -165,5 +168,5 @@ index 1d1e886a0966..dc9fd83e251d 100644
 +	return ret;
 +}
 -- 
-2.30.0
+2.17.1
 

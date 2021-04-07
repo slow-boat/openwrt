@@ -1,4 +1,7 @@
-From 8ca26dbc7231104f1a2f7ba930bfaeed941cc885 Mon Sep 17 00:00:00 2001
+From d01e6a2f99b56377092e41af51fd604f96aee904 Mon Sep 17 00:00:00 2001
+Message-Id: <d01e6a2f99b56377092e41af51fd604f96aee904.1617652879.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Mike Galbraith <umgwanakikbuti@gmail.com>
 Date: Thu, 31 Mar 2016 04:08:28 +0200
 Subject: [PATCH 278/306] drivers/block/zram: Replace bit spinlocks with
@@ -15,7 +18,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  2 files changed, 37 insertions(+)
 
 diff --git a/drivers/block/zram/zram_drv.c b/drivers/block/zram/zram_drv.c
-index 36d49159140f..57ad015fca33 100644
+index 719c6b7741af..ba443d0f8047 100644
 --- a/drivers/block/zram/zram_drv.c
 +++ b/drivers/block/zram/zram_drv.c
 @@ -55,6 +55,40 @@ static void zram_free_page(struct zram *zram, size_t index);
@@ -67,7 +70,7 @@ index 36d49159140f..57ad015fca33 100644
  
  static inline bool init_done(struct zram *zram)
  {
-@@ -1154,6 +1189,7 @@ static bool zram_meta_alloc(struct zram *zram, u64 disksize)
+@@ -1159,6 +1194,7 @@ static bool zram_meta_alloc(struct zram *zram, u64 disksize)
  
  	if (!huge_class_size)
  		huge_class_size = zs_huge_class_size(zram->mem_pool);
@@ -88,5 +91,5 @@ index f2fd46daa760..7e4dd447e1dd 100644
  	ktime_t ac_time;
  #endif
 -- 
-2.30.0
+2.17.1
 

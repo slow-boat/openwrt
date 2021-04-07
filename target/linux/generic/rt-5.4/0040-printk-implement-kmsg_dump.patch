@@ -1,4 +1,7 @@
-From 08bcab75f4f3c55b26202f442da85726162c1f20 Mon Sep 17 00:00:00 2001
+From 668099eedbd6334babf55b0ef5fd4b071b6a1c08 Mon Sep 17 00:00:00 2001
+Message-Id: <668099eedbd6334babf55b0ef5fd4b071b6a1c08.1617652877.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: John Ogness <john.ogness@linutronix.de>
 Date: Tue, 12 Feb 2019 15:30:02 +0100
 Subject: [PATCH 040/306] printk: implement kmsg_dump
@@ -401,5 +404,5 @@ index fb05783470e2..7fddb5908947 100644
  EXPORT_SYMBOL_GPL(kmsg_dump_rewind);
  
 -- 
-2.30.0
+2.17.1
 

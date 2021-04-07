@@ -1,4 +1,7 @@
-From 059294f17e9a936a0922c7690fee1e888b223558 Mon Sep 17 00:00:00 2001
+From 0f8665474cc87f73b71f3520ec0f11e78fb139ee Mon Sep 17 00:00:00 2001
+Message-Id: <0f8665474cc87f73b71f3520ec0f11e78fb139ee.1617652878.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Fri, 21 Feb 2014 17:24:04 +0100
 Subject: [PATCH 202/306] crypto: Reduce preempt disabled regions, more algos
@@ -126,7 +129,7 @@ index 384ccb00f9e1..2f8df8ef8644 100644
  		ctr_crypt_final(&walk, ctx);
  		err = skcipher_walk_done(&walk, 0);
 diff --git a/arch/x86/crypto/glue_helper.c b/arch/x86/crypto/glue_helper.c
-index d15b99397480..36c28b295b8e 100644
+index d3d91a0abf88..6d0774721514 100644
 --- a/arch/x86/crypto/glue_helper.c
 +++ b/arch/x86/crypto/glue_helper.c
 @@ -24,7 +24,7 @@ int glue_ecb_req_128bit(const struct common_glue_ctx *gctx,
@@ -177,7 +180,7 @@ index d15b99397480..36c28b295b8e 100644
  		/* Start of the last block. */
  		src += nbytes / bsize - 1;
  		dst += nbytes / bsize - 1;
-@@ -147,10 +146,10 @@ int glue_cbc_decrypt_req_128bit(const struct common_glue_ctx *gctx,
+@@ -148,10 +147,10 @@ int glue_cbc_decrypt_req_128bit(const struct common_glue_ctx *gctx,
  done:
  		u128_xor(dst, dst, (u128 *)walk.iv);
  		*(u128 *)walk.iv = last_iv;
@@ -189,7 +192,7 @@ index d15b99397480..36c28b295b8e 100644
  	return err;
  }
  EXPORT_SYMBOL_GPL(glue_cbc_decrypt_req_128bit);
-@@ -161,7 +160,7 @@ int glue_ctr_req_128bit(const struct common_glue_ctx *gctx,
+@@ -162,7 +161,7 @@ int glue_ctr_req_128bit(const struct common_glue_ctx *gctx,
  	void *ctx = crypto_skcipher_ctx(crypto_skcipher_reqtfm(req));
  	const unsigned int bsize = 128 / 8;
  	struct skcipher_walk walk;
@@ -198,7 +201,7 @@ index d15b99397480..36c28b295b8e 100644
  	unsigned int nbytes;
  	int err;
  
-@@ -175,7 +174,7 @@ int glue_ctr_req_128bit(const struct common_glue_ctx *gctx,
+@@ -176,7 +175,7 @@ int glue_ctr_req_128bit(const struct common_glue_ctx *gctx,
  		le128 ctrblk;
  
  		fpu_enabled = glue_fpu_begin(bsize, gctx->fpu_blocks_limit,
@@ -207,7 +210,7 @@ index d15b99397480..36c28b295b8e 100644
  
  		be128_to_le128(&ctrblk, (be128 *)walk.iv);
  
-@@ -199,11 +198,10 @@ int glue_ctr_req_128bit(const struct common_glue_ctx *gctx,
+@@ -202,11 +201,10 @@ int glue_ctr_req_128bit(const struct common_glue_ctx *gctx,
  		}
  
  		le128_to_be128((be128 *)walk.iv, &ctrblk);
@@ -220,7 +223,7 @@ index d15b99397480..36c28b295b8e 100644
  	if (nbytes) {
  		le128 ctrblk;
  		u128 tmp;
-@@ -301,8 +299,14 @@ int glue_xts_req_128bit(const struct common_glue_ctx *gctx,
+@@ -306,8 +304,14 @@ int glue_xts_req_128bit(const struct common_glue_ctx *gctx,
  	tweak_fn(tweak_ctx, walk.iv, walk.iv);
  
  	while (nbytes) {
@@ -236,5 +239,5 @@ index d15b99397480..36c28b295b8e 100644
  		nbytes = walk.nbytes;
  	}
 -- 
-2.30.0
+2.17.1
 

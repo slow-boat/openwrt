@@ -1,4 +1,7 @@
-From 4410d1c94ead671c3bc92a64431c5d7bf6ed2fe5 Mon Sep 17 00:00:00 2001
+From e9470bf6dce16c1131cf9d4eba5db1e9607bb9c8 Mon Sep 17 00:00:00 2001
+Message-Id: <e9470bf6dce16c1131cf9d4eba5db1e9607bb9c8.1617652878.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Wed, 22 May 2019 12:43:56 +0200
 Subject: [PATCH 076/306] workqueue: Convert the locks to raw type
@@ -682,5 +685,5 @@ index d27ade16f772..6ea194f21245 100644
  
  /**
 -- 
-2.30.0
+2.17.1
 

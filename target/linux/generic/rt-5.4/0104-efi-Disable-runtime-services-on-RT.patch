@@ -1,4 +1,7 @@
-From 7b354edfb3e39afac5ad1d7834c1ffd1ea7f2a6c Mon Sep 17 00:00:00 2001
+From 1ee54b8b7c8784e7644d6c2b3380fe22c0e84c88 Mon Sep 17 00:00:00 2001
+Message-Id: <1ee54b8b7c8784e7644d6c2b3380fe22c0e84c88.1617652878.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Thu, 26 Jul 2018 15:03:16 +0200
 Subject: [PATCH 104/306] efi: Disable runtime services on RT
@@ -28,7 +31,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/firmware/efi/efi.c b/drivers/firmware/efi/efi.c
-index b299e22b7532..a299e6acf9cc 100644
+index 3a2b60736915..41dbf8649326 100644
 --- a/drivers/firmware/efi/efi.c
 +++ b/drivers/firmware/efi/efi.c
 @@ -68,7 +68,7 @@ struct mm_struct efi_mm = {
@@ -41,5 +44,5 @@ index b299e22b7532..a299e6acf9cc 100644
  {
  	disable_runtime = true;
 -- 
-2.30.0
+2.17.1
 

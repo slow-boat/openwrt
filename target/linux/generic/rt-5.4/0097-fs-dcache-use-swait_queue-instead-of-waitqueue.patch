@@ -1,4 +1,7 @@
-From 0cbefe3e03640a8c6a2966f0b54c050635dbc136 Mon Sep 17 00:00:00 2001
+From e7d4344bb365a3275224d4c48eb360f9e3b62248 Mon Sep 17 00:00:00 2001
+Message-Id: <e7d4344bb365a3275224d4c48eb360f9e3b62248.1617652878.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Wed, 14 Sep 2016 14:35:49 +0200
 Subject: [PATCH 097/306] fs/dcache: use swait_queue instead of waitqueue
@@ -133,7 +136,7 @@ index 5b5759d70822..2d1dce3fa9b3 100644
  	if (unlikely(IS_DEADDIR(dir_inode)))
  		return -ENOENT;
 diff --git a/fs/nfs/dir.c b/fs/nfs/dir.c
-index 37d63320c7a6..3ec873ad794b 100644
+index a4f12082ed3a..2a4ef55adf01 100644
 --- a/fs/nfs/dir.c
 +++ b/fs/nfs/dir.c
 @@ -457,7 +457,7 @@ static
@@ -145,7 +148,7 @@ index 37d63320c7a6..3ec873ad794b 100644
  	struct dentry *dentry;
  	struct dentry *alias;
  	struct inode *dir = d_inode(parent);
-@@ -1520,7 +1520,7 @@ int nfs_atomic_open(struct inode *dir, struct dentry *dentry,
+@@ -1531,7 +1531,7 @@ int nfs_atomic_open(struct inode *dir, struct dentry *dentry,
  		    struct file *file, unsigned open_flags,
  		    umode_t mode)
  {
@@ -250,5 +253,5 @@ index e83a3f8449f6..091347205736 100644
  	list_splice_init(&q->task_list, &tmp);
  	while (!list_empty(&tmp)) {
 -- 
-2.30.0
+2.17.1
 

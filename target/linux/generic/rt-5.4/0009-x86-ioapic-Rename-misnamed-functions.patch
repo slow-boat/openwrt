@@ -1,4 +1,7 @@
-From 4c23f06fe0af9c169c5b114b36cc6ed26113a8c6 Mon Sep 17 00:00:00 2001
+From d583b25c313af82cfb9214a269867781457dd2ca Mon Sep 17 00:00:00 2001
+Message-Id: <d583b25c313af82cfb9214a269867781457dd2ca.1617652877.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Thu, 17 Oct 2019 12:19:02 +0200
 Subject: [PATCH 009/306] x86/ioapic: Rename misnamed functions
@@ -26,10 +29,10 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  1 file changed, 8 insertions(+), 8 deletions(-)
 
 diff --git a/arch/x86/kernel/apic/io_apic.c b/arch/x86/kernel/apic/io_apic.c
-index 4b6301946f45..76a6b7553a0f 100644
+index 0edcf69659ee..90287b555027 100644
 --- a/arch/x86/kernel/apic/io_apic.c
 +++ b/arch/x86/kernel/apic/io_apic.c
-@@ -1725,7 +1725,7 @@ static bool io_apic_level_ack_pending(struct mp_chip_data *data)
+@@ -1735,7 +1735,7 @@ static bool io_apic_level_ack_pending(struct mp_chip_data *data)
  	return false;
  }
  
@@ -38,7 +41,7 @@ index 4b6301946f45..76a6b7553a0f 100644
  {
  	/* If we are moving the IRQ we need to mask it */
  	if (unlikely(irqd_is_setaffinity_pending(data))) {
-@@ -1736,9 +1736,9 @@ static inline bool ioapic_irqd_mask(struct irq_data *data)
+@@ -1746,9 +1746,9 @@ static inline bool ioapic_irqd_mask(struct irq_data *data)
  	return false;
  }
  
@@ -50,7 +53,7 @@ index 4b6301946f45..76a6b7553a0f 100644
  		/* Only migrate the irq if the ack has been received.
  		 *
  		 * On rare occasions the broadcast level triggered ack gets
-@@ -1773,11 +1773,11 @@ static inline void ioapic_irqd_unmask(struct irq_data *data, bool masked)
+@@ -1783,11 +1783,11 @@ static inline void ioapic_irqd_unmask(struct irq_data *data, bool masked)
  	}
  }
  #else
@@ -64,7 +67,7 @@ index 4b6301946f45..76a6b7553a0f 100644
  {
  }
  #endif
-@@ -1786,11 +1786,11 @@ static void ioapic_ack_level(struct irq_data *irq_data)
+@@ -1796,11 +1796,11 @@ static void ioapic_ack_level(struct irq_data *irq_data)
  {
  	struct irq_cfg *cfg = irqd_cfg(irq_data);
  	unsigned long v;
@@ -78,7 +81,7 @@ index 4b6301946f45..76a6b7553a0f 100644
  
  	/*
  	 * It appears there is an erratum which affects at least version 0x11
-@@ -1845,7 +1845,7 @@ static void ioapic_ack_level(struct irq_data *irq_data)
+@@ -1855,7 +1855,7 @@ static void ioapic_ack_level(struct irq_data *irq_data)
  		eoi_ioapic_pin(cfg->vector, irq_data->chip_data);
  	}
  
@@ -88,5 +91,5 @@ index 4b6301946f45..76a6b7553a0f 100644
  
  static void ioapic_ir_ack_level(struct irq_data *irq_data)
 -- 
-2.30.0
+2.17.1
 

@@ -1,4 +1,7 @@
-From 61998da165659eb603fa3839172054fc2ca61163 Mon Sep 17 00:00:00 2001
+From beb8fc87c36e4ce5b2e621f60bccf3920bf3dbdf Mon Sep 17 00:00:00 2001
+Message-Id: <beb8fc87c36e4ce5b2e621f60bccf3920bf3dbdf.1617652879.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Thomas Graziadei <thomas.graziadei@omicronenergy.com>
 Date: Wed, 18 Mar 2020 21:26:40 +0100
 Subject: [PATCH 253/306] powerpc: Fix lazy preemption for powerpc 32bit
@@ -36,5 +39,5 @@ index 1fb0bf3a4132..5db59fc7ac60 100644
  3:	lwarx	r8,0,r12
  	andc	r8,r8,r11
 -- 
-2.30.0
+2.17.1
 

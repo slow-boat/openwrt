@@ -1,4 +1,7 @@
-From 0e8851081ae0f4db64faf308584774950e3039e0 Mon Sep 17 00:00:00 2001
+From 688a5087ddb8b4ff725a7c28fb97b3703b95953d Mon Sep 17 00:00:00 2001
+Message-Id: <688a5087ddb8b4ff725a7c28fb97b3703b95953d.1617652877.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Fri, 8 Nov 2019 12:55:47 +0100
 Subject: [PATCH 071/306] mm/compaction: Disable compact_unevictable_allowed on
@@ -39,7 +42,7 @@ index 64aeee1009ca..0329a4d3fa9e 100644
  
  dirty_background_bytes
 diff --git a/kernel/sysctl.c b/kernel/sysctl.c
-index 91b23fd4df9f..8221219d65c3 100644
+index 27dd650fba3d..800961d5744d 100644
 --- a/kernel/sysctl.c
 +++ b/kernel/sysctl.c
 @@ -212,6 +212,11 @@ static int proc_do_cad_pid(struct ctl_table *table, int write,
@@ -109,5 +112,5 @@ index d686887856fe..7281538bf058 100644
  static inline void
  update_fast_start_pfn(struct compact_control *cc, unsigned long pfn)
 -- 
-2.30.0
+2.17.1
 

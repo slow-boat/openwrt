@@ -1,4 +1,7 @@
-From 78d0730ea5648272ed644eb3d87e2e3c34ba335f Mon Sep 17 00:00:00 2001
+From edc0ae76451bb41e59512a3e6d4fdd9e09d072fb Mon Sep 17 00:00:00 2001
+Message-Id: <edc0ae76451bb41e59512a3e6d4fdd9e09d072fb.1617652878.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: John Stultz <johnstul@us.ibm.com>
 Date: Fri, 3 Jul 2009 08:29:58 -0500
 Subject: [PATCH 136/306] posix-timers: Thread posix-cpu-timers on -rt
@@ -47,7 +50,7 @@ index 3d10c84a97a9..6fb10cb201ee 100644
  #else
  struct posix_cputimers { };
 diff --git a/kernel/time/posix-cpu-timers.c b/kernel/time/posix-cpu-timers.c
-index 42d512fcfda2..74b3efc3de90 100644
+index eacb0ca30193..0d22f5cc834a 100644
 --- a/kernel/time/posix-cpu-timers.c
 +++ b/kernel/time/posix-cpu-timers.c
 @@ -3,8 +3,10 @@
@@ -303,5 +306,5 @@ index 42d512fcfda2..74b3efc3de90 100644
   * Set one of the process-wide special case CPU timers or RLIMIT_CPU.
   * The tsk->sighand->siglock must be held by the caller.
 -- 
-2.30.0
+2.17.1
 

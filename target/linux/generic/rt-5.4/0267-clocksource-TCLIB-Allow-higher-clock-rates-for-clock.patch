@@ -1,4 +1,7 @@
-From af4c264a457062701a845318f5074eabb64d5336 Mon Sep 17 00:00:00 2001
+From 73d2cad78af7433b1dc678e1a8c10ca091ac27aa Mon Sep 17 00:00:00 2001
+Message-Id: <73d2cad78af7433b1dc678e1a8c10ca091ac27aa.1617652879.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Benedikt Spranger <b.spranger@linutronix.de>
 Date: Mon, 8 Mar 2010 18:57:04 +0100
 Subject: [PATCH 267/306] clocksource: TCLIB: Allow higher clock rates for
@@ -164,5 +167,5 @@ index d7642bba4875..ce6627ee161f 100644
  		goto err_unregister_clksrc;
  
 -- 
-2.30.0
+2.17.1
 

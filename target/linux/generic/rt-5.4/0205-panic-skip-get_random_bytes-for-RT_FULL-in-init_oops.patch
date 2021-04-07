@@ -1,4 +1,7 @@
-From 7534fa1ace60433a613407c2ace30bfa719813db Mon Sep 17 00:00:00 2001
+From bb1881d4c8699181ae5d80b8ab3a8c9a8df19fbb Mon Sep 17 00:00:00 2001
+Message-Id: <bb1881d4c8699181ae5d80b8ab3a8c9a8df19fbb.1617652878.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Tue, 14 Jul 2015 14:26:34 +0200
 Subject: [PATCH 205/306] panic: skip get_random_bytes for RT_FULL in
@@ -29,5 +32,5 @@ index c4814604311e..cf00fca83817 100644
  
  	return 0;
 -- 
-2.30.0
+2.17.1
 

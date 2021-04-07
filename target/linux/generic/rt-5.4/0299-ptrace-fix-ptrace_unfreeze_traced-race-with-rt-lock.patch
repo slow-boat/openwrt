@@ -1,4 +1,7 @@
-From 31770697804836c9e6da2b3138e0d5da0f3be6d4 Mon Sep 17 00:00:00 2001
+From 4b8a32f6986ec63688f30a6b67857d36cb449417 Mon Sep 17 00:00:00 2001
+Message-Id: <4b8a32f6986ec63688f30a6b67857d36cb449417.1617652879.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Oleg Nesterov <oleg@redhat.com>
 Date: Tue, 3 Nov 2020 12:39:01 +0100
 Subject: [PATCH 299/306] ptrace: fix ptrace_unfreeze_traced() race with
@@ -61,5 +64,5 @@ index 0b81543c4050..2f09a6dbe140 100644
  }
  
 -- 
-2.30.0
+2.17.1
 

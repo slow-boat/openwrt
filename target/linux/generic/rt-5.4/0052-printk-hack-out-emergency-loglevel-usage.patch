@@ -1,4 +1,7 @@
-From b2d54da6285f41d4cf4b96c5a15793ad8a212581 Mon Sep 17 00:00:00 2001
+From 5583c5edc9e8cde82b6ad5283f3a1f865be60f5f Mon Sep 17 00:00:00 2001
+Message-Id: <5583c5edc9e8cde82b6ad5283f3a1f865be60f5f.1617652877.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: John Ogness <john.ogness@linutronix.de>
 Date: Tue, 3 Dec 2019 09:14:57 +0100
 Subject: [PATCH 052/306] printk: hack out emergency loglevel usage
@@ -54,5 +57,5 @@ index f1e43ca2d09b..98776feea2e0 100644
  			continue;
  		}
 -- 
-2.30.0
+2.17.1
 

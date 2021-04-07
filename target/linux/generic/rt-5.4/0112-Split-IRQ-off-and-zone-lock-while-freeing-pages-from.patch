@@ -1,4 +1,7 @@
-From 9d86d5e9dcaaec134e82089ddda8b27692611d06 Mon Sep 17 00:00:00 2001
+From 5214a9992cfb6747d872855be98997833904f428 Mon Sep 17 00:00:00 2001
+Message-Id: <5214a9992cfb6747d872855be98997833904f428.1617652878.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Peter Zijlstra <peterz@infradead.org>
 Date: Mon, 28 May 2018 15:24:21 +0200
 Subject: [PATCH 112/306] Split IRQ-off and zone->lock while freeing pages from
@@ -167,5 +170,5 @@ index 455e5a229861..bf062853c9ae 100644
  
  /*
 -- 
-2.30.0
+2.17.1
 

@@ -1,4 +1,7 @@
-From 2dffc2f4f686a67b2fa15b4191c748c241cf9235 Mon Sep 17 00:00:00 2001
+From aa7adbe93ebe88e4fb2b0d7d1d56db7091576995 Mon Sep 17 00:00:00 2001
+Message-Id: <aa7adbe93ebe88e4fb2b0d7d1d56db7091576995.1617652878.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Scott Wood <swood@redhat.com>
 Date: Sat, 12 Oct 2019 01:52:14 -0500
 Subject: [PATCH 175/306] sched: migrate_enable: Use stop_one_cpu_nowait()
@@ -19,7 +22,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  3 files changed, 24 insertions(+), 12 deletions(-)
 
 diff --git a/include/linux/stop_machine.h b/include/linux/stop_machine.h
-index f9a0c6189852..27d32887103d 100644
+index 69998fc5ffe9..5190c8b09b27 100644
 --- a/include/linux/stop_machine.h
 +++ b/include/linux/stop_machine.h
 @@ -26,6 +26,8 @@ struct cpu_stop_work {
@@ -32,10 +35,10 @@ index f9a0c6189852..27d32887103d 100644
  
  int stop_one_cpu(unsigned int cpu, cpu_stop_fn_t fn, void *arg);
 diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index eee83d5233a4..90a6a4468488 100644
+index 3ee675c4909f..aac5ad8d9dae 100644
 --- a/kernel/sched/core.c
 +++ b/kernel/sched/core.c
-@@ -1620,6 +1620,7 @@ static struct rq *move_queued_task(struct rq *rq, struct rq_flags *rf,
+@@ -1618,6 +1618,7 @@ static struct rq *move_queued_task(struct rq *rq, struct rq_flags *rf,
  struct migration_arg {
  	struct task_struct *task;
  	int dest_cpu;
@@ -43,7 +46,7 @@ index eee83d5233a4..90a6a4468488 100644
  };
  
  /*
-@@ -1655,6 +1656,11 @@ static int migration_cpu_stop(void *data)
+@@ -1653,6 +1654,11 @@ static int migration_cpu_stop(void *data)
  	struct task_struct *p = arg->task;
  	struct rq *rq = this_rq();
  	struct rq_flags rf;
@@ -55,7 +58,7 @@ index eee83d5233a4..90a6a4468488 100644
  
  	/*
  	 * The original target CPU might have gone down and we might
-@@ -1677,9 +1683,9 @@ static int migration_cpu_stop(void *data)
+@@ -1675,9 +1681,9 @@ static int migration_cpu_stop(void *data)
  	 */
  	if (task_rq(p) == rq) {
  		if (task_on_rq_queued(p))
@@ -67,7 +70,7 @@ index eee83d5233a4..90a6a4468488 100644
  	}
  	rq_unlock(rq, &rf);
  	raw_spin_unlock(&p->pi_lock);
-@@ -8251,7 +8257,8 @@ void migrate_enable(void)
+@@ -8249,7 +8255,8 @@ void migrate_enable(void)
  
  	WARN_ON(smp_processor_id() != cpu);
  	if (!is_cpu_allowed(p, cpu)) {
@@ -77,7 +80,7 @@ index eee83d5233a4..90a6a4468488 100644
  		struct rq_flags rf;
  
  		rq = task_rq_lock(p, &rf);
-@@ -8259,13 +8266,13 @@ void migrate_enable(void)
+@@ -8257,13 +8264,13 @@ void migrate_enable(void)
  		arg.dest_cpu = select_fallback_rq(cpu, p);
  		task_rq_unlock(rq, p, &rf);
  
@@ -117,5 +120,5 @@ index 998d50ee2d9b..9112fc79d24b 100644
  
  	wake_up_q(&wakeq);
 -- 
-2.30.0
+2.17.1
 

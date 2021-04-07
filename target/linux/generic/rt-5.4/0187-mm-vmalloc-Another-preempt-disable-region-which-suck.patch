@@ -1,4 +1,7 @@
-From 4be9f56c52fbf0014901e565274b8a7c5bf340bf Mon Sep 17 00:00:00 2001
+From f9e10488e0d14761b3f01cacfd88aa733050edd5 Mon Sep 17 00:00:00 2001
+Message-Id: <f9e10488e0d14761b3f01cacfd88aa733050edd5.1617652878.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Tue, 12 Jul 2011 11:39:36 +0200
 Subject: [PATCH 187/306] mm/vmalloc: Another preempt disable region which
@@ -68,5 +71,5 @@ index 1b39c0fa2fc5..5a9b4024d9c9 100644
  
  	/* Allocate new block if nothing was found */
 -- 
-2.30.0
+2.17.1
 

@@ -1,4 +1,7 @@
-From 76b9bb4d89cafc040ad7cb2333fb1fc5c720ad2d Mon Sep 17 00:00:00 2001
+From 70e0027ca8fb22899edf8ca63fe9342c0f331248 Mon Sep 17 00:00:00 2001
+Message-Id: <70e0027ca8fb22899edf8ca63fe9342c0f331248.1617652879.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Mike Galbraith <efault@gmx.de>
 Date: Sun, 8 Jan 2017 09:32:25 +0100
 Subject: [PATCH 220/306] cpuset: Convert callback_lock to raw_spinlock_t
@@ -324,5 +327,5 @@ index bab6a934862e..e27d09807c2f 100644
  }
  
 -- 
-2.30.0
+2.17.1
 

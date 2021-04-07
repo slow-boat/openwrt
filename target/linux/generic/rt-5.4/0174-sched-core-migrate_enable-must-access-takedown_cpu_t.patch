@@ -1,4 +1,7 @@
-From f3fd6ad77da1e16553bc48e9a8e2ffe14dcaa539 Mon Sep 17 00:00:00 2001
+From 6c139eae51d8120d192b49a0635e1ec54cbed561 Mon Sep 17 00:00:00 2001
+Message-Id: <6c139eae51d8120d192b49a0635e1ec54cbed561.1617652878.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Fri, 29 Nov 2019 17:24:55 +0100
 Subject: [PATCH 174/306] sched/core: migrate_enable() must access
@@ -31,10 +34,10 @@ index 42f8b3612244..18f4b0602a01 100644
  static int takedown_cpu(unsigned int cpu)
  {
 diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 7ff7de493993..eee83d5233a4 100644
+index 1885ab2925b4..3ee675c4909f 100644
 --- a/kernel/sched/core.c
 +++ b/kernel/sched/core.c
-@@ -8236,9 +8236,11 @@ void migrate_enable(void)
+@@ -8234,9 +8234,11 @@ void migrate_enable(void)
  
  	p->migrate_disable = 0;
  	rq->nr_pinned--;
@@ -47,5 +50,5 @@ index 7ff7de493993..eee83d5233a4 100644
  	if (!p->migrate_disable_scheduled)
  		goto out;
 -- 
-2.30.0
+2.17.1
 

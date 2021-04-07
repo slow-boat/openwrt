@@ -1,4 +1,7 @@
-From b0383ac1b2c4fc254b6653fe9fce6359a93d5c3a Mon Sep 17 00:00:00 2001
+From adb2abcd0614496eb55004e9a9c03188c5c0176b Mon Sep 17 00:00:00 2001
+Message-Id: <adb2abcd0614496eb55004e9a9c03188c5c0176b.1617652877.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: John Ogness <john.ogness@linutronix.de>
 Date: Tue, 12 Feb 2019 15:29:43 +0100
 Subject: [PATCH 021/306] printk-rb: add basic non-blocking reading interface
@@ -263,5 +266,5 @@ index 90c7f9a9f861..1d1e886a0966 100644
 +	return 1;
 +}
 -- 
-2.30.0
+2.17.1
 

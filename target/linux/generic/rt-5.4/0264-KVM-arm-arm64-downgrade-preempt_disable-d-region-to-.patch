@@ -1,4 +1,7 @@
-From 6e6a636ce0b9ac1c425f3a730ea4cb0d6526a9fe Mon Sep 17 00:00:00 2001
+From 2ebca468ff12697bea872ab81b3ee2eb3270caec Mon Sep 17 00:00:00 2001
+Message-Id: <2ebca468ff12697bea872ab81b3ee2eb3270caec.1617652879.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Josh Cartwright <joshc@ni.com>
 Date: Thu, 11 Feb 2016 11:54:01 -0600
 Subject: [PATCH 264/306] KVM: arm/arm64: downgrade preempt_disable()d region
@@ -23,10 +26,10 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/virt/kvm/arm/arm.c b/virt/kvm/arm/arm.c
-index 986fbc3cf667..e3f4009dec8c 100644
+index 2e7d2b3f2907..797ee2ff15f7 100644
 --- a/virt/kvm/arm/arm.c
 +++ b/virt/kvm/arm/arm.c
-@@ -720,7 +720,7 @@ int kvm_arch_vcpu_ioctl_run(struct kvm_vcpu *vcpu, struct kvm_run *run)
+@@ -726,7 +726,7 @@ int kvm_arch_vcpu_ioctl_run(struct kvm_vcpu *vcpu, struct kvm_run *run)
  		 * involves poking the GIC, which must be done in a
  		 * non-preemptible context.
  		 */
@@ -35,7 +38,7 @@ index 986fbc3cf667..e3f4009dec8c 100644
  
  		kvm_pmu_flush_hwstate(vcpu);
  
-@@ -769,7 +769,7 @@ int kvm_arch_vcpu_ioctl_run(struct kvm_vcpu *vcpu, struct kvm_run *run)
+@@ -775,7 +775,7 @@ int kvm_arch_vcpu_ioctl_run(struct kvm_vcpu *vcpu, struct kvm_run *run)
  				kvm_timer_sync_hwstate(vcpu);
  			kvm_vgic_sync_hwstate(vcpu);
  			local_irq_enable();
@@ -44,7 +47,7 @@ index 986fbc3cf667..e3f4009dec8c 100644
  			continue;
  		}
  
-@@ -847,7 +847,7 @@ int kvm_arch_vcpu_ioctl_run(struct kvm_vcpu *vcpu, struct kvm_run *run)
+@@ -853,7 +853,7 @@ int kvm_arch_vcpu_ioctl_run(struct kvm_vcpu *vcpu, struct kvm_run *run)
  		/* Exit types that need handling before we can be preempted */
  		handle_exit_early(vcpu, run, ret);
  
@@ -54,5 +57,5 @@ index 986fbc3cf667..e3f4009dec8c 100644
  		ret = handle_exit(vcpu, run, ret);
  	}
 -- 
-2.30.0
+2.17.1
 

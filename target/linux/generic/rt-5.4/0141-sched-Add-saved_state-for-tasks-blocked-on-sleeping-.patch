@@ -1,4 +1,7 @@
-From 55a5cdbd616c1d8012aa1f9bea59e1e3b7f93eee Mon Sep 17 00:00:00 2001
+From ecf7712f180f24cb599e5665c493c7ac527f2513 Mon Sep 17 00:00:00 2001
+Message-Id: <ecf7712f180f24cb599e5665c493c7ac527f2513.1617652878.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Sat, 25 Jun 2011 09:21:04 +0200
 Subject: [PATCH 141/306] sched: Add saved_state for tasks blocked on sleeping
@@ -39,10 +42,10 @@ index bce2c2633e70..82335bb8bb22 100644
  
  #ifdef CONFIG_SMP
 diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 9763d65e2e69..0326135d3d94 100644
+index e8db0fe3861a..04ba1be7c2f6 100644
 --- a/kernel/sched/core.c
 +++ b/kernel/sched/core.c
-@@ -2607,6 +2607,8 @@ try_to_wake_up(struct task_struct *p, unsigned int state, int wake_flags)
+@@ -2605,6 +2605,8 @@ try_to_wake_up(struct task_struct *p, unsigned int state, int wake_flags)
  	int cpu, success = 0;
  
  	preempt_disable();
@@ -51,7 +54,7 @@ index 9763d65e2e69..0326135d3d94 100644
  	if (p == current) {
  		/*
  		 * We're waking current, this means 'p->on_rq' and 'task_cpu(p)
-@@ -2629,7 +2631,7 @@ try_to_wake_up(struct task_struct *p, unsigned int state, int wake_flags)
+@@ -2627,7 +2629,7 @@ try_to_wake_up(struct task_struct *p, unsigned int state, int wake_flags)
  		trace_sched_wakeup(p);
  		goto out;
  	}
@@ -60,7 +63,7 @@ index 9763d65e2e69..0326135d3d94 100644
  	/*
  	 * If we are going to wake up a thread waiting for CONDITION we
  	 * need to ensure that CONDITION=1 done by the caller can not be
-@@ -2638,8 +2640,27 @@ try_to_wake_up(struct task_struct *p, unsigned int state, int wake_flags)
+@@ -2636,8 +2638,27 @@ try_to_wake_up(struct task_struct *p, unsigned int state, int wake_flags)
  	 */
  	raw_spin_lock_irqsave(&p->pi_lock, flags);
  	smp_mb__after_spinlock();
@@ -90,7 +93,7 @@ index 9763d65e2e69..0326135d3d94 100644
  
  	trace_sched_waking(p);
  
-@@ -2731,9 +2752,12 @@ try_to_wake_up(struct task_struct *p, unsigned int state, int wake_flags)
+@@ -2729,9 +2750,12 @@ try_to_wake_up(struct task_struct *p, unsigned int state, int wake_flags)
  	ttwu_queue(p, cpu, wake_flags);
  unlock:
  	raw_spin_unlock_irqrestore(&p->pi_lock, flags);
@@ -103,7 +106,7 @@ index 9763d65e2e69..0326135d3d94 100644
  	preempt_enable();
  
  	return success;
-@@ -2756,6 +2780,18 @@ int wake_up_process(struct task_struct *p)
+@@ -2754,6 +2778,18 @@ int wake_up_process(struct task_struct *p)
  }
  EXPORT_SYMBOL(wake_up_process);
  
@@ -123,10 +126,10 @@ index 9763d65e2e69..0326135d3d94 100644
  {
  	return try_to_wake_up(p, state, 0);
 diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index e10fb9bf2988..7faade2009a8 100644
+index 4e490e3db2f8..b63f5a955453 100644
 --- a/kernel/sched/sched.h
 +++ b/kernel/sched/sched.h
-@@ -1653,6 +1653,7 @@ static inline int task_on_rq_migrating(struct task_struct *p)
+@@ -1654,6 +1654,7 @@ static inline int task_on_rq_migrating(struct task_struct *p)
  #define WF_SYNC			0x01		/* Waker goes to sleep after wakeup */
  #define WF_FORK			0x02		/* Child wakeup after fork */
  #define WF_MIGRATED		0x4		/* Internal use, task got migrated */
@@ -135,5 +138,5 @@ index e10fb9bf2988..7faade2009a8 100644
  /*
   * To aid in avoiding the subversion of "niceness" due to uneven distribution
 -- 
-2.30.0
+2.17.1
 

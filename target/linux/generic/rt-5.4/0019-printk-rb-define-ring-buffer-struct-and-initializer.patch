@@ -1,4 +1,7 @@
-From 52b5b63adab3ee81eb4acbe2bbf314fc46cd50ce Mon Sep 17 00:00:00 2001
+From 7d35f48d1d9ba3bea546fa34fdf8059812fe9953 Mon Sep 17 00:00:00 2001
+Message-Id: <7d35f48d1d9ba3bea546fa34fdf8059812fe9953.1617652877.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: John Ogness <john.ogness@linutronix.de>
 Date: Tue, 12 Feb 2019 15:29:41 +0100
 Subject: [PATCH 019/306] printk-rb: define ring buffer struct and initializer
@@ -59,5 +62,5 @@ index 75f5708ea902..0e6e8dd0d01e 100644
  void prb_lock(struct prb_cpulock *cpu_lock, unsigned int *cpu_store);
  void prb_unlock(struct prb_cpulock *cpu_lock, unsigned int cpu_store);
 -- 
-2.30.0
+2.17.1
 

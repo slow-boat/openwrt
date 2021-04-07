@@ -1,4 +1,7 @@
-From 89ef1bcb5c5630d9a1ad3c6baf1e976294c1a459 Mon Sep 17 00:00:00 2001
+From 88c90e7135d48dc1faa05c41d23c0ed4fcfaf5cc Mon Sep 17 00:00:00 2001
+Message-Id: <88c90e7135d48dc1faa05c41d23c0ed4fcfaf5cc.1617652877.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Thu, 14 Feb 2019 17:38:24 +0100
 Subject: [PATCH 043/306] serial: 8250: remove that trylock in
@@ -45,5 +48,5 @@ index dfe15c6ecf60..0ff7954f7188 100644
  }
  
 -- 
-2.30.0
+2.17.1
 

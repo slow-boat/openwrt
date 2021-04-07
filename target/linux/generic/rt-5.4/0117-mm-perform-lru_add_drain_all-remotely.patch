@@ -1,4 +1,7 @@
-From d5441f9ad187f74614713810eb718148008dd8f2 Mon Sep 17 00:00:00 2001
+From 51e9862711c002c0c319d0ee910ac3253bb9d4cc Mon Sep 17 00:00:00 2001
+Message-Id: <51e9862711c002c0c319d0ee910ac3253bb9d4cc.1617652878.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Luiz Capitulino <lcapitulino@redhat.com>
 Date: Fri, 27 May 2016 15:03:28 +0200
 Subject: [PATCH 117/306] mm: perform lru_add_drain_all() remotely
@@ -105,5 +108,5 @@ index dc1d98b09c89..cdb4f1fa3a48 100644
  	mutex_unlock(&lock);
  }
 -- 
-2.30.0
+2.17.1
 

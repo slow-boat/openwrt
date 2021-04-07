@@ -1,4 +1,7 @@
-From 7523fbc37685a9b54d1bde48444d975bcb364817 Mon Sep 17 00:00:00 2001
+From 5a9608f19b987f1bc223ba2c577b9786b926b31b Mon Sep 17 00:00:00 2001
+Message-Id: <5a9608f19b987f1bc223ba2c577b9786b926b31b.1617652878.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Fri, 20 Mar 2020 13:28:35 +0100
 Subject: [PATCH 134/306] swait: Remove the warning with more than two waiters
@@ -130,5 +133,5 @@ index c58068d2ee06..c56c315524ae 100644
  EXPORT_SYMBOL(swake_up_all_locked);
  
 -- 
-2.30.0
+2.17.1
 

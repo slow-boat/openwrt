@@ -1,4 +1,7 @@
-From dea5b1bc1d0c370a0f638d965880d011274d65e6 Mon Sep 17 00:00:00 2001
+From f2c0fba25433fc7f82ab7b5edace5d2e2e7386e9 Mon Sep 17 00:00:00 2001
+Message-Id: <f2c0fba25433fc7f82ab7b5edace5d2e2e7386e9.1617652878.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Sat, 27 May 2017 19:02:06 +0200
 Subject: [PATCH 102/306] net/core: disable NET_RX_BUSY_POLL on RT
@@ -39,5 +42,5 @@ index 0b2fecc83452..43f7c1dc34ac 100644
  config BQL
  	bool
 -- 
-2.30.0
+2.17.1
 

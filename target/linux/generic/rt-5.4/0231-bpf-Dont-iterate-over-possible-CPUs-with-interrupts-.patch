@@ -1,4 +1,7 @@
-From e75311b363a0d5c9750d84e01a7a0a889ac57f4e Mon Sep 17 00:00:00 2001
+From 63c423089cec03c26397e8dcf88b7cef99cfd22d Mon Sep 17 00:00:00 2001
+Message-Id: <63c423089cec03c26397e8dcf88b7cef99cfd22d.1617652879.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Mon, 24 Feb 2020 15:01:40 +0100
 Subject: [PATCH 231/306] bpf: Dont iterate over possible CPUs with interrupts
@@ -79,5 +82,5 @@ index 6e090140b924..b367430e611c 100644
  
  struct pcpu_freelist_node *__pcpu_freelist_pop(struct pcpu_freelist *s)
 -- 
-2.30.0
+2.17.1
 

@@ -1,4 +1,7 @@
-From f2f2a58674100bfbf1afae1f0831626d0c9d6137 Mon Sep 17 00:00:00 2001
+From e5e549a44fed065a869d6e4f90ea1d3368b54cf3 Mon Sep 17 00:00:00 2001
+Message-Id: <e5e549a44fed065a869d6e4f90ea1d3368b54cf3.1617652878.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Mon, 11 Feb 2019 10:40:46 +0100
 Subject: [PATCH 081/306] mm: workingset: replace IRQ-off check with a lockdep
@@ -44,5 +47,5 @@ index c963831d354f..e5e1b5f25add 100644
  	if (node->count && node->count == node->nr_values) {
  		if (list_empty(&node->private_list)) {
 -- 
-2.30.0
+2.17.1
 

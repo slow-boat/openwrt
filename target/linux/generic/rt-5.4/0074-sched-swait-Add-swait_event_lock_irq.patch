@@ -1,4 +1,7 @@
-From 0a6df9342b4c2cd6814a0f2f1c86228f9423f7aa Mon Sep 17 00:00:00 2001
+From 4a9254a34fe1921072ae3b12ead474edb5d0b890 Mon Sep 17 00:00:00 2001
+Message-Id: <4a9254a34fe1921072ae3b12ead474edb5d0b890.1617652878.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Wed, 22 May 2019 12:42:26 +0200
 Subject: [PATCH 074/306] sched/swait: Add swait_event_lock_irq()
@@ -35,5 +38,5 @@ index 73e06e9986d4..12612823c2cb 100644
 +
  #endif /* _LINUX_SWAIT_H */
 -- 
-2.30.0
+2.17.1
 

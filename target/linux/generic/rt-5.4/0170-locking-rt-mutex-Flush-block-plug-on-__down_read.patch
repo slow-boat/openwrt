@@ -1,4 +1,7 @@
-From eb7723e685cd69d9940f89d1ea4861a4ba39e8e7 Mon Sep 17 00:00:00 2001
+From 9c33c7efb7faebc7f432caa08fc0702649983436 Mon Sep 17 00:00:00 2001
+Message-Id: <9c33c7efb7faebc7f432caa08fc0702649983436.1617652878.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Scott Wood <swood@redhat.com>
 Date: Fri, 4 Jan 2019 15:33:21 -0500
 Subject: [PATCH 170/306] locking/rt-mutex: Flush block plug on __down_read()
@@ -41,5 +44,5 @@ index 660e22caf709..f518495bd6cc 100644
  	might_sleep();
  	raw_spin_lock_irq(&m->wait_lock);
 -- 
-2.30.0
+2.17.1
 

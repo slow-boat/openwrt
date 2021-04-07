@@ -1,4 +1,7 @@
-From de7f5fe5f4dd6e8d96da42467ab2a5f53ce0b16e Mon Sep 17 00:00:00 2001
+From 19bfbd0907da8c092c157ee79e7396f1f170e5d6 Mon Sep 17 00:00:00 2001
+Message-Id: <19bfbd0907da8c092c157ee79e7396f1f170e5d6.1617652877.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: John Ogness <john.ogness@linutronix.de>
 Date: Tue, 12 Feb 2019 15:29:52 +0100
 Subject: [PATCH 030/306] printk: do boot_delay_msec inside printk_delay
@@ -73,5 +76,5 @@ index ff9ec5cc8fa6..6d02f07f47cf 100644
  	}
  
 -- 
-2.30.0
+2.17.1
 

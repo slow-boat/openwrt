@@ -1,4 +1,7 @@
-From 384831f5180902bf94226e156916f2bc52b661ca Mon Sep 17 00:00:00 2001
+From c10a3e3d8ba07e409227de28791f984b2b490a77 Mon Sep 17 00:00:00 2001
+Message-Id: <c10a3e3d8ba07e409227de28791f984b2b490a77.1617652878.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Tue, 17 Oct 2017 16:36:18 +0200
 Subject: [PATCH 212/306] lockdep: disable self-test
@@ -30,5 +33,5 @@ index d66a5b6f3b26..62acf00f9fc3 100644
  	  Say Y here if you want the kernel to run a short self-test during
  	  bootup. The self-test checks whether common types of locking bugs
 -- 
-2.30.0
+2.17.1
 

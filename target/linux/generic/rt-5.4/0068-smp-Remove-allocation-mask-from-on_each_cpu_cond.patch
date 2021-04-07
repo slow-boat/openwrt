@@ -1,4 +1,7 @@
-From f0d5f97ccbf18b9c71e063d9931886ec67852120 Mon Sep 17 00:00:00 2001
+From 52d72534eeabc19793665a53a047c4838878e449 Mon Sep 17 00:00:00 2001
+Message-Id: <52d72534eeabc19793665a53a047c4838878e449.1617652877.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Thu, 16 Jan 2020 13:13:41 +0100
 Subject: [PATCH 068/306] smp: Remove allocation mask from on_each_cpu_cond.*()
@@ -126,7 +129,7 @@ index 5c0d4f2bece2..53144d056252 100644
  EXPORT_SYMBOL(on_each_cpu_cond);
  
 diff --git a/mm/slub.c b/mm/slub.c
-index e622e8f4c2ac..23386ec51373 100644
+index 52ded855b4ed..ce2014975f57 100644
 --- a/mm/slub.c
 +++ b/mm/slub.c
 @@ -2375,7 +2375,7 @@ static bool has_cpu_slab(int cpu, void *info)
@@ -139,5 +142,5 @@ index e622e8f4c2ac..23386ec51373 100644
  
  /*
 -- 
-2.30.0
+2.17.1
 

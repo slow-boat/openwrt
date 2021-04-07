@@ -1,4 +1,7 @@
-From 0552b518f5572c5f8b164dd132627109cc40156a Mon Sep 17 00:00:00 2001
+From 8b0149b399d916649b766f78ebab39d67401e169 Mon Sep 17 00:00:00 2001
+Message-Id: <8b0149b399d916649b766f78ebab39d67401e169.1617652878.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: "Wolfgang M. Reimer" <linuxball@gmail.com>
 Date: Tue, 21 Jul 2015 16:20:07 +0200
 Subject: [PATCH 152/306] locking: locktorture: Do NOT include rwlock.h
@@ -29,5 +32,5 @@ index e09562818bb7..7ad06e6df176 100644
  #include <linux/rwsem.h>
  #include <linux/smp.h>
 -- 
-2.30.0
+2.17.1
 

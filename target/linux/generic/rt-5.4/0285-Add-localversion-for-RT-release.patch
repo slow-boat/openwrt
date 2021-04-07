@@ -1,4 +1,7 @@
-From da3b3f44265172f463b190161cf62571caa95209 Mon Sep 17 00:00:00 2001
+From f3cff8cc7cb685f5cdf88d7dc5f41fe533461bb5 Mon Sep 17 00:00:00 2001
+Message-Id: <f3cff8cc7cb685f5cdf88d7dc5f41fe533461bb5.1617652879.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Fri, 8 Jul 2011 20:25:16 +0200
 Subject: [PATCH 285/306] Add localversion for -RT release
@@ -17,5 +20,5 @@ index 000000000000..483ad771f201
 @@ -0,0 +1 @@
 +-rt19
 -- 
-2.30.0
+2.17.1
 

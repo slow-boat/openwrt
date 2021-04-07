@@ -1,4 +1,7 @@
-From c1c0c14965ed4604557a32666d40a3b8f681acd7 Mon Sep 17 00:00:00 2001
+From 258ea2ca8da3e7e7e64e3505a254f0d844efb2d4 Mon Sep 17 00:00:00 2001
+Message-Id: <258ea2ca8da3e7e7e64e3505a254f0d844efb2d4.1617652879.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Thu, 1 Nov 2012 10:14:11 +0100
 Subject: [PATCH 252/306] powerpc: Add support for lazy preemption
@@ -85,7 +88,7 @@ index 8e1d0195ac36..594fdb569e54 100644
  /* Bits in local_flags */
  /* Don't move TLF_NAPPING without adjusting the code in entry_32.S */
 diff --git a/arch/powerpc/kernel/asm-offsets.c b/arch/powerpc/kernel/asm-offsets.c
-index 5c0a1e17219b..b28cd3acd674 100644
+index af399675248e..71f63c0fd566 100644
 --- a/arch/powerpc/kernel/asm-offsets.c
 +++ b/arch/powerpc/kernel/asm-offsets.c
 @@ -167,6 +167,7 @@ int main(void)
@@ -250,5 +253,5 @@ index a9a1d3cdb523..dfd96e87d7b6 100644
  	bne	restore
  	ld	r0,SOFTE(r1)
 -- 
-2.30.0
+2.17.1
 

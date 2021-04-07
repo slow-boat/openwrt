@@ -1,4 +1,7 @@
-From f4b2bfe68aab6ee9c553e2b06f6b65d258784aff Mon Sep 17 00:00:00 2001
+From b568f945a93a7f6e5bc221a4ff301af0fee99b47 Mon Sep 17 00:00:00 2001
+Message-Id: <b568f945a93a7f6e5bc221a4ff301af0fee99b47.1617652877.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: He Zhe <zhe.he@windriver.com>
 Date: Tue, 24 Sep 2019 15:26:39 +0800
 Subject: [PATCH 050/306] printk: devkmsg: read: Return EPIPE when the first
@@ -45,5 +48,5 @@ index b30577cf5698..4a5ef5258326 100644
  
  	msg = (struct printk_log *)&user->msgbuf[0];
 -- 
-2.30.0
+2.17.1
 

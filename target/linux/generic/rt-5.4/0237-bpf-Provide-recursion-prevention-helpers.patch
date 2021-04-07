@@ -1,4 +1,7 @@
-From a96fddaf22b9deb70b735d8722ee61b5ba69f6c4 Mon Sep 17 00:00:00 2001
+From 6939281cb38f9c84408adb9e168cdec24db3e9a3 Mon Sep 17 00:00:00 2001
+Message-Id: <6939281cb38f9c84408adb9e168cdec24db3e9a3.1617652879.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Mon, 24 Feb 2020 15:01:47 +0100
 Subject: [PATCH 237/306] bpf: Provide recursion prevention helpers
@@ -25,10 +28,10 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  1 file changed, 30 insertions(+)
 
 diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 33c323042835..943fd5028c3f 100644
+index fee96633e079..cb3c0947e62a 100644
 --- a/include/linux/bpf.h
 +++ b/include/linux/bpf.h
-@@ -617,6 +617,36 @@ _out:							\
+@@ -618,6 +618,36 @@ _out:							\
  #ifdef CONFIG_BPF_SYSCALL
  DECLARE_PER_CPU(int, bpf_prog_active);
  
@@ -66,5 +69,5 @@ index 33c323042835..943fd5028c3f 100644
  extern const struct file_operations bpf_prog_fops;
  
 -- 
-2.30.0
+2.17.1
 

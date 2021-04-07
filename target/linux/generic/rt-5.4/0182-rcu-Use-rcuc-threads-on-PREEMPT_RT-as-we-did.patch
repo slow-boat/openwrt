@@ -1,4 +1,7 @@
-From ede747385cbe7ce7bea2f0b4a03bdbdfe481932a Mon Sep 17 00:00:00 2001
+From 4e68927bf194742b915e1b5d1e0cc46c6ba9312a Mon Sep 17 00:00:00 2001
+Message-Id: <4e68927bf194742b915e1b5d1e0cc46c6ba9312a.1617652878.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Scott Wood <swood@redhat.com>
 Date: Wed, 11 Sep 2019 17:57:28 +0100
 Subject: [PATCH 182/306] rcu: Use rcuc threads on PREEMPT_RT as we did
@@ -31,5 +34,5 @@ index c8fdc58889f2..6f7a511a9b55 100644
  static bool rcu_fanout_exact;
  module_param(rcu_fanout_exact, bool, 0444);
 -- 
-2.30.0
+2.17.1
 

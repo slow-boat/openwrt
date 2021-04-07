@@ -1,4 +1,7 @@
-From 6d003043f4736909d1d7eaaa2c9462ab995575b1 Mon Sep 17 00:00:00 2001
+From 115e8c61eeb7b0a4b173015db4681843bf276aa7 Mon Sep 17 00:00:00 2001
+Message-Id: <115e8c61eeb7b0a4b173015db4681843bf276aa7.1617652878.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Scott Wood <swood@redhat.com>
 Date: Wed, 11 Sep 2019 17:57:29 +0100
 Subject: [PATCH 185/306] rcutorture: Avoid problematic critical section
@@ -190,5 +193,5 @@ index c070d103f34d..a90d6981e1e4 100644
  }
  
 -- 
-2.30.0
+2.17.1
 

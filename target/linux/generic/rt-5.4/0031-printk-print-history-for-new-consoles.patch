@@ -1,4 +1,7 @@
-From 003a1d6569daca504d6963b58cd6862ef2d97bf9 Mon Sep 17 00:00:00 2001
+From c136f06401f291d440431dbaf6091a47c1078dc3 Mon Sep 17 00:00:00 2001
+Message-Id: <c136f06401f291d440431dbaf6091a47c1078dc3.1617652877.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: John Ogness <john.ogness@linutronix.de>
 Date: Tue, 12 Feb 2019 15:29:53 +0100
 Subject: [PATCH 031/306] printk: print history for new consoles
@@ -122,5 +125,5 @@ index 6d02f07f47cf..7aa0ab0c9e1f 100644
  			continue;
  		if (!cpu_online(raw_smp_processor_id()) &&
 -- 
-2.30.0
+2.17.1
 

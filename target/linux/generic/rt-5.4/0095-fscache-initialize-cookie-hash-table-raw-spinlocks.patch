@@ -1,4 +1,7 @@
-From 06fb9e2bbfdbd4c051a881191770c66ce6961cad Mon Sep 17 00:00:00 2001
+From 7a51c8336aa5bf1d74070503250d89aa9c979f98 Mon Sep 17 00:00:00 2001
+Message-Id: <7a51c8336aa5bf1d74070503250d89aa9c979f98.1617652878.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Clark Williams <williams@redhat.com>
 Date: Tue, 3 Jul 2018 13:34:30 -0500
 Subject: [PATCH 095/306] fscache: initialize cookie hash table raw spinlocks
@@ -59,5 +62,5 @@ index ad044c0cb1f3..164bfe4d207d 100644
  /**
   * fscache_register_netfs - Register a filesystem as desiring caching services
 -- 
-2.30.0
+2.17.1
 

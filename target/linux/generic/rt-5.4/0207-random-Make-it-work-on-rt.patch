@@ -1,4 +1,7 @@
-From 93e750a4e0f76fe3441445030b6a10deefddc067 Mon Sep 17 00:00:00 2001
+From 4df490359cfe635de738b8dd8e3669648907f05d Mon Sep 17 00:00:00 2001
+Message-Id: <4df490359cfe635de738b8dd8e3669648907f05d.1617652878.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Tue, 21 Aug 2012 20:38:50 +0200
 Subject: [PATCH 207/306] random: Make it work on rt
@@ -167,10 +170,10 @@ index a4ace611f47f..3306fabed221 100644
  	if (!noirqdebug)
  		note_interrupt(desc, retval);
 diff --git a/kernel/irq/manage.c b/kernel/irq/manage.c
-index 3b1d0a4725a4..40a684918be0 100644
+index 918fe0593386..1d281e8b61b7 100644
 --- a/kernel/irq/manage.c
 +++ b/kernel/irq/manage.c
-@@ -1129,6 +1129,12 @@ static int irq_thread(void *data)
+@@ -1133,6 +1133,12 @@ static int irq_thread(void *data)
  		if (action_ret == IRQ_WAKE_THREAD)
  			irq_wake_secondary(desc, action);
  
@@ -184,5 +187,5 @@ index 3b1d0a4725a4..40a684918be0 100644
  	}
  
 -- 
-2.30.0
+2.17.1
 

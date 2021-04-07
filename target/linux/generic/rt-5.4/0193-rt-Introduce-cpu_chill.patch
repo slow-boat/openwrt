@@ -1,4 +1,7 @@
-From 991478fae2b65a0284e83dee340a8970ae89e062 Mon Sep 17 00:00:00 2001
+From 0c516c2dc20e2e06864af524ab2cdcf6ee091bc7 Mon Sep 17 00:00:00 2001
+Message-Id: <0c516c2dc20e2e06864af524ab2cdcf6ee091bc7.1617652878.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Wed, 7 Mar 2012 20:51:03 +0100
 Subject: [PATCH 193/306] rt: Introduce cpu_chill()
@@ -76,10 +79,10 @@ index 8e6828094c1e..7f2df975a53e 100644
 +
  #endif /* defined(_LINUX_DELAY_H) */
 diff --git a/kernel/time/hrtimer.c b/kernel/time/hrtimer.c
-index c72220979260..41cc1c8530d8 100644
+index cc676f002f18..47cb86b1c61c 100644
 --- a/kernel/time/hrtimer.c
 +++ b/kernel/time/hrtimer.c
-@@ -1982,6 +1982,38 @@ SYSCALL_DEFINE2(nanosleep_time32, struct old_timespec32 __user *, rqtp,
+@@ -2000,6 +2000,38 @@ SYSCALL_DEFINE2(nanosleep_time32, struct old_timespec32 __user *, rqtp,
  }
  #endif
  
@@ -119,5 +122,5 @@ index c72220979260..41cc1c8530d8 100644
   * Functions related to boot-time initialization:
   */
 -- 
-2.30.0
+2.17.1
 

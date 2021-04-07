@@ -1,4 +1,7 @@
-From cca96231a52ba4ef145304217a7b7f32d33de560 Mon Sep 17 00:00:00 2001
+From 56571844c27ad268516da21ab2496dc3db422728 Mon Sep 17 00:00:00 2001
+Message-Id: <56571844c27ad268516da21ab2496dc3db422728.1617652877.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: John Ogness <john.ogness@linutronix.de>
 Date: Tue, 12 Feb 2019 15:29:45 +0100
 Subject: [PATCH 023/306] printk-rb: add functionality required by printk
@@ -163,5 +166,5 @@ index dc9fd83e251d..9a31d7dbdc00 100644
 +	atomic_long_inc(&rb->lost);
 +}
 -- 
-2.30.0
+2.17.1
 

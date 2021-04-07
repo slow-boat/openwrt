@@ -1,4 +1,7 @@
-From 2caad054d1bf62c1ebe91c2b24346d6163f32575 Mon Sep 17 00:00:00 2001
+From 4b2a4cfa02569e3cee3ef1c80913179590270801 Mon Sep 17 00:00:00 2001
+Message-Id: <4b2a4cfa02569e3cee3ef1c80913179590270801.1617652879.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Fri, 3 Jul 2009 08:44:34 -0500
 Subject: [PATCH 248/306] mm/scatterlist: Do not disable irqs on RT
@@ -25,5 +28,5 @@ index 29346184fcf2..4e479ed3ce82 100644
  		} else
  			kunmap(miter->page);
 -- 
-2.30.0
+2.17.1
 

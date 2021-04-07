@@ -1,4 +1,7 @@
-From 9366bee283179379daf1b957b8a6ad168f50f9d8 Mon Sep 17 00:00:00 2001
+From d304da562ecce0acff45fb65aa1413add480011e Mon Sep 17 00:00:00 2001
+Message-Id: <d304da562ecce0acff45fb65aa1413add480011e.1617652878.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Fri, 28 Oct 2016 23:05:11 +0200
 Subject: [PATCH 089/306] NFSv4: replace seqcount_t with a seqlock_t
@@ -58,7 +61,7 @@ index c4a98cbda6dd..a3e5bc8c463c 100644
  };
  
 diff --git a/fs/nfs/nfs4proc.c b/fs/nfs/nfs4proc.c
-index 30e44b33040a..8ff81de7df42 100644
+index 304ab4cdaa8c..886796276fc3 100644
 --- a/fs/nfs/nfs4proc.c
 +++ b/fs/nfs/nfs4proc.c
 @@ -2969,7 +2969,7 @@ static int _nfs4_open_and_get_state(struct nfs4_opendata *opendata,
@@ -132,5 +135,5 @@ index ea680f619438..09143fa7e6aa 100644
  }
  
 -- 
-2.30.0
+2.17.1
 

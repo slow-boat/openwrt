@@ -1,4 +1,7 @@
-From 8dbbe38541c825d25740d65122a633ba88f509b7 Mon Sep 17 00:00:00 2001
+From 5c85d21dfdd446b8292b1bc884801645184ea044 Mon Sep 17 00:00:00 2001
+Message-Id: <5c85d21dfdd446b8292b1bc884801645184ea044.1617652879.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: John Ogness <john.ogness@linutronix.de>
 Date: Mon, 6 Apr 2020 23:22:17 +0200
 Subject: [PATCH 286/306] printk: console must not schedule for drivers
@@ -47,5 +50,5 @@ index 98776feea2e0..8617e97ed2ec 100644
  				     msg->level, msg->facility);
  		if (len > 0 || ext_len > 0)
 -- 
-2.30.0
+2.17.1
 

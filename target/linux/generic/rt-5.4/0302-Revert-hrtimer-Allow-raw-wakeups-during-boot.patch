@@ -1,4 +1,7 @@
-From 5d35ddaa94fa3ecc813f1ed02d6826505f105732 Mon Sep 17 00:00:00 2001
+From a9a7fa2e7ee5de86ea784a8565ea5425f246bcc6 Mon Sep 17 00:00:00 2001
+Message-Id: <a9a7fa2e7ee5de86ea784a8565ea5425f246bcc6.1617652879.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Fri, 11 Dec 2020 17:39:54 +0100
 Subject: [PATCH 302/306] Revert "hrtimer: Allow raw wakeups during boot"
@@ -13,10 +16,10 @@ Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/kernel/time/hrtimer.c b/kernel/time/hrtimer.c
-index 41cc1c8530d8..42705a04c808 100644
+index 47cb86b1c61c..79dc2709c32d 100644
 --- a/kernel/time/hrtimer.c
 +++ b/kernel/time/hrtimer.c
-@@ -1819,7 +1819,7 @@ static void __hrtimer_init_sleeper(struct hrtimer_sleeper *sl,
+@@ -1837,7 +1837,7 @@ static void __hrtimer_init_sleeper(struct hrtimer_sleeper *sl,
  	 * expiry.
  	 */
  	if (IS_ENABLED(CONFIG_PREEMPT_RT)) {
@@ -26,5 +29,5 @@ index 41cc1c8530d8..42705a04c808 100644
  	}
  
 -- 
-2.30.0
+2.17.1
 

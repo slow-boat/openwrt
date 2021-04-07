@@ -1,4 +1,7 @@
-From d27b342e1531dce26f6317a16f16b1b7980e43bf Mon Sep 17 00:00:00 2001
+From c6291fcd995edaef06b281d7f00fb8544afe050e Mon Sep 17 00:00:00 2001
+Message-Id: <c6291fcd995edaef06b281d7f00fb8544afe050e.1617652877.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Fri, 9 Aug 2019 14:42:28 +0200
 Subject: [PATCH 003/306] jbd2: Remove jbd_trylock_bh_state()
@@ -32,5 +35,5 @@ index b0e97e5de8ca..a8abc34f16be 100644
  {
  	return bit_spin_is_locked(BH_State, &bh->b_state);
 -- 
-2.30.0
+2.17.1
 

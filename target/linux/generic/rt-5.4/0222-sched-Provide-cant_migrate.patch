@@ -1,4 +1,7 @@
-From a37f056685129a2f87c1ae2bb92d12898df25946 Mon Sep 17 00:00:00 2001
+From 029681995379e09377f8b9f68a389a5e8910d136 Mon Sep 17 00:00:00 2001
+Message-Id: <029681995379e09377f8b9f68a389a5e8910d136.1617652879.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Fri, 14 Feb 2020 14:39:19 +0100
 Subject: [PATCH 222/306] sched: Provide cant_migrate()
@@ -41,5 +44,5 @@ index 2f9abc6aab0b..f5ec1ddbfe07 100644
   * abs - return absolute value of an argument
   * @x: the value.  If it is unsigned type, it is converted to signed type first.
 -- 
-2.30.0
+2.17.1
 

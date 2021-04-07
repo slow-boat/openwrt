@@ -1,4 +1,7 @@
-From 14c6f9bf66217c3ffabc3f21800b9bb524551c1d Mon Sep 17 00:00:00 2001
+From 0a01b8728b4edad8bf45ed22b1b4af10dcf2b969 Mon Sep 17 00:00:00 2001
+Message-Id: <0a01b8728b4edad8bf45ed22b1b4af10dcf2b969.1617652877.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: John Ogness <john.ogness@linutronix.de>
 Date: Fri, 22 Feb 2019 23:02:44 +0100
 Subject: [PATCH 047/306] printk: devkmsg: llseek: reset clear if it is lost
@@ -47,5 +50,5 @@ index 0efce0c5715f..aa412aeea89e 100644
  		ret = 0;
  		break;
 -- 
-2.30.0
+2.17.1
 

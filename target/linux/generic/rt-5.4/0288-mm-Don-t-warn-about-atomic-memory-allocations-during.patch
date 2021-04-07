@@ -1,4 +1,7 @@
-From 1e34298d78e83817e4b0ea998a5b12a50073ce3f Mon Sep 17 00:00:00 2001
+From bd83d361c2bfbb1668eefabe2dde9b45c309e83d Mon Sep 17 00:00:00 2001
+Message-Id: <bd83d361c2bfbb1668eefabe2dde9b45c309e83d.1617652879.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Liwei Song <liwei.song@windriver.com>
 Date: Mon, 4 May 2020 15:58:22 +0200
 Subject: [PATCH 288/306] mm: Don't warn about atomic memory allocations during
@@ -23,7 +26,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  1 file changed, 5 insertions(+), 3 deletions(-)
 
 diff --git a/mm/slub.c b/mm/slub.c
-index 1b381010d98a..800a92f6eefd 100644
+index c90c3c00dae0..8fe11bc1b1df 100644
 --- a/mm/slub.c
 +++ b/mm/slub.c
 @@ -1664,7 +1664,7 @@ static struct page *allocate_slab(struct kmem_cache *s, gfp_t flags, int node)
@@ -56,5 +59,5 @@ index 1b381010d98a..800a92f6eefd 100644
  	/* memcg and kmem_cache debug support */
  	s = slab_pre_alloc_hook(s, flags);
 -- 
-2.30.0
+2.17.1
 

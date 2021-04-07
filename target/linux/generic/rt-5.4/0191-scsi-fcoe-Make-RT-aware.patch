@@ -1,4 +1,7 @@
-From 67c7ee45889cf16c826a61572caaaa60eab7c37f Mon Sep 17 00:00:00 2001
+From befc0abbfdf18bb0315a4cf2328343a0e2e04ebf Mon Sep 17 00:00:00 2001
+Message-Id: <befc0abbfdf18bb0315a4cf2328343a0e2e04ebf.1617652878.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Sat, 12 Nov 2011 14:00:48 +0100
 Subject: [PATCH 191/306] scsi/fcoe: Make RT aware.
@@ -111,5 +114,5 @@ index e5b18e5d46da..7f87bb656ae2 100644
  	/* peek cache of free slot */
  	if (pool->left != FC_XID_UNKNOWN) {
 -- 
-2.30.0
+2.17.1
 

@@ -1,4 +1,7 @@
-From c6340003fc4e1c4aea7aa49ac9bc0911b7fd3ca4 Mon Sep 17 00:00:00 2001
+From 0e006bc5ae1d31a44070b0bf827e135fb18d1dca Mon Sep 17 00:00:00 2001
+Message-Id: <0e006bc5ae1d31a44070b0bf827e135fb18d1dca.1617652877.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: John Ogness <john.ogness@linutronix.de>
 Date: Tue, 12 Feb 2019 15:29:42 +0100
 Subject: [PATCH 020/306] printk-rb: add writer interface
@@ -237,5 +240,5 @@ index 28958b0cf774..90c7f9a9f861 100644
 +	return &h->entry->data[0];
 +}
 -- 
-2.30.0
+2.17.1
 

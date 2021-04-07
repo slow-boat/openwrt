@@ -1,4 +1,7 @@
-From 0ffebc2082b1ceb299e01a49dd36b2991db837f8 Mon Sep 17 00:00:00 2001
+From 5dd7828a3f7d00e7c0f8a2db8654e2e145613a8c Mon Sep 17 00:00:00 2001
+Message-Id: <5dd7828a3f7d00e7c0f8a2db8654e2e145613a8c.1617652877.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: John Ogness <john.ogness@linutronix.de>
 Date: Tue, 12 Feb 2019 15:30:00 +0100
 Subject: [PATCH 038/306] printk: implement /dev/kmsg
@@ -310,5 +313,5 @@ index 01fb3ca3d9ff..4342e643dd4e 100644
  	file->private_data = user;
  	return 0;
 -- 
-2.30.0
+2.17.1
 

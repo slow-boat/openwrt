@@ -1,4 +1,7 @@
-From b7eef629299a217370467c49d03d55541f72dc75 Mon Sep 17 00:00:00 2001
+From 22329bbb9085cb22fea89037efe622a6045dd2cd Mon Sep 17 00:00:00 2001
+Message-Id: <22329bbb9085cb22fea89037efe622a6045dd2cd.1617652878.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Tue, 4 Feb 2020 13:29:50 +0100
 Subject: [PATCH 108/306] locallock: Include header for the `current' macro
@@ -24,5 +27,5 @@ index 05a15110c8aa..9b6b4def52d4 100644
  #ifdef CONFIG_PREEMPT_RT
  
 -- 
-2.30.0
+2.17.1
 

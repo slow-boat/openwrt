@@ -1,4 +1,7 @@
-From a4ef0c56146cfa527d29f0e94ca8a33b6aa197e9 Mon Sep 17 00:00:00 2001
+From 94eedcb390eebfb0c3d47ab897f2d78271822f4f Mon Sep 17 00:00:00 2001
+Message-Id: <94eedcb390eebfb0c3d47ab897f2d78271822f4f.1617652877.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: John Ogness <john.ogness@linutronix.de>
 Date: Mon, 7 Oct 2019 16:20:39 +0200
 Subject: [PATCH 051/306] printk: handle iterating while buffer changing
@@ -45,5 +48,5 @@ index 4a5ef5258326..f1e43ca2d09b 100644
  			goto retry;
  		}
 -- 
-2.30.0
+2.17.1
 

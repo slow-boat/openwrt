@@ -1,4 +1,7 @@
-From b39750607baab6849c40273a588a22fdbc0327d3 Mon Sep 17 00:00:00 2001
+From 8689aa03a5738ef1d62c5f6279d341fda4417daa Mon Sep 17 00:00:00 2001
+Message-Id: <8689aa03a5738ef1d62c5f6279d341fda4417daa.1617652878.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Priyanka Jain <Priyanka.Jain@freescale.com>
 Date: Thu, 17 May 2012 09:35:11 +0530
 Subject: [PATCH 208/306] net: Remove preemption disabling in netif_rx()
@@ -35,7 +38,7 @@ Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
  1 file changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/net/core/dev.c b/net/core/dev.c
-index 1aed0126ed09..f09a11914b54 100644
+index 39ea0e44e6e9..276e877ec41c 100644
 --- a/net/core/dev.c
 +++ b/net/core/dev.c
 @@ -4414,7 +4414,7 @@ static int netif_rx_internal(struct sk_buff *skb)
@@ -66,5 +69,5 @@ index 1aed0126ed09..f09a11914b54 100644
  	return ret;
  }
 -- 
-2.30.0
+2.17.1
 

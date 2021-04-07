@@ -1,4 +1,7 @@
-From 4533695ec76b7cb35496bf29eb71a51e1404c5c7 Mon Sep 17 00:00:00 2001
+From 4cd31e432d45bd0a98531b6f760076fa68f8af7a Mon Sep 17 00:00:00 2001
+Message-Id: <4cd31e432d45bd0a98531b6f760076fa68f8af7a.1617652877.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 Date: Wed, 5 Mar 2014 00:49:47 +0100
 Subject: [PATCH 014/306] net: sched: Use msleep() instead of yield()
@@ -59,5 +62,5 @@ index 6e6147a81bc3..981f699730ce 100644
  		 * unwind stale skb lists and qdisc statistics
  		 */
 -- 
-2.30.0
+2.17.1
 

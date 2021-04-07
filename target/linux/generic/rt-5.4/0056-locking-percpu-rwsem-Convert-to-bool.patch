@@ -1,4 +1,7 @@
-From be4387191a284c0574d6ddc52e081d004d39a92e Mon Sep 17 00:00:00 2001
+From 080a83d448afac5da4122cae17129fa08c7b571c Mon Sep 17 00:00:00 2001
+Message-Id: <080a83d448afac5da4122cae17129fa08c7b571c.1617652877.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Peter Zijlstra <peterz@infradead.org>
 Date: Fri, 31 Jan 2020 16:07:05 +0100
 Subject: [PATCH 056/306] locking/percpu-rwsem: Convert to bool
@@ -79,5 +82,5 @@ index aa1d34a21a2d..edd2c8a15970 100644
  EXPORT_SYMBOL_GPL(__percpu_down_read);
  
 -- 
-2.30.0
+2.17.1
 

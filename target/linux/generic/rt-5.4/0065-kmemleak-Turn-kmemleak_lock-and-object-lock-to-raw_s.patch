@@ -1,4 +1,7 @@
-From 9d28d000ffc0daffcc99ac76bcbfe87d6e835a2c Mon Sep 17 00:00:00 2001
+From 7acf564ad4adefc7bdf28390001caa6a2ad94d95 Mon Sep 17 00:00:00 2001
+Message-Id: <7acf564ad4adefc7bdf28390001caa6a2ad94d95.1617652877.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: He Zhe <zhe.he@windriver.com>
 Date: Wed, 19 Dec 2018 16:30:57 +0100
 Subject: [PATCH 065/306] kmemleak: Turn kmemleak_lock and object->lock to
@@ -413,5 +416,5 @@ index 312942d78405..e362dc3d2028 100644
  	rcu_read_unlock();
  
 -- 
-2.30.0
+2.17.1
 

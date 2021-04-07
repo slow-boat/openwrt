@@ -1,4 +1,7 @@
-From 0da442cdc0dcff39efe99041dc951931d2e21e86 Mon Sep 17 00:00:00 2001
+From 7869911e7871dcb80f9753e2941f66a9a248cc65 Mon Sep 17 00:00:00 2001
+Message-Id: <7869911e7871dcb80f9753e2941f66a9a248cc65.1617652878.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Tue, 13 Sep 2011 16:42:35 +0200
 Subject: [PATCH 143/306] sched: Disable TTWU_QUEUE on RT
@@ -33,5 +36,5 @@ index 2410db5e9a35..cf08d2c4be81 100644
  /*
   * When doing wakeups, attempt to limit superfluous scans of the LLC domain.
 -- 
-2.30.0
+2.17.1
 

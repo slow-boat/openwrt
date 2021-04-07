@@ -1,4 +1,7 @@
-From ec8598dfd557d9b1b205aa4e69e542ea6bb95b87 Mon Sep 17 00:00:00 2001
+From a43b690984bbdb4cb9ba5b3e567647bb785962b0 Mon Sep 17 00:00:00 2001
+Message-Id: <a43b690984bbdb4cb9ba5b3e567647bb785962b0.1617652878.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Scott Wood <swood@redhat.com>
 Date: Fri, 24 Jan 2020 06:11:47 -0500
 Subject: [PATCH 177/306] sched: migrate_enable: Remove __schedule() call
@@ -21,10 +24,10 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  1 file changed, 1 deletion(-)
 
 diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index e23ef8e62e4c..8b3ba65eac82 100644
+index f770dfd58877..a8862ba67de4 100644
 --- a/kernel/sched/core.c
 +++ b/kernel/sched/core.c
-@@ -8278,7 +8278,6 @@ void migrate_enable(void)
+@@ -8276,7 +8276,6 @@ void migrate_enable(void)
  
  		stop_one_cpu_nowait(task_cpu(p), migration_cpu_stop,
  				    arg, work);
@@ -33,5 +36,5 @@ index e23ef8e62e4c..8b3ba65eac82 100644
  
  out:
 -- 
-2.30.0
+2.17.1
 

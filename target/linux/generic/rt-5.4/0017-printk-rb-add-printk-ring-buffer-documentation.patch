@@ -1,4 +1,7 @@
-From 434312ba0bd69883c3162fb96a7b2856af1068ce Mon Sep 17 00:00:00 2001
+From c9fa171ba5ab1251a0b0e9d8407eef5dfb953bc9 Mon Sep 17 00:00:00 2001
+Message-Id: <c9fa171ba5ab1251a0b0e9d8407eef5dfb953bc9.1617652877.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: John Ogness <john.ogness@linutronix.de>
 Date: Tue, 12 Feb 2019 15:29:39 +0100
 Subject: [PATCH 017/306] printk-rb: add printk ring buffer documentation
@@ -396,5 +399,5 @@ index 000000000000..6bde5dbd8545
 +are added. This was the purpose of pinning 2 readers to 1 CPU: to observe how
 +maximum reader performance changes.
 -- 
-2.30.0
+2.17.1
 

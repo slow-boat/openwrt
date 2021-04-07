@@ -1,4 +1,7 @@
-From 7fc5f0e63a554d595b08a4a1ab814f2d9e2a8b54 Mon Sep 17 00:00:00 2001
+From 41ab1f633e74a734657857b781965742101c8c89 Mon Sep 17 00:00:00 2001
+Message-Id: <41ab1f633e74a734657857b781965742101c8c89.1617652878.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Wed, 7 Mar 2012 21:00:34 +0100
 Subject: [PATCH 195/306] fs: namespace: Use cpu_chill() in trylock loops
@@ -39,5 +42,5 @@ index 76ea92994d26..d32961cf666d 100644
  	 * After the slowpath clears MNT_WRITE_HOLD, mnt_is_readonly will
  	 * be set to match its requirements. So we must not load that until
 -- 
-2.30.0
+2.17.1
 

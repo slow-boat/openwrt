@@ -1,4 +1,7 @@
-From 88cad09c9649c965fc54c93b2c5b47794c2a0e41 Mon Sep 17 00:00:00 2001
+From 642f5835845918ce765bc7cad82760d2a4b918db Mon Sep 17 00:00:00 2001
+Message-Id: <642f5835845918ce765bc7cad82760d2a4b918db.1617652879.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Wed, 25 Jul 2018 14:02:38 +0200
 Subject: [PATCH 265/306] arm64: fpsimd: Delay freeing memory in
@@ -61,5 +64,5 @@ index 04b982a2799e..0da24b606bbe 100644
  
  /*
 -- 
-2.30.0
+2.17.1
 

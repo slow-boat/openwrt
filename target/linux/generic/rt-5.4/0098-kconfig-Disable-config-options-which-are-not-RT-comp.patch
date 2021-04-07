@@ -1,4 +1,7 @@
-From fd12a6242581c2b3e71db7e2f475c9ff939aa962 Mon Sep 17 00:00:00 2001
+From 5752e2752e0577a82b2f54647994b8e6a5325f4c Mon Sep 17 00:00:00 2001
+Message-Id: <5752e2752e0577a82b2f54647994b8e6a5325f4c.1617652878.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Sun, 24 Jul 2011 12:11:43 +0200
 Subject: [PATCH 098/306] kconfig: Disable config options which are not RT
@@ -38,5 +41,5 @@ index fbdc5c70e487..55f540359c70 100644
  	select XARRAY_MULTI
  	help
 -- 
-2.30.0
+2.17.1
 

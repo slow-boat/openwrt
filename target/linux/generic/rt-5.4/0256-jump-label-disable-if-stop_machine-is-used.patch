@@ -1,4 +1,7 @@
-From 6070dfacb1204f61c1ff548c8d347523bb77cb89 Mon Sep 17 00:00:00 2001
+From 899514ac5b21aa95e739f385419c26aab00d064d Mon Sep 17 00:00:00 2001
+Message-Id: <899514ac5b21aa95e739f385419c26aab00d064d.1617652879.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Wed, 8 Jul 2015 17:14:48 +0200
 Subject: [PATCH 256/306] jump-label: disable if stop_machine() is used
@@ -37,5 +40,5 @@ index a8323d9f999e..339da288c66a 100644
  	select HAVE_ARCH_MMAP_RND_BITS if MMU
  	select HAVE_ARCH_SECCOMP_FILTER if AEABI && !OABI_COMPAT
 -- 
-2.30.0
+2.17.1
 

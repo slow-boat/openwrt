@@ -1,4 +1,7 @@
-From 0abd2294329d4bdfc4d8b6bb5cd021f588714fcd Mon Sep 17 00:00:00 2001
+From bb69833a955a3423b05e4e8cda2f28314b6605ab Mon Sep 17 00:00:00 2001
+Message-Id: <bb69833a955a3423b05e4e8cda2f28314b6605ab.1617652879.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Thu, 1 Nov 2012 11:03:47 +0100
 Subject: [PATCH 250/306] x86: Support for lazy preemption
@@ -164,7 +167,7 @@ index 3d4cb83a8828..1f28e9f3dc8e 100644
  
  #ifdef CONFIG_PREEMPTION
 diff --git a/arch/x86/include/asm/thread_info.h b/arch/x86/include/asm/thread_info.h
-index f9453536f9bb..f346f24140be 100644
+index a4de7aa7500f..911d261a450d 100644
 --- a/arch/x86/include/asm/thread_info.h
 +++ b/arch/x86/include/asm/thread_info.h
 @@ -56,17 +56,24 @@ struct task_struct;
@@ -241,5 +244,5 @@ index 5c7ee3df4d0b..24bcc28f68d4 100644
  	/* TLB state for the entry code */
  	OFFSET(TLB_STATE_user_pcid_flush_mask, tlb_state, user_pcid_flush_mask);
 -- 
-2.30.0
+2.17.1
 

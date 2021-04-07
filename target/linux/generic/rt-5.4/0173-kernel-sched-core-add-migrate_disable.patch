@@ -1,4 +1,7 @@
-From f99fb8dffde2fe3d83d4b588701aec77e439491d Mon Sep 17 00:00:00 2001
+From 6b9a8f15bfad62c2630478104747b58a7ec1f656 Mon Sep 17 00:00:00 2001
+Message-Id: <6b9a8f15bfad62c2630478104747b58a7ec1f656.1617652878.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Sat, 27 May 2017 19:02:06 +0200
 Subject: [PATCH 173/306] kernel/sched/core: add migrate_disable()
@@ -403,10 +406,10 @@ index 5e73727f6408..25ea4d268fa6 100644
  	    !t->rcu_read_unlock_special.b.blocked) {
  
 diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 22677d77eca9..7ff7de493993 100644
+index 586b1ec58f68..1885ab2925b4 100644
 --- a/kernel/sched/core.c
 +++ b/kernel/sched/core.c
-@@ -1571,7 +1571,7 @@ static inline bool is_cpu_allowed(struct task_struct *p, int cpu)
+@@ -1569,7 +1569,7 @@ static inline bool is_cpu_allowed(struct task_struct *p, int cpu)
  	if (!cpumask_test_cpu(cpu, p->cpus_ptr))
  		return false;
  
@@ -415,7 +418,7 @@ index 22677d77eca9..7ff7de493993 100644
  		return cpu_online(cpu);
  
  	return cpu_active(cpu);
-@@ -1695,9 +1695,18 @@ static int migration_cpu_stop(void *data)
+@@ -1693,9 +1693,18 @@ static int migration_cpu_stop(void *data)
  void set_cpus_allowed_common(struct task_struct *p, const struct cpumask *new_mask)
  {
  	cpumask_copy(&p->cpus_mask, new_mask);
@@ -435,7 +438,7 @@ index 22677d77eca9..7ff7de493993 100644
  void do_set_cpus_allowed(struct task_struct *p, const struct cpumask *new_mask)
  {
  	struct rq *rq = task_rq(p);
-@@ -1786,7 +1795,8 @@ static int __set_cpus_allowed_ptr(struct task_struct *p,
+@@ -1784,7 +1793,8 @@ static int __set_cpus_allowed_ptr(struct task_struct *p,
  	}
  
  	/* Can the task run on the task's current CPU? If so, we're done */
@@ -445,7 +448,7 @@ index 22677d77eca9..7ff7de493993 100644
  		goto out;
  
  	if (task_running(rq, p) || p->state == TASK_WAKING) {
-@@ -4116,6 +4126,8 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
+@@ -4114,6 +4124,8 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
  	BUG();
  }
  
@@ -454,7 +457,7 @@ index 22677d77eca9..7ff7de493993 100644
  /*
   * __schedule() is the main scheduler function.
   *
-@@ -4186,6 +4198,9 @@ static void __sched notrace __schedule(bool preempt)
+@@ -4184,6 +4196,9 @@ static void __sched notrace __schedule(bool preempt)
  	rq_lock(rq, &rf);
  	smp_mb__after_spinlock();
  
@@ -464,7 +467,7 @@ index 22677d77eca9..7ff7de493993 100644
  	/* Promote REQ to ACT */
  	rq->clock_update_flags <<= 1;
  	update_rq_clock(rq);
-@@ -6423,6 +6438,7 @@ static void migrate_tasks(struct rq *dead_rq, struct rq_flags *rf)
+@@ -6421,6 +6436,7 @@ static void migrate_tasks(struct rq *dead_rq, struct rq_flags *rf)
  			break;
  
  		next = __pick_migrate_task(rq);
@@ -472,7 +475,7 @@ index 22677d77eca9..7ff7de493993 100644
  
  		/*
  		 * Rules for changing task_struct::cpus_mask are holding
-@@ -8135,3 +8151,162 @@ const u32 sched_prio_to_wmult[40] = {
+@@ -8133,3 +8149,162 @@ const u32 sched_prio_to_wmult[40] = {
  };
  
  #undef CREATE_TRACE_POINTS
@@ -651,10 +654,10 @@ index c4b702fe1d73..760d2610e223 100644
  #undef PN
  #undef __PN
 diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 7faade2009a8..99d8b33ccddd 100644
+index b63f5a955453..d3381bc00f2c 100644
 --- a/kernel/sched/sched.h
 +++ b/kernel/sched/sched.h
-@@ -1001,6 +1001,10 @@ struct rq {
+@@ -1002,6 +1002,10 @@ struct rq {
  	/* Must be inspected within a rcu lock section */
  	struct cpuidle_state	*idle_state;
  #endif
@@ -682,5 +685,5 @@ index bd9571653288..c3d50a18c65b 100644
  		goto out;
  
 -- 
-2.30.0
+2.17.1
 

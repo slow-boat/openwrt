@@ -1,4 +1,7 @@
-From 97bcb13daa02e4a9d9875c82f5fb6b9dad5607a0 Mon Sep 17 00:00:00 2001
+From f2b0de7a5f924cfd2922000634bef24b5aa5bc3f Mon Sep 17 00:00:00 2001
+Message-Id: <f2b0de7a5f924cfd2922000634bef24b5aa5bc3f.1617652877.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Jan Kara <jack@suse.cz>
 Date: Fri, 9 Aug 2019 14:42:31 +0200
 Subject: [PATCH 006/306] jbd2: Don't call __bforget() unnecessarily
@@ -60,5 +63,5 @@ index 8f392add270d..215552d955be 100644
  		/* no need to reserve log space for this block -bzzz */
  		handle->h_buffer_credits++;
 -- 
-2.30.0
+2.17.1
 

@@ -1,4 +1,7 @@
-From ceecd86fd45ceeea49696498e287da7958c38e87 Mon Sep 17 00:00:00 2001
+From 209d9de8ea73dcbfd85dad38830ce4825c4fa71a Mon Sep 17 00:00:00 2001
+Message-Id: <209d9de8ea73dcbfd85dad38830ce4825c4fa71a.1617652877.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: John Ogness <john.ogness@linutronix.de>
 Date: Tue, 12 Feb 2019 15:29:46 +0100
 Subject: [PATCH 024/306] printk: add ring buffer and kthread
@@ -170,5 +173,5 @@ index 5569ef6bc183..591f80fb92ad 100644
  {
  	if (!printk_percpu_data_ready())
 -- 
-2.30.0
+2.17.1
 

@@ -1,4 +1,7 @@
-From b96beb4e5254bb8f67ba86bd4df2e50df7b1f4b4 Mon Sep 17 00:00:00 2001
+From f41dff394bfeb89594c4c17d419cb0cdd5d7cc87 Mon Sep 17 00:00:00 2001
+Message-Id: <f41dff394bfeb89594c4c17d419cb0cdd5d7cc87.1617652877.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: John Ogness <john.ogness@linutronix.de>
 Date: Tue, 12 Feb 2019 15:29:56 +0100
 Subject: [PATCH 034/306] console: add write_atomic interface
@@ -68,5 +71,5 @@ index d85e2d77a106..783c03a0ad0a 100644
 +}
 +EXPORT_SYMBOL(console_atomic_unlock);
 -- 
-2.30.0
+2.17.1
 

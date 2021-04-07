@@ -1,0 +1,23 @@
+From 0dc167c2b216e5a830b7a981a3ea3fdcf3974fd1 Mon Sep 17 00:00:00 2001
+Message-Id: <0dc167c2b216e5a830b7a981a3ea3fdcf3974fd1.1617652879.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+From: Tom Zanussi <zanussi@kernel.org>
+Date: Mon, 5 Apr 2021 14:58:15 -0500
+Subject: [PATCH 306/306] Linux 5.4.109-rt55 REBASE
+
+Signed-off-by: Tom Zanussi <zanussi@kernel.org>
+---
+ localversion-rt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/localversion-rt b/localversion-rt
+index 483ad771f201..51b05e9abe6f 100644
+--- a/localversion-rt
++++ b/localversion-rt
+@@ -1 +1 @@
+--rt19
++-rt55
+-- 
+2.17.1
+

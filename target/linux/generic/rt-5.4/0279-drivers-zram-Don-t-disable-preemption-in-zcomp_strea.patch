@@ -1,4 +1,7 @@
-From 2dbb4d7df8e620b49dc23daaec1d522bc65bf213 Mon Sep 17 00:00:00 2001
+From 3d376d6962ae8b28719e37a487ef1fd3ff4990cb Mon Sep 17 00:00:00 2001
+Message-Id: <3d376d6962ae8b28719e37a487ef1fd3ff4990cb.1617652879.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Mike Galbraith <umgwanakikbuti@gmail.com>
 Date: Thu, 20 Oct 2016 11:15:22 +0200
 Subject: [PATCH 279/306] drivers/zram: Don't disable preemption in
@@ -67,10 +70,10 @@ index 1806475b919d..b2c1db8a75ec 100644
  
  /* dynamic per-device compression frontend */
 diff --git a/drivers/block/zram/zram_drv.c b/drivers/block/zram/zram_drv.c
-index 57ad015fca33..a87413c29dff 100644
+index ba443d0f8047..ad333d723699 100644
 --- a/drivers/block/zram/zram_drv.c
 +++ b/drivers/block/zram/zram_drv.c
-@@ -1252,6 +1252,7 @@ static int __zram_bvec_read(struct zram *zram, struct page *page, u32 index,
+@@ -1257,6 +1257,7 @@ static int __zram_bvec_read(struct zram *zram, struct page *page, u32 index,
  	unsigned long handle;
  	unsigned int size;
  	void *src, *dst;
@@ -78,7 +81,7 @@ index 57ad015fca33..a87413c29dff 100644
  
  	zram_slot_lock(zram, index);
  	if (zram_test_flag(zram, index, ZRAM_WB)) {
-@@ -1282,6 +1283,7 @@ static int __zram_bvec_read(struct zram *zram, struct page *page, u32 index,
+@@ -1287,6 +1288,7 @@ static int __zram_bvec_read(struct zram *zram, struct page *page, u32 index,
  
  	size = zram_get_obj_size(zram, index);
  
@@ -86,7 +89,7 @@ index 57ad015fca33..a87413c29dff 100644
  	src = zs_map_object(zram->mem_pool, handle, ZS_MM_RO);
  	if (size == PAGE_SIZE) {
  		dst = kmap_atomic(page);
-@@ -1289,14 +1291,13 @@ static int __zram_bvec_read(struct zram *zram, struct page *page, u32 index,
+@@ -1294,14 +1296,13 @@ static int __zram_bvec_read(struct zram *zram, struct page *page, u32 index,
  		kunmap_atomic(dst);
  		ret = 0;
  	} else {
@@ -103,5 +106,5 @@ index 57ad015fca33..a87413c29dff 100644
  
  	/* Should NEVER happen. Return bio error if it does. */
 -- 
-2.30.0
+2.17.1
 

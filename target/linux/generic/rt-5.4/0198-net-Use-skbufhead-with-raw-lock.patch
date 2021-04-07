@@ -1,4 +1,7 @@
-From 290212d46317757d58e09983bd82787e929d4628 Mon Sep 17 00:00:00 2001
+From f133269fe6af3073cfbfdf36ace25030af1c0150 Mon Sep 17 00:00:00 2001
+Message-Id: <f133269fe6af3073cfbfdf36ace25030af1c0150.1617652878.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Tue, 12 Jul 2011 15:38:34 +0200
 Subject: [PATCH 198/306] net: Use skbufhead with raw lock
@@ -15,7 +18,7 @@ Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
  3 files changed, 28 insertions(+), 6 deletions(-)
 
 diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
-index 3e0692fd6282..20378622b4d3 100644
+index db1b9623977c..773f5dd7f7d5 100644
 --- a/include/linux/netdevice.h
 +++ b/include/linux/netdevice.h
 @@ -3018,6 +3018,7 @@ struct softnet_data {
@@ -52,7 +55,7 @@ index 6493c98c8631..86389623bb4c 100644
  		struct lock_class_key *class)
  {
 diff --git a/net/core/dev.c b/net/core/dev.c
-index 416beb05a23e..a72636c697c1 100644
+index a33005f71c25..d7a586bdc965 100644
 --- a/net/core/dev.c
 +++ b/net/core/dev.c
 @@ -218,14 +218,14 @@ static inline struct hlist_head *dev_index_hash(struct net *net, int ifindex)
@@ -115,7 +118,7 @@ index 416beb05a23e..a72636c697c1 100644
  	for (;;) {
  		struct napi_struct *n;
  
-@@ -9897,10 +9907,13 @@ static int dev_cpu_dead(unsigned int oldcpu)
+@@ -9939,10 +9949,13 @@ static int dev_cpu_dead(unsigned int oldcpu)
  		netif_rx_ni(skb);
  		input_queue_head_incr(oldsd);
  	}
@@ -130,7 +133,7 @@ index 416beb05a23e..a72636c697c1 100644
  
  	return 0;
  }
-@@ -10211,8 +10224,9 @@ static int __init net_dev_init(void)
+@@ -10253,8 +10266,9 @@ static int __init net_dev_init(void)
  
  		INIT_WORK(flush, flush_backlog);
  
@@ -143,5 +146,5 @@ index 416beb05a23e..a72636c697c1 100644
  		skb_queue_head_init(&sd->xfrm_backlog);
  #endif
 -- 
-2.30.0
+2.17.1
 

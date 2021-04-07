@@ -1,4 +1,7 @@
-From 894c0c4f62a7e51093371f99040481dabc51b0a8 Mon Sep 17 00:00:00 2001
+From 4b9ebd1c4ca99fe125bcbee0bdcb03fcfc5fab60 Mon Sep 17 00:00:00 2001
+Message-Id: <4b9ebd1c4ca99fe125bcbee0bdcb03fcfc5fab60.1617652879.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Thu, 7 Nov 2019 17:49:20 +0100
 Subject: [PATCH 268/306] x86: Enable RT also on 32bit
@@ -29,5 +32,5 @@ index 7282956fa25a..4b77b3273051 100644
  	select ARCH_USE_QUEUED_RWLOCKS
  	select ARCH_USE_QUEUED_SPINLOCKS
 -- 
-2.30.0
+2.17.1
 

@@ -1,4 +1,7 @@
-From a01fb9062bd166da1e048e06014bbd1cd3cdf0b2 Mon Sep 17 00:00:00 2001
+From 72a3b69635e8e4fdf7fd348a8768362ca0831390 Mon Sep 17 00:00:00 2001
+Message-Id: <72a3b69635e8e4fdf7fd348a8768362ca0831390.1617652878.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Wed, 14 Sep 2016 17:36:35 +0200
 Subject: [PATCH 090/306] net/Qdisc: use a seqlock instead seqcount
@@ -261,7 +264,7 @@ index 36888f5e09eb..4894ee0a1b04 100644
  			 struct gnet_stats_basic_cpu __percpu *cpu,
  			 struct gnet_stats_basic_packed *b)
 diff --git a/net/sched/sch_api.c b/net/sched/sch_api.c
-index b65a405f607b..7e78479a69f0 100644
+index 3b1b5ee52137..afacebf6d05b 100644
 --- a/net/sched/sch_api.c
 +++ b/net/sched/sch_api.c
 @@ -1249,7 +1249,7 @@ static struct Qdisc *qdisc_create(struct net_device *dev,
@@ -315,5 +318,5 @@ index 981f699730ce..5d9f14dc5c2a 100644
  
  	return sch;
 -- 
-2.30.0
+2.17.1
 

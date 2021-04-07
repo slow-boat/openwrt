@@ -1,4 +1,7 @@
-From 5715a1d24a94360452745cb0aefc6783dd2fd222 Mon Sep 17 00:00:00 2001
+From aa7dd5de9813f12ca019f00afb945ca16a9cc74c Mon Sep 17 00:00:00 2001
+Message-Id: <aa7dd5de9813f12ca019f00afb945ca16a9cc74c.1617652877.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: John Ogness <john.ogness@linutronix.de>
 Date: Tue, 12 Feb 2019 15:29:59 +0100
 Subject: [PATCH 037/306] printk: implement KERN_CONT
@@ -134,5 +137,5 @@ index 8801b9a0eacd..01fb3ca3d9ff 100644
  	prb_commit(&h);
  	return printed_len;
 -- 
-2.30.0
+2.17.1
 

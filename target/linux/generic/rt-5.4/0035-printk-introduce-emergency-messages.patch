@@ -1,4 +1,7 @@
-From 485043d5cf5188be98fb5d21fa20c2995411f9d8 Mon Sep 17 00:00:00 2001
+From ae895600c635ab8753b904dbb8f8ca03daa1019f Mon Sep 17 00:00:00 2001
+Message-Id: <ae895600c635ab8753b904dbb8f8ca03daa1019f.1617652877.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: John Ogness <john.ogness@linutronix.de>
 Date: Tue, 12 Feb 2019 15:29:57 +0100
 Subject: [PATCH 035/306] printk: introduce emergency messages
@@ -278,5 +281,5 @@ index ee00c6c8a373..bb30740f8cb5 100644
  	int "Default message log level (1-7)"
  	range 1 7
 -- 
-2.30.0
+2.17.1
 

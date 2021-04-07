@@ -1,4 +1,7 @@
-From 982351d7f62773d651de9ca2780f5c62c038192d Mon Sep 17 00:00:00 2001
+From 9571c776f7892b5897402f6d778af0b69e7bd791 Mon Sep 17 00:00:00 2001
+Message-Id: <9571c776f7892b5897402f6d778af0b69e7bd791.1617652878.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Thu, 12 Oct 2017 16:14:22 +0200
 Subject: [PATCH 158/306] rtmutex: Provide rt_mutex_slowlock_locked()
@@ -140,5 +143,5 @@ index 202e2b0d1251..66deb94765fb 100644
  #ifdef CONFIG_DEBUG_RT_MUTEXES
  # include "rtmutex-debug.h"
 -- 
-2.30.0
+2.17.1
 

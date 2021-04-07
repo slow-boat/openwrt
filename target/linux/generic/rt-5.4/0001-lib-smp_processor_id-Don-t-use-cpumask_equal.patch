@@ -1,4 +1,5 @@
-From 3a1d4d0c44c68023a32bc5f1489fc5e7592ccba1 Mon Sep 17 00:00:00 2001
+From 87288deb18d7d47c4eb7d179932f2f2e8c0ed072 Mon Sep 17 00:00:00 2001
+Message-Id: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Waiman Long <longman@redhat.com>
 Date: Thu, 3 Oct 2019 16:36:08 -0400
 Subject: [PATCH 001/306] lib/smp_processor_id: Don't use cpumask_equal()
@@ -37,5 +38,5 @@ index 60ba93fc42ce..bd9571653288 100644
  
  	/*
 -- 
-2.30.0
+2.17.1
 

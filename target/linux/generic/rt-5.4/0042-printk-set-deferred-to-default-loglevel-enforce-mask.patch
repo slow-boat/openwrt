@@ -1,4 +1,7 @@
-From bd888c146361d8c3d9720cf6aa011fe30c5ba7a2 Mon Sep 17 00:00:00 2001
+From 35286b8470a2377e81f858a0a6daf4117dcf6048 Mon Sep 17 00:00:00 2001
+Message-Id: <35286b8470a2377e81f858a0a6daf4117dcf6048.1617652877.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: John Ogness <john.ogness@linutronix.de>
 Date: Thu, 14 Feb 2019 23:13:30 +0100
 Subject: [PATCH 042/306] printk: set deferred to default loglevel, enforce
@@ -41,5 +44,5 @@ index 16ceef380243..28c8fa7152b0 100644
  
  int printk_deferred(const char *fmt, ...)
 -- 
-2.30.0
+2.17.1
 

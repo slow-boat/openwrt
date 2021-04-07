@@ -1,4 +1,7 @@
-From 277333268713970f9f1a96cb6003d5a284e64881 Mon Sep 17 00:00:00 2001
+From c3f19c49ee91632f8feb3d9ede5be7c370432a08 Mon Sep 17 00:00:00 2001
+Message-Id: <c3f19c49ee91632f8feb3d9ede5be7c370432a08.1617652879.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Mike Galbraith <umgwanakikbuti@gmail.com>
 Date: Sat, 27 Feb 2016 09:01:42 +0100
 Subject: [PATCH 214/306] drm,i915: Use local_lock/unlock_irq() in
@@ -123,5 +126,5 @@ index cae25e493128..da71ac8dea35 100644
  	if (intel_vgpu_active(dev_priv))
  		return;
 -- 
-2.30.0
+2.17.1
 

@@ -1,4 +1,7 @@
-From f3965f27c3dd92e3ee94f8dd9a69412694ad18c8 Mon Sep 17 00:00:00 2001
+From 3641a4926a011b4d19591edef0383561b2a5c485 Mon Sep 17 00:00:00 2001
+Message-Id: <3641a4926a011b4d19591edef0383561b2a5c485.1617652878.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Fri, 6 Mar 2020 15:59:06 +0100
 Subject: [PATCH 084/306] mm: Warn on memory allocation in non-preemptible
@@ -21,7 +24,7 @@ Reviewed-by: Daniel Bristot de Oliveira <bristot@redhat.com>
  1 file changed, 6 insertions(+)
 
 diff --git a/mm/slub.c b/mm/slub.c
-index 80d42d9fe3b3..70671a50d834 100644
+index cfcce76792fd..5c6dbfc522b0 100644
 --- a/mm/slub.c
 +++ b/mm/slub.c
 @@ -2724,6 +2724,9 @@ static __always_inline void *slab_alloc_node(struct kmem_cache *s,
@@ -45,5 +48,5 @@ index 80d42d9fe3b3..70671a50d834 100644
  	s = slab_pre_alloc_hook(s, flags);
  	if (unlikely(!s))
 -- 
-2.30.0
+2.17.1
 

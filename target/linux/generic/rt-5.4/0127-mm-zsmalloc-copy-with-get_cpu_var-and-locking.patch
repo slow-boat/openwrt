@@ -1,4 +1,7 @@
-From 58e6c8dbb02a1ed21966792589ac7fa31dc068db Mon Sep 17 00:00:00 2001
+From 4e9aedd00381781e4ac4de3064546d335f8a2af9 Mon Sep 17 00:00:00 2001
+Message-Id: <4e9aedd00381781e4ac4de3064546d335f8a2af9.1617652878.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Mike Galbraith <umgwanakikbuti@gmail.com>
 Date: Tue, 22 Mar 2016 11:16:09 +0100
 Subject: [PATCH 127/306] mm/zsmalloc: copy with get_cpu_var() and locking
@@ -17,7 +20,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  1 file changed, 74 insertions(+), 6 deletions(-)
 
 diff --git a/mm/zsmalloc.c b/mm/zsmalloc.c
-index 8a72a3b3837b..30ed9a7113bb 100644
+index 443b3b1c9581..70ed459e38e8 100644
 --- a/mm/zsmalloc.c
 +++ b/mm/zsmalloc.c
 @@ -57,6 +57,7 @@
@@ -198,5 +201,5 @@ index 8a72a3b3837b..30ed9a7113bb 100644
  	migrate_read_unlock(zspage);
  	unpin_tag(handle);
 -- 
-2.30.0
+2.17.1
 

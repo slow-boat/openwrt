@@ -1,4 +1,7 @@
-From 80902ed7a1881a1bfdbea80f114eff2c263354f4 Mon Sep 17 00:00:00 2001
+From e54cc27894937437ee64fb3f53b4d9dc84fb347c Mon Sep 17 00:00:00 2001
+Message-Id: <e54cc27894937437ee64fb3f53b4d9dc84fb347c.1617652878.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Peter Zijlstra <peterz@infradead.org>
 Date: Mon, 14 Nov 2011 18:19:27 +0100
 Subject: [PATCH 201/306] x86: crypto: Reduce preempt disabled regions
@@ -18,10 +21,10 @@ Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
  1 file changed, 12 insertions(+), 10 deletions(-)
 
 diff --git a/arch/x86/crypto/aesni-intel_glue.c b/arch/x86/crypto/aesni-intel_glue.c
-index 88ad272aa2b4..8b48b8e7995f 100644
+index 18cfb76daa23..5cf3e1c191cf 100644
 --- a/arch/x86/crypto/aesni-intel_glue.c
 +++ b/arch/x86/crypto/aesni-intel_glue.c
-@@ -387,14 +387,14 @@ static int ecb_encrypt(struct skcipher_request *req)
+@@ -388,14 +388,14 @@ static int ecb_encrypt(struct skcipher_request *req)
  
  	err = skcipher_walk_virt(&walk, req, true);
  
@@ -38,7 +41,7 @@ index 88ad272aa2b4..8b48b8e7995f 100644
  
  	return err;
  }
-@@ -409,14 +409,14 @@ static int ecb_decrypt(struct skcipher_request *req)
+@@ -410,14 +410,14 @@ static int ecb_decrypt(struct skcipher_request *req)
  
  	err = skcipher_walk_virt(&walk, req, true);
  
@@ -55,7 +58,7 @@ index 88ad272aa2b4..8b48b8e7995f 100644
  
  	return err;
  }
-@@ -431,14 +431,14 @@ static int cbc_encrypt(struct skcipher_request *req)
+@@ -432,14 +432,14 @@ static int cbc_encrypt(struct skcipher_request *req)
  
  	err = skcipher_walk_virt(&walk, req, true);
  
@@ -72,7 +75,7 @@ index 88ad272aa2b4..8b48b8e7995f 100644
  
  	return err;
  }
-@@ -453,14 +453,14 @@ static int cbc_decrypt(struct skcipher_request *req)
+@@ -454,14 +454,14 @@ static int cbc_decrypt(struct skcipher_request *req)
  
  	err = skcipher_walk_virt(&walk, req, true);
  
@@ -89,7 +92,7 @@ index 88ad272aa2b4..8b48b8e7995f 100644
  
  	return err;
  }
-@@ -510,18 +510,20 @@ static int ctr_crypt(struct skcipher_request *req)
+@@ -511,18 +511,20 @@ static int ctr_crypt(struct skcipher_request *req)
  
  	err = skcipher_walk_virt(&walk, req, true);
  
@@ -113,5 +116,5 @@ index 88ad272aa2b4..8b48b8e7995f 100644
  	return err;
  }
 -- 
-2.30.0
+2.17.1
 

@@ -1,4 +1,7 @@
-From 2e29779b9b57ffa3fd44f3ecac72da092a14ec64 Mon Sep 17 00:00:00 2001
+From 352f19a3794b50ee6d0385c64eb093bad5c2dcfb Mon Sep 17 00:00:00 2001
+Message-Id: <352f19a3794b50ee6d0385c64eb093bad5c2dcfb.1617652877.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Fri, 26 Jul 2019 11:30:49 +0200
 Subject: [PATCH 072/306] Use CONFIG_PREEMPTION
@@ -334,7 +337,7 @@ index d3e937dcee4d..007d8fea7157 100644
  #else
  #define __complete_pending_tlbi()
 diff --git a/arch/arm/kernel/entry-armv.S b/arch/arm/kernel/entry-armv.S
-index a874b753397e..55a47df04773 100644
+index b62d74a2c73a..1c9e6d1452c5 100644
 --- a/arch/arm/kernel/entry-armv.S
 +++ b/arch/arm/kernel/entry-armv.S
 @@ -204,7 +204,7 @@ __irq_svc:
@@ -969,7 +972,7 @@ index 3fd3ef352e3f..a9a1d3cdb523 100644
  	.globl	fast_exc_return_irq
  fast_exc_return_irq:
 diff --git a/arch/powerpc/kernel/traps.c b/arch/powerpc/kernel/traps.c
-index 4da00cfb26f2..72ce196e6c52 100644
+index 5a09bad6d657..7beeb37c9d40 100644
 --- a/arch/powerpc/kernel/traps.c
 +++ b/arch/powerpc/kernel/traps.c
 @@ -260,12 +260,17 @@ static char *get_mmu_str(void)
@@ -1189,10 +1192,10 @@ index 4a6c495ce9b6..2e7cf56412a0 100644
  	if (!user_mode(regs))
  		show_stack(NULL, (unsigned long*)regs->areg[1]);
 diff --git a/drivers/gpu/drm/Kconfig b/drivers/gpu/drm/Kconfig
-index e67c194c2aca..5f6dcbbeb0c1 100644
+index 649f17dfcf45..1341939cd39c 100644
 --- a/drivers/gpu/drm/Kconfig
 +++ b/drivers/gpu/drm/Kconfig
-@@ -397,7 +397,7 @@ config DRM_R128
+@@ -398,7 +398,7 @@ config DRM_R128
  
  config DRM_I810
  	tristate "Intel I810"
@@ -1597,7 +1600,7 @@ index c432e7c76445..5315704fddf4 100644
  		spinlock_t *ptl = pte_lockptr(mm, pmd);
  		spin_lock(ptl);
 diff --git a/mm/slub.c b/mm/slub.c
-index 23386ec51373..80d42d9fe3b3 100644
+index ce2014975f57..cfcce76792fd 100644
 --- a/mm/slub.c
 +++ b/mm/slub.c
 @@ -1990,7 +1990,7 @@ static void *get_partial(struct kmem_cache *s, gfp_t flags, int node,
@@ -1653,5 +1656,5 @@ index 23386ec51373..80d42d9fe3b3 100644
  
  	/* Same with comment on barrier() in slab_alloc_node() */
 -- 
-2.30.0
+2.17.1
 

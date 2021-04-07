@@ -1,4 +1,7 @@
-From 8053c2bbfbc1688bb3da0375b03de0d2df8ff690 Mon Sep 17 00:00:00 2001
+From 88b978c780505dc5ae6701ff10144dfeb325875f Mon Sep 17 00:00:00 2001
+Message-Id: <88b978c780505dc5ae6701ff10144dfeb325875f.1617652878.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Tue, 11 Jun 2019 11:21:02 +0200
 Subject: [PATCH 073/306] workqueue: Don't assume that the callback has
@@ -37,5 +40,5 @@ index 85d8e70bfc5a..6230e5e00819 100644
  EXPORT_SYMBOL(delayed_work_timer_fn);
  
 -- 
-2.30.0
+2.17.1
 

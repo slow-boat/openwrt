@@ -1,4 +1,7 @@
-From 32c492768227136c39b584e6b82d7281df7c47ef Mon Sep 17 00:00:00 2001
+From 2bed7658d10940d98347dbe8a3fa9e8a8ba061ee Mon Sep 17 00:00:00 2001
+Message-Id: <2bed7658d10940d98347dbe8a3fa9e8a8ba061ee.1617652879.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: "Ahmed S. Darwish" <a.darwish@linutronix.de>
 Date: Wed, 10 Jun 2020 12:53:00 +0200
 Subject: [PATCH 295/306] net: phy: fixed_phy: Remove unused seqcount
@@ -85,5 +88,5 @@ index 4190f9ed5313..9ed715e9be40 100644
  		fmb->mii_bus->irq[phy_addr] = irq;
  
 -- 
-2.30.0
+2.17.1
 

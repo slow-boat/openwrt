@@ -1,4 +1,7 @@
-From a87aad38c5cb3692d963808fcfc4bad10bd4cc0f Mon Sep 17 00:00:00 2001
+From 70dbb2569aaf0a99f326b21b7547e556224d7f06 Mon Sep 17 00:00:00 2001
+Message-Id: <70dbb2569aaf0a99f326b21b7547e556224d7f06.1617652879.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Wed, 31 Oct 2012 12:04:11 +0100
 Subject: [PATCH 251/306] arm: Add support for lazy preemption
@@ -80,7 +83,7 @@ index bfb05c93494d..b6947f568182 100644
    DEFINE(TI_TASK,		offsetof(struct thread_info, task));
    DEFINE(TI_CPU,		offsetof(struct thread_info, cpu));
 diff --git a/arch/arm/kernel/entry-armv.S b/arch/arm/kernel/entry-armv.S
-index 55a47df04773..1e689a727cb9 100644
+index 1c9e6d1452c5..6160eeeab6a8 100644
 --- a/arch/arm/kernel/entry-armv.S
 +++ b/arch/arm/kernel/entry-armv.S
 @@ -206,11 +206,18 @@ __irq_svc:
@@ -163,5 +166,5 @@ index c01f76cd0242..12cfa1ddd223 100644
  		} else {
  			if (unlikely(!user_mode(regs)))
 -- 
-2.30.0
+2.17.1
 

@@ -1,4 +1,7 @@
-From 97c859495dc0aaf18ca4c2c49485807bc38f841a Mon Sep 17 00:00:00 2001
+From 64c0baf6343f2276ddf7efa2e568a4838638ec35 Mon Sep 17 00:00:00 2001
+Message-Id: <64c0baf6343f2276ddf7efa2e568a4838638ec35.1617652879.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: =?UTF-8?q?=E6=B1=AA=E5=8B=8710269566?= <wang.yong12@zte.com.cn>
 Date: Thu, 21 May 2020 09:37:44 +0800
 Subject: [PATCH 290/306] printk: Force a line break on pr_cont(" ")
@@ -36,5 +39,5 @@ index 8617e97ed2ec..e40edf35f613 100644
  }
  
 -- 
-2.30.0
+2.17.1
 

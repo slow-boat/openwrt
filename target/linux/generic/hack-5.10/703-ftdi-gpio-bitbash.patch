@@ -1,0 +1,171 @@
+Index: linux-5.4.36/drivers/usb/serial/ftdi_sio.c
+===================================================================
+--- linux-5.4.36.orig/drivers/usb/serial/ftdi_sio.c
++++ linux-5.4.36/drivers/usb/serial/ftdi_sio.c
+@@ -77,8 +77,9 @@ struct ftdi_private {
+ 	struct gpio_chip gc;
+ 	struct mutex gpio_lock;	/* protects GPIO state */
+ 	bool gpio_registered;	/* is the gpiochip in kernel registered */
+-	bool gpio_used;		/* true if the user requested a gpio */
+-	u8 gpio_altfunc;	/* which pins are in gpio mode */
++	u8 gpio_used;		/* bits the user requested for gpio */
++	bool bitbang;		/* using bitbang mode if no cbus is available */
++	u8 gpio_altfunc;	/* bits are clear when available for GPIO (cbus) */
+ 	u8 gpio_output;		/* pin directions cache */
+ 	u8 gpio_value;		/* pin value for outputs */
+ #endif
+@@ -1815,12 +1816,16 @@ static int ftdi_set_bitmode(struct usb_s
+ 	return result;
+ }
+ 
+-static int ftdi_set_cbus_pins(struct usb_serial_port *port)
++static int ftdi_set_gpio_pins(struct gpio_chip *gc)
+ {
+-	return ftdi_set_bitmode(port, FTDI_SIO_BITMODE_CBUS);
++	struct usb_serial_port *port = gpiochip_get_data(gc);
++	struct ftdi_private *priv = usb_get_serial_port_data(port);
++
++	return ftdi_set_bitmode(port,
++		(priv->bitbang)?FTDI_SIO_BITMODE_BITBANG:FTDI_SIO_BITMODE_CBUS);
+ }
+ 
+-static int ftdi_exit_cbus_mode(struct usb_serial_port *port)
++static int ftdi_exit_gpio_mode(struct usb_serial_port *port)
+ {
+ 	struct ftdi_private *priv = usb_get_serial_port_data(port);
+ 
+@@ -1843,20 +1848,29 @@ static int ftdi_gpio_request(struct gpio
+ 		/* Set default pin states, as we cannot get them from device */
+ 		priv->gpio_output = 0x00;
+ 		priv->gpio_value = 0x00;
+-		result = ftdi_set_cbus_pins(port);
++		result = ftdi_set_gpio_pins(gc);
+ 		if (result) {
+ 			mutex_unlock(&priv->gpio_lock);
+ 			return result;
+ 		}
+-
+-		priv->gpio_used = true;
+ 	}
++	priv->gpio_used |= BIT(offset);
+ 	mutex_unlock(&priv->gpio_lock);
+ 
+ 	return 0;
+ }
+ 
+-static int ftdi_read_cbus_pins(struct usb_serial_port *port)
++static void ftdi_gpio_free(struct gpio_chip *gc, unsigned offset)
++{
++	struct usb_serial_port *port = gpiochip_get_data(gc);
++	struct ftdi_private *priv = usb_get_serial_port_data(port);
++
++	mutex_lock(&priv->gpio_lock);
++	priv->gpio_used &= ~BIT(offset);
++	mutex_unlock(&priv->gpio_lock);
++}
++
++static int ftdi_read_gpio_pins(struct usb_serial_port *port)
+ {
+ 	struct ftdi_private *priv = usb_get_serial_port_data(port);
+ 	struct usb_serial *serial = port->serial;
+@@ -1896,7 +1910,7 @@ static int ftdi_gpio_get(struct gpio_chi
+ 	struct usb_serial_port *port = gpiochip_get_data(gc);
+ 	int result;
+ 
+-	result = ftdi_read_cbus_pins(port);
++	result = ftdi_read_gpio_pins(port);
+ 	if (result < 0)
+ 		return result;
+ 
+@@ -1915,7 +1929,7 @@ static void ftdi_gpio_set(struct gpio_ch
+ 	else
+ 		priv->gpio_value &= ~BIT(gpio);
+ 
+-	ftdi_set_cbus_pins(port);
++	ftdi_set_gpio_pins(gc);
+ 
+ 	mutex_unlock(&priv->gpio_lock);
+ }
+@@ -1926,7 +1940,7 @@ static int ftdi_gpio_get_multiple(struct
+ 	struct usb_serial_port *port = gpiochip_get_data(gc);
+ 	int result;
+ 
+-	result = ftdi_read_cbus_pins(port);
++	result = ftdi_read_gpio_pins(port);
+ 	if (result < 0)
+ 		return result;
+ 
+@@ -1945,7 +1959,7 @@ static void ftdi_gpio_set_multiple(struc
+ 
+ 	priv->gpio_value &= ~(*mask);
+ 	priv->gpio_value |= *bits & *mask;
+-	ftdi_set_cbus_pins(port);
++	ftdi_set_gpio_pins(gc);
+ 
+ 	mutex_unlock(&priv->gpio_lock);
+ }
+@@ -1967,7 +1981,7 @@ static int ftdi_gpio_direction_input(str
+ 	mutex_lock(&priv->gpio_lock);
+ 
+ 	priv->gpio_output &= ~BIT(gpio);
+-	result = ftdi_set_cbus_pins(port);
++	result = ftdi_set_gpio_pins(gc);
+ 
+ 	mutex_unlock(&priv->gpio_lock);
+ 
+@@ -1989,7 +2003,7 @@ static int ftdi_gpio_direction_output(st
+ 	else
+ 		priv->gpio_value &= ~BIT(gpio);
+ 
+-	result = ftdi_set_cbus_pins(port);
++	result = ftdi_set_gpio_pins(gc);
+ 
+ 	mutex_unlock(&priv->gpio_lock);
+ 
+@@ -2160,9 +2174,19 @@ static int ftdi_gpio_init(struct usb_ser
+ 	if (result < 0)
+ 		return result;
+ 
+-	mutex_init(&priv->gpio_lock);
++	if(priv->gpio_altfunc == 0xff){
++		/* no cbus enabled in eeprom. Use bitbang mode to override normal serial pins */
++		priv->gc.free = ftdi_gpio_free;
++		priv->gc.label = "ftdi-gpio";
++		priv->gc.ngpio = 8;
++		priv->gpio_altfunc = 0;
++		priv->bitbang = true;
++	} else {
++		priv->gc.label = "ftdi-cbus";
++		priv->bitbang = false;
++	}
+ 
+-	priv->gc.label = "ftdi-cbus";
++	mutex_init(&priv->gpio_lock);
+ 	priv->gc.request = ftdi_gpio_request;
+ 	priv->gc.get_direction = ftdi_gpio_direction_get;
+ 	priv->gc.direction_input = ftdi_gpio_direction_input;
+@@ -2193,9 +2217,9 @@ static void ftdi_gpio_remove(struct usb_
+ 	}
+ 
+ 	if (priv->gpio_used) {
+-		/* Exiting CBUS-mode does not reset pin states. */
+-		ftdi_exit_cbus_mode(port);
+-		priv->gpio_used = false;
++		/* Exiting GPIO-mode does not reset pin states. */
++		ftdi_exit_gpio_mode(port);
++		priv->gpio_used = 0;
+ 	}
+ }
+ 
+Index: linux-5.4.36/drivers/usb/serial/ftdi_sio.h
+===================================================================
+--- linux-5.4.36.orig/drivers/usb/serial/ftdi_sio.h
++++ linux-5.4.36/drivers/usb/serial/ftdi_sio.h
+@@ -442,6 +442,7 @@ enum ftdi_sio_baudrate {
+ 
+ /* Possible bitmodes for FTDI_SIO_SET_BITMODE_REQUEST */
+ #define FTDI_SIO_BITMODE_RESET		0x00
++#define FTDI_SIO_BITMODE_BITBANG	0x01
+ #define FTDI_SIO_BITMODE_CBUS		0x20
+ 
+ /* FTDI_SIO_READ_PINS */

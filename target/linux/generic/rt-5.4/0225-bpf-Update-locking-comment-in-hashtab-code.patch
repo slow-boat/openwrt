@@ -1,4 +1,7 @@
-From 549d4fd9ba19ff9184a2dd89038947fb9fe34a25 Mon Sep 17 00:00:00 2001
+From 1371f0f137bdfd08648a6f706d51940d918a6d2c Mon Sep 17 00:00:00 2001
+Message-Id: <1371f0f137bdfd08648a6f706d51940d918a6d2c.1617652879.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Mon, 24 Feb 2020 15:01:34 +0100
 Subject: [PATCH 225/306] bpf: Update locking comment in hashtab code
@@ -84,5 +87,5 @@ index 03a67583f6fb..5e422925a6f1 100644
  
  	l_old = lookup_elem_raw(head, hash, key, key_size);
 -- 
-2.30.0
+2.17.1
 

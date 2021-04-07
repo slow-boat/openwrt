@@ -1,4 +1,7 @@
-From 0057652ccfced6a6b14dfa2f9f8d27d62e00ca6f Mon Sep 17 00:00:00 2001
+From 55a0feca666000ad65be06d855389e84390a9713 Mon Sep 17 00:00:00 2001
+Message-Id: <55a0feca666000ad65be06d855389e84390a9713.1617652877.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Tue, 3 Mar 2020 13:43:25 +0100
 Subject: [PATCH 070/306] =?UTF-8?q?mm/compaction:=20Really=20limit=20compa?=
@@ -21,7 +24,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/kernel/sysctl.c b/kernel/sysctl.c
-index 70665934d53e..91b23fd4df9f 100644
+index eae6a078619f..27dd650fba3d 100644
 --- a/kernel/sysctl.c
 +++ b/kernel/sysctl.c
 @@ -1493,7 +1493,7 @@ static struct ctl_table vm_table[] = {
@@ -34,5 +37,5 @@ index 70665934d53e..91b23fd4df9f 100644
  		.extra2		= SYSCTL_ONE,
  	},
 -- 
-2.30.0
+2.17.1
 

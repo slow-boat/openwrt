@@ -1,4 +1,7 @@
-From 3b8e2e02ac38e2d6d95a042b5a10c006f017707c Mon Sep 17 00:00:00 2001
+From 0be3da33fecbdf964710d8c507844c302bf87560 Mon Sep 17 00:00:00 2001
+Message-Id: <0be3da33fecbdf964710d8c507844c302bf87560.1617652879.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: David Miller <davem@davemloft.net>
 Date: Mon, 24 Feb 2020 15:01:46 +0100
 Subject: [PATCH 236/306] bpf: Use migrate_disable/enable in array macros and
@@ -20,7 +23,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  2 files changed, 7 insertions(+), 6 deletions(-)
 
 diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 007147f64390..33c323042835 100644
+index 66590ae89c97..fee96633e079 100644
 --- a/include/linux/bpf.h
 +++ b/include/linux/bpf.h
 @@ -541,7 +541,7 @@ int bpf_prog_array_copy(struct bpf_prog_array *old_array,
@@ -32,7 +35,7 @@ index 007147f64390..33c323042835 100644
  		rcu_read_lock();			\
  		_array = rcu_dereference(array);	\
  		if (unlikely(check_non_null && !_array))\
-@@ -554,7 +554,7 @@ int bpf_prog_array_copy(struct bpf_prog_array *old_array,
+@@ -555,7 +555,7 @@ int bpf_prog_array_copy(struct bpf_prog_array *old_array,
  		}					\
  _out:							\
  		rcu_read_unlock();			\
@@ -41,7 +44,7 @@ index 007147f64390..33c323042835 100644
  		_ret;					\
  	 })
  
-@@ -588,7 +588,7 @@ _out:							\
+@@ -589,7 +589,7 @@ _out:							\
  		u32 ret;				\
  		u32 _ret = 1;				\
  		u32 _cn = 0;				\
@@ -50,7 +53,7 @@ index 007147f64390..33c323042835 100644
  		rcu_read_lock();			\
  		_array = rcu_dereference(array);	\
  		_item = &_array->items[0];		\
-@@ -600,7 +600,7 @@ _out:							\
+@@ -601,7 +601,7 @@ _out:							\
  			_item++;			\
  		}					\
  		rcu_read_unlock();			\
@@ -84,5 +87,5 @@ index 06b680f508d8..81ece78f77fc 100644
  }
  
 -- 
-2.30.0
+2.17.1
 

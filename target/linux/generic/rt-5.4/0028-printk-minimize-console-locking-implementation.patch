@@ -1,4 +1,7 @@
-From 9b787a40d3a8af3001318895bcdac5d06e1b9d75 Mon Sep 17 00:00:00 2001
+From bd6235c357c058b6ac5db6daa107ae974ce0c2f8 Mon Sep 17 00:00:00 2001
+Message-Id: <bd6235c357c058b6ac5db6daa107ae974ce0c2f8.1617652877.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: John Ogness <john.ogness@linutronix.de>
 Date: Tue, 12 Feb 2019 15:29:50 +0100
 Subject: [PATCH 028/306] printk: minimize console locking implementation
@@ -331,5 +334,5 @@ index 0f88dab9615f..2c85d6d1b60e 100644
  EXPORT_SYMBOL(console_unlock);
  
 -- 
-2.30.0
+2.17.1
 

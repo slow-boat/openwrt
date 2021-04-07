@@ -1,4 +1,7 @@
-From b0d3737ef7d8c9d5bdd0340b7697c6d3c8045b77 Mon Sep 17 00:00:00 2001
+From 299f508c63766888bc2ab34d76e9f59de2c71d0f Mon Sep 17 00:00:00 2001
+Message-Id: <299f508c63766888bc2ab34d76e9f59de2c71d0f.1617652879.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Wed, 7 Aug 2019 18:15:38 +0200
 Subject: [PATCH 243/306] x86: Allow to enable RT
@@ -23,5 +26,5 @@ index 42d8027526e8..4890ac14e480 100644
  	select HAVE_ARCH_SOFT_DIRTY
  	select MODULES_USE_ELF_RELA
 -- 
-2.30.0
+2.17.1
 

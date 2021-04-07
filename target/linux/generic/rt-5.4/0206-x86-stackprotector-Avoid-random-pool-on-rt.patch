@@ -1,4 +1,7 @@
-From 409f9c698a2bbdf16a4de0cd011e9a62bfacf049 Mon Sep 17 00:00:00 2001
+From f6acdb5b2d8e81f691ed757709f29a81253211a1 Mon Sep 17 00:00:00 2001
+Message-Id: <f6acdb5b2d8e81f691ed757709f29a81253211a1.1617652878.git.zanussi@kernel.org>
+In-Reply-To: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
+References: <87288deb18d7d47c4eb7d179932f2f2e8c0ed072.1617652877.git.zanussi@kernel.org>
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Thu, 16 Dec 2010 14:25:18 +0100
 Subject: [PATCH 206/306] x86: stackprotector: Avoid random pool on rt
@@ -46,5 +49,5 @@ index 9804a7957f4e..afc3d1e17841 100644
  	canary += tsc + (tsc << 32UL);
  	canary &= CANARY_MASK;
 -- 
-2.30.0
+2.17.1
 

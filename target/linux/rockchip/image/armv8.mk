@@ -39,3 +39,13 @@ define Device/radxa_rock-pi-4
   IMAGE/sysupgrade.img.gz := boot-common | boot-script | pine64-img | gzip | append-metadata
 endef
 TARGET_DEVICES += radxa_rock-pi-4
+
+define Device/radxa_rock-pi-s
+  DEVICE_VENDOR := Radxa
+  DEVICE_MODEL := ROCK Pi s
+  SOC := rk3308
+  SUPPORTED_DEVICES := radxa,rockpi-s
+  UBOOT_DEVICE_NAME := rock-pi-s-rk3308
+  IMAGE/sysupgrade.img.gz := boot-common | boot-script rockpi-s | pine64-img | gzip | append-metadata
+endef
+TARGET_DEVICES += radxa_rock-pi-s

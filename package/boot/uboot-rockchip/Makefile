@@ -21,6 +21,18 @@ define U-Boot/Default
   HIDDEN:=1
 endef
 
+# RK3308 boards
+
+define U-Boot/rock-pi-s-rk3308
+  BUILD_SUBTARGET:=armv8
+  NAME:=Rock Pi S
+  BUILD_DEVICES:= \
+    radxa_rock-pi-s
+  DEPENDS:=+PACKAGE_u-boot-rock-pi-s-rk3308:arm-trusted-firmware-rockchip
+  PKG_BUILD_DEPENDS:=arm-trusted-firmware-rockchip
+  ATF:=rk3308_bl31_v2.22.elf
+  OF_PLATDATA:=$(1)
+endef
 
 # RK3328 boards
 
@@ -61,7 +73,8 @@ endef
 UBOOT_TARGETS := \
   rock-pi-4-rk3399 \
   rockpro64-rk3399 \
-  nanopi-r2s-rk3328
+  nanopi-r2s-rk3328 \
+  rock-pi-s-rk3308
 
 UBOOT_CONFIGURE_VARS += USE_PRIVATE_LIBGCC=yes
 

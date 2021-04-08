@@ -30,8 +30,7 @@ define U-Boot/rock-pi-s-rk3308
     radxa_rock-pi-s
   DEPENDS:=+PACKAGE_u-boot-rock-pi-s-rk3308:arm-trusted-firmware-rockchip
   PKG_BUILD_DEPENDS:=arm-trusted-firmware-rockchip
-  ATF:=rk3308_bl31_v2.22.elf
-  OF_PLATDATA:=$(1)
+  ATF:=rk3308_bl31.elf
 endef
 
 # RK3328 boards

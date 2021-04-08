@@ -53,7 +53,7 @@ Index: u-boot-2021.01/arch/arm/dts/rk3308-rock-pi-s.dts
 +	compatible = "radxa,rockpis", "rockchip,rk3308";
 +
 +	chosen {
-+		stdout-path = "serial2:1500000n8";
++		stdout-path = "serial0:115200n8";
 +	};
 +
 +	leds {

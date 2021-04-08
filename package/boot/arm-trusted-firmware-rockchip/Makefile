@@ -41,6 +41,7 @@ endef
 define Build/InstallDev
 	$(INSTALL_DIR) -p $(STAGING_DIR_IMAGE)
 	$(CP) $(PKG_BUILD_DIR)/rk*.elf $(STAGING_DIR_IMAGE)/
+	$(CP) ./files/* $(STAGING_DIR_IMAGE)/
 endef
 
 define Package/arm-trusted-firmware-rockchip/install

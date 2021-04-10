@@ -9,8 +9,10 @@ Signed-off-by: Felix Fietkau <nbd@nbd.name>
  lib/kobject_uevent.c    | 37 +++++++++++++++++++++++++++++++++++++
  2 files changed, 42 insertions(+)
 
---- a/include/linux/kobject.h
-+++ b/include/linux/kobject.h
+Index: linux-5.10.27/include/linux/kobject.h
+===================================================================
+--- linux-5.10.27.orig/include/linux/kobject.h
++++ linux-5.10.27/include/linux/kobject.h
 @@ -32,6 +32,8 @@
  #define UEVENT_NUM_ENVP			64	/* number of env pointers */
  #define UEVENT_BUFFER_SIZE		2048	/* buffer for the variables */
@@ -28,8 +30,10 @@ Signed-off-by: Felix Fietkau <nbd@nbd.name>
 +		     gfp_t allocation);
 +
  #endif /* _KOBJECT_H_ */
---- a/lib/kobject_uevent.c
-+++ b/lib/kobject_uevent.c
+Index: linux-5.10.27/lib/kobject_uevent.c
+===================================================================
+--- linux-5.10.27.orig/lib/kobject_uevent.c
++++ linux-5.10.27/lib/kobject_uevent.c
 @@ -690,6 +690,43 @@ int add_uevent_var(struct kobj_uevent_en
  EXPORT_SYMBOL_GPL(add_uevent_var);
  

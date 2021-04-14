@@ -1,5 +1,4 @@
-ARCH:=aarch64
-SUBTARGET:=armv8
+SUBTARGET:=generic
 BOARDNAME:=RK33xx boards (64 bit)
 
 define Target/Description

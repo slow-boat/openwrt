@@ -2,10 +2,11 @@
 
 include $(TOPDIR)/rules.mk
 
+ARCH:=aarch64
 BOARD:=rockchip
 BOARDNAME:=Rockchip
+SUBTARGETS:=generic sound
 FEATURES:=ext4 audio usb usbgadget display gpio fpu rootfs-part boot-part squashfs
-SUBTARGETS:=armv8
 
 KERNEL_PATCHVER=5.10
 KERNEL_TESTING_PATCHVER=5.10

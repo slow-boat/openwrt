@@ -76,6 +76,6 @@ define Device/Default
   DEVICE_DTS = rockchip/$$(SOC)-$(lastword $(subst _, ,$(1)))
 endef
 
-include $(SUBTARGET).mk
+include armv8.mk
 
 $(eval $(call BuildImage))

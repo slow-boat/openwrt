@@ -6385,7 +6385,7 @@ Index: linux-5.10.27/sound/soc/codecs/rk3308_codec_provider.h
 +void rk3308_codec_set_jack_detect(struct snd_soc_component *component,
 +				  struct snd_soc_jack *hpdet_jack);
 +#else
-+static inline void rk3308_codec_set_jack_detect(struct snd_soc_component *component,
++inline void rk3308_codec_set_jack_detect(struct snd_soc_component *component,
 +						struct snd_soc_jack *hpdet_jack)
 +{
 +}
@@ -6706,12 +6706,15 @@ Index: linux-5.10.27/sound/soc/codecs/Kconfig
  	imply SND_SOC_RK3328
  	imply SND_SOC_RT274
  	imply SND_SOC_RT286
-@@ -1020,6 +1021,10 @@ config SND_SOC_PCM512x_SPI
+@@ -1020,6 +1021,13 @@ config SND_SOC_PCM512x_SPI
  	select SND_SOC_PCM512x
  	select REGMAP_SPI
  
 +config SND_SOC_RK3308
 +	tristate "Rockchip RK3308 audio CODEC"
++	select SND_SOC_ROCKCHIP_I2S
++	select SND_SOC_ROCKCHIP_I2S_TDM
++	select SND_SOC_ROCKCHIP_MULTICODECS
 +	select REGMAP_MMIO
 +
  config SND_SOC_RK3328
@@ -10700,7 +10703,7 @@ Index: linux-5.10.27/sound/soc/rockchip/rockchip_multicodecs.c
 +	struct snd_soc_card *card;
 +	struct device_node *np = pdev->dev.of_node;
 +	struct snd_soc_dai_link *link;
-+	struct snd_soc_dai_link_component *codecs, *cpus, *platforms;
++	struct snd_soc_dai_link_component *codecs;
 +	struct multicodecs_data *mc_data;
 +	struct of_phandle_args args;
 +	struct device_node *node;
@@ -11250,3 +11253,607 @@ Index: linux-5.10.27/sound/soc/rockchip/rockchip_spdif.h
   */
  
  #ifndef _ROCKCHIP_SPDIF_H
+Index: linux-5.10.27/sound/soc/rockchip/Kconfig
+===================================================================
+--- linux-5.10.27.orig/sound/soc/rockchip/Kconfig
++++ linux-5.10.27/sound/soc/rockchip/Kconfig
+@@ -7,20 +7,42 @@ config SND_SOC_ROCKCHIP
+ 	  the Rockchip SoCs' Audio interfaces. You will also need to
+ 	  select the audio interfaces to support below.
+ 
++config SND_SOC_ROCKCHIP_FORCE_SRAM
++	bool "Rockchip force using sram buffer"
++	def_bool n
++	help
++	  Say Y if you want to force using sram buffer for pcm buffer,
++	  but the sram size is limited.
++
+ config SND_SOC_ROCKCHIP_I2S
+ 	tristate "Rockchip I2S Device Driver"
+ 	depends on CLKDEV_LOOKUP && SND_SOC_ROCKCHIP
+ 	select SND_SOC_GENERIC_DMAENGINE_PCM
+ 	help
+ 	  Say Y or M if you want to add support for I2S driver for
+-	  Rockchip I2S device. The device supports upto maximum of
++	  Rockchip I2S device. The device supports up to maximum of
+ 	  8 channels each for play and record.
+ 
++config SND_SOC_ROCKCHIP_I2S_TDM
++	tristate "Rockchip I2S/TDM Device Driver"
++	depends on CLKDEV_LOOKUP && SND_SOC_ROCKCHIP
++	select SND_SOC_GENERIC_DMAENGINE_PCM
++	help
++	  Say Y or M if you want to add support for I2S/TDM driver for
++	  Rockchip I2S/TDM device. The device supports up to maximum of
++	  8 channels each for play and record.
++
++config SND_SOC_ROCKCHIP_MULTI_DAIS
++	tristate "Rockchip Multi-DAIS Device Driver"
++	depends on CLKDEV_LOOKUP && SND_SOC_ROCKCHIP
++	help
++	  Say Y or M if you want to add support for Multi-dais driver for
++	  Rockchip.
++
+ config SND_SOC_ROCKCHIP_PDM
+ 	tristate "Rockchip PDM Controller Driver"
+ 	depends on CLKDEV_LOOKUP && SND_SOC_ROCKCHIP
+ 	select SND_SOC_GENERIC_DMAENGINE_PCM
+-	select RATIONAL
+ 	help
+ 	  Say Y or M if you want to add support for PDM driver for
+ 	  Rockchip PDM Controller. The Controller supports up to maximum of
+@@ -34,6 +56,14 @@ config SND_SOC_ROCKCHIP_SPDIF
+ 	  Say Y or M if you want to add support for SPDIF driver for
+ 	  Rockchip SPDIF transceiver device.
+ 
++config SND_SOC_ROCKCHIP_SPDIFRX
++	tristate "Rockchip SPDIFRX Device Driver"
++	depends on CLKDEV_LOOKUP && SND_SOC_ROCKCHIP
++	select SND_SOC_GENERIC_DMAENGINE_PCM
++	help
++	  Say Y or M if you want to add support for SPDIFRX driver for
++	  Rockchip SPDIF receiver device.
++
+ config SND_SOC_ROCKCHIP_MAX98090
+ 	tristate "ASoC support for Rockchip boards using a MAX98090 codec"
+ 	depends on SND_SOC_ROCKCHIP && I2C && GPIOLIB && CLKDEV_LOOKUP
+@@ -45,6 +75,13 @@ config SND_SOC_ROCKCHIP_MAX98090
+ 	  Say Y or M here if you want to add support for SoC audio on Rockchip
+ 	  boards using the MAX98090 codec and HDMI codec, such as Veyron.
+ 
++config SND_SOC_ROCKCHIP_MULTICODECS
++	tristate "ASoC support for Rockchip multicodecs"
++	depends on SND_SOC_ROCKCHIP && CLKDEV_LOOKUP
++	help
++	  Say Y or M here if you want to add support for SoC audio on Rockchip
++	  boards using multicodecs, such as RK3308 boards.
++
+ config SND_SOC_ROCKCHIP_RT5645
+ 	tristate "ASoC support for Rockchip boards using a RT5645/RT5650 codec"
+ 	depends on SND_SOC_ROCKCHIP && I2C && GPIOLIB && CLKDEV_LOOKUP
+Index: linux-5.10.27/sound/soc/rockchip/rockchip_spdifrx.c
+===================================================================
+--- /dev/null
++++ linux-5.10.27/sound/soc/rockchip/rockchip_spdifrx.c
+@@ -0,0 +1,403 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * ALSA SoC Audio Layer - Rockchip SPDIF_RX Controller driver
++ *
++ * Copyright (C) 2018 Fuzhou Rockchip Electronics Co., Ltd
++ *
++ */
++
++#include <linux/module.h>
++#include <linux/delay.h>
++#include <linux/of_gpio.h>
++#include <linux/clk.h>
++#include <linux/pm_runtime.h>
++#include <linux/mfd/syscon.h>
++#include <linux/regmap.h>
++#include <linux/reset.h>
++#include <sound/pcm_params.h>
++#include <sound/dmaengine_pcm.h>
++
++#include "rockchip_spdifrx.h"
++
++struct rk_spdifrx_dev {
++	struct device *dev;
++	struct clk *mclk;
++	struct clk *hclk;
++	struct snd_dmaengine_dai_dma_data capture_dma_data;
++	struct regmap *regmap;
++	struct reset_control *reset;
++	int irq;
++};
++
++static int rk_spdifrx_runtime_suspend(struct device *dev)
++{
++	struct rk_spdifrx_dev *spdifrx = dev_get_drvdata(dev);
++
++	clk_disable_unprepare(spdifrx->mclk);
++	clk_disable_unprepare(spdifrx->hclk);
++
++	return 0;
++}
++
++static int rk_spdifrx_runtime_resume(struct device *dev)
++{
++	struct rk_spdifrx_dev *spdifrx = dev_get_drvdata(dev);
++	int ret;
++
++	ret = clk_prepare_enable(spdifrx->mclk);
++	if (ret) {
++		dev_err(spdifrx->dev, "mclk clock enable failed %d\n", ret);
++		return ret;
++	}
++
++	ret = clk_prepare_enable(spdifrx->hclk);
++	if (ret) {
++		dev_err(spdifrx->dev, "hclk clock enable failed %d\n", ret);
++		return ret;
++	}
++
++	return 0;
++}
++
++static int rk_spdifrx_hw_params(struct snd_pcm_substream *substream,
++				struct snd_pcm_hw_params *params,
++				struct snd_soc_dai *dai)
++{
++	struct rk_spdifrx_dev *spdifrx = snd_soc_dai_get_drvdata(dai);
++
++	regmap_update_bits(spdifrx->regmap, SPDIFRX_INTEN,
++			   SPDIFRX_INTEN_SYNCIE_MASK |
++			   SPDIFRX_INTEN_NSYNCIE_MASK,
++			   SPDIFRX_INTEN_SYNCIE_EN |
++			   SPDIFRX_INTEN_NSYNCIE_EN);
++	regmap_update_bits(spdifrx->regmap, SPDIFRX_DMACR,
++			   SPDIFRX_DMACR_RDL_MASK, SPDIFRX_DMACR_RDL(8));
++	regmap_update_bits(spdifrx->regmap, SPDIFRX_CDR,
++			   SPDIFRX_CDR_AVGSEL_MASK | SPDIFRX_CDR_BYPASS_MASK,
++			   SPDIFRX_CDR_AVGSEL_MIN | SPDIFRX_CDR_BYPASS_DIS);
++	return 0;
++}
++
++static void rk_spdifrx_reset(struct rk_spdifrx_dev *spdifrx)
++{
++	reset_control_assert(spdifrx->reset);
++	udelay(1);
++	reset_control_deassert(spdifrx->reset);
++}
++
++static int rk_spdifrx_trigger(struct snd_pcm_substream *substream,
++			      int cmd, struct snd_soc_dai *dai)
++{
++	struct rk_spdifrx_dev *spdifrx = snd_soc_dai_get_drvdata(dai);
++	int ret;
++
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++	case SNDRV_PCM_TRIGGER_RESUME:
++	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
++		rk_spdifrx_reset(spdifrx);
++		ret = regmap_update_bits(spdifrx->regmap, SPDIFRX_DMACR,
++					 SPDIFRX_DMACR_RDE_MASK,
++					 SPDIFRX_DMACR_RDE_ENABLE);
++
++		if (ret != 0)
++			return ret;
++
++		ret = regmap_update_bits(spdifrx->regmap, SPDIFRX_CFGR,
++					 SPDIFRX_EN_MASK,
++					 SPDIFRX_EN);
++		break;
++	case SNDRV_PCM_TRIGGER_SUSPEND:
++	case SNDRV_PCM_TRIGGER_STOP:
++	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
++		ret = regmap_update_bits(spdifrx->regmap, SPDIFRX_DMACR,
++					 SPDIFRX_DMACR_RDE_MASK,
++					 SPDIFRX_DMACR_RDE_DISABLE);
++
++		if (ret != 0)
++			return ret;
++
++		ret = regmap_update_bits(spdifrx->regmap, SPDIFRX_CFGR,
++					 SPDIFRX_EN_MASK,
++					 SPDIFRX_DIS);
++		break;
++	default:
++		ret = -EINVAL;
++		break;
++	}
++
++	return ret;
++}
++
++static int rk_spdifrx_dai_probe(struct snd_soc_dai *dai)
++{
++	struct rk_spdifrx_dev *spdifrx = snd_soc_dai_get_drvdata(dai);
++
++	dai->capture_dma_data = &spdifrx->capture_dma_data;
++
++	return 0;
++}
++
++static const struct snd_soc_dai_ops rk_spdifrx_dai_ops = {
++	.hw_params = rk_spdifrx_hw_params,
++	.trigger = rk_spdifrx_trigger,
++};
++
++static struct snd_soc_dai_driver rk_spdifrx_dai = {
++	.probe = rk_spdifrx_dai_probe,
++	.capture = {
++		.stream_name = "Capture",
++		.channels_min = 2,
++		.channels_max = 2,
++		.rates = (SNDRV_PCM_RATE_32000 |
++			  SNDRV_PCM_RATE_44100 |
++			  SNDRV_PCM_RATE_48000 |
++			  SNDRV_PCM_RATE_96000 |
++			  SNDRV_PCM_RATE_192000),
++		.formats = (SNDRV_PCM_FMTBIT_S16_LE |
++			    SNDRV_PCM_FMTBIT_S20_3LE |
++			    SNDRV_PCM_FMTBIT_S24_LE),
++	},
++	.ops = &rk_spdifrx_dai_ops,
++};
++
++static const struct snd_soc_component_driver rk_spdifrx_component = {
++	.name = "rockchip-spdifrx",
++};
++
++static bool rk_spdifrx_wr_reg(struct device *dev, unsigned int reg)
++{
++	switch (reg) {
++	case SPDIFRX_CFGR:
++	case SPDIFRX_CLR:
++	case SPDIFRX_CDR:
++	case SPDIFRX_CDRST:
++	case SPDIFRX_DMACR:
++	case SPDIFRX_FIFOCTRL:
++	case SPDIFRX_INTEN:
++	case SPDIFRX_INTMASK:
++	case SPDIFRX_INTSR:
++	case SPDIFRX_INTCLR:
++	case SPDIFRX_SMPDR:
++	case SPDIFRX_BURSTINFO:
++		return true;
++	default:
++		return false;
++	}
++}
++
++static bool rk_spdifrx_rd_reg(struct device *dev, unsigned int reg)
++{
++	switch (reg) {
++	case SPDIFRX_CFGR:
++	case SPDIFRX_CLR:
++	case SPDIFRX_CDR:
++	case SPDIFRX_CDRST:
++	case SPDIFRX_DMACR:
++	case SPDIFRX_FIFOCTRL:
++	case SPDIFRX_INTEN:
++	case SPDIFRX_INTMASK:
++	case SPDIFRX_INTSR:
++	case SPDIFRX_INTCLR:
++	case SPDIFRX_SMPDR:
++	case SPDIFRX_BURSTINFO:
++		return true;
++	default:
++		return false;
++	}
++}
++
++static bool rk_spdifrx_volatile_reg(struct device *dev, unsigned int reg)
++{
++	switch (reg) {
++	case SPDIFRX_CLR:
++	case SPDIFRX_CDR:
++	case SPDIFRX_CDRST:
++	case SPDIFRX_FIFOCTRL:
++	case SPDIFRX_INTSR:
++	case SPDIFRX_INTCLR:
++	case SPDIFRX_BURSTINFO:
++		return true;
++	default:
++		return false;
++	}
++}
++
++static const struct regmap_config rk_spdifrx_regmap_config = {
++	.reg_bits = 32,
++	.reg_stride = 4,
++	.val_bits = 32,
++	.max_register = SPDIFRX_BURSTINFO,
++	.writeable_reg = rk_spdifrx_wr_reg,
++	.readable_reg = rk_spdifrx_rd_reg,
++	.volatile_reg = rk_spdifrx_volatile_reg,
++	.cache_type = REGCACHE_FLAT,
++};
++
++static irqreturn_t rk_spdifrx_isr(int irq, void *dev_id)
++{
++	struct rk_spdifrx_dev *spdifrx = dev_id;
++	u32 intsr;
++
++	regmap_read(spdifrx->regmap, SPDIFRX_INTSR, &intsr);
++
++	if (intsr & BIT(7)) {
++		dev_dbg(spdifrx->dev, "NSYNC\n");
++		regmap_write(spdifrx->regmap, SPDIFRX_INTCLR, BIT(7));
++	}
++
++	if (intsr & BIT(9)) {
++		dev_dbg(spdifrx->dev, "SYNC\n");
++		regmap_write(spdifrx->regmap, SPDIFRX_INTCLR, BIT(9));
++	}
++
++	return IRQ_HANDLED;
++}
++
++static int rk_spdifrx_probe(struct platform_device *pdev)
++{
++	struct rk_spdifrx_dev *spdifrx;
++	struct resource *res;
++	void __iomem *regs;
++	int ret;
++
++	spdifrx = devm_kzalloc(&pdev->dev, sizeof(*spdifrx), GFP_KERNEL);
++	if (!spdifrx)
++		return -ENOMEM;
++
++	spdifrx->reset = devm_reset_control_get(&pdev->dev, "spdifrx-m");
++	if (IS_ERR(spdifrx->reset)) {
++		ret = PTR_ERR(spdifrx->reset);
++		if (ret != -ENOENT)
++			return ret;
++	}
++
++	spdifrx->hclk = devm_clk_get(&pdev->dev, "hclk");
++	if (IS_ERR(spdifrx->hclk))
++		return PTR_ERR(spdifrx->hclk);
++
++	spdifrx->mclk = devm_clk_get(&pdev->dev, "mclk");
++	if (IS_ERR(spdifrx->mclk))
++		return PTR_ERR(spdifrx->mclk);
++
++	spdifrx->irq = platform_get_irq(pdev, 0);
++	if (spdifrx->irq < 0)
++		return spdifrx->irq;
++
++	ret = devm_request_threaded_irq(&pdev->dev, spdifrx->irq, NULL,
++					rk_spdifrx_isr,
++					IRQF_TRIGGER_HIGH | IRQF_ONESHOT,
++					dev_name(&pdev->dev), spdifrx);
++	if (ret)
++		return ret;
++
++	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	regs = devm_ioremap_resource(&pdev->dev, res);
++	if (IS_ERR(regs))
++		return PTR_ERR(regs);
++
++	spdifrx->regmap = devm_regmap_init_mmio(&pdev->dev, regs,
++						&rk_spdifrx_regmap_config);
++	if (IS_ERR(spdifrx->regmap))
++		return PTR_ERR(spdifrx->regmap);
++
++	spdifrx->capture_dma_data.addr = res->start + SPDIFRX_SMPDR;
++	spdifrx->capture_dma_data.addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
++	spdifrx->capture_dma_data.maxburst = 4;
++
++	spdifrx->dev = &pdev->dev;
++	dev_set_drvdata(&pdev->dev, spdifrx);
++
++	pm_runtime_enable(&pdev->dev);
++	if (!pm_runtime_enabled(&pdev->dev)) {
++		ret = rk_spdifrx_runtime_resume(&pdev->dev);
++		if (ret)
++			goto err_pm_runtime;
++	}
++
++	ret = devm_snd_soc_register_component(&pdev->dev,
++					      &rk_spdifrx_component,
++					      &rk_spdifrx_dai, 1);
++	if (ret) {
++		dev_err(&pdev->dev, "Could not register DAI\n");
++		goto err_pm_suspend;
++	}
++
++	ret = devm_snd_dmaengine_pcm_register(&pdev->dev, NULL, 0);
++	if (ret) {
++		dev_err(&pdev->dev, "Could not register PCM\n");
++		goto err_pm_suspend;
++	}
++
++	return 0;
++
++err_pm_suspend:
++	if (!pm_runtime_status_suspended(&pdev->dev))
++		rk_spdifrx_runtime_suspend(&pdev->dev);
++err_pm_runtime:
++	pm_runtime_disable(&pdev->dev);
++
++	return ret;
++}
++
++static int rk_spdifrx_remove(struct platform_device *pdev)
++{
++	pm_runtime_disable(&pdev->dev);
++	if (!pm_runtime_status_suspended(&pdev->dev))
++		rk_spdifrx_runtime_suspend(&pdev->dev);
++
++	return 0;
++}
++
++#ifdef CONFIG_PM_SLEEP
++static int rockchip_spdifrx_suspend(struct device *dev)
++{
++	struct rk_spdifrx_dev *spdifrx = dev_get_drvdata(dev);
++
++	regcache_mark_dirty(spdifrx->regmap);
++
++	return 0;
++}
++
++static int rockchip_spdifrx_resume(struct device *dev)
++{
++	struct rk_spdifrx_dev *spdifrx = dev_get_drvdata(dev);
++	int ret;
++
++	ret = pm_runtime_get_sync(dev);
++	if (ret < 0)
++		return ret;
++	ret = regcache_sync(spdifrx->regmap);
++	pm_runtime_put(dev);
++
++	return ret;
++}
++#endif
++
++static const struct dev_pm_ops rk_spdifrx_pm_ops = {
++	SET_RUNTIME_PM_OPS(rk_spdifrx_runtime_suspend, rk_spdifrx_runtime_resume,
++			   NULL)
++	SET_SYSTEM_SLEEP_PM_OPS(rockchip_spdifrx_suspend, rockchip_spdifrx_resume)
++};
++
++static const struct of_device_id rk_spdifrx_match[] = {
++	{ .compatible = "rockchip,rk3308-spdifrx", },
++	{},
++};
++MODULE_DEVICE_TABLE(of, rk_spdifrx_match);
++
++static struct platform_driver rk_spdifrx_driver = {
++	.probe = rk_spdifrx_probe,
++	.remove = rk_spdifrx_remove,
++	.driver = {
++		.name = "rockchip-spdifrx",
++		.of_match_table = of_match_ptr(rk_spdifrx_match),
++		.pm = &rk_spdifrx_pm_ops,
++	},
++};
++module_platform_driver(rk_spdifrx_driver);
++
++MODULE_ALIAS("platform:rockchip-spdifrx");
++MODULE_DESCRIPTION("ROCKCHIP SPDIFRX Controller Interface");
++MODULE_AUTHOR("Sugar Zhang <sugar.zhang@rock-chips.com>");
++MODULE_LICENSE("GPL v2");
+Index: linux-5.10.27/sound/soc/rockchip/rockchip_spdifrx.h
+===================================================================
+--- /dev/null
++++ linux-5.10.27/sound/soc/rockchip/rockchip_spdifrx.h
+@@ -0,0 +1,113 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * ALSA SoC Audio Layer - Rockchip SPDIF_RX Controller driver
++ *
++ * Copyright (C) 2018 Fuzhou Rockchip Electronics Co., Ltd
++ *
++ */
++
++#ifndef _ROCKCHIP_SPDIFRX_H
++#define _ROCKCHIP_SPDIFRX_H
++
++/* CFGR */
++#define SPDIFRX_CFGR_TWAD_SHIFT		1
++#define SPDIFRX_CFGR_TWAD_DATA_ONLY	(0 << 1)
++#define SPDIFRX_CFGR_TWAD_STREAM	BIT(1)
++#define SPDIFRX_EN_MASK			BIT(0)
++#define SPDIFRX_EN			BIT(0)
++#define SPDIFRX_DIS			0
++
++/* CLR */
++#define SPDIFRX_CLR_RXSC		BIT(0)
++
++/* CDR */
++#define SPDIFRX_CDR_CS_MASK		GENMASK(10, 9)
++#define SPDIFRX_CDR_AVGSEL_MASK		BIT(1)
++#define SPDIFRX_CDR_AVGSEL_MIN		(0 << 1)
++#define SPDIFRX_CDR_AVGSEL_AVG		BIT(1)
++#define SPDIFRX_CDR_BYPASS_MASK		BIT(0)
++#define SPDIFRX_CDR_BYPASS_EN		BIT(0)
++#define SPDIFRX_CDR_BYPASS_DIS		0
++
++/* CDRST */
++#define SPDIFRX_CDRST_NOSTRTHR_MASK	GENMASK(31, 16)
++#define SPDIFRX_CDRST_MAXCNT_MASK	GENMASK(15, 8)
++#define SPDIFRX_CDRST_MINCNT_MASK	GENMASK(7, 0)
++
++/* DMACR */
++#define SPDIFRX_DMACR_RDE_MASK		BIT(5)
++#define SPDIFRX_DMACR_RDE_DISABLE	(0 << 5)
++#define SPDIFRX_DMACR_RDE_ENABLE	BIT(5)
++#define SPDIFRX_DMACR_RDL_MASK		GENMASK(4, 0)
++#define SPDIFRX_DMACR_RDL(x)		(((x) - 1) << 0)
++
++/* FIFOCTRL */
++#define SPDIFRX_FIFOCTRL_RFL_MASK	GENMASK(13, 8)
++#define SPDIFRX_FIFOCTRL_RFT_MASK	GENMASK(4, 0)
++
++/* INTEN */
++#define SPDIFRX_INTEN_UBCIE_MASK	BIT(10)
++#define SPDIFRX_INTEN_UBCIE_EN		BIT(10)
++#define SPDIFRX_INTEN_UBCIE_DIS		(0 << 10)
++#define SPDIFRX_INTEN_SYNCIE_MASK	BIT(9)
++#define SPDIFRX_INTEN_SYNCIE_EN		BIT(9)
++#define SPDIFRX_INTEN_SYNCIE_DIS	(0 << 9)
++#define SPDIFRX_INTEN_BTEIE_MASK	BIT(8)
++#define SPDIFRX_INTEN_BTEIE_EN		BIT(8)
++#define SPDIFRX_INTEN_BTEIE_DIS		(0 << 8)
++#define SPDIFRX_INTEN_NSYNCIE_MASK	BIT(7)
++#define SPDIFRX_INTEN_NSYNCIE_EN	BIT(7)
++#define SPDIFRX_INTEN_NSYNCIE_DIS	(0 << 7)
++
++/* INTMASK */
++#define SPDIFRX_INTMASK_UBCIMSK		BIT(10)
++#define SPDIFRX_INTMASK_UBCIUMSK	(0 << 10)
++#define SPDIFRX_INTMASK_SYNCIMSK	BIT(9)
++#define SPDIFRX_INTMASK_SYNCIUMSK	(0 << 9)
++#define SPDIFRX_INTMASK_BTEIMSK		BIT(8)
++#define SPDIFRX_INTMASK_BTEIUMSK	(0 << 8)
++#define SPDIFRX_INTMASK_NSYNCIMSK	BIT(7)
++#define SPDIFRX_INTMASK_NSYNCIUMSK	(0 << 7)
++
++/* INTSR */
++#define SPDIFRX_INTSR_UBCISR_ACTIVE	BIT(10)
++#define SPDIFRX_INTSR_SYNCISR_ACTIVE	BIT(9)
++#define SPDIFRX_INTSR_BTEISR_ACTIVE	BIT(8)
++#define SPDIFRX_INTSR_NSYNCISR_ACTIVE	BIT(7)
++
++/* INTCLR */
++#define SPDIFRX_INTCLR_UBCICLR_MASK	BIT(10)
++#define SPDIFRX_INTCLR_UBCICLR		BIT(10)
++#define SPDIFRX_INTCLR_SYNCICLR_MASK	BIT(9)
++#define SPDIFRX_INTCLR_SYNCICLR		BIT(9)
++#define SPDIFRX_INTCLR_BTECLR_MASK	BIT(8)
++#define SPDIFRX_INTCLR_BIECLR		BIT(8)
++#define SPDIFRX_INTCLR_NSYNCICLR_MASK	BIT(7)
++#define SPDIFRX_INTCLR_NSYNCICLR	BIT(7)
++
++/* BURSTINFO */
++#define SPDIFRX_BURSTINFO_PD_MASK	GENMASK(31, 16)
++#define SPDIFRX_BURSTINFO_BSNUM_MASK	GENMASK(15, 13)
++#define SPDIFRX_BURSTINFO_DATAINFO_MASK	GENMASK(12, 8)
++#define SPDIFRX_BURSTINFO_ERRFLAG_MASK	BIT(7)
++#define SPDIFRX_BURSTINFO_ERR		BIT(7)
++#define SPDIFRX_BURSTINFO_VALID		(0 << 7)
++#define SPDIFRX_BURSTINFO_DATATYPE_MASK	GENMASK(6, 0)
++
++#define SPDIFRX_VERSION			(0x0000)
++#define SPDIFRX_CFGR			(0x0004)
++#define SPDIFRX_CLR			(0x0008)
++#define SPDIFRX_CDR			(0x000c)
++#define SPDIFRX_CDRST			(0x0010)
++#define SPDIFRX_DMACR			(0x0014)
++#define SPDIFRX_FIFOCTRL		(0x0018)
++#define SPDIFRX_INTEN			(0x001C)
++#define SPDIFRX_INTMASK			(0x0020)
++#define SPDIFRX_INTSR			(0x0024)
++#define SPDIFRX_INTCLR			(0x0028)
++#define SPDIFRX_SMPDR			(0x002C)
++#define SPDIFRX_USRDRN			(0x0030)
++#define SPDIFRX_CHNSRN			(0x0060)
++#define SPDIFRX_BURSTINFO		(0x0100)
++
++#endif /* _ROCKCHIP_SPDIFRX_H */

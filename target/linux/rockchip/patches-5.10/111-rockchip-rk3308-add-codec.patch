@@ -56,16 +56,10 @@ Index: linux-5.10.27/arch/arm64/boot/dts/rockchip/rk3308-rock-pi-s.dts
  };
  
  &saradc {
-@@ -216,6 +239,32 @@
+@@ -216,6 +239,26 @@
  	max-freq = <10000000>;
  };
  
-+&thermal_zones {
-+	soc_thermal {
-+		thermal-sensors = <&tsadc 0>;
-+	};
-+};
-+
 +&tsadc {
 +	rockchip,hw-tshut-mode = <0>;		/* 0:CRU */
 +	rockchip,hw-tshut-polarity = <1>;	/* 1:HIGH */
@@ -89,7 +83,7 @@ Index: linux-5.10.27/arch/arm64/boot/dts/rockchip/rk3308-rock-pi-s.dts
  &uart0 {
  	status = "okay";
  	pinctrl-names = "default";
-@@ -223,7 +272,7 @@
+@@ -223,7 +266,7 @@
  };
  
  &usb20_otg {
@@ -98,7 +92,7 @@ Index: linux-5.10.27/arch/arm64/boot/dts/rockchip/rk3308-rock-pi-s.dts
  	status = "okay";
  };
  
-@@ -234,3 +283,7 @@
+@@ -234,3 +277,7 @@
  &usb_host0_ohci{
  	status = "okay";
  };
@@ -4424,7 +4418,7 @@ Index: linux-5.10.27/sound/soc/codecs/rk3308_codec.c
 +					struct snd_soc_jack *hpdet_jack);
 +EXPORT_SYMBOL_GPL(rk3308_codec_set_jack_detect_cb);
 +
-+static void rk3308_codec_set_jack_detect(struct snd_soc_component *component,
++void rk3308_codec_set_jack_detect(struct snd_soc_component *component,
 +				  struct snd_soc_jack *hpdet_jack)
 +{
 +	struct rk3308_codec_priv *rk3308 = snd_soc_component_get_drvdata(component);
@@ -5289,7 +5283,7 @@ Index: linux-5.10.27/sound/soc/codecs/rk3308_codec.h
 ===================================================================
 --- /dev/null
 +++ linux-5.10.27/sound/soc/codecs/rk3308_codec.h
-@@ -0,0 +1,960 @@
+@@ -0,0 +1,1070 @@
 +/*
 + * rk3308_codec.h -- RK3308 ALSA Soc Audio Driver
 + *
@@ -5318,7 +5312,8 @@ Index: linux-5.10.27/sound/soc/codecs/rk3308_codec.h
 +#define ACODEC_ADC_I2S_CTL0			0x04 /* REG 0x01 */
 +#define ACODEC_ADC_I2S_CTL1			0x08 /* REG 0x02 */
 +#define ACODEC_ADC_BIST_MODE_SEL		0x0c /* REG 0x03 */
-+/* Resevred REG 0x04 ~ 0x06 */
++#define ACODEC_ADC_HPF_PATH			0x10 /* REG 0x04 */
++/* Resevred REG 0x05 ~ 0x06 */
 +#define ACODEC_ADC_DATA_PATH			0x1c /* REG 0x07 */
 +/* Resevred REG 0x08 ~ 0x0f */
 +
@@ -5354,12 +5349,15 @@ Index: linux-5.10.27/sound/soc/codecs/rk3308_codec.h
 +#define ACODEC_DAC_I2S_CTL0			0x04 /* REG 0x01 */
 +#define ACODEC_DAC_I2S_CTL1			0x08 /* REG 0x02 */
 +#define ACODEC_DAC_BIST_MODE_SEL		0x0c /* REG 0x03 */
-+/* Resevred REG 0x04 */
++#define ACODEC_DAC_DIGITAL_GAIN			0x10 /* REG 0x04 */
 +#define ACODEC_DAC_DATA_SEL			0x14 /* REG 0x05 */
 +/* Resevred REG 0x06 ~ 0x09 */
 +#define ACODEC_DAC_DATA_HI			0x28 /* REG 0x0a */
 +#define ACODEC_DAC_DATA_LO			0x2c /* REG 0x0b */
-+/* Resevred REG 0x0c ~ 0x0f */
++/* Resevred REG 0x0c */
++#define ACODEC_DAC_HPDET_DELAYTIME		0x34 /* REG 0x0d */
++#define ACODEC_DAC_HPDET_STATUS			0x38 /* REG 0x0e, Read-only */
++/* Resevred REG 0x0f */
 +
 +/* ADC ANALOG REGISTERS */
 +#define ACODEC_ADC_ANA_MIC_CTL			0x00 /* REG 0x00 */
@@ -5384,10 +5382,13 @@ Index: linux-5.10.27/sound/soc/codecs/rk3308_codec.h
 +#define ACODEC_DAC_ANA_LINEOUT			0x10 /* REG 0x04 */
 +#define ACODEC_DAC_ANA_L_HPOUT_GAIN		0x14 /* REG 0x05 */
 +#define ACODEC_DAC_ANA_R_HPOUT_GAIN		0x18 /* REG 0x06 */
++#define ACODEC_DAC_ANA_DRV_HPOUT		0x1c /* REG 0x07 */
++#define ACODEC_DAC_ANA_DRV_LINEOUT		0x20 /* REG 0x08 */
 +/* Resevred REG 0x07 ~ 0x0b */
 +#define ACODEC_DAC_ANA_HPMIX_CTL0		0x30 /* REG 0x0c */
 +#define ACODEC_DAC_ANA_HPMIX_CTL1		0x34 /* REG 0x0d */
-+/* Resevred REG 0x0e ~ 0x0f */
++#define ACODEC_DAC_ANA_LINEOUT_CTL0		0x38 /* REG 0x0e */
++#define ACODEC_DAC_ANA_LINEOUT_CTL1		0x3c /* REG 0x0f */
 +
 +/*
 + * These registers are referenced by codec driver
@@ -5398,7 +5399,7 @@ Index: linux-5.10.27/sound/soc/codecs/rk3308_codec.h
 +/* ADC DIGITAL REGISTERS */
 +
 +/*
-+ * The ADC chanel are 0 ~ 3, that control:
++ * The ADC group are 0 ~ 3, that control:
 + *
 + * CH0: left_0(ADC1) and right_0(ADC2)
 + * CH1: left_1(ADC3) and right_1(ADC4)
@@ -5410,6 +5411,7 @@ Index: linux-5.10.27/sound/soc/codecs/rk3308_codec.h
 +#define RK3308_ADC_DIG_CON01(ch)		(RK3308_ADC_DIG_OFFSET(ch) + ACODEC_ADC_I2S_CTL0)
 +#define RK3308_ADC_DIG_CON02(ch)		(RK3308_ADC_DIG_OFFSET(ch) + ACODEC_ADC_I2S_CTL1)
 +#define RK3308_ADC_DIG_CON03(ch)		(RK3308_ADC_DIG_OFFSET(ch) + ACODEC_ADC_BIST_MODE_SEL)
++#define RK3308_ADC_DIG_CON04(ch)		(RK3308_ADC_DIG_OFFSET(ch) + ACODEC_ADC_HPF_PATH)
 +#define RK3308_ADC_DIG_CON07(ch)		(RK3308_ADC_DIG_OFFSET(ch) + ACODEC_ADC_DATA_PATH)
 +
 +#define RK3308_ALC_L_DIG_CON00(ch)		(RK3308_ADC_DIG_OFFSET(ch) + ACODEC_ADC_PGA_AGC_L_CTL0)
@@ -5442,13 +5444,16 @@ Index: linux-5.10.27/sound/soc/codecs/rk3308_codec.h
 +#define RK3308_DAC_DIG_CON01			(RK3308_DAC_DIG_OFFSET + ACODEC_DAC_I2S_CTL0)
 +#define RK3308_DAC_DIG_CON02			(RK3308_DAC_DIG_OFFSET + ACODEC_DAC_I2S_CTL1)
 +#define RK3308_DAC_DIG_CON03			(RK3308_DAC_DIG_OFFSET + ACODEC_DAC_BIST_MODE_SEL)
++#define RK3308_DAC_DIG_CON04			(RK3308_DAC_DIG_OFFSET + ACODEC_DAC_DIGITAL_GAIN)
 +#define RK3308_DAC_DIG_CON05			(RK3308_DAC_DIG_OFFSET + ACODEC_DAC_DATA_SEL)
 +#define RK3308_DAC_DIG_CON10			(RK3308_DAC_DIG_OFFSET + ACODEC_DAC_DATA_HI)
 +#define RK3308_DAC_DIG_CON11			(RK3308_DAC_DIG_OFFSET + ACODEC_DAC_DATA_LO)
++#define RK3308_DAC_DIG_CON13			(RK3308_DAC_DIG_OFFSET + ACODEC_DAC_HPDET_DELAYTIME)
++#define RK3308_DAC_DIG_CON14			(RK3308_DAC_DIG_OFFSET + ACODEC_DAC_HPDET_STATUS)
 +
 +/* ADC ANALOG REGISTERS */
 +/*
-+ * The ADC chanel are 0 ~ 3, that control:
++ * The ADC group are 0 ~ 3, that control:
 + *
 + * CH0: left_0(ADC1) and right_0(ADC2)
 + * CH1: left_1(ADC3) and right_1(ADC4)
@@ -5471,7 +5476,6 @@ Index: linux-5.10.27/sound/soc/codecs/rk3308_codec.h
 +
 +/* DAC ANALOG REGISTERS */
 +#define RK3308_DAC_ANA_OFFSET			0x440
-+
 +#define RK3308_DAC_ANA_CON00			(RK3308_DAC_ANA_OFFSET + ACODEC_DAC_ANA_CTL0)
 +#define RK3308_DAC_ANA_CON01			(RK3308_DAC_ANA_OFFSET + ACODEC_DAC_ANA_POP_VOLT)
 +#define RK3308_DAC_ANA_CON02			(RK3308_DAC_ANA_OFFSET + ACODEC_DAC_ANA_CTL1)
@@ -5479,8 +5483,12 @@ Index: linux-5.10.27/sound/soc/codecs/rk3308_codec.h
 +#define RK3308_DAC_ANA_CON04			(RK3308_DAC_ANA_OFFSET + ACODEC_DAC_ANA_LINEOUT)
 +#define RK3308_DAC_ANA_CON05			(RK3308_DAC_ANA_OFFSET + ACODEC_DAC_ANA_L_HPOUT_GAIN)
 +#define RK3308_DAC_ANA_CON06			(RK3308_DAC_ANA_OFFSET + ACODEC_DAC_ANA_R_HPOUT_GAIN)
++#define RK3308_DAC_ANA_CON07			(RK3308_DAC_ANA_OFFSET + ACODEC_DAC_ANA_DRV_HPOUT)
++#define RK3308_DAC_ANA_CON08			(RK3308_DAC_ANA_OFFSET + ACODEC_DAC_ANA_DRV_LINEOUT)
 +#define RK3308_DAC_ANA_CON12			(RK3308_DAC_ANA_OFFSET + ACODEC_DAC_ANA_HPMIX_CTL0)
 +#define RK3308_DAC_ANA_CON13			(RK3308_DAC_ANA_OFFSET + ACODEC_DAC_ANA_HPMIX_CTL1)
++#define RK3308_DAC_ANA_CON14			(RK3308_DAC_ANA_OFFSET + ACODEC_DAC_ANA_LINEOUT_CTL0)
++#define RK3308_DAC_ANA_CON15			(RK3308_DAC_ANA_OFFSET + ACODEC_DAC_ANA_LINEOUT_CTL1)
 +
 +/*
 + * These are the bits for registers
@@ -5491,6 +5499,12 @@ Index: linux-5.10.27/sound/soc/codecs/rk3308_codec.h
 +#define RK3308_ADC_BIST_RESET			(0 << 7)
 +#define RK3308_DAC_BIST_WORK			(1 << 6)
 +#define RK3308_DAC_BIST_RESET			(0 << 6)
++#define RK3308_ADC_MCLK_MSK			(1 << 5)
++#define RK3308_ADC_MCLK_DIS			(1 << 5)
++#define RK3308_ADC_MCLK_EN			(0 << 5)
++#define RK3308_DAC_MCLK_MSK			(1 << 4)
++#define RK3308_DAC_MCLK_DIS			(1 << 4)
++#define RK3308_DAC_MCLK_EN			(0 << 4)
 +#define RK3308_CODEC_RST_MSK			(0x7 << 0)
 +#define RK3308_ADC_DIG_WORK			(1 << 2)
 +#define RK3308_ADC_DIG_RESET			(0 << 2)
@@ -5545,16 +5559,27 @@ Index: linux-5.10.27/sound/soc/codecs/rk3308_codec.h
 +/* RK3308_ADC_DIG_CON03 - REG: 0x000c */
 +#define RK3308_ADC_L_CH_BIST_SFT		2
 +#define RK3308_ADC_L_CH_BIST_MSK		(0x3 << RK3308_ADC_L_CH_BIST_SFT)
-+#define RK3308_ADC_L_CH_BIST_LEFT		(0x3 << RK3308_ADC_L_CH_BIST_SFT) /* normal mode */
-+#define RK3308_ADC_L_CH_BIST_SINE		(0x2 << RK3308_ADC_L_CH_BIST_SFT)
-+#define RK3308_ADC_L_CH_BIST_CUBE		(0x1 << RK3308_ADC_L_CH_BIST_SFT)
-+#define RK3308_ADC_L_CH_BIST_RIGHT		(0x0 << RK3308_ADC_L_CH_BIST_SFT) /* normal mode */
++#define RK3308_ADC_L_CH_NORMAL_RIGHT		(0x3 << RK3308_ADC_L_CH_BIST_SFT) /* normal mode */
++#define RK3308_ADC_L_CH_BIST_CUBE		(0x2 << RK3308_ADC_L_CH_BIST_SFT)
++#define RK3308_ADC_L_CH_BIST_SINE		(0x1 << RK3308_ADC_L_CH_BIST_SFT)
++#define RK3308_ADC_L_CH_NORMAL_LEFT		(0x0 << RK3308_ADC_L_CH_BIST_SFT) /* normal mode */
 +#define RK3308_ADC_R_CH_BIST_SFT		0
 +#define RK3308_ADC_R_CH_BIST_MSK		(0x3 << RK3308_ADC_R_CH_BIST_SFT)
-+#define RK3308_ADC_R_CH_BIST_LEFT		(0x3 << RK3308_ADC_R_CH_BIST_SFT) /* normal mode */
-+#define RK3308_ADC_R_CH_BIST_SINE		(0x2 << RK3308_ADC_R_CH_BIST_SFT)
-+#define RK3308_ADC_R_CH_BIST_CUBE		(0x1 << RK3308_ADC_R_CH_BIST_SFT)
-+#define RK3308_ADC_R_CH_BIST_RIGHT		(0x0 << RK3308_ADC_R_CH_BIST_SFT) /* normal mode */
++#define RK3308_ADC_R_CH_NORMAL_LEFT		(0x3 << RK3308_ADC_R_CH_BIST_SFT) /* normal mode */
++#define RK3308_ADC_R_CH_BIST_CUBE		(0x2 << RK3308_ADC_R_CH_BIST_SFT)
++#define RK3308_ADC_R_CH_BIST_SINE		(0x1 << RK3308_ADC_R_CH_BIST_SFT)
++#define RK3308_ADC_R_CH_NORMAL_RIGHT		(0x0 << RK3308_ADC_R_CH_BIST_SFT) /* normal mode */
++
++/* RK3308_ADC_DIG_CON04 - REG: 0x0010 */
++#define RK3308_ADC_HPF_PATH_SFT			2
++#define RK3308_ADC_HPF_PATH_MSK			(1 << RK3308_ADC_HPF_PATH_SFT)
++#define RK3308_ADC_HPF_PATH_DIS			(1 << RK3308_ADC_HPF_PATH_SFT)
++#define RK3308_ADC_HPF_PATH_EN			(0 << RK3308_ADC_HPF_PATH_SFT)
++#define RK3308_ADC_HPF_CUTOFF_SFT		0
++#define RK3308_ADC_HPF_CUTOFF_MSK		(0x3 << RK3308_ADC_HPF_CUTOFF_SFT)
++#define RK3308_ADC_HPF_CUTOFF_612HZ		(0x2 << RK3308_ADC_HPF_CUTOFF_SFT)
++#define RK3308_ADC_HPF_CUTOFF_245HZ		(0x1 << RK3308_ADC_HPF_CUTOFF_SFT)
++#define RK3308_ADC_HPF_CUTOFF_20HZ		(0x0 << RK3308_ADC_HPF_CUTOFF_SFT)
 +
 +/* RK3308_ADC_DIG_CON07 - REG: 0x001c */
 +#define RK3308_ADCL_DATA_SFT			4
@@ -5683,6 +5708,8 @@ Index: linux-5.10.27/sound/soc/codecs/rk3308_codec.h
 + */
 +#define RK3308_AGC_PGA_ZERO_CRO_EN		(0x1 << 5)
 +#define RK3308_AGC_PGA_ZERO_CRO_DIS		(0x0 << 5)
++#define RK3308_AGC_PGA_GAIN_MAX			0x1f
++#define RK3308_AGC_PGA_GAIN_MIN			0
 +#define RK3308_AGC_PGA_GAIN_SFT			0
 +#define RK3308_AGC_PGA_GAIN_MSK			(0x1f << RK3308_AGC_PGA_GAIN_SFT)
 +#define RK3308_AGC_PGA_GAIN_PDB_28_5		(0x1f << RK3308_AGC_PGA_GAIN_SFT)
@@ -5766,6 +5793,8 @@ Index: linux-5.10.27/sound/soc/codecs/rk3308_codec.h
 +#define RK3308_AGC_FUNC_SEL_MSK			(0x1 << 6)
 +#define RK3308_AGC_FUNC_SEL_EN			(0x1 << 6)
 +#define RK3308_AGC_FUNC_SEL_DIS			(0x0 << 6)
++#define RK3308_AGC_MAX_GAIN_PGA_MAX		0x7
++#define RK3308_AGC_MAX_GAIN_PGA_MIN		0
 +#define RK3308_AGC_MAX_GAIN_PGA_SFT		3
 +#define RK3308_AGC_MAX_GAIN_PGA_MSK		(0x7 << RK3308_AGC_MAX_GAIN_PGA_SFT)
 +#define RK3308_AGC_MAX_GAIN_PGA_PDB_28_5	(0x7 << RK3308_AGC_MAX_GAIN_PGA_SFT)
@@ -5776,6 +5805,8 @@ Index: linux-5.10.27/sound/soc/codecs/rk3308_codec.h
 +#define RK3308_AGC_MAX_GAIN_PGA_NDB_1_5		(0x2 << RK3308_AGC_MAX_GAIN_PGA_SFT)
 +#define RK3308_AGC_MAX_GAIN_PGA_NDB_7_5		(0x1 << RK3308_AGC_MAX_GAIN_PGA_SFT)
 +#define RK3308_AGC_MAX_GAIN_PGA_NDB_13_5	(0x0 << RK3308_AGC_MAX_GAIN_PGA_SFT)
++#define RK3308_AGC_MIN_GAIN_PGA_MAX		0x7
++#define RK3308_AGC_MIN_GAIN_PGA_MIN		0
 +#define RK3308_AGC_MIN_GAIN_PGA_SFT		0
 +#define RK3308_AGC_MIN_GAIN_PGA_MSK		(0x7 << RK3308_AGC_MIN_GAIN_PGA_SFT)
 +#define RK3308_AGC_MIN_GAIN_PGA_PDB_24		(0x7 << RK3308_AGC_MIN_GAIN_PGA_SFT)
@@ -5847,6 +5878,18 @@ Index: linux-5.10.27/sound/soc/codecs/rk3308_codec.h
 +#define RK3308_DAC_R_CH_BIST_SINE		(0x1 << RK3308_DAC_R_CH_BIST_SFT)
 +#define RK3308_DAC_R_CH_BIST_RIGHT		(0x0 << RK3308_DAC_R_CH_BIST_SFT) /* normal mode */
 +
++/* RK3308_DAC_DIG_CON04 - REG: 0x0310 */
++#define RK3308_DAC_MODULATOR_GAIN_SFT		4
++#define RK3308_DAC_MODULATOR_GAIN_MSK		(0x7 << RK3308_DAC_MODULATOR_GAIN_SFT)
++#define RK3308_DAC_MODULATOR_GAIN_4_8DB		(0x5 << RK3308_DAC_MODULATOR_GAIN_SFT)
++#define RK3308_DAC_MODULATOR_GAIN_4_2DB		(0x4 << RK3308_DAC_MODULATOR_GAIN_SFT)
++#define RK3308_DAC_MODULATOR_GAIN_3_5DB		(0x3 << RK3308_DAC_MODULATOR_GAIN_SFT)
++#define RK3308_DAC_MODULATOR_GAIN_2_8DB		(0x2 << RK3308_DAC_MODULATOR_GAIN_SFT)
++#define RK3308_DAC_MODULATOR_GAIN_2DB		(0x1 << RK3308_DAC_MODULATOR_GAIN_SFT)
++#define RK3308_DAC_MODULATOR_GAIN_0DB		(0x0 << RK3308_DAC_MODULATOR_GAIN_SFT)
++#define RK3308_DAC_CIC_IF_GAIN_SFT		0
++#define RK3308_DAC_CIC_IF_GAIN_MSK		(0x7 << RK3308_DAC_CIC_IF_GAIN_SFT)
++
 +/* RK3308_DAC_DIG_CON05 - REG: 0x0314 */
 +#define RK3308_DAC_L_REG_CTL_INDATA		(0x1 << 2)
 +#define RK3308_DAC_L_NORMAL_DATA		(0x0 << 2)
@@ -5879,18 +5922,30 @@ Index: linux-5.10.27/sound/soc/codecs/rk3308_codec.h
 +#define RK3308_ADC_CH1_BUF_REF_EN		(0x1 << 0)
 +#define RK3308_ADC_CH1_BUF_REF_DIS		(0x0 << 0)
 +
-+/* RK3308_ADC_ANA_CON01 - REG: 0x0344 */
++/* RK3308_ADC_ANA_CON01 - REG: 0x0344
++ *
++ * The PGA of MIC-INs:
++ * 0x0 - MIC1~MIC8 0dB
++ * 0x1 - MIC1~MIC8 6.6dB
++ * 0x2 - MIC1~MIC8 13dB
++ * 0x3 - MIC1~MIC8 20dB
++ */
++#define RK3308_ADC_CH2_MIC_GAIN_MAX		0x3
++#define RK3308_ADC_CH2_MIC_GAIN_MIN		0
 +#define RK3308_ADC_CH2_MIC_GAIN_SFT		4
 +#define RK3308_ADC_CH2_MIC_GAIN_MSK		(0x3 << RK3308_ADC_CH2_MIC_GAIN_SFT)
-+#define RK3308_ADC_CH2_MIC_GAIN_30DB		(0x3 << RK3308_ADC_CH2_MIC_GAIN_SFT)
-+#define RK3308_ADC_CH2_MIC_GAIN_20DB		(0x2 << RK3308_ADC_CH2_MIC_GAIN_SFT)
-+#define RK3308_ADC_CH2_MIC_GAIN_6DB		(0x1 << RK3308_ADC_CH2_MIC_GAIN_SFT)
++#define RK3308_ADC_CH2_MIC_GAIN_20DB		(0x3 << RK3308_ADC_CH2_MIC_GAIN_SFT)
++#define RK3308_ADC_CH2_MIC_GAIN_13DB		(0x2 << RK3308_ADC_CH2_MIC_GAIN_SFT) /* TRM: only used for version B  */
++#define RK3308_ADC_CH2_MIC_GAIN_6_6DB		(0x1 << RK3308_ADC_CH2_MIC_GAIN_SFT) /* TRM: only used for version B  */
 +#define RK3308_ADC_CH2_MIC_GAIN_0DB		(0x0 << RK3308_ADC_CH2_MIC_GAIN_SFT)
++
++#define RK3308_ADC_CH1_MIC_GAIN_MAX		0x3
++#define RK3308_ADC_CH1_MIC_GAIN_MIN		0
 +#define RK3308_ADC_CH1_MIC_GAIN_SFT		0
 +#define RK3308_ADC_CH1_MIC_GAIN_MSK		(0x3 << RK3308_ADC_CH1_MIC_GAIN_SFT)
-+#define RK3308_ADC_CH1_MIC_GAIN_30DB		(0x3 << RK3308_ADC_CH1_MIC_GAIN_SFT)
-+#define RK3308_ADC_CH1_MIC_GAIN_20DB		(0x2 << RK3308_ADC_CH1_MIC_GAIN_SFT)
-+#define RK3308_ADC_CH1_MIC_GAIN_6DB		(0x1 << RK3308_ADC_CH1_MIC_GAIN_SFT)
++#define RK3308_ADC_CH1_MIC_GAIN_20DB		(0x3 << RK3308_ADC_CH1_MIC_GAIN_SFT)
++#define RK3308_ADC_CH1_MIC_GAIN_13DB		(0x2 << RK3308_ADC_CH1_MIC_GAIN_SFT) /* TRM: only used for version B  */
++#define RK3308_ADC_CH1_MIC_GAIN_6_6DB		(0x1 << RK3308_ADC_CH1_MIC_GAIN_SFT) /* TRM: only used for version B  */
 +#define RK3308_ADC_CH1_MIC_GAIN_0DB		(0x0 << RK3308_ADC_CH1_MIC_GAIN_SFT)
 +
 +/* RK3308_ADC_ANA_CON02 - REG: 0x0348 */
@@ -5911,6 +5966,8 @@ Index: linux-5.10.27/sound/soc/codecs/rk3308_codec.h
 +#define RK3308_ADC_CH1_ALC_DIS			(0x0 << 0)
 +
 +/* RK3308_ADC_ANA_CON03 - REG: 0x034c */
++#define RK3308_ADC_CH1_ALC_GAIN_MAX		0x1f
++#define RK3308_ADC_CH1_ALC_GAIN_MIN		0
 +#define RK3308_ADC_CH1_ALC_GAIN_SFT		0
 +#define RK3308_ADC_CH1_ALC_GAIN_MSK		(0x1f << RK3308_ADC_CH1_ALC_GAIN_SFT)
 +#define RK3308_ADC_CH1_ALC_GAIN_PDB_28_5	(0x1f << RK3308_ADC_CH1_ALC_GAIN_SFT)
@@ -5947,6 +6004,8 @@ Index: linux-5.10.27/sound/soc/codecs/rk3308_codec.h
 +#define RK3308_ADC_CH1_ALC_GAIN_NDB_18		(0x00 << RK3308_ADC_CH1_ALC_GAIN_SFT)
 +
 +/* RK3308_ADC_ANA_CON04 - REG: 0x0350 */
++#define RK3308_ADC_CH2_ALC_GAIN_MAX		0x1f
++#define RK3308_ADC_CH2_ALC_GAIN_MIN		0
 +#define RK3308_ADC_CH2_ALC_GAIN_SFT		0
 +#define RK3308_ADC_CH2_ALC_GAIN_MSK		(0x1f << RK3308_ADC_CH2_ALC_GAIN_SFT)
 +#define RK3308_ADC_CH2_ALC_GAIN_PDB_28_5	(0x1f << RK3308_ADC_CH2_ALC_GAIN_SFT)
@@ -6020,10 +6079,16 @@ Index: linux-5.10.27/sound/soc/codecs/rk3308_codec.h
 +#define RK3308_ADC_CH1_IN_MIC			(0x1 << RK3308_ADC_CH1_IN_SEL_SFT)
 +#define RK3308_ADC_CH1_IN_NONE			(0x0 << RK3308_ADC_CH1_IN_SEL_SFT)
 +
-+#define RK3308_ADC_MIC_BIAS_BUF_EN		(0x1 << 3)
-+#define RK3308_ADC_MIC_BIAS_BUF_DIS		(0x0 << 3)
++#define RK3308_ADC_MIC_BIAS_BUF_SFT		3
++#define RK3308_ADC_MIC_BIAS_BUF_EN		(0x1 << RK3308_ADC_MIC_BIAS_BUF_SFT)
++#define RK3308_ADC_MIC_BIAS_BUF_DIS		(0x0 << RK3308_ADC_MIC_BIAS_BUF_SFT)
 +#define RK3308_ADC_LEVEL_RANGE_MICBIAS_SFT	0
 +#define RK3308_ADC_LEVEL_RANGE_MICBIAS_MSK	(0x7 << RK3308_ADC_LEVEL_RANGE_MICBIAS_SFT)
++/*
++ * The follow MICBIAS_VOLTs are based on the external reference voltage(Vref).
++ * For example, the Vref == 3.3V, the MICBIAS_VOLT_0_85 is equal:
++ * 3.3V * 0.85 = 2.805V.
++ */
 +#define RK3308_ADC_MICBIAS_VOLT_0_85		(0x7 << RK3308_ADC_LEVEL_RANGE_MICBIAS_SFT)
 +#define RK3308_ADC_MICBIAS_VOLT_0_8		(0x6 << RK3308_ADC_LEVEL_RANGE_MICBIAS_SFT)
 +#define RK3308_ADC_MICBIAS_VOLT_0_75		(0x5 << RK3308_ADC_LEVEL_RANGE_MICBIAS_SFT)
@@ -6045,16 +6110,10 @@ Index: linux-5.10.27/sound/soc/codecs/rk3308_codec.h
 +#define RK3308_ADC_CURRENT_CHARGE_MSK		(0x7f << RK3308_ADC_CURRENT_CHARGE_SFT)
 +#define RK3308_ADC_DONT_SEL_ALL			(0x7f << RK3308_ADC_CURRENT_CHARGE_SFT)
 +/*
-+ * 0: Choose the current I
-+ * 1: Don't choose the current I
++ * 1: Choose the current I
++ * 0: Don't choose the current I
 + */
-+#define RK3308_ADC_SEL_I_1(x)			((x & 0x1) << 6)
-+#define RK3308_ADC_SEL_I_2(x)			((x & 0x1) << 5)
-+#define RK3308_ADC_SEL_I_4(x)			((x & 0x1) << 4)
-+#define RK3308_ADC_SEL_I_8(x)			((x & 0x1) << 3)
-+#define RK3308_ADC_SEL_I_16(x)			((x & 0x1) << 2)
-+#define RK3308_ADC_SEL_I_32(x)			((x & 0x1) << 1)
-+#define RK3308_ADC_SEL_I_64(x)			((x & 0x1) << 0)
++#define RK3308_ADC_SEL_I(x)			(x & 0x7f)
 +
 +/* RK3308_ADC_ANA_CON11 - REG: 0x036c */
 +#define RK3308_ADC_ALCR_CON_GAIN_PGAR_MSK	(0x1 << 1)
@@ -6065,6 +6124,7 @@ Index: linux-5.10.27/sound/soc/codecs/rk3308_codec.h
 +#define RK3308_ADC_ALCL_CON_GAIN_PGAL_DIS	(0x0 << 0)
 +
 +/* RK3308_DAC_ANA_CON00 - REG: 0x0440 */
++#define RK3308_DAC_HEADPHONE_DET_MSK		(0x1 << 1)
 +#define RK3308_DAC_HEADPHONE_DET_EN		(0x1 << 1)
 +#define RK3308_DAC_HEADPHONE_DET_DIS		(0x0 << 1)
 +#define RK3308_DAC_CURRENT_MSK			(0x1 << 0)
@@ -6075,17 +6135,17 @@ Index: linux-5.10.27/sound/soc/codecs/rk3308_codec.h
 +#define RK3308_DAC_BUF_REF_R_MSK		(0x1 << 6)
 +#define RK3308_DAC_BUF_REF_R_EN			(0x1 << 6)
 +#define RK3308_DAC_BUF_REF_R_DIS		(0x0 << 6)
-+#define RK3308_DAC_POP_SOUND_R_SFT		4
-+#define RK3308_DAC_POP_SOUND_R_MSK		(0x3 << RK3308_DAC_POP_SOUND_R_SFT)
-+#define RK3308_DAC_POP_SOUND_R_WORK		(0x2 << RK3308_DAC_POP_SOUND_R_SFT)
-+#define RK3308_DAC_POP_SOUND_R_INIT		(0x1 << RK3308_DAC_POP_SOUND_R_SFT)
++#define RK3308_DAC_HPOUT_POP_SOUND_R_SFT	4
++#define RK3308_DAC_HPOUT_POP_SOUND_R_MSK	(0x3 << RK3308_DAC_HPOUT_POP_SOUND_R_SFT)
++#define RK3308_DAC_HPOUT_POP_SOUND_R_WORK	(0x2 << RK3308_DAC_HPOUT_POP_SOUND_R_SFT)
++#define RK3308_DAC_HPOUT_POP_SOUND_R_INIT	(0x1 << RK3308_DAC_HPOUT_POP_SOUND_R_SFT)
 +#define RK3308_DAC_BUF_REF_L_MSK		(0x1 << 2)
 +#define RK3308_DAC_BUF_REF_L_EN			(0x1 << 2)
 +#define RK3308_DAC_BUF_REF_L_DIS		(0x0 << 2)
-+#define RK3308_DAC_POP_SOUND_L_SFT		0
-+#define RK3308_DAC_POP_SOUND_L_MSK		(0x3 << RK3308_DAC_POP_SOUND_L_SFT)
-+#define RK3308_DAC_POP_SOUND_L_WORK		(0x2 << RK3308_DAC_POP_SOUND_L_SFT)
-+#define RK3308_DAC_POP_SOUND_L_INIT		(0x1 << RK3308_DAC_POP_SOUND_L_SFT)
++#define RK3308_DAC_HPOUT_POP_SOUND_L_SFT	0
++#define RK3308_DAC_HPOUT_POP_SOUND_L_MSK	(0x3 << RK3308_DAC_HPOUT_POP_SOUND_L_SFT)
++#define RK3308_DAC_HPOUT_POP_SOUND_L_WORK	(0x2 << RK3308_DAC_HPOUT_POP_SOUND_L_SFT)
++#define RK3308_DAC_HPOUT_POP_SOUND_L_INIT	(0x1 << RK3308_DAC_HPOUT_POP_SOUND_L_SFT)
 +
 +/* RK3308_DAC_ANA_CON02 - REG: 0x0448 */
 +#define RK3308_DAC_R_DAC_WORK			(0x1 << 7)
@@ -6120,28 +6180,31 @@ Index: linux-5.10.27/sound/soc/codecs/rk3308_codec.h
 +#define RK3308_DAC_L_HPOUT_MUTE			(0x0 << 0)
 +
 +/* RK3308_DAC_ANA_CON04 - REG: 0x0450 */
-+#define RK3308_DAC_R_GAIN_SFT			6
-+#define RK3308_DAC_R_GAIN_MSK			(0x3 << RK3308_DAC_R_GAIN_SFT)
-+#define RK3308_DAC_R_GAIN_0DB			(0x3 << RK3308_DAC_R_GAIN_SFT)
-+#define RK3308_DAC_R_GAIN_PDB_1_5		(0x2 << RK3308_DAC_R_GAIN_SFT)
-+#define RK3308_DAC_R_GAIN_PDB_3			(0x1 << RK3308_DAC_R_GAIN_SFT)
-+#define RK3308_DAC_R_GAIN_PDB_6			(0x0 << RK3308_DAC_R_GAIN_SFT)
++#define RK3308_DAC_R_LINEOUT_GAIN_MAX		0x3
++#define RK3308_DAC_R_LINEOUT_GAIN_SFT		6
++#define RK3308_DAC_R_LINEOUT_GAIN_MSK		(0x3 << RK3308_DAC_R_LINEOUT_GAIN_SFT)
++#define RK3308_DAC_R_LINEOUT_GAIN_0DB		(0x3 << RK3308_DAC_R_LINEOUT_GAIN_SFT)
++#define RK3308_DAC_R_LINEOUT_GAIN_NDB_1_5	(0x2 << RK3308_DAC_R_LINEOUT_GAIN_SFT)
++#define RK3308_DAC_R_LINEOUT_GAIN_NDB_3		(0x1 << RK3308_DAC_R_LINEOUT_GAIN_SFT)
++#define RK3308_DAC_R_LINEOUT_GAIN_NDB_6		(0x0 << RK3308_DAC_R_LINEOUT_GAIN_SFT)
 +#define RK3308_DAC_R_LINEOUT_UNMUTE		(0x1 << 5)
 +#define RK3308_DAC_R_LINEOUT_MUTE		(0x0 << 5)
 +#define RK3308_DAC_R_LINEOUT_EN			(0x1 << 4)
 +#define RK3308_DAC_R_LINEOUT_DIS		(0x0 << 4)
-+#define RK3308_DAC_L_GAIN_SFT			2
-+#define RK3308_DAC_L_GAIN_MSK			(0x3 << RK3308_DAC_L_GAIN_SFT)
-+#define RK3308_DAC_L_GAIN_0DB			(0x3 << RK3308_DAC_L_GAIN_SFT)
-+#define RK3308_DAC_L_GAIN_PDB_1_5		(0x2 << RK3308_DAC_L_GAIN_SFT)
-+#define RK3308_DAC_L_GAIN_PDB_3			(0x1 << RK3308_DAC_L_GAIN_SFT)
-+#define RK3308_DAC_L_GAIN_PDB_6			(0x0 << RK3308_DAC_L_GAIN_SFT)
++#define RK3308_DAC_L_LINEOUT_GAIN_MAX		0x3
++#define RK3308_DAC_L_LINEOUT_GAIN_SFT		2
++#define RK3308_DAC_L_LINEOUT_GAIN_MSK		(0x3 << RK3308_DAC_L_LINEOUT_GAIN_SFT)
++#define RK3308_DAC_L_LINEOUT_GAIN_0DB		(0x3 << RK3308_DAC_L_LINEOUT_GAIN_SFT)
++#define RK3308_DAC_L_LINEOUT_GAIN_NDB_1_5	(0x2 << RK3308_DAC_L_LINEOUT_GAIN_SFT)
++#define RK3308_DAC_L_LINEOUT_GAIN_NDB_3		(0x1 << RK3308_DAC_L_LINEOUT_GAIN_SFT)
++#define RK3308_DAC_L_LINEOUT_GAIN_NDB_6		(0x0 << RK3308_DAC_L_LINEOUT_GAIN_SFT)
 +#define RK3308_DAC_L_LINEOUT_UNMUTE		(0x1 << 1)
 +#define RK3308_DAC_L_LINEOUT_MUTE		(0x0 << 1)
 +#define RK3308_DAC_L_LINEOUT_EN			(0x1 << 0)
 +#define RK3308_DAC_L_LINEOUT_DIS		(0x0 << 0)
 +
 +/* RK3308_DAC_ANA_CON05 - REG: 0x0454, step is 1.5db */
++#define RK3308_DAC_L_HPOUT_GAIN_MAX		0x1e
 +#define RK3308_DAC_L_HPOUT_GAIN_SFT		0
 +#define RK3308_DAC_L_HPOUT_GAIN_MSK		(0x1f << RK3308_DAC_L_HPOUT_GAIN_SFT)
 +#define RK3308_DAC_L_HPOUT_GAIN_PDB_6		(0x1e << RK3308_DAC_L_HPOUT_GAIN_SFT)
@@ -6177,6 +6240,7 @@ Index: linux-5.10.27/sound/soc/codecs/rk3308_codec.h
 +#define RK3308_DAC_L_HPOUT_GAIN_NDB_39		(0x00 << RK3308_DAC_L_HPOUT_GAIN_SFT)
 +
 +/* RK3308_DAC_ANA_CON06 - REG: 0x0458, step is 1.5db */
++#define RK3308_DAC_R_HPOUT_GAIN_MAX		0x1e
 +#define RK3308_DAC_R_HPOUT_GAIN_SFT		0
 +#define RK3308_DAC_R_HPOUT_GAIN_MSK		(0x1f << RK3308_DAC_R_HPOUT_GAIN_SFT)
 +#define RK3308_DAC_R_HPOUT_GAIN_PDB_6		(0x1e << RK3308_DAC_R_HPOUT_GAIN_SFT)
@@ -6211,6 +6275,18 @@ Index: linux-5.10.27/sound/soc/codecs/rk3308_codec.h
 +#define RK3308_DAC_R_HPOUT_GAIN_NDB_37_5	(0x01 << RK3308_DAC_R_HPOUT_GAIN_SFT)
 +#define RK3308_DAC_R_HPOUT_GAIN_NDB_39		(0x00 << RK3308_DAC_R_HPOUT_GAIN_SFT)
 +
++/* RK3308_DAC_ANA_CON07 - REG: 0x045c */
++#define RK3308_DAC_R_HPOUT_DRV_SFT		4
++#define RK3308_DAC_R_HPOUT_DRV_MSK		(0xf << RK3308_DAC_R_HPOUT_DRV_SFT)
++#define RK3308_DAC_L_HPOUT_DRV_SFT		0
++#define RK3308_DAC_L_HPOUT_DRV_MSK		(0xf << RK3308_DAC_L_HPOUT_DRV_SFT)
++
++/* RK3308_DAC_ANA_CON08 - REG: 0x0460 */
++#define RK3308_DAC_R_LINEOUT_DRV_SFT		4
++#define RK3308_DAC_R_LINEOUT_DRV_MSK		(0xf << RK3308_DAC_R_LINEOUT_DRV_SFT)
++#define RK3308_DAC_L_LINEOUT_DRV_SFT		0
++#define RK3308_DAC_L_LINEOUT_DRV_MSK		(0xf << RK3308_DAC_L_LINEOUT_DRV_SFT)
++
 +/* RK3308_DAC_ANA_CON12 - REG: 0x0470 */
 +#define RK3308_DAC_R_HPMIX_SEL_SFT		6
 +#define RK3308_DAC_R_HPMIX_SEL_MSK		(0x3 << RK3308_DAC_R_HPMIX_SEL_SFT)
@@ -6218,6 +6294,8 @@ Index: linux-5.10.27/sound/soc/codecs/rk3308_codec.h
 +#define RK3308_DAC_R_HPMIX_LINEIN		(0x2 << RK3308_DAC_R_HPMIX_SEL_SFT)
 +#define RK3308_DAC_R_HPMIX_I2S			(0x1 << RK3308_DAC_R_HPMIX_SEL_SFT)
 +#define RK3308_DAC_R_HPMIX_NONE			(0x0 << RK3308_DAC_R_HPMIX_SEL_SFT)
++#define RK3308_DAC_R_HPMIX_GAIN_MIN		0x1
++#define RK3308_DAC_R_HPMIX_GAIN_MAX		0x2
 +#define RK3308_DAC_R_HPMIX_GAIN_SFT		4
 +#define RK3308_DAC_R_HPMIX_GAIN_MSK		(0x3 << RK3308_DAC_R_HPMIX_GAIN_SFT)
 +#define RK3308_DAC_R_HPMIX_GAIN_0DB		(0x2 << RK3308_DAC_R_HPMIX_GAIN_SFT)
@@ -6228,6 +6306,8 @@ Index: linux-5.10.27/sound/soc/codecs/rk3308_codec.h
 +#define RK3308_DAC_L_HPMIX_LINEIN		(0x2 << RK3308_DAC_L_HPMIX_SEL_SFT)
 +#define RK3308_DAC_L_HPMIX_I2S			(0x1 << RK3308_DAC_L_HPMIX_SEL_SFT)
 +#define RK3308_DAC_L_HPMIX_NONE			(0x0 << RK3308_DAC_L_HPMIX_SEL_SFT)
++#define RK3308_DAC_L_HPMIX_GAIN_MIN		0x1
++#define RK3308_DAC_L_HPMIX_GAIN_MAX		0x2
 +#define RK3308_DAC_L_HPMIX_GAIN_SFT		0
 +#define RK3308_DAC_L_HPMIX_GAIN_MSK		(0x3 << RK3308_DAC_L_HPMIX_GAIN_SFT)
 +#define RK3308_DAC_L_HPMIX_GAIN_0DB		(0x2 << RK3308_DAC_L_HPMIX_GAIN_SFT)
@@ -6247,6 +6327,30 @@ Index: linux-5.10.27/sound/soc/codecs/rk3308_codec.h
 +#define RK3308_DAC_L_HPMIX_EN			(0x1 << 0)
 +#define RK3308_DAC_L_HPMIX_DIS			(0x0 << 0)
 +
++/* RK3308_DAC_ANA_CON14 - REG: 0x0478 */
++#define RK3308_DAC_VCM_LINEOUT_EN		(0x1 << 4)
++#define RK3308_DAC_VCM_LINEOUT_DIS		(0x0 << 4)
++#define RK3308_DAC_CURRENT_CHARGE_SFT		0
++#define RK3308_DAC_CURRENT_CHARGE_MSK		(0xf << RK3308_DAC_CURRENT_CHARGE_SFT)
++
++/*
++ * 1: Choose the current I
++ * 0: Don't choose the current I
++ */
++#define RK3308_DAC_SEL_I(x)			(x & 0xf)
++
++/* RK3308_DAC_ANA_CON15 - REG: 0x047C */
++#define RK3308_DAC_LINEOUT_POP_SOUND_R_SFT	4
++#define RK3308_DAC_LINEOUT_POP_SOUND_R_MSK	(0x3 << RK3308_DAC_LINEOUT_POP_SOUND_R_SFT)
++#define RK3308_DAC_R_SEL_DC_FROM_INTERNAL	(0x2 << RK3308_DAC_LINEOUT_POP_SOUND_R_SFT)
++#define RK3308_DAC_R_SEL_DC_FROM_VCM		(0x1 << RK3308_DAC_LINEOUT_POP_SOUND_R_SFT)
++#define RK3308_DAC_R_SEL_LINEOUT_FROM_INTERNAL	(0x0 << RK3308_DAC_LINEOUT_POP_SOUND_R_SFT)
++#define RK3308_DAC_LINEOUT_POP_SOUND_L_SFT	0
++#define RK3308_DAC_LINEOUT_POP_SOUND_L_MSK	(0x3 << RK3308_DAC_LINEOUT_POP_SOUND_L_SFT)
++#define RK3308_DAC_L_SEL_DC_FROM_INTERNAL	(0x2 << RK3308_DAC_LINEOUT_POP_SOUND_L_SFT)
++#define RK3308_DAC_L_SEL_DC_FROM_VCM		(0x1 << RK3308_DAC_LINEOUT_POP_SOUND_L_SFT)
++#define RK3308_DAC_L_SEL_LINEOUT_FROM_INTERNAL	(0x0 << RK3308_DAC_LINEOUT_POP_SOUND_L_SFT)
++
 +#define RK3308_HIFI				0x0
 +
 +#endif /* __RK3308_CODEC_H__ */
@@ -6254,7 +6358,7 @@ Index: linux-5.10.27/sound/soc/codecs/rk3308_codec_provider.h
 ===================================================================
 --- /dev/null
 +++ linux-5.10.27/sound/soc/codecs/rk3308_codec_provider.h
-@@ -0,0 +1,28 @@
+@@ -0,0 +1,33 @@
 +/*
 + * rk3308_codec_provider.h -- RK3308 ALSA Soc Audio Driver
 + *
@@ -6278,8 +6382,13 @@ Index: linux-5.10.27/sound/soc/codecs/rk3308_codec_provider.h
 +#define __RK3308_CODEC_PROVIDER_H__
 +
 +#ifdef CONFIG_SND_SOC_RK3308
-+extern void (*rk3308_codec_set_jack_detect_cb)(struct snd_soc_component *component,
-+					       struct snd_soc_jack *hpdet_jack);
++void rk3308_codec_set_jack_detect(struct snd_soc_component *component,
++				  struct snd_soc_jack *hpdet_jack);
++#else
++static inline void rk3308_codec_set_jack_detect(struct snd_soc_component *component,
++						struct snd_soc_jack *hpdet_jack)
++{
++}
 +#endif
 +
 +#endif /* __RK3308_CODEC_PROVIDER_H__ */
@@ -6287,7 +6396,43 @@ Index: linux-5.10.27/arch/arm64/boot/dts/rockchip/rk3308.dtsi
 ===================================================================
 --- linux-5.10.27.orig/arch/arm64/boot/dts/rockchip/rk3308.dtsi
 +++ linux-5.10.27/arch/arm64/boot/dts/rockchip/rk3308.dtsi
-@@ -539,6 +539,15 @@
+@@ -104,6 +104,18 @@
+ 		compatible = "operating-points-v2";
+ 		opp-shared;
+ 
++		rockchip,temp-hysteresis = <5000>;
++		rockchip,low-temp = <0>;
++		rockchip,low-temp-min-volt = <1000000>;
++		rockchip,max-volt = <1340000>;
++		rockchip,low-temp-adjust-volt = <
++			/* MHz    MHz    uV */
++			   0      1296   50000
++		>;
++
++		rockchip,evb-irdrop = <25000>;
++		rockchip,thermal-zone = "soc-thermal";
++
+ 		opp-408000000 {
+ 			opp-hz = /bits/ 64 <408000000>;
+ 			opp-microvolt = <950000 950000 1340000>;
+@@ -125,6 +137,16 @@
+ 			opp-microvolt = <1125000 1125000 1340000>;
+ 			clock-latency-ns = <40000>;
+ 		};
++		opp-1200000000 {
++			opp-hz = /bits/ 64 <1200000000>;
++			opp-microvolt = <1250000 1250000 1340000>;
++			clock-latency-ns = <40000>;
++		};
++		opp-1296000000 {
++			opp-hz = /bits/ 64 <1296000000>;
++			opp-microvolt = <1300000 1300000 1340000>;
++			clock-latency-ns = <40000>;
++		};
+ 	};
+ 
+ 	arm-pmu {
+@@ -539,6 +561,15 @@
  		clock-names = "pclk", "timer";
  	};
  
@@ -6303,7 +6448,7 @@ Index: linux-5.10.27/arch/arm64/boot/dts/rockchip/rk3308.dtsi
  	saradc: saradc@ff1e0000 {
  		compatible = "rockchip,rk3308-saradc", "rockchip,rk3399-saradc";
  		reg = <0x0 0xff1e0000 0x0 0x100>;
-@@ -551,6 +560,70 @@
+@@ -551,6 +582,70 @@
  		status = "disabled";
  	};
  
@@ -6374,7 +6519,7 @@ Index: linux-5.10.27/arch/arm64/boot/dts/rockchip/rk3308.dtsi
  	amba: bus {
  		compatible = "simple-bus";
  		#address-cells = <2>;
-@@ -580,6 +653,124 @@
+@@ -580,6 +675,124 @@
  		};
  	};
  
@@ -6499,7 +6644,7 @@ Index: linux-5.10.27/arch/arm64/boot/dts/rockchip/rk3308.dtsi
  	i2s_2ch_0: i2s@ff350000 {
  		compatible = "rockchip,rk3308-i2s", "rockchip,rk3066-i2s";
  		reg = <0x0 0xff350000 0x0 0x1000>;
-@@ -624,6 +815,21 @@
+@@ -624,6 +837,21 @@
  		status = "disabled";
  	};
  
@@ -6521,7 +6666,7 @@ Index: linux-5.10.27/arch/arm64/boot/dts/rockchip/rk3308.dtsi
  	usb20_otg: usb@ff400000 {
  		compatible = "rockchip,rk3308-usb", "rockchip,rk3066-usb",
  			     "snps,dwc2";
-@@ -769,6 +975,27 @@
+@@ -769,6 +997,27 @@
  		};
  	};
  
@@ -6572,3 +6717,4536 @@ Index: linux-5.10.27/sound/soc/codecs/Kconfig
  config SND_SOC_RK3328
  	tristate "Rockchip RK3328 audio CODEC"
  	select REGMAP_MMIO
+Index: linux-5.10.27/sound/soc/codecs/Makefile
+===================================================================
+--- linux-5.10.27.orig/sound/soc/codecs/Makefile
++++ linux-5.10.27/sound/soc/codecs/Makefile
+@@ -155,6 +155,7 @@ snd-soc-pcm5102a-objs := pcm5102a.o
+ snd-soc-pcm512x-objs := pcm512x.o
+ snd-soc-pcm512x-i2c-objs := pcm512x-i2c.o
+ snd-soc-pcm512x-spi-objs := pcm512x-spi.o
++snd-soc-rk3308-objs := rk3308_codec.o
+ snd-soc-rk3328-objs := rk3328_codec.o
+ snd-soc-rl6231-objs := rl6231.o
+ snd-soc-rl6347a-objs := rl6347a.o
+@@ -464,6 +465,7 @@ obj-$(CONFIG_SND_SOC_PCM5102A)	+= snd-so
+ obj-$(CONFIG_SND_SOC_PCM512x)	+= snd-soc-pcm512x.o
+ obj-$(CONFIG_SND_SOC_PCM512x_I2C)	+= snd-soc-pcm512x-i2c.o
+ obj-$(CONFIG_SND_SOC_PCM512x_SPI)	+= snd-soc-pcm512x-spi.o
++obj-$(CONFIG_SND_SOC_RK3308)	+= snd-soc-rk3308.o
+ obj-$(CONFIG_SND_SOC_RK3328)	+= snd-soc-rk3328.o
+ obj-$(CONFIG_SND_SOC_RL6231)	+= snd-soc-rl6231.o
+ obj-$(CONFIG_SND_SOC_RL6347A)	+= snd-soc-rl6347a.o
+Index: linux-5.10.27/sound/soc/rockchip/Makefile
+===================================================================
+--- linux-5.10.27.orig/sound/soc/rockchip/Makefile
++++ linux-5.10.27/sound/soc/rockchip/Makefile
+@@ -1,20 +1,27 @@
+ # SPDX-License-Identifier: GPL-2.0
+ # ROCKCHIP Platform Support
+ snd-soc-rockchip-i2s-objs := rockchip_i2s.o
++snd-soc-rockchip-i2s-tdm-objs := rockchip_i2s_tdm.o
++snd-soc-rockchip-multi-dais-objs := rockchip_multi_dais.o rockchip_multi_dais_pcm.o
+ snd-soc-rockchip-pcm-objs := rockchip_pcm.o
+ snd-soc-rockchip-pdm-objs := rockchip_pdm.o
+ snd-soc-rockchip-spdif-objs := rockchip_spdif.o
+-
++snd-soc-rockchip-spdifrx-objs := rockchip_spdifrx.o
+ obj-$(CONFIG_SND_SOC_ROCKCHIP_I2S) += snd-soc-rockchip-i2s.o snd-soc-rockchip-pcm.o
++obj-$(CONFIG_SND_SOC_ROCKCHIP_I2S_TDM) += snd-soc-rockchip-i2s-tdm.o
++obj-$(CONFIG_SND_SOC_ROCKCHIP_MULTI_DAIS) += snd-soc-rockchip-multi-dais.o
+ obj-$(CONFIG_SND_SOC_ROCKCHIP_PDM) += snd-soc-rockchip-pdm.o
+ obj-$(CONFIG_SND_SOC_ROCKCHIP_SPDIF) += snd-soc-rockchip-spdif.o
++obj-$(CONFIG_SND_SOC_ROCKCHIP_SPDIFRX) += snd-soc-rockchip-spdifrx.o
+ 
+ snd-soc-rockchip-max98090-objs := rockchip_max98090.o
++snd-soc-rockchip-multicodecs-objs := rockchip_multicodecs.o
+ snd-soc-rockchip-rt5645-objs := rockchip_rt5645.o
+ snd-soc-rk3288-hdmi-analog-objs := rk3288_hdmi_analog.o
+ snd-soc-rk3399-gru-sound-objs := rk3399_gru_sound.o
+ 
+ obj-$(CONFIG_SND_SOC_ROCKCHIP_MAX98090) += snd-soc-rockchip-max98090.o
++obj-$(CONFIG_SND_SOC_ROCKCHIP_MULTICODECS) += snd-soc-rockchip-multicodecs.o
+ obj-$(CONFIG_SND_SOC_ROCKCHIP_RT5645) += snd-soc-rockchip-rt5645.o
+ obj-$(CONFIG_SND_SOC_RK3288_HDMI_ANALOG) += snd-soc-rk3288-hdmi-analog.o
+ obj-$(CONFIG_SND_SOC_RK3399_GRU_SOUND) += snd-soc-rk3399-gru-sound.o
+Index: linux-5.10.27/sound/soc/rockchip/rockchip_i2s.c
+===================================================================
+--- linux-5.10.27.orig/sound/soc/rockchip/rockchip_i2s.c
++++ linux-5.10.27/sound/soc/rockchip/rockchip_i2s.c
+@@ -5,6 +5,10 @@
+  *
+  * Copyright (c) 2014 Rockchip Electronics Co. Ltd.
+  * Author: Jianqun <jay.xu@rock-chips.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
+  */
+ 
+ #include <linux/module.h>
+@@ -15,6 +19,7 @@
+ #include <linux/clk.h>
+ #include <linux/pm_runtime.h>
+ #include <linux/regmap.h>
++#include <linux/spinlock.h>
+ #include <sound/pcm_params.h>
+ #include <sound/dmaengine_pcm.h>
+ 
+@@ -49,8 +54,13 @@ struct rk_i2s_dev {
+ 	bool rx_start;
+ 	bool is_master_mode;
+ 	const struct rk_i2s_pins *pins;
++	unsigned int bclk_fs;
++	unsigned int clk_trcm;
+ };
+ 
++/* txctrl/rxctrl lock */
++static DEFINE_SPINLOCK(lock);
++
+ static int i2s_runtime_suspend(struct device *dev)
+ {
+ 	struct rk_i2s_dev *i2s = dev_get_drvdata(dev);
+@@ -92,6 +102,7 @@ static void rockchip_snd_txctrl(struct r
+ 	unsigned int val = 0;
+ 	int retry = 10;
+ 
++	spin_lock(&lock);
+ 	if (on) {
+ 		regmap_update_bits(i2s->regmap, I2S_DMACR,
+ 				   I2S_DMACR_TDE_ENABLE, I2S_DMACR_TDE_ENABLE);
+@@ -132,6 +143,7 @@ static void rockchip_snd_txctrl(struct r
+ 			}
+ 		}
+ 	}
++	spin_unlock(&lock);
+ }
+ 
+ static void rockchip_snd_rxctrl(struct rk_i2s_dev *i2s, int on)
+@@ -139,6 +151,7 @@ static void rockchip_snd_rxctrl(struct r
+ 	unsigned int val = 0;
+ 	int retry = 10;
+ 
++	spin_lock(&lock);
+ 	if (on) {
+ 		regmap_update_bits(i2s->regmap, I2S_DMACR,
+ 				   I2S_DMACR_RDE_ENABLE, I2S_DMACR_RDE_ENABLE);
+@@ -179,6 +192,7 @@ static void rockchip_snd_rxctrl(struct r
+ 			}
+ 		}
+ 	}
++	spin_unlock(&lock);
+ }
+ 
+ static int rockchip_i2s_set_fmt(struct snd_soc_dai *cpu_dai,
+@@ -186,7 +200,9 @@ static int rockchip_i2s_set_fmt(struct s
+ {
+ 	struct rk_i2s_dev *i2s = to_info(cpu_dai);
+ 	unsigned int mask = 0, val = 0;
++	int ret = 0;
+ 
++	pm_runtime_get_sync(cpu_dai->dev);
+ 	mask = I2S_CKR_MSS_MASK;
+ 	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+ 	case SND_SOC_DAIFMT_CBS_CFS:
+@@ -199,7 +215,8 @@ static int rockchip_i2s_set_fmt(struct s
+ 		i2s->is_master_mode = false;
+ 		break;
+ 	default:
+-		return -EINVAL;
++		ret = -EINVAL;
++		goto err_pm_put;
+ 	}
+ 
+ 	regmap_update_bits(i2s->regmap, I2S_CKR, mask, val);
+@@ -213,7 +230,8 @@ static int rockchip_i2s_set_fmt(struct s
+ 		val = I2S_CKR_CKP_POS;
+ 		break;
+ 	default:
+-		return -EINVAL;
++		ret = -EINVAL;
++		goto err_pm_put;
+ 	}
+ 
+ 	regmap_update_bits(i2s->regmap, I2S_CKR, mask, val);
+@@ -236,7 +254,8 @@ static int rockchip_i2s_set_fmt(struct s
+ 		val = I2S_TXCR_TFS_PCM | I2S_TXCR_PBM_MODE(1);
+ 		break;
+ 	default:
+-		return -EINVAL;
++		ret = -EINVAL;
++		goto err_pm_put;
+ 	}
+ 
+ 	regmap_update_bits(i2s->regmap, I2S_TXCR, mask, val);
+@@ -259,12 +278,16 @@ static int rockchip_i2s_set_fmt(struct s
+ 		val = I2S_RXCR_TFS_PCM | I2S_RXCR_PBM_MODE(1);
+ 		break;
+ 	default:
+-		return -EINVAL;
++		ret = -EINVAL;
++		goto err_pm_put;
+ 	}
+ 
+ 	regmap_update_bits(i2s->regmap, I2S_RXCR, mask, val);
+ 
+-	return 0;
++err_pm_put:
++	pm_runtime_put(cpu_dai->dev);
++
++	return ret;
+ }
+ 
+ static int rockchip_i2s_hw_params(struct snd_pcm_substream *substream,
+@@ -272,17 +295,16 @@ static int rockchip_i2s_hw_params(struct
+ 				  struct snd_soc_dai *dai)
+ {
+ 	struct rk_i2s_dev *i2s = to_info(dai);
+-	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
+ 	unsigned int val = 0;
+ 	unsigned int mclk_rate, bclk_rate, div_bclk, div_lrck;
+ 
+ 	if (i2s->is_master_mode) {
+ 		mclk_rate = clk_get_rate(i2s->mclk);
+-		bclk_rate = 2 * 32 * params_rate(params);
+-		if (bclk_rate == 0 || mclk_rate % bclk_rate)
++		bclk_rate = i2s->bclk_fs * params_rate(params);
++		if (!bclk_rate)
+ 			return -EINVAL;
+ 
+-		div_bclk = mclk_rate / bclk_rate;
++		div_bclk = DIV_ROUND_CLOSEST(mclk_rate, bclk_rate);
+ 		div_lrck = bclk_rate / params_rate(params);
+ 		regmap_update_bits(i2s->regmap, I2S_CKR,
+ 				   I2S_CKR_MDIV_MASK,
+@@ -372,13 +394,6 @@ static int rockchip_i2s_hw_params(struct
+ 	regmap_update_bits(i2s->regmap, I2S_DMACR, I2S_DMACR_RDL_MASK,
+ 			   I2S_DMACR_RDL(16));
+ 
+-	val = I2S_CKR_TRCM_TXRX;
+-	if (dai->driver->symmetric_rates && rtd->dai_link->symmetric_rates)
+-		val = I2S_CKR_TRCM_TXONLY;
+-
+-	regmap_update_bits(i2s->regmap, I2S_CKR,
+-			   I2S_CKR_TRCM_MASK,
+-			   val);
+ 	return 0;
+ }
+ 
+@@ -419,9 +434,6 @@ static int rockchip_i2s_set_sysclk(struc
+ 	struct rk_i2s_dev *i2s = to_info(cpu_dai);
+ 	int ret;
+ 
+-	if (freq == 0)
+-		return 0;
+-
+ 	ret = clk_set_rate(i2s->mclk, freq);
+ 	if (ret)
+ 		dev_err(i2s->dev, "Fail to set mclk %d\n", ret);
+@@ -471,7 +483,6 @@ static struct snd_soc_dai_driver rockchi
+ 			    SNDRV_PCM_FMTBIT_S32_LE),
+ 	},
+ 	.ops = &rockchip_i2s_dai_ops,
+-	.symmetric_rates = 1,
+ };
+ 
+ static const struct snd_soc_component_driver rockchip_i2s_component = {
+@@ -567,9 +578,14 @@ static const struct rk_i2s_pins rk3399_i
+ };
+ 
+ static const struct of_device_id rockchip_i2s_match[] = {
++	{ .compatible = "rockchip,px30-i2s", },
++	{ .compatible = "rockchip,rk3036-i2s", },
+ 	{ .compatible = "rockchip,rk3066-i2s", },
++	{ .compatible = "rockchip,rk3128-i2s", },
+ 	{ .compatible = "rockchip,rk3188-i2s", },
+ 	{ .compatible = "rockchip,rk3288-i2s", },
++	{ .compatible = "rockchip,rk3328-i2s", },
++	{ .compatible = "rockchip,rk3368-i2s", },
+ 	{ .compatible = "rockchip,rk3399-i2s", .data = &rk3399_i2s_pins },
+ 	{},
+ };
+@@ -586,8 +602,10 @@ static int rockchip_i2s_probe(struct pla
+ 	int val;
+ 
+ 	i2s = devm_kzalloc(&pdev->dev, sizeof(*i2s), GFP_KERNEL);
+-	if (!i2s)
++	if (!i2s) {
++		dev_err(&pdev->dev, "Can't allocate rk_i2s_dev\n");
+ 		return -ENOMEM;
++	}
+ 
+ 	i2s->dev = &pdev->dev;
+ 
+@@ -633,11 +651,11 @@ static int rockchip_i2s_probe(struct pla
+ 
+ 	i2s->playback_dma_data.addr = res->start + I2S_TXDR;
+ 	i2s->playback_dma_data.addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
+-	i2s->playback_dma_data.maxburst = 4;
++	i2s->playback_dma_data.maxburst = 8;
+ 
+ 	i2s->capture_dma_data.addr = res->start + I2S_RXDR;
+ 	i2s->capture_dma_data.addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
+-	i2s->capture_dma_data.maxburst = 4;
++	i2s->capture_dma_data.maxburst = 8;
+ 
+ 	dev_set_drvdata(&pdev->dev, i2s);
+ 
+@@ -648,13 +666,12 @@ static int rockchip_i2s_probe(struct pla
+ 			goto err_pm_disable;
+ 	}
+ 
+-	soc_dai = devm_kmemdup(&pdev->dev, &rockchip_i2s_dai,
++	soc_dai = devm_kzalloc(&pdev->dev,
+ 			       sizeof(*soc_dai), GFP_KERNEL);
+-	if (!soc_dai) {
+-		ret = -ENOMEM;
+-		goto err_pm_disable;
+-	}
++	if (!soc_dai)
++		return -ENOMEM;
+ 
++	memcpy(soc_dai, &rockchip_i2s_dai, sizeof(*soc_dai));
+ 	if (!of_property_read_u32(node, "rockchip,playback-channels", &val)) {
+ 		if (val >= 2 && val <= 8)
+ 			soc_dai->playback.channels_max = val;
+@@ -665,6 +682,29 @@ static int rockchip_i2s_probe(struct pla
+ 			soc_dai->capture.channels_max = val;
+ 	}
+ 
++	if (of_property_read_bool(node, "rockchip,playback-only"))
++		soc_dai->capture.channels_min = 0;
++	else if (of_property_read_bool(node, "rockchip,capture-only"))
++		soc_dai->playback.channels_min = 0;
++
++	i2s->bclk_fs = 64;
++	if (!of_property_read_u32(node, "rockchip,bclk-fs", &val)) {
++		if ((val >= 32) && (val % 2 == 0))
++			i2s->bclk_fs = val;
++	}
++
++	i2s->clk_trcm = I2S_CKR_TRCM_TXRX;
++	if (!of_property_read_u32(node, "rockchip,clk-trcm", &val)) {
++		if (val >= 0 && val <= 2) {
++			i2s->clk_trcm = val << I2S_CKR_TRCM_SHIFT;
++			if (i2s->clk_trcm)
++				soc_dai->symmetric_rates = 1;
++		}
++	}
++
++	regmap_update_bits(i2s->regmap, I2S_CKR,
++			   I2S_CKR_TRCM_MASK, i2s->clk_trcm);
++
+ 	ret = devm_snd_soc_register_component(&pdev->dev,
+ 					      &rockchip_i2s_component,
+ 					      soc_dai, 1);
+@@ -674,10 +714,12 @@ static int rockchip_i2s_probe(struct pla
+ 		goto err_suspend;
+ 	}
+ 
+-	ret = rockchip_pcm_platform_register(&pdev->dev);
++	if (of_property_read_bool(node, "rockchip,no-dmaengine"))
++		return ret;
++	ret = devm_snd_dmaengine_pcm_register(&pdev->dev, NULL, 0);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "Could not register PCM\n");
+-		goto err_suspend;
++		return ret;
+ 	}
+ 
+ 	return 0;
+@@ -699,14 +741,41 @@ static int rockchip_i2s_remove(struct pl
+ 	if (!pm_runtime_status_suspended(&pdev->dev))
+ 		i2s_runtime_suspend(&pdev->dev);
+ 
++	clk_disable_unprepare(i2s->mclk);
+ 	clk_disable_unprepare(i2s->hclk);
+ 
+ 	return 0;
+ }
+ 
++#ifdef CONFIG_PM_SLEEP
++static int rockchip_i2s_suspend(struct device *dev)
++{
++	struct rk_i2s_dev *i2s = dev_get_drvdata(dev);
++
++	regcache_mark_dirty(i2s->regmap);
++
++	return 0;
++}
++
++static int rockchip_i2s_resume(struct device *dev)
++{
++	struct rk_i2s_dev *i2s = dev_get_drvdata(dev);
++	int ret;
++
++	ret = pm_runtime_get_sync(dev);
++	if (ret < 0)
++		return ret;
++	ret = regcache_sync(i2s->regmap);
++	pm_runtime_put(dev);
++
++	return ret;
++}
++#endif
++
+ static const struct dev_pm_ops rockchip_i2s_pm_ops = {
+ 	SET_RUNTIME_PM_OPS(i2s_runtime_suspend, i2s_runtime_resume,
+ 			   NULL)
++	SET_SYSTEM_SLEEP_PM_OPS(rockchip_i2s_suspend, rockchip_i2s_resume)
+ };
+ 
+ static struct platform_driver rockchip_i2s_driver = {
+Index: linux-5.10.27/sound/soc/rockchip/rockchip_i2s.h
+===================================================================
+--- linux-5.10.27.orig/sound/soc/rockchip/rockchip_i2s.h
++++ linux-5.10.27/sound/soc/rockchip/rockchip_i2s.h
+@@ -6,6 +6,10 @@
+  *
+  * Copyright (c) 2014 Rockchip Electronics Co. Ltd.
+  * Author: Jianqun xu <jay.xu@rock-chips.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
+  */
+ 
+ #ifndef _ROCKCHIP_IIS_H
+Index: linux-5.10.27/sound/soc/rockchip/rockchip_i2s_tdm.c
+===================================================================
+--- /dev/null
++++ linux-5.10.27/sound/soc/rockchip/rockchip_i2s_tdm.c
+@@ -0,0 +1,1702 @@
++/* sound/soc/rockchip/rockchip_i2s_tdm.c
++ *
++ * ALSA SoC Audio Layer - Rockchip I2S/TDM Controller driver
++ *
++ * Copyright (c) 2018 Rockchip Electronics Co. Ltd.
++ * Author: Sugar Zhang <sugar.zhang@rock-chips.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#include <linux/module.h>
++#include <linux/mfd/syscon.h>
++#include <linux/delay.h>
++#include <linux/of_gpio.h>
++#include <linux/of_device.h>
++#include <linux/of_address.h>
++#include <linux/clk.h>
++#include <linux/clk-provider.h>
++#include <linux/pm_runtime.h>
++#include <linux/regmap.h>
++#include <linux/reset.h>
++#include <linux/spinlock.h>
++#include <sound/pcm_params.h>
++#include <sound/dmaengine_pcm.h>
++
++#include "rockchip_i2s_tdm.h"
++
++#define DRV_NAME "rockchip-i2s-tdm"
++
++#define DEFAULT_MCLK_FS				256
++#define CH_GRP_MAX				4  /* The max channel 8 / 2 */
++#define MULTIPLEX_CH_MAX			10
++
++struct txrx_config {
++	u32 addr;
++	u32 reg;
++	u32 txonly;
++	u32 rxonly;
++};
++
++struct rk_i2s_soc_data {
++	u32 softrst_offset;
++	u32 grf_reg_offset;
++	u32 grf_shift;
++	int tx_reset_id;
++	int rx_reset_id;
++	int config_count;
++	const struct txrx_config *configs;
++	int (*init)(struct device *dev, u32 addr);
++};
++
++struct rk_i2s_tdm_dev {
++	struct device *dev;
++	struct clk *hclk;
++	struct clk *mclk_tx;
++	struct clk *mclk_rx;
++	/* The mclk_tx_src is parent of mclk_tx */
++	struct clk *mclk_tx_src;
++	/* The mclk_rx_src is parent of mclk_rx */
++	struct clk *mclk_rx_src;
++	/*
++	 * The mclk_root0 and mclk_root1 are root parent and supplies for
++	 * the different FS.
++	 *
++	 * e.g:
++	 * mclk_root0 is VPLL0, used for FS=48000Hz
++	 * mclk_root0 is VPLL1, used for FS=44100Hz
++	 */
++	struct clk *mclk_root0;
++	struct clk *mclk_root1;
++	struct regmap *regmap;
++	struct regmap *grf;
++	struct snd_dmaengine_dai_dma_data capture_dma_data;
++	struct snd_dmaengine_dai_dma_data playback_dma_data;
++	struct reset_control *tx_reset;
++	struct reset_control *rx_reset;
++	struct rk_i2s_soc_data *soc_data;
++	void __iomem *cru_base;
++	bool is_master_mode;
++	bool io_multiplex;
++	bool mclk_calibrate;
++	bool tdm_mode;
++	unsigned int mclk_rx_freq;
++	unsigned int mclk_tx_freq;
++	unsigned int bclk_fs;
++	unsigned int clk_trcm;
++	unsigned int i2s_sdis[CH_GRP_MAX];
++	unsigned int i2s_sdos[CH_GRP_MAX];
++	atomic_t refcount;
++	spinlock_t lock; /* xfer lock */
++};
++
++static int to_ch_num(unsigned int val)
++{
++	int chs;
++
++	switch (val) {
++	case I2S_CHN_4:
++		chs = 4;
++		break;
++	case I2S_CHN_6:
++		chs = 6;
++		break;
++	case I2S_CHN_8:
++		chs = 8;
++		break;
++	default:
++		chs = 2;
++		break;
++	}
++
++	return chs;
++}
++
++static int i2s_tdm_runtime_suspend(struct device *dev)
++{
++	struct rk_i2s_tdm_dev *i2s_tdm = dev_get_drvdata(dev);
++
++	regcache_cache_only(i2s_tdm->regmap, true);
++	if (!IS_ERR(i2s_tdm->mclk_tx))
++		clk_disable_unprepare(i2s_tdm->mclk_tx);
++	if (!IS_ERR(i2s_tdm->mclk_rx))
++		clk_disable_unprepare(i2s_tdm->mclk_rx);
++
++	return 0;
++}
++
++static int i2s_tdm_runtime_resume(struct device *dev)
++{
++	struct rk_i2s_tdm_dev *i2s_tdm = dev_get_drvdata(dev);
++	int ret;
++
++	if (!IS_ERR(i2s_tdm->mclk_tx))
++		clk_prepare_enable(i2s_tdm->mclk_tx);
++	if (!IS_ERR(i2s_tdm->mclk_rx))
++		clk_prepare_enable(i2s_tdm->mclk_rx);
++
++	regcache_cache_only(i2s_tdm->regmap, false);
++	regcache_mark_dirty(i2s_tdm->regmap);
++
++	ret = regcache_sync(i2s_tdm->regmap);
++	if (ret) {
++		if (!IS_ERR(i2s_tdm->mclk_tx))
++			clk_disable_unprepare(i2s_tdm->mclk_tx);
++		if (!IS_ERR(i2s_tdm->mclk_rx))
++			clk_disable_unprepare(i2s_tdm->mclk_rx);
++	}
++
++	return ret;
++}
++
++static inline struct rk_i2s_tdm_dev *to_info(struct snd_soc_dai *dai)
++{
++	return snd_soc_dai_get_drvdata(dai);
++}
++
++#if defined(CONFIG_ARM) && !defined(writeq)
++static inline void __raw_writeq(u64 val, volatile void __iomem *addr)
++{
++	asm volatile("strd %0, %H0, [%1]" : : "r" (val), "r" (addr));
++}
++#define writeq(v,c) ({ __iowmb(); __raw_writeq((__force u64) cpu_to_le64(v), c); })
++#endif
++
++static void rockchip_snd_xfer_reset_assert(struct rk_i2s_tdm_dev *i2s_tdm,
++					   int tx_bank, int tx_offset,
++					   int rx_bank, int rx_offset)
++{
++	void __iomem *cru_reset, *addr;
++	unsigned long flags;
++	u64 val;
++
++	cru_reset = i2s_tdm->cru_base + i2s_tdm->soc_data->softrst_offset;
++
++	switch (abs(tx_bank - rx_bank)) {
++	case 0:
++		writel(BIT(tx_offset) | BIT(rx_offset) |
++		       (BIT(tx_offset) << 16) | (BIT(rx_offset) << 16),
++		       cru_reset + (tx_bank * 4));
++		break;
++	case 1:
++		if (tx_bank < rx_bank) {
++			val = BIT(rx_offset) | (BIT(rx_offset) << 16);
++			val <<= 32;
++			val |= BIT(tx_offset) | (BIT(tx_offset) << 16);
++			addr = cru_reset + (tx_bank * 4);
++		} else {
++			val = BIT(tx_offset) | (BIT(tx_offset) << 16);
++			val <<= 32;
++			val |= BIT(rx_offset) | (BIT(rx_offset) << 16);
++			addr = cru_reset + (rx_bank * 4);
++		}
++
++		if (IS_ALIGNED((uintptr_t)addr, 8)) {
++			writeq(val, addr);
++			break;
++		}
++		/* fall through */
++	default:
++		local_irq_save(flags);
++		writel(BIT(tx_offset) | (BIT(tx_offset) << 16),
++		       cru_reset + (tx_bank * 4));
++		writel(BIT(rx_offset) | (BIT(rx_offset) << 16),
++		       cru_reset + (rx_bank * 4));
++		local_irq_restore(flags);
++		break;
++	}
++}
++
++static void rockchip_snd_xfer_reset_deassert(struct rk_i2s_tdm_dev *i2s_tdm,
++					     int tx_bank, int tx_offset,
++					     int rx_bank, int rx_offset)
++{
++	void __iomem *cru_reset, *addr;
++	unsigned long flags;
++	u64 val;
++
++	cru_reset = i2s_tdm->cru_base + i2s_tdm->soc_data->softrst_offset;
++
++	switch (abs(tx_bank - rx_bank)) {
++	case 0:
++		writel((BIT(tx_offset) << 16) | (BIT(rx_offset) << 16),
++		       cru_reset + (tx_bank * 4));
++		break;
++	case 1:
++		if (tx_bank < rx_bank) {
++			val = (BIT(rx_offset) << 16);
++			val <<= 32;
++			val |= (BIT(tx_offset) << 16);
++			addr = cru_reset + (tx_bank * 4);
++		} else {
++			val = (BIT(tx_offset) << 16);
++			val <<= 32;
++			val |= (BIT(rx_offset) << 16);
++			addr = cru_reset + (rx_bank * 4);
++		}
++
++		if (IS_ALIGNED((uintptr_t)addr, 8)) {
++			writeq(val, addr);
++			break;
++		}
++		/* fall through */
++	default:
++		local_irq_save(flags);
++		writel((BIT(tx_offset) << 16),
++		       cru_reset + (tx_bank * 4));
++		writel((BIT(rx_offset) << 16),
++		       cru_reset + (rx_bank * 4));
++		local_irq_restore(flags);
++		break;
++	}
++}
++
++/*
++ * to make sure tx/rx reset at the same time when clk_trcm > 0
++ * if not, will lead lrck is abnormal.
++ */
++static void rockchip_snd_xfer_sync_reset(struct rk_i2s_tdm_dev *i2s_tdm)
++{
++	int tx_id, rx_id;
++	int tx_bank, rx_bank, tx_offset, rx_offset;
++
++	if (!i2s_tdm->cru_base || !i2s_tdm->soc_data)
++		return;
++
++	tx_id = i2s_tdm->soc_data->tx_reset_id;
++	rx_id = i2s_tdm->soc_data->rx_reset_id;
++	if (tx_id < 0 || rx_id < 0) {
++		dev_err(i2s_tdm->dev, "invalid reset id\n");
++		return;
++	}
++
++	tx_bank = tx_id / 16;
++	tx_offset = tx_id % 16;
++	rx_bank = rx_id / 16;
++	rx_offset = rx_id % 16;
++	dev_dbg(i2s_tdm->dev,
++		"tx_bank: %d, rx_bank: %d,tx_offset: %d, rx_offset: %d\n",
++		tx_bank, rx_bank, tx_offset, rx_offset);
++
++	rockchip_snd_xfer_reset_assert(i2s_tdm, tx_bank, tx_offset,
++				       rx_bank, rx_offset);
++
++	udelay(150);
++
++	rockchip_snd_xfer_reset_deassert(i2s_tdm, tx_bank, tx_offset,
++					 rx_bank, rx_offset);
++}
++
++/* only used when clk_trcm > 0 */
++static void rockchip_snd_txrxctrl(struct snd_pcm_substream *substream,
++				  struct snd_soc_dai *dai, int on)
++{
++	struct rk_i2s_tdm_dev *i2s_tdm = to_info(dai);
++	unsigned int val = 0;
++	int retry = 10;
++
++	spin_lock(&i2s_tdm->lock);
++	if (on) {
++		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++			regmap_update_bits(i2s_tdm->regmap, I2S_DMACR,
++					   I2S_DMACR_TDE_ENABLE,
++					   I2S_DMACR_TDE_ENABLE);
++		else
++			regmap_update_bits(i2s_tdm->regmap, I2S_DMACR,
++					   I2S_DMACR_RDE_ENABLE,
++					   I2S_DMACR_RDE_ENABLE);
++
++		if (atomic_inc_return(&i2s_tdm->refcount) == 1) {
++			rockchip_snd_xfer_sync_reset(i2s_tdm);
++			regmap_update_bits(i2s_tdm->regmap, I2S_XFER,
++					   I2S_XFER_TXS_START |
++					   I2S_XFER_RXS_START,
++					   I2S_XFER_TXS_START |
++					   I2S_XFER_RXS_START);
++		}
++	} else {
++		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++			regmap_update_bits(i2s_tdm->regmap, I2S_DMACR,
++					   I2S_DMACR_TDE_ENABLE,
++					   I2S_DMACR_TDE_DISABLE);
++		else
++			regmap_update_bits(i2s_tdm->regmap, I2S_DMACR,
++					   I2S_DMACR_RDE_ENABLE,
++					   I2S_DMACR_RDE_DISABLE);
++
++		if (atomic_dec_and_test(&i2s_tdm->refcount)) {
++			regmap_update_bits(i2s_tdm->regmap, I2S_XFER,
++					   I2S_XFER_TXS_START |
++					   I2S_XFER_RXS_START,
++					   I2S_XFER_TXS_STOP |
++					   I2S_XFER_RXS_STOP);
++
++			udelay(150);
++			regmap_update_bits(i2s_tdm->regmap, I2S_CLR,
++					   I2S_CLR_TXC | I2S_CLR_RXC,
++					   I2S_CLR_TXC | I2S_CLR_RXC);
++
++			regmap_read(i2s_tdm->regmap, I2S_CLR, &val);
++
++			/* Should wait for clear operation to finish */
++			while (val) {
++				regmap_read(i2s_tdm->regmap, I2S_CLR, &val);
++				retry--;
++				if (!retry) {
++					dev_info(i2s_tdm->dev, "reset txrx\n");
++					rockchip_snd_xfer_sync_reset(i2s_tdm);
++					break;
++				}
++			}
++		}
++	}
++	spin_unlock(&i2s_tdm->lock);
++}
++
++static void rockchip_snd_txctrl(struct rk_i2s_tdm_dev *i2s_tdm, int on)
++{
++	unsigned int val = 0;
++	int retry = 10;
++
++	if (on) {
++		regmap_update_bits(i2s_tdm->regmap, I2S_DMACR,
++				   I2S_DMACR_TDE_ENABLE, I2S_DMACR_TDE_ENABLE);
++
++		regmap_update_bits(i2s_tdm->regmap, I2S_XFER,
++				   I2S_XFER_TXS_START,
++				   I2S_XFER_TXS_START);
++	} else {
++		regmap_update_bits(i2s_tdm->regmap, I2S_DMACR,
++				   I2S_DMACR_TDE_ENABLE, I2S_DMACR_TDE_DISABLE);
++
++		regmap_update_bits(i2s_tdm->regmap, I2S_XFER,
++				   I2S_XFER_TXS_START,
++				   I2S_XFER_TXS_STOP);
++
++		udelay(150);
++		regmap_update_bits(i2s_tdm->regmap, I2S_CLR,
++				   I2S_CLR_TXC,
++				   I2S_CLR_TXC);
++
++		regmap_read(i2s_tdm->regmap, I2S_CLR, &val);
++
++		/* Should wait for clear operation to finish */
++		while (val) {
++			regmap_read(i2s_tdm->regmap, I2S_CLR, &val);
++			retry--;
++			if (!retry) {
++				dev_warn(i2s_tdm->dev, "reset tx\n");
++				reset_control_assert(i2s_tdm->tx_reset);
++				udelay(1);
++				reset_control_deassert(i2s_tdm->tx_reset);
++				break;
++			}
++		}
++	}
++}
++
++static void rockchip_snd_rxctrl(struct rk_i2s_tdm_dev *i2s_tdm, int on)
++{
++	unsigned int val = 0;
++	int retry = 10;
++
++	if (on) {
++		regmap_update_bits(i2s_tdm->regmap, I2S_DMACR,
++				   I2S_DMACR_RDE_ENABLE, I2S_DMACR_RDE_ENABLE);
++
++		regmap_update_bits(i2s_tdm->regmap, I2S_XFER,
++				   I2S_XFER_RXS_START,
++				   I2S_XFER_RXS_START);
++	} else {
++		regmap_update_bits(i2s_tdm->regmap, I2S_DMACR,
++				   I2S_DMACR_RDE_ENABLE, I2S_DMACR_RDE_DISABLE);
++
++		regmap_update_bits(i2s_tdm->regmap, I2S_XFER,
++				   I2S_XFER_RXS_START,
++				   I2S_XFER_RXS_STOP);
++
++		udelay(150);
++		regmap_update_bits(i2s_tdm->regmap, I2S_CLR,
++				   I2S_CLR_RXC,
++				   I2S_CLR_RXC);
++
++		regmap_read(i2s_tdm->regmap, I2S_CLR, &val);
++
++		/* Should wait for clear operation to finish */
++		while (val) {
++			regmap_read(i2s_tdm->regmap, I2S_CLR, &val);
++			retry--;
++			if (!retry) {
++				dev_warn(i2s_tdm->dev, "reset rx\n");
++				reset_control_assert(i2s_tdm->rx_reset);
++				udelay(1);
++				reset_control_deassert(i2s_tdm->rx_reset);
++				break;
++			}
++		}
++	}
++}
++
++static int rockchip_i2s_tdm_set_fmt(struct snd_soc_dai *cpu_dai,
++				    unsigned int fmt)
++{
++	struct rk_i2s_tdm_dev *i2s_tdm = to_info(cpu_dai);
++	unsigned int mask = 0, val = 0, tdm_val = 0;
++	int ret = 0;
++	bool is_tdm = i2s_tdm->tdm_mode;
++
++	pm_runtime_get_sync(cpu_dai->dev);
++	mask = I2S_CKR_MSS_MASK;
++	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
++	case SND_SOC_DAIFMT_CBS_CFS:
++		/* Set source clock in Master mode */
++		val = I2S_CKR_MSS_MASTER;
++		i2s_tdm->is_master_mode = true;
++		break;
++	case SND_SOC_DAIFMT_CBM_CFM:
++		val = I2S_CKR_MSS_SLAVE;
++		i2s_tdm->is_master_mode = false;
++		break;
++	default:
++		ret = -EINVAL;
++		goto err_pm_put;
++	}
++
++	regmap_update_bits(i2s_tdm->regmap, I2S_CKR, mask, val);
++
++	mask = I2S_CKR_CKP_MASK;
++	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
++	case SND_SOC_DAIFMT_NB_NF:
++		val = I2S_CKR_CKP_NEG;
++		break;
++	case SND_SOC_DAIFMT_IB_NF:
++		val = I2S_CKR_CKP_POS;
++		break;
++	default:
++		ret = -EINVAL;
++		goto err_pm_put;
++	}
++
++	regmap_update_bits(i2s_tdm->regmap, I2S_CKR, mask, val);
++
++	mask = I2S_TXCR_IBM_MASK | I2S_TXCR_TFS_MASK | I2S_TXCR_PBM_MASK;
++	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
++	case SND_SOC_DAIFMT_RIGHT_J:
++		val = I2S_TXCR_IBM_RSJM;
++		break;
++	case SND_SOC_DAIFMT_LEFT_J:
++		val = I2S_TXCR_IBM_LSJM;
++		break;
++	case SND_SOC_DAIFMT_I2S:
++		val = I2S_TXCR_IBM_NORMAL;
++		break;
++	case SND_SOC_DAIFMT_DSP_A: /* PCM no delay mode */
++		val = I2S_TXCR_TFS_PCM;
++		break;
++	case SND_SOC_DAIFMT_DSP_B: /* PCM delay 1 mode */
++		val = I2S_TXCR_TFS_PCM | I2S_TXCR_PBM_MODE(1);
++		break;
++	default:
++		ret = -EINVAL;
++		goto err_pm_put;
++	}
++
++	regmap_update_bits(i2s_tdm->regmap, I2S_TXCR, mask, val);
++
++	mask = I2S_RXCR_IBM_MASK | I2S_RXCR_TFS_MASK | I2S_RXCR_PBM_MASK;
++	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
++	case SND_SOC_DAIFMT_RIGHT_J:
++		val = I2S_RXCR_IBM_RSJM;
++		break;
++	case SND_SOC_DAIFMT_LEFT_J:
++		val = I2S_RXCR_IBM_LSJM;
++		break;
++	case SND_SOC_DAIFMT_I2S:
++		val = I2S_RXCR_IBM_NORMAL;
++		break;
++	case SND_SOC_DAIFMT_DSP_A: /* PCM no delay mode */
++		val = I2S_RXCR_TFS_PCM;
++		break;
++	case SND_SOC_DAIFMT_DSP_B: /* PCM delay 1 mode */
++		val = I2S_RXCR_TFS_PCM | I2S_RXCR_PBM_MODE(1);
++		break;
++	default:
++		ret = -EINVAL;
++		goto err_pm_put;
++	}
++
++	regmap_update_bits(i2s_tdm->regmap, I2S_RXCR, mask, val);
++
++	if (is_tdm) {
++		switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
++		case SND_SOC_DAIFMT_RIGHT_J:
++			val = I2S_TXCR_TFS_TDM_I2S;
++			tdm_val = TDM_SHIFT_CTRL(2);
++			break;
++		case SND_SOC_DAIFMT_LEFT_J:
++			val = I2S_TXCR_TFS_TDM_I2S;
++			tdm_val = TDM_SHIFT_CTRL(1);
++			break;
++		case SND_SOC_DAIFMT_I2S:
++			val = I2S_TXCR_TFS_TDM_I2S;
++			tdm_val = TDM_SHIFT_CTRL(0);
++			break;
++		case SND_SOC_DAIFMT_DSP_A:
++			val = I2S_TXCR_TFS_TDM_PCM;
++			tdm_val = TDM_SHIFT_CTRL(0);
++			break;
++		case SND_SOC_DAIFMT_DSP_B:
++			val = I2S_TXCR_TFS_TDM_PCM;
++			tdm_val = TDM_SHIFT_CTRL(2);
++			break;
++		default:
++			ret = -EINVAL;
++			goto err_pm_put;
++		}
++
++		tdm_val |= TDM_FSYNC_WIDTH_SEL1(1);
++		tdm_val |= TDM_FSYNC_WIDTH_ONE_FRAME;
++
++		mask = I2S_TXCR_TFS_MASK;
++		regmap_update_bits(i2s_tdm->regmap, I2S_TXCR, mask, val);
++		regmap_update_bits(i2s_tdm->regmap, I2S_RXCR, mask, val);
++
++		mask = TDM_FSYNC_WIDTH_SEL1_MSK | TDM_FSYNC_WIDTH_SEL0_MSK |
++		       TDM_SHIFT_CTRL_MSK;
++		regmap_update_bits(i2s_tdm->regmap, I2S_TDM_TXCR,
++				   mask, tdm_val);
++		regmap_update_bits(i2s_tdm->regmap, I2S_TDM_RXCR,
++				   mask, tdm_val);
++	}
++
++err_pm_put:
++	pm_runtime_put(cpu_dai->dev);
++
++	return ret;
++}
++
++static void rockchip_i2s_tdm_xfer_pause(struct snd_pcm_substream *substream,
++					struct rk_i2s_tdm_dev *i2s_tdm)
++{
++	int stream;
++	unsigned int val = 0;
++	int retry = 10;
++
++	stream = SNDRV_PCM_STREAM_LAST - substream->stream;
++	if (stream == SNDRV_PCM_STREAM_PLAYBACK)
++		regmap_update_bits(i2s_tdm->regmap, I2S_DMACR,
++				   I2S_DMACR_TDE_ENABLE,
++				   I2S_DMACR_TDE_DISABLE);
++	else
++		regmap_update_bits(i2s_tdm->regmap, I2S_DMACR,
++				   I2S_DMACR_RDE_ENABLE,
++				   I2S_DMACR_RDE_DISABLE);
++
++	regmap_update_bits(i2s_tdm->regmap, I2S_XFER,
++			   I2S_XFER_TXS_START |
++			   I2S_XFER_RXS_START,
++			   I2S_XFER_TXS_STOP |
++			   I2S_XFER_RXS_STOP);
++
++	udelay(150);
++	regmap_update_bits(i2s_tdm->regmap, I2S_CLR,
++			   I2S_CLR_TXC | I2S_CLR_RXC,
++			   I2S_CLR_TXC | I2S_CLR_RXC);
++
++	regmap_read(i2s_tdm->regmap, I2S_CLR, &val);
++
++	/* Should wait for clear operation to finish */
++	while (val) {
++		regmap_read(i2s_tdm->regmap, I2S_CLR, &val);
++		retry--;
++		if (!retry) {
++			dev_info(i2s_tdm->dev, "reset txrx\n");
++			rockchip_snd_xfer_sync_reset(i2s_tdm);
++			break;
++		}
++	}
++}
++
++static void rockchip_i2s_tdm_xfer_resume(struct snd_pcm_substream *substream,
++					 struct rk_i2s_tdm_dev *i2s_tdm)
++{
++	int stream;
++
++	stream = SNDRV_PCM_STREAM_LAST - substream->stream;
++	if (stream == SNDRV_PCM_STREAM_PLAYBACK)
++		regmap_update_bits(i2s_tdm->regmap, I2S_DMACR,
++				   I2S_DMACR_TDE_ENABLE,
++				   I2S_DMACR_TDE_ENABLE);
++	else
++		regmap_update_bits(i2s_tdm->regmap, I2S_DMACR,
++				   I2S_DMACR_RDE_ENABLE,
++				   I2S_DMACR_RDE_ENABLE);
++
++	regmap_update_bits(i2s_tdm->regmap, I2S_XFER,
++			   I2S_XFER_TXS_START |
++			   I2S_XFER_RXS_START,
++			   I2S_XFER_TXS_START |
++			   I2S_XFER_RXS_START);
++}
++
++static int rockchip_i2s_tdm_calibrate_mclk(struct rk_i2s_tdm_dev *i2s_tdm,
++					   struct snd_pcm_substream *substream,
++					   unsigned int lrck_freq)
++{
++	struct clk *mclk_root;
++	struct clk *mclk_parent;
++	/* It's 256 times higher than a high sample rate */
++	unsigned int mclk_parent_freq;
++	int ret;
++
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		mclk_parent = i2s_tdm->mclk_tx_src;
++	else
++		mclk_parent = i2s_tdm->mclk_rx_src;
++
++	switch (lrck_freq) {
++	case 8000:
++	case 16000:
++	case 24000:
++	case 32000:
++	case 48000:
++	case 64000:
++	case 96000:
++	case 192000:
++		mclk_root = i2s_tdm->mclk_root0;
++		mclk_parent_freq = DEFAULT_MCLK_FS * 192000;
++		break;
++	case 11025:
++	case 22050:
++	case 44100:
++	case 88200:
++	case 176400:
++		mclk_root = i2s_tdm->mclk_root1;
++		mclk_parent_freq = DEFAULT_MCLK_FS * 176400;
++		break;
++	default:
++		dev_err(i2s_tdm->dev, "Invalid LRCK freq: %u Hz\n",
++			lrck_freq);
++		return -EINVAL;
++	}
++
++	ret = clk_set_parent(mclk_parent, mclk_root);
++	if (ret < 0) {
++		dev_err(i2s_tdm->dev, "parent: %s set root: %s failed: %d\n",
++			__clk_get_name(mclk_parent),
++			__clk_get_name(mclk_root),
++			ret);
++		goto out;
++	}
++
++	ret = clk_set_rate(mclk_parent, mclk_parent_freq);
++	if (ret < 0) {
++		dev_err(i2s_tdm->dev, "parent: %s set freq: %d failed: %d\n",
++			__clk_get_name(mclk_parent),
++			mclk_parent_freq,
++			ret);
++		goto out;
++	}
++
++out:
++	return ret;
++}
++
++static int rockchip_i2s_tdm_set_mclk(struct rk_i2s_tdm_dev *i2s_tdm,
++				     struct snd_pcm_substream *substream,
++				     struct clk **mclk)
++{
++	unsigned int mclk_freq;
++	int ret;
++
++	if (i2s_tdm->clk_trcm) {
++		if (i2s_tdm->mclk_tx_freq != i2s_tdm->mclk_rx_freq) {
++			dev_err(i2s_tdm->dev,
++				"clk_trcm, tx: %d and rx: %d should be same\n",
++				i2s_tdm->mclk_tx_freq,
++				i2s_tdm->mclk_rx_freq);
++			ret = -EINVAL;
++			goto err;
++		}
++
++		ret = clk_set_rate(i2s_tdm->mclk_tx, i2s_tdm->mclk_tx_freq);
++		if (ret < 0) {
++			dev_err(i2s_tdm->dev,
++				"Set mclk_tx: %s freq: %d failed: %d\n",
++				__clk_get_name(i2s_tdm->mclk_tx),
++				i2s_tdm->mclk_tx_freq, ret);
++			goto err;
++		}
++
++		ret = clk_set_rate(i2s_tdm->mclk_rx, i2s_tdm->mclk_rx_freq);
++		if (ret < 0) {
++			dev_err(i2s_tdm->dev,
++				"Set mclk_rx: %s freq: %d failed: %d\n",
++				__clk_get_name(i2s_tdm->mclk_rx),
++				i2s_tdm->mclk_rx_freq, ret);
++			goto err;
++		}
++
++		/* Using mclk_rx is ok. */
++		*mclk = i2s_tdm->mclk_tx;
++	} else {
++		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
++			*mclk = i2s_tdm->mclk_tx;
++			mclk_freq = i2s_tdm->mclk_tx_freq;
++		} else {
++			*mclk = i2s_tdm->mclk_rx;
++			mclk_freq = i2s_tdm->mclk_rx_freq;
++		}
++
++		ret = clk_set_rate(*mclk, mclk_freq);
++		if (ret < 0) {
++			dev_err(i2s_tdm->dev, "Set mclk_%s: %s freq: %d failed: %d\n",
++				substream->stream ? "rx" : "tx",
++				__clk_get_name(*mclk), mclk_freq, ret);
++			goto err;
++		}
++	}
++
++	return 0;
++
++err:
++	return ret;
++}
++
++static int rockchip_i2s_tdm_hw_params(struct snd_pcm_substream *substream,
++				      struct snd_pcm_hw_params *params,
++				      struct snd_soc_dai *dai)
++{
++	struct rk_i2s_tdm_dev *i2s_tdm = to_info(dai);
++	struct clk *mclk;
++	int ret = 0;
++	unsigned int val = 0;
++	unsigned int mclk_rate, bclk_rate, div_bclk, div_lrck;
++
++	if (i2s_tdm->mclk_calibrate)
++		rockchip_i2s_tdm_calibrate_mclk(i2s_tdm, substream,
++						params_rate(params));
++
++	ret = rockchip_i2s_tdm_set_mclk(i2s_tdm, substream, &mclk);
++	if (ret)
++		return ret;
++
++	if (i2s_tdm->clk_trcm) {
++		spin_lock(&i2s_tdm->lock);
++		if (atomic_read(&i2s_tdm->refcount))
++			rockchip_i2s_tdm_xfer_pause(substream, i2s_tdm);
++	}
++
++	if (i2s_tdm->is_master_mode) {
++		mclk_rate = clk_get_rate(mclk);
++		bclk_rate = i2s_tdm->bclk_fs * params_rate(params);
++		if (!bclk_rate) {
++			ret = -EINVAL;
++			goto err;
++		}
++		div_bclk = DIV_ROUND_CLOSEST(mclk_rate, bclk_rate);
++		div_lrck = bclk_rate / params_rate(params);
++		if (i2s_tdm->clk_trcm) {
++			regmap_update_bits(i2s_tdm->regmap, I2S_CLKDIV,
++					   I2S_CLKDIV_TXM_MASK | I2S_CLKDIV_RXM_MASK,
++					   I2S_CLKDIV_TXM(div_bclk) | I2S_CLKDIV_RXM(div_bclk));
++			regmap_update_bits(i2s_tdm->regmap, I2S_CKR,
++					   I2S_CKR_TSD_MASK | I2S_CKR_RSD_MASK,
++					   I2S_CKR_TSD(div_lrck) | I2S_CKR_RSD(div_lrck));
++		} else if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
++			regmap_update_bits(i2s_tdm->regmap, I2S_CLKDIV,
++					   I2S_CLKDIV_TXM_MASK,
++					   I2S_CLKDIV_TXM(div_bclk));
++			regmap_update_bits(i2s_tdm->regmap, I2S_CKR,
++					   I2S_CKR_TSD_MASK,
++					   I2S_CKR_TSD(div_lrck));
++		} else {
++			regmap_update_bits(i2s_tdm->regmap, I2S_CLKDIV,
++					   I2S_CLKDIV_RXM_MASK,
++					   I2S_CLKDIV_RXM(div_bclk));
++			regmap_update_bits(i2s_tdm->regmap, I2S_CKR,
++					   I2S_CKR_RSD_MASK,
++					   I2S_CKR_RSD(div_lrck));
++		}
++	}
++
++	switch (params_format(params)) {
++	case SNDRV_PCM_FORMAT_S8:
++		val |= I2S_TXCR_VDW(8);
++		break;
++	case SNDRV_PCM_FORMAT_S16_LE:
++		val |= I2S_TXCR_VDW(16);
++		break;
++	case SNDRV_PCM_FORMAT_S20_3LE:
++		val |= I2S_TXCR_VDW(20);
++		break;
++	case SNDRV_PCM_FORMAT_S24_LE:
++		val |= I2S_TXCR_VDW(24);
++		break;
++	case SNDRV_PCM_FORMAT_S32_LE:
++		val |= I2S_TXCR_VDW(32);
++		break;
++	default:
++		ret = -EINVAL;
++		goto err;
++	}
++
++	switch (params_channels(params)) {
++	case 8:
++		val |= I2S_CHN_8;
++		break;
++	case 6:
++		val |= I2S_CHN_6;
++		break;
++	case 4:
++		val |= I2S_CHN_4;
++		break;
++	case 2:
++		val |= I2S_CHN_2;
++		break;
++	default:
++		dev_err(i2s_tdm->dev, "invalid channel: %d\n",
++			params_channels(params));
++		ret = -EINVAL;
++		goto err;
++	}
++
++	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
++		regmap_update_bits(i2s_tdm->regmap, I2S_RXCR,
++				   I2S_RXCR_VDW_MASK | I2S_RXCR_CSR_MASK,
++				   val);
++	else
++		regmap_update_bits(i2s_tdm->regmap, I2S_TXCR,
++				   I2S_TXCR_VDW_MASK | I2S_TXCR_CSR_MASK,
++				   val);
++
++	if (i2s_tdm->io_multiplex) {
++		int usable_chs = MULTIPLEX_CH_MAX;
++
++		if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
++			struct snd_pcm_str *playback_str =
++				&substream->pcm->streams[SNDRV_PCM_STREAM_PLAYBACK];
++
++			if (playback_str->substream_opened) {
++				regmap_read(i2s_tdm->regmap, I2S_TXCR, &val);
++				val &= I2S_TXCR_CSR_MASK;
++				usable_chs = MULTIPLEX_CH_MAX - to_ch_num(val);
++			}
++
++			regmap_read(i2s_tdm->regmap, I2S_RXCR, &val);
++			val &= I2S_RXCR_CSR_MASK;
++
++			if (to_ch_num(val) > usable_chs) {
++				dev_err(i2s_tdm->dev,
++					"Capture chs(%d) > usable chs(%d)\n",
++					to_ch_num(val), usable_chs);
++				ret = -EINVAL;
++				goto err;
++			}
++
++			switch (val) {
++			case I2S_CHN_4:
++				val = I2S_IO_6CH_OUT_4CH_IN;
++				break;
++			case I2S_CHN_6:
++				val = I2S_IO_4CH_OUT_6CH_IN;
++				break;
++			case I2S_CHN_8:
++				val = I2S_IO_2CH_OUT_8CH_IN;
++				break;
++			default:
++				val = I2S_IO_8CH_OUT_2CH_IN;
++				break;
++			}
++		} else {
++			struct snd_pcm_str *capture_str =
++				&substream->pcm->streams[SNDRV_PCM_STREAM_CAPTURE];
++
++			if (capture_str->substream_opened) {
++				regmap_read(i2s_tdm->regmap, I2S_RXCR, &val);
++				val &= I2S_RXCR_CSR_MASK;
++				usable_chs = MULTIPLEX_CH_MAX - to_ch_num(val);
++			}
++
++			regmap_read(i2s_tdm->regmap, I2S_TXCR, &val);
++			val &= I2S_TXCR_CSR_MASK;
++
++			if (to_ch_num(val) > usable_chs) {
++				dev_err(i2s_tdm->dev,
++					"Playback chs(%d) > usable chs(%d)\n",
++					to_ch_num(val), usable_chs);
++				ret = -EINVAL;
++				goto err;
++			}
++
++			switch (val) {
++			case I2S_CHN_4:
++				val = I2S_IO_4CH_OUT_6CH_IN;
++				break;
++			case I2S_CHN_6:
++				val = I2S_IO_6CH_OUT_4CH_IN;
++				break;
++			case I2S_CHN_8:
++				val = I2S_IO_8CH_OUT_2CH_IN;
++				break;
++			default:
++				val = I2S_IO_2CH_OUT_8CH_IN;
++				break;
++			}
++		}
++
++		val <<= i2s_tdm->soc_data->grf_shift;
++		val |= (I2S_IO_DIRECTION_MASK << i2s_tdm->soc_data->grf_shift) << 16;
++		regmap_write(i2s_tdm->grf, i2s_tdm->soc_data->grf_reg_offset, val);
++	}
++
++	regmap_update_bits(i2s_tdm->regmap, I2S_DMACR, I2S_DMACR_TDL_MASK,
++			   I2S_DMACR_TDL(16));
++	regmap_update_bits(i2s_tdm->regmap, I2S_DMACR, I2S_DMACR_RDL_MASK,
++			   I2S_DMACR_RDL(16));
++
++	if (i2s_tdm->clk_trcm) {
++		if (atomic_read(&i2s_tdm->refcount))
++			rockchip_i2s_tdm_xfer_resume(substream, i2s_tdm);
++		spin_unlock(&i2s_tdm->lock);
++	}
++
++	return 0;
++
++err:
++	if (i2s_tdm->clk_trcm)
++		spin_unlock(&i2s_tdm->lock);
++	return ret;
++}
++
++static int rockchip_i2s_tdm_trigger(struct snd_pcm_substream *substream,
++				    int cmd, struct snd_soc_dai *dai)
++{
++	struct rk_i2s_tdm_dev *i2s_tdm = to_info(dai);
++	int ret = 0;
++
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++	case SNDRV_PCM_TRIGGER_RESUME:
++	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
++		if (i2s_tdm->clk_trcm)
++			rockchip_snd_txrxctrl(substream, dai, 1);
++		else if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
++			rockchip_snd_rxctrl(i2s_tdm, 1);
++		else
++			rockchip_snd_txctrl(i2s_tdm, 1);
++		break;
++	case SNDRV_PCM_TRIGGER_SUSPEND:
++	case SNDRV_PCM_TRIGGER_STOP:
++	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
++		if (i2s_tdm->clk_trcm)
++			rockchip_snd_txrxctrl(substream, dai, 0);
++		else if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
++			rockchip_snd_rxctrl(i2s_tdm, 0);
++		else
++			rockchip_snd_txctrl(i2s_tdm, 0);
++		break;
++	default:
++		ret = -EINVAL;
++		break;
++	}
++
++	return ret;
++}
++
++static int rockchip_i2s_tdm_set_sysclk(struct snd_soc_dai *cpu_dai, int stream,
++				       unsigned int freq, int dir)
++{
++	struct rk_i2s_tdm_dev *i2s_tdm = to_info(cpu_dai);
++
++	/* Put set mclk rate into rockchip_i2s_tdm_set_mclk() */
++	if (i2s_tdm->clk_trcm) {
++		i2s_tdm->mclk_tx_freq = freq;
++		i2s_tdm->mclk_rx_freq = freq;
++	} else {
++		if (stream == SNDRV_PCM_STREAM_PLAYBACK)
++			i2s_tdm->mclk_tx_freq = freq;
++		else
++			i2s_tdm->mclk_rx_freq = freq;
++	}
++
++	dev_dbg(i2s_tdm->dev, "The target mclk_%s freq is: %d\n",
++		stream ? "rx" : "tx", freq);
++
++	return 0;
++}
++
++static int rockchip_i2s_tdm_dai_probe(struct snd_soc_dai *dai)
++{
++	struct rk_i2s_tdm_dev *i2s_tdm = snd_soc_dai_get_drvdata(dai);
++
++	dai->capture_dma_data = &i2s_tdm->capture_dma_data;
++	dai->playback_dma_data = &i2s_tdm->playback_dma_data;
++
++	return 0;
++}
++
++static int rockchip_dai_tdm_slot(struct snd_soc_dai *dai,
++				 unsigned int tx_mask, unsigned int rx_mask,
++				 int slots, int slot_width)
++{
++	struct rk_i2s_tdm_dev *i2s_tdm = snd_soc_dai_get_drvdata(dai);
++	unsigned int mask, val;
++
++	i2s_tdm->tdm_mode = true;
++	i2s_tdm->bclk_fs = slots * slot_width;
++	mask = TDM_SLOT_BIT_WIDTH_MSK | TDM_FRAME_WIDTH_MSK;
++	val = TDM_SLOT_BIT_WIDTH(slot_width) |
++	      TDM_FRAME_WIDTH(slots * slot_width);
++	regmap_update_bits(i2s_tdm->regmap, I2S_TDM_TXCR,
++			   mask, val);
++	regmap_update_bits(i2s_tdm->regmap, I2S_TDM_RXCR,
++			   mask, val);
++
++	return 0;
++}
++
++static const struct snd_soc_dai_ops rockchip_i2s_tdm_dai_ops = {
++	.hw_params = rockchip_i2s_tdm_hw_params,
++	.set_sysclk = rockchip_i2s_tdm_set_sysclk,
++	.set_fmt = rockchip_i2s_tdm_set_fmt,
++	.set_tdm_slot = rockchip_dai_tdm_slot,
++	.trigger = rockchip_i2s_tdm_trigger,
++};
++
++static const struct snd_soc_component_driver rockchip_i2s_tdm_component = {
++	.name = DRV_NAME,
++};
++
++static bool rockchip_i2s_tdm_wr_reg(struct device *dev, unsigned int reg)
++{
++	switch (reg) {
++	case I2S_TXCR:
++	case I2S_RXCR:
++	case I2S_CKR:
++	case I2S_DMACR:
++	case I2S_INTCR:
++	case I2S_XFER:
++	case I2S_CLR:
++	case I2S_TXDR:
++	case I2S_TDM_TXCR:
++	case I2S_TDM_RXCR:
++	case I2S_CLKDIV:
++		return true;
++	default:
++		return false;
++	}
++}
++
++static bool rockchip_i2s_tdm_rd_reg(struct device *dev, unsigned int reg)
++{
++	switch (reg) {
++	case I2S_TXCR:
++	case I2S_RXCR:
++	case I2S_CKR:
++	case I2S_DMACR:
++	case I2S_INTCR:
++	case I2S_XFER:
++	case I2S_CLR:
++	case I2S_TXDR:
++	case I2S_RXDR:
++	case I2S_TXFIFOLR:
++	case I2S_INTSR:
++	case I2S_RXFIFOLR:
++	case I2S_TDM_TXCR:
++	case I2S_TDM_RXCR:
++	case I2S_CLKDIV:
++		return true;
++	default:
++		return false;
++	}
++}
++
++static bool rockchip_i2s_tdm_volatile_reg(struct device *dev, unsigned int reg)
++{
++	switch (reg) {
++	case I2S_TXFIFOLR:
++	case I2S_INTSR:
++	case I2S_CLR:
++	case I2S_TXDR:
++	case I2S_RXDR:
++	case I2S_RXFIFOLR:
++		return true;
++	default:
++		return false;
++	}
++}
++
++static bool rockchip_i2s_tdm_precious_reg(struct device *dev, unsigned int reg)
++{
++	switch (reg) {
++	case I2S_RXDR:
++		return true;
++	default:
++		return false;
++	}
++}
++
++static const struct reg_default rockchip_i2s_tdm_reg_defaults[] = {
++	{0x00, 0x7200000f},
++	{0x04, 0x01c8000f},
++	{0x08, 0x00001f1f},
++	{0x10, 0x001f0000},
++	{0x14, 0x01f00000},
++	{0x30, 0x00003eff},
++	{0x34, 0x00003eff},
++	{0x38, 0x00000707},
++};
++
++static const struct regmap_config rockchip_i2s_tdm_regmap_config = {
++	.reg_bits = 32,
++	.reg_stride = 4,
++	.val_bits = 32,
++	.max_register = I2S_CLKDIV,
++	.reg_defaults = rockchip_i2s_tdm_reg_defaults,
++	.num_reg_defaults = ARRAY_SIZE(rockchip_i2s_tdm_reg_defaults),
++	.writeable_reg = rockchip_i2s_tdm_wr_reg,
++	.readable_reg = rockchip_i2s_tdm_rd_reg,
++	.volatile_reg = rockchip_i2s_tdm_volatile_reg,
++	.precious_reg = rockchip_i2s_tdm_precious_reg,
++	.cache_type = REGCACHE_FLAT,
++};
++
++static int common_soc_init(struct device *dev, u32 addr)
++{
++	struct rk_i2s_tdm_dev *i2s_tdm = dev_get_drvdata(dev);
++	const struct txrx_config *configs = i2s_tdm->soc_data->configs;
++	u32 reg = 0, val = 0, trcm = i2s_tdm->clk_trcm;
++	int i;
++
++	switch (trcm) {
++	case I2S_CKR_TRCM_TXONLY:
++		/* fall through */
++	case I2S_CKR_TRCM_RXONLY:
++		break;
++	default:
++		return 0;
++	}
++
++	for (i = 0; i < i2s_tdm->soc_data->config_count; i++) {
++		if (addr != configs[i].addr)
++			continue;
++		reg = configs[i].reg;
++		if (trcm == I2S_CKR_TRCM_TXONLY)
++			val = configs[i].txonly;
++		else
++			val = configs[i].rxonly;
++	}
++
++	if (reg)
++		regmap_write(i2s_tdm->grf, reg, val);
++
++	return 0;
++}
++
++static const struct txrx_config px30_txrx_config[] = {
++	{ 0xff060000, 0x184, PX30_I2S0_CLK_TXONLY, PX30_I2S0_CLK_RXONLY },
++};
++
++static const struct txrx_config rk1808_txrx_config[] = {
++	{ 0xff7e0000, 0x190, RK1808_I2S0_CLK_TXONLY, RK1808_I2S0_CLK_RXONLY },
++};
++
++static const struct txrx_config rk3308_txrx_config[] = {
++	{ 0xff300000, 0x308, RK3308_I2S0_CLK_TXONLY, RK3308_I2S0_CLK_RXONLY },
++	{ 0xff310000, 0x308, RK3308_I2S1_CLK_TXONLY, RK3308_I2S1_CLK_RXONLY },
++};
++
++static struct rk_i2s_soc_data px30_i2s_soc_data = {
++	.softrst_offset = 0x0300,
++	.configs = px30_txrx_config,
++	.config_count = ARRAY_SIZE(px30_txrx_config),
++	.init = common_soc_init,
++};
++
++static struct rk_i2s_soc_data rk1808_i2s_soc_data = {
++	.softrst_offset = 0x0300,
++	.configs = rk1808_txrx_config,
++	.config_count = ARRAY_SIZE(rk1808_txrx_config),
++	.init = common_soc_init,
++};
++
++static struct rk_i2s_soc_data rk3308_i2s_soc_data = {
++	.softrst_offset = 0x0400,
++	.grf_reg_offset = 0x0308,
++	.grf_shift = 5,
++	.configs = rk3308_txrx_config,
++	.config_count = ARRAY_SIZE(rk3308_txrx_config),
++	.init = common_soc_init,
++};
++
++static const struct of_device_id rockchip_i2s_tdm_match[] = {
++	{ .compatible = "rockchip,px30-i2s-tdm", .data = &px30_i2s_soc_data },
++	{ .compatible = "rockchip,rk1808-i2s-tdm", .data = &rk1808_i2s_soc_data },
++	{ .compatible = "rockchip,rk3308-i2s-tdm", .data = &rk3308_i2s_soc_data },
++	{},
++};
++
++static int of_i2s_resetid_get(struct device_node *node,
++			      const char *id)
++{
++	struct of_phandle_args args;
++	int index = 0;
++	int ret;
++
++	if (id)
++		index = of_property_match_string(node,
++						 "reset-names", id);
++	ret = of_parse_phandle_with_args(node, "resets", "#reset-cells",
++					 index, &args);
++	if (ret)
++		return ret;
++
++	return args.args[0];
++}
++
++static int rockchip_i2s_tdm_dai_prepare(struct platform_device *pdev,
++					struct snd_soc_dai_driver **soc_dai)
++{
++	struct snd_soc_dai_driver rockchip_i2s_tdm_dai = {
++		.probe = rockchip_i2s_tdm_dai_probe,
++		.playback = {
++			.stream_name = "Playback",
++			.channels_min = 2,
++			.channels_max = 8,
++			.rates = SNDRV_PCM_RATE_8000_192000,
++			.formats = (SNDRV_PCM_FMTBIT_S8 |
++				    SNDRV_PCM_FMTBIT_S16_LE |
++				    SNDRV_PCM_FMTBIT_S20_3LE |
++				    SNDRV_PCM_FMTBIT_S24_LE |
++				    SNDRV_PCM_FMTBIT_S32_LE),
++		},
++		.capture = {
++			.stream_name = "Capture",
++			.channels_min = 2,
++			.channels_max = 8,
++			.rates = SNDRV_PCM_RATE_8000_192000,
++			.formats = (SNDRV_PCM_FMTBIT_S8 |
++				    SNDRV_PCM_FMTBIT_S16_LE |
++				    SNDRV_PCM_FMTBIT_S20_3LE |
++				    SNDRV_PCM_FMTBIT_S24_LE |
++				    SNDRV_PCM_FMTBIT_S32_LE),
++		},
++		.ops = &rockchip_i2s_tdm_dai_ops,
++	};
++
++	*soc_dai = devm_kmemdup(&pdev->dev, &rockchip_i2s_tdm_dai,
++				sizeof(rockchip_i2s_tdm_dai), GFP_KERNEL);
++	if (!(*soc_dai)) {
++		dev_err(&pdev->dev, "Failed to duplicate i2s_tdm_dai\n");
++		return -ENOMEM;
++	}
++
++	return 0;
++}
++
++static int rockchip_i2s_tdm_path_check(struct rk_i2s_tdm_dev *i2s_tdm,
++				       int num,
++				       bool is_rx_path)
++{
++	unsigned int *i2s_data;
++	int i, j, ret = 0;
++
++	if (is_rx_path)
++		i2s_data = i2s_tdm->i2s_sdis;
++	else
++		i2s_data = i2s_tdm->i2s_sdos;
++
++	for (i = 0; i < num; i++) {
++		if (i2s_data[i] > CH_GRP_MAX - 1) {
++			dev_err(i2s_tdm->dev,
++				"%s path i2s_data[%d]: %d is overflow, max is: %d\n",
++				is_rx_path ? "RX" : "TX",
++				i, i2s_data[i], CH_GRP_MAX);
++			ret = -EINVAL;
++			goto err;
++		}
++
++		for (j = 0; j < num; j++) {
++			if (i == j)
++				continue;
++
++			if (i2s_data[i] == i2s_data[j]) {
++				dev_err(i2s_tdm->dev,
++					"%s path invalid routed i2s_data: [%d]%d == [%d]%d\n",
++					is_rx_path ? "RX" : "TX",
++					i, i2s_data[i],
++					j, i2s_data[j]);
++				ret = -EINVAL;
++				goto err;
++			}
++		}
++	}
++
++err:
++	return ret;
++}
++
++static void rockchip_i2s_tdm_tx_path_config(struct rk_i2s_tdm_dev *i2s_tdm,
++					    int num)
++{
++	int idx;
++
++	for (idx = 0; idx < num; idx++) {
++		regmap_update_bits(i2s_tdm->regmap, I2S_TXCR,
++				   I2S_TXCR_PATH_MASK(idx),
++				   I2S_TXCR_PATH(idx, i2s_tdm->i2s_sdos[idx]));
++	}
++}
++
++static void rockchip_i2s_tdm_rx_path_config(struct rk_i2s_tdm_dev *i2s_tdm,
++					    int num)
++{
++	int idx;
++
++	for (idx = 0; idx < num; idx++) {
++		regmap_update_bits(i2s_tdm->regmap, I2S_RXCR,
++				   I2S_RXCR_PATH_MASK(idx),
++				   I2S_RXCR_PATH(idx, i2s_tdm->i2s_sdis[idx]));
++	}
++}
++
++static void rockchip_i2s_tdm_path_config(struct rk_i2s_tdm_dev *i2s_tdm,
++					 int num, bool is_rx_path)
++{
++	if (is_rx_path)
++		rockchip_i2s_tdm_rx_path_config(i2s_tdm, num);
++	else
++		rockchip_i2s_tdm_tx_path_config(i2s_tdm, num);
++}
++
++static int rockchip_i2s_tdm_path_prepare(struct rk_i2s_tdm_dev *i2s_tdm,
++					 struct device_node *np,
++					 bool is_rx_path)
++{
++	char *i2s_tx_path_prop = "rockchip,i2s-tx-route";
++	char *i2s_rx_path_prop = "rockchip,i2s-rx-route";
++	char *i2s_path_prop;
++	unsigned int *i2s_data;
++	int num, ret = 0;
++
++	if (is_rx_path) {
++		i2s_path_prop = i2s_rx_path_prop;
++		i2s_data = i2s_tdm->i2s_sdis;
++	} else {
++		i2s_path_prop = i2s_tx_path_prop;
++		i2s_data = i2s_tdm->i2s_sdos;
++	}
++
++	num = of_count_phandle_with_args(np, i2s_path_prop, NULL);
++	if (num < 0) {
++		if (num != -ENOENT) {
++			dev_err(i2s_tdm->dev,
++				"Failed to read '%s' num: %d\n",
++				i2s_path_prop, num);
++			ret = num;
++		}
++		goto out;
++	} else if (num != CH_GRP_MAX) {
++		dev_err(i2s_tdm->dev,
++			"The num: %d should be: %d\n", num, CH_GRP_MAX);
++		ret = -EINVAL;
++		goto out;
++	}
++
++	ret = of_property_read_u32_array(np, i2s_path_prop,
++					 i2s_data, num);
++	if (ret < 0) {
++		dev_err(i2s_tdm->dev,
++			"Failed to read '%s': %d\n",
++			i2s_path_prop, ret);
++		goto out;
++	}
++
++	ret = rockchip_i2s_tdm_path_check(i2s_tdm, num, is_rx_path);
++	if (ret < 0) {
++		dev_err(i2s_tdm->dev,
++			"Failed to check i2s data bus: %d\n", ret);
++		goto out;
++	}
++
++	rockchip_i2s_tdm_path_config(i2s_tdm, num, is_rx_path);
++
++out:
++	return ret;
++}
++
++static int rockchip_i2s_tdm_tx_path_prepare(struct rk_i2s_tdm_dev *i2s_tdm,
++					    struct device_node *np)
++{
++	return rockchip_i2s_tdm_path_prepare(i2s_tdm, np, 0);
++}
++
++static int rockchip_i2s_tdm_rx_path_prepare(struct rk_i2s_tdm_dev *i2s_tdm,
++					    struct device_node *np)
++{
++	return rockchip_i2s_tdm_path_prepare(i2s_tdm, np, 1);
++}
++
++static int rockchip_i2s_tdm_probe(struct platform_device *pdev)
++{
++	struct device_node *node = pdev->dev.of_node;
++	struct device_node *cru_node;
++	const struct of_device_id *of_id;
++	struct rk_i2s_tdm_dev *i2s_tdm;
++	struct snd_soc_dai_driver *soc_dai;
++	struct resource *res;
++	void __iomem *regs;
++	int ret;
++	int val;
++
++	ret = rockchip_i2s_tdm_dai_prepare(pdev, &soc_dai);
++	if (ret < 0)
++		return ret;
++
++	i2s_tdm = devm_kzalloc(&pdev->dev, sizeof(*i2s_tdm), GFP_KERNEL);
++	if (!i2s_tdm)
++		return -ENOMEM;
++
++	i2s_tdm->dev = &pdev->dev;
++
++	of_id = of_match_device(rockchip_i2s_tdm_match, &pdev->dev);
++	if (!of_id || !of_id->data)
++		return -EINVAL;
++
++	spin_lock_init(&i2s_tdm->lock);
++	i2s_tdm->soc_data = (struct rk_i2s_soc_data *)of_id->data;
++
++	i2s_tdm->bclk_fs = 64;
++	if (!of_property_read_u32(node, "rockchip,bclk-fs", &val)) {
++		if ((val >= 32) && (val % 2 == 0))
++			i2s_tdm->bclk_fs = val;
++	}
++
++	i2s_tdm->clk_trcm = I2S_CKR_TRCM_TXRX;
++	if (!of_property_read_u32(node, "rockchip,clk-trcm", &val)) {
++		if (val >= 0 && val <= 2) {
++			i2s_tdm->clk_trcm = val << I2S_CKR_TRCM_SHIFT;
++			if (i2s_tdm->clk_trcm)
++				soc_dai->symmetric_rates = 1;
++		}
++	}
++
++	if (of_property_read_bool(node, "rockchip,playback-only"))
++		soc_dai->capture.channels_min = 0;
++	else if (of_property_read_bool(node, "rockchip,capture-only"))
++		soc_dai->playback.channels_min = 0;
++
++	i2s_tdm->grf = syscon_regmap_lookup_by_phandle(node, "rockchip,grf");
++	if (IS_ERR(i2s_tdm->grf))
++		return PTR_ERR(i2s_tdm->grf);
++
++	if (i2s_tdm->clk_trcm) {
++		cru_node = of_parse_phandle(node, "rockchip,cru", 0);
++		i2s_tdm->cru_base = of_iomap(cru_node, 0);
++		if (!i2s_tdm->cru_base)
++			return -ENOENT;
++
++		i2s_tdm->soc_data->tx_reset_id = of_i2s_resetid_get(node, "tx-m");
++		if (i2s_tdm->soc_data->tx_reset_id < 0)
++			return -EINVAL;
++		i2s_tdm->soc_data->rx_reset_id = of_i2s_resetid_get(node, "rx-m");
++		if (i2s_tdm->soc_data->rx_reset_id < 0)
++			return -EINVAL;
++	}
++
++	i2s_tdm->tx_reset = devm_reset_control_get(&pdev->dev, "tx-m");
++	if (IS_ERR(i2s_tdm->tx_reset)) {
++		ret = PTR_ERR(i2s_tdm->tx_reset);
++		if (ret != -ENOENT)
++			return ret;
++	}
++
++	i2s_tdm->rx_reset = devm_reset_control_get(&pdev->dev, "rx-m");
++	if (IS_ERR(i2s_tdm->rx_reset)) {
++		ret = PTR_ERR(i2s_tdm->rx_reset);
++		if (ret != -ENOENT)
++			return ret;
++	}
++
++	i2s_tdm->hclk = devm_clk_get(&pdev->dev, "hclk");
++	if (IS_ERR(i2s_tdm->hclk))
++		return PTR_ERR(i2s_tdm->hclk);
++
++	ret = clk_prepare_enable(i2s_tdm->hclk);
++	if (ret)
++		return ret;
++
++	i2s_tdm->mclk_tx = devm_clk_get(&pdev->dev, "mclk_tx");
++	if (IS_ERR(i2s_tdm->mclk_tx))
++		return PTR_ERR(i2s_tdm->mclk_tx);
++
++	i2s_tdm->mclk_rx = devm_clk_get(&pdev->dev, "mclk_rx");
++	if (IS_ERR(i2s_tdm->mclk_rx))
++		return PTR_ERR(i2s_tdm->mclk_rx);
++
++	i2s_tdm->io_multiplex =
++		of_property_read_bool(node, "rockchip,io-multiplex");
++
++	i2s_tdm->mclk_calibrate =
++		of_property_read_bool(node, "rockchip,mclk-calibrate");
++	if (i2s_tdm->mclk_calibrate) {
++		i2s_tdm->mclk_tx_src = devm_clk_get(&pdev->dev, "mclk_tx_src");
++		if (IS_ERR(i2s_tdm->mclk_tx_src))
++			return PTR_ERR(i2s_tdm->mclk_tx_src);
++
++		i2s_tdm->mclk_rx_src = devm_clk_get(&pdev->dev, "mclk_rx_src");
++		if (IS_ERR(i2s_tdm->mclk_rx_src))
++			return PTR_ERR(i2s_tdm->mclk_rx_src);
++
++		i2s_tdm->mclk_root0 = devm_clk_get(&pdev->dev, "mclk_root0");
++		if (IS_ERR(i2s_tdm->mclk_root0))
++			return PTR_ERR(i2s_tdm->mclk_root0);
++
++		i2s_tdm->mclk_root1 = devm_clk_get(&pdev->dev, "mclk_root1");
++		if (IS_ERR(i2s_tdm->mclk_root1))
++			return PTR_ERR(i2s_tdm->mclk_root1);
++	}
++
++	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	regs = devm_ioremap_resource(&pdev->dev, res);
++	if (IS_ERR(regs))
++		return PTR_ERR(regs);
++
++	i2s_tdm->regmap = devm_regmap_init_mmio(&pdev->dev, regs,
++					    &rockchip_i2s_tdm_regmap_config);
++	if (IS_ERR(i2s_tdm->regmap))
++		return PTR_ERR(i2s_tdm->regmap);
++
++	i2s_tdm->playback_dma_data.addr = res->start + I2S_TXDR;
++	i2s_tdm->playback_dma_data.addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
++	i2s_tdm->playback_dma_data.maxburst = 8;
++
++	i2s_tdm->capture_dma_data.addr = res->start + I2S_RXDR;
++	i2s_tdm->capture_dma_data.addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
++	i2s_tdm->capture_dma_data.maxburst = 8;
++
++	ret = rockchip_i2s_tdm_tx_path_prepare(i2s_tdm, node);
++	if (ret < 0) {
++		dev_err(&pdev->dev, "I2S TX path prepare failed: %d\n", ret);
++		return ret;
++	}
++
++	ret = rockchip_i2s_tdm_rx_path_prepare(i2s_tdm, node);
++	if (ret < 0) {
++		dev_err(&pdev->dev, "I2S RX path prepare failed: %d\n", ret);
++		return ret;
++	}
++
++	atomic_set(&i2s_tdm->refcount, 0);
++	dev_set_drvdata(&pdev->dev, i2s_tdm);
++
++	pm_runtime_enable(&pdev->dev);
++	if (!pm_runtime_enabled(&pdev->dev)) {
++		ret = i2s_tdm_runtime_resume(&pdev->dev);
++		if (ret)
++			goto err_pm_disable;
++	}
++
++	regmap_update_bits(i2s_tdm->regmap, I2S_CKR,
++			   I2S_CKR_TRCM_MASK, i2s_tdm->clk_trcm);
++
++	if (i2s_tdm->soc_data && i2s_tdm->soc_data->init)
++		i2s_tdm->soc_data->init(&pdev->dev, res->start);
++
++	ret = devm_snd_soc_register_component(&pdev->dev,
++					      &rockchip_i2s_tdm_component,
++					      soc_dai, 1);
++
++	if (ret) {
++		dev_err(&pdev->dev, "Could not register DAI\n");
++		goto err_suspend;
++	}
++
++	if (of_property_read_bool(node, "rockchip,no-dmaengine"))
++		return ret;
++	ret = devm_snd_dmaengine_pcm_register(&pdev->dev, NULL, 0);
++	if (ret) {
++		dev_err(&pdev->dev, "Could not register PCM\n");
++		return ret;
++	}
++
++	return 0;
++
++err_suspend:
++	if (!pm_runtime_status_suspended(&pdev->dev))
++		i2s_tdm_runtime_suspend(&pdev->dev);
++err_pm_disable:
++	pm_runtime_disable(&pdev->dev);
++
++	return ret;
++}
++
++static int rockchip_i2s_tdm_remove(struct platform_device *pdev)
++{
++	struct rk_i2s_tdm_dev *i2s_tdm = dev_get_drvdata(&pdev->dev);
++
++	pm_runtime_disable(&pdev->dev);
++	if (!pm_runtime_status_suspended(&pdev->dev))
++		i2s_tdm_runtime_suspend(&pdev->dev);
++
++	if (!IS_ERR(i2s_tdm->mclk_tx))
++		clk_prepare_enable(i2s_tdm->mclk_tx);
++	if (!IS_ERR(i2s_tdm->mclk_rx))
++		clk_prepare_enable(i2s_tdm->mclk_rx);
++	if (!IS_ERR(i2s_tdm->hclk))
++		clk_disable_unprepare(i2s_tdm->hclk);
++
++	return 0;
++}
++
++#ifdef CONFIG_PM_SLEEP
++static int rockchip_i2s_tdm_suspend(struct device *dev)
++{
++	struct rk_i2s_tdm_dev *i2s_tdm = dev_get_drvdata(dev);
++
++	regcache_mark_dirty(i2s_tdm->regmap);
++
++	return 0;
++}
++
++static int rockchip_i2s_tdm_resume(struct device *dev)
++{
++	struct rk_i2s_tdm_dev *i2s_tdm = dev_get_drvdata(dev);
++	int ret;
++
++	ret = pm_runtime_get_sync(dev);
++	if (ret < 0)
++		return ret;
++	ret = regcache_sync(i2s_tdm->regmap);
++	pm_runtime_put(dev);
++
++	return ret;
++}
++#endif
++
++static const struct dev_pm_ops rockchip_i2s_tdm_pm_ops = {
++	SET_RUNTIME_PM_OPS(i2s_tdm_runtime_suspend, i2s_tdm_runtime_resume,
++			   NULL)
++	SET_SYSTEM_SLEEP_PM_OPS(rockchip_i2s_tdm_suspend,
++				rockchip_i2s_tdm_resume)
++};
++
++static struct platform_driver rockchip_i2s_tdm_driver = {
++	.probe = rockchip_i2s_tdm_probe,
++	.remove = rockchip_i2s_tdm_remove,
++	.driver = {
++		.name = DRV_NAME,
++		.of_match_table = of_match_ptr(rockchip_i2s_tdm_match),
++		.pm = &rockchip_i2s_tdm_pm_ops,
++	},
++};
++module_platform_driver(rockchip_i2s_tdm_driver);
++
++MODULE_DESCRIPTION("ROCKCHIP I2S/TDM ASoC Interface");
++MODULE_AUTHOR("Sugar Zhang <sugar.zhang@rock-chips.com>");
++MODULE_LICENSE("GPL v2");
++MODULE_ALIAS("platform:" DRV_NAME);
++MODULE_DEVICE_TABLE(of, rockchip_i2s_tdm_match);
+Index: linux-5.10.27/sound/soc/rockchip/rockchip_i2s_tdm.h
+===================================================================
+--- /dev/null
++++ linux-5.10.27/sound/soc/rockchip/rockchip_i2s_tdm.h
+@@ -0,0 +1,388 @@
++/*
++ * sound/soc/rockchip/rockchip_i2s_tdm.h
++ *
++ * ALSA SoC Audio Layer - Rockchip I2S_TDM Controller driver
++ *
++ * Copyright (c) 2018 Rockchip Electronics Co. Ltd.
++ * Author: Sugar Zhang <sugar.zhang@rock-chips.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#ifndef _ROCKCHIP_I2S_TDM_H
++#define _ROCKCHIP_I2S_TDM_H
++
++/*
++ * TXCR
++ * transmit operation control register
++ */
++#define I2S_TXCR_PATH_SHIFT(x)	(23 + (x) * 2)
++#define I2S_TXCR_PATH_MASK(x)	(0x3 << I2S_TXCR_PATH_SHIFT(x))
++#define I2S_TXCR_PATH(x, v)	((v) << I2S_TXCR_PATH_SHIFT(x))
++#define I2S_TXCR_RCNT_SHIFT	17
++#define I2S_TXCR_RCNT_MASK	(0x3f << I2S_TXCR_RCNT_SHIFT)
++#define I2S_TXCR_CSR_SHIFT	15
++#define I2S_TXCR_CSR(x)		(x << I2S_TXCR_CSR_SHIFT)
++#define I2S_TXCR_CSR_MASK	(3 << I2S_TXCR_CSR_SHIFT)
++#define I2S_TXCR_HWT		BIT(14)
++#define I2S_TXCR_SJM_SHIFT	12
++#define I2S_TXCR_SJM_R		(0 << I2S_TXCR_SJM_SHIFT)
++#define I2S_TXCR_SJM_L		(1 << I2S_TXCR_SJM_SHIFT)
++#define I2S_TXCR_FBM_SHIFT	11
++#define I2S_TXCR_FBM_MSB	(0 << I2S_TXCR_FBM_SHIFT)
++#define I2S_TXCR_FBM_LSB	(1 << I2S_TXCR_FBM_SHIFT)
++#define I2S_TXCR_IBM_SHIFT	9
++#define I2S_TXCR_IBM_NORMAL	(0 << I2S_TXCR_IBM_SHIFT)
++#define I2S_TXCR_IBM_LSJM	(1 << I2S_TXCR_IBM_SHIFT)
++#define I2S_TXCR_IBM_RSJM	(2 << I2S_TXCR_IBM_SHIFT)
++#define I2S_TXCR_IBM_MASK	(3 << I2S_TXCR_IBM_SHIFT)
++#define I2S_TXCR_PBM_SHIFT	7
++#define I2S_TXCR_PBM_MODE(x)	(x << I2S_TXCR_PBM_SHIFT)
++#define I2S_TXCR_PBM_MASK	(3 << I2S_TXCR_PBM_SHIFT)
++#define I2S_TXCR_TFS_SHIFT	5
++#define I2S_TXCR_TFS_I2S	(0 << I2S_TXCR_TFS_SHIFT)
++#define I2S_TXCR_TFS_PCM	(1 << I2S_TXCR_TFS_SHIFT)
++#define I2S_TXCR_TFS_TDM_PCM	(2 << I2S_TXCR_TFS_SHIFT)
++#define I2S_TXCR_TFS_TDM_I2S	(3 << I2S_TXCR_TFS_SHIFT)
++#define I2S_TXCR_TFS_MASK	(3 << I2S_TXCR_TFS_SHIFT)
++#define I2S_TXCR_VDW_SHIFT	0
++#define I2S_TXCR_VDW(x)		((x - 1) << I2S_TXCR_VDW_SHIFT)
++#define I2S_TXCR_VDW_MASK	(0x1f << I2S_TXCR_VDW_SHIFT)
++
++/*
++ * RXCR
++ * receive operation control register
++ */
++#define I2S_RXCR_PATH_SHIFT(x)	(17 + (x) * 2)
++#define I2S_RXCR_PATH_MASK(x)	(0x3 << I2S_RXCR_PATH_SHIFT(x))
++#define I2S_RXCR_PATH(x, v)	((v) << I2S_RXCR_PATH_SHIFT(x))
++#define I2S_RXCR_CSR_SHIFT	15
++#define I2S_RXCR_CSR(x)		(x << I2S_RXCR_CSR_SHIFT)
++#define I2S_RXCR_CSR_MASK	(3 << I2S_RXCR_CSR_SHIFT)
++#define I2S_RXCR_HWT		BIT(14)
++#define I2S_RXCR_SJM_SHIFT	12
++#define I2S_RXCR_SJM_R		(0 << I2S_RXCR_SJM_SHIFT)
++#define I2S_RXCR_SJM_L		(1 << I2S_RXCR_SJM_SHIFT)
++#define I2S_RXCR_FBM_SHIFT	11
++#define I2S_RXCR_FBM_MSB	(0 << I2S_RXCR_FBM_SHIFT)
++#define I2S_RXCR_FBM_LSB	(1 << I2S_RXCR_FBM_SHIFT)
++#define I2S_RXCR_IBM_SHIFT	9
++#define I2S_RXCR_IBM_NORMAL	(0 << I2S_RXCR_IBM_SHIFT)
++#define I2S_RXCR_IBM_LSJM	(1 << I2S_RXCR_IBM_SHIFT)
++#define I2S_RXCR_IBM_RSJM	(2 << I2S_RXCR_IBM_SHIFT)
++#define I2S_RXCR_IBM_MASK	(3 << I2S_RXCR_IBM_SHIFT)
++#define I2S_RXCR_PBM_SHIFT	7
++#define I2S_RXCR_PBM_MODE(x)	(x << I2S_RXCR_PBM_SHIFT)
++#define I2S_RXCR_PBM_MASK	(3 << I2S_RXCR_PBM_SHIFT)
++#define I2S_RXCR_TFS_SHIFT	5
++#define I2S_RXCR_TFS_I2S	(0 << I2S_RXCR_TFS_SHIFT)
++#define I2S_RXCR_TFS_PCM	(1 << I2S_RXCR_TFS_SHIFT)
++#define I2S_RXCR_TFS_TDM_PCM	(2 << I2S_RXCR_TFS_SHIFT)
++#define I2S_RXCR_TFS_TDM_I2S	(3 << I2S_RXCR_TFS_SHIFT)
++#define I2S_RXCR_TFS_MASK	(3 << I2S_RXCR_TFS_SHIFT)
++#define I2S_RXCR_VDW_SHIFT	0
++#define I2S_RXCR_VDW(x)		((x - 1) << I2S_RXCR_VDW_SHIFT)
++#define I2S_RXCR_VDW_MASK	(0x1f << I2S_RXCR_VDW_SHIFT)
++
++/*
++ * CKR
++ * clock generation register
++ */
++#define I2S_CKR_TRCM_SHIFT	28
++#define I2S_CKR_TRCM(x)	(x << I2S_CKR_TRCM_SHIFT)
++#define I2S_CKR_TRCM_TXRX	(0 << I2S_CKR_TRCM_SHIFT)
++#define I2S_CKR_TRCM_TXONLY	(1 << I2S_CKR_TRCM_SHIFT)
++#define I2S_CKR_TRCM_RXONLY	(2 << I2S_CKR_TRCM_SHIFT)
++#define I2S_CKR_TRCM_MASK	(3 << I2S_CKR_TRCM_SHIFT)
++#define I2S_CKR_MSS_SHIFT	27
++#define I2S_CKR_MSS_MASTER	(0 << I2S_CKR_MSS_SHIFT)
++#define I2S_CKR_MSS_SLAVE	(1 << I2S_CKR_MSS_SHIFT)
++#define I2S_CKR_MSS_MASK	(1 << I2S_CKR_MSS_SHIFT)
++#define I2S_CKR_CKP_SHIFT	26
++#define I2S_CKR_CKP_NEG		(0 << I2S_CKR_CKP_SHIFT)
++#define I2S_CKR_CKP_POS		(1 << I2S_CKR_CKP_SHIFT)
++#define I2S_CKR_CKP_MASK	(1 << I2S_CKR_CKP_SHIFT)
++#define I2S_CKR_RLP_SHIFT	25
++#define I2S_CKR_RLP_NORMAL	(0 << I2S_CKR_RLP_SHIFT)
++#define I2S_CKR_RLP_OPPSITE	(1 << I2S_CKR_RLP_SHIFT)
++#define I2S_CKR_TLP_SHIFT	24
++#define I2S_CKR_TLP_NORMAL	(0 << I2S_CKR_TLP_SHIFT)
++#define I2S_CKR_TLP_OPPSITE	(1 << I2S_CKR_TLP_SHIFT)
++#define I2S_CKR_MDIV_SHIFT	16
++#define I2S_CKR_MDIV(x)		((x - 1) << I2S_CKR_MDIV_SHIFT)
++#define I2S_CKR_MDIV_MASK	(0xff << I2S_CKR_MDIV_SHIFT)
++#define I2S_CKR_RSD_SHIFT	8
++#define I2S_CKR_RSD(x)		((x - 1) << I2S_CKR_RSD_SHIFT)
++#define I2S_CKR_RSD_MASK	(0xff << I2S_CKR_RSD_SHIFT)
++#define I2S_CKR_TSD_SHIFT	0
++#define I2S_CKR_TSD(x)		((x - 1) << I2S_CKR_TSD_SHIFT)
++#define I2S_CKR_TSD_MASK	(0xff << I2S_CKR_TSD_SHIFT)
++
++/*
++ * FIFOLR
++ * FIFO level register
++ */
++#define I2S_FIFOLR_RFL_SHIFT	24
++#define I2S_FIFOLR_RFL_MASK	(0x3f << I2S_FIFOLR_RFL_SHIFT)
++#define I2S_FIFOLR_TFL3_SHIFT	18
++#define I2S_FIFOLR_TFL3_MASK	(0x3f << I2S_FIFOLR_TFL3_SHIFT)
++#define I2S_FIFOLR_TFL2_SHIFT	12
++#define I2S_FIFOLR_TFL2_MASK	(0x3f << I2S_FIFOLR_TFL2_SHIFT)
++#define I2S_FIFOLR_TFL1_SHIFT	6
++#define I2S_FIFOLR_TFL1_MASK	(0x3f << I2S_FIFOLR_TFL1_SHIFT)
++#define I2S_FIFOLR_TFL0_SHIFT	0
++#define I2S_FIFOLR_TFL0_MASK	(0x3f << I2S_FIFOLR_TFL0_SHIFT)
++
++/*
++ * DMACR
++ * DMA control register
++ */
++#define I2S_DMACR_RDE_SHIFT	24
++#define I2S_DMACR_RDE_DISABLE	(0 << I2S_DMACR_RDE_SHIFT)
++#define I2S_DMACR_RDE_ENABLE	(1 << I2S_DMACR_RDE_SHIFT)
++#define I2S_DMACR_RDL_SHIFT	16
++#define I2S_DMACR_RDL(x)	((x - 1) << I2S_DMACR_RDL_SHIFT)
++#define I2S_DMACR_RDL_MASK	(0x1f << I2S_DMACR_RDL_SHIFT)
++#define I2S_DMACR_TDE_SHIFT	8
++#define I2S_DMACR_TDE_DISABLE	(0 << I2S_DMACR_TDE_SHIFT)
++#define I2S_DMACR_TDE_ENABLE	(1 << I2S_DMACR_TDE_SHIFT)
++#define I2S_DMACR_TDL_SHIFT	0
++#define I2S_DMACR_TDL(x)	((x) << I2S_DMACR_TDL_SHIFT)
++#define I2S_DMACR_TDL_MASK	(0x1f << I2S_DMACR_TDL_SHIFT)
++
++/*
++ * INTCR
++ * interrupt control register
++ */
++#define I2S_INTCR_RFT_SHIFT	20
++#define I2S_INTCR_RFT(x)	((x - 1) << I2S_INTCR_RFT_SHIFT)
++#define I2S_INTCR_RXOIC		BIT(18)
++#define I2S_INTCR_RXOIE_SHIFT	17
++#define I2S_INTCR_RXOIE_DISABLE	(0 << I2S_INTCR_RXOIE_SHIFT)
++#define I2S_INTCR_RXOIE_ENABLE	(1 << I2S_INTCR_RXOIE_SHIFT)
++#define I2S_INTCR_RXFIE_SHIFT	16
++#define I2S_INTCR_RXFIE_DISABLE	(0 << I2S_INTCR_RXFIE_SHIFT)
++#define I2S_INTCR_RXFIE_ENABLE	(1 << I2S_INTCR_RXFIE_SHIFT)
++#define I2S_INTCR_TFT_SHIFT	4
++#define I2S_INTCR_TFT(x)	((x - 1) << I2S_INTCR_TFT_SHIFT)
++#define I2S_INTCR_TFT_MASK	(0x1f << I2S_INTCR_TFT_SHIFT)
++#define I2S_INTCR_TXUIC		BIT(2)
++#define I2S_INTCR_TXUIE_SHIFT	1
++#define I2S_INTCR_TXUIE_DISABLE	(0 << I2S_INTCR_TXUIE_SHIFT)
++#define I2S_INTCR_TXUIE_ENABLE	(1 << I2S_INTCR_TXUIE_SHIFT)
++
++/*
++ * INTSR
++ * interrupt status register
++ */
++#define I2S_INTSR_TXEIE_SHIFT	0
++#define I2S_INTSR_TXEIE_DISABLE	(0 << I2S_INTSR_TXEIE_SHIFT)
++#define I2S_INTSR_TXEIE_ENABLE	(1 << I2S_INTSR_TXEIE_SHIFT)
++#define I2S_INTSR_RXOI_SHIFT	17
++#define I2S_INTSR_RXOI_INA	(0 << I2S_INTSR_RXOI_SHIFT)
++#define I2S_INTSR_RXOI_ACT	(1 << I2S_INTSR_RXOI_SHIFT)
++#define I2S_INTSR_RXFI_SHIFT	16
++#define I2S_INTSR_RXFI_INA	(0 << I2S_INTSR_RXFI_SHIFT)
++#define I2S_INTSR_RXFI_ACT	(1 << I2S_INTSR_RXFI_SHIFT)
++#define I2S_INTSR_TXUI_SHIFT	1
++#define I2S_INTSR_TXUI_INA	(0 << I2S_INTSR_TXUI_SHIFT)
++#define I2S_INTSR_TXUI_ACT	(1 << I2S_INTSR_TXUI_SHIFT)
++#define I2S_INTSR_TXEI_SHIFT	0
++#define I2S_INTSR_TXEI_INA	(0 << I2S_INTSR_TXEI_SHIFT)
++#define I2S_INTSR_TXEI_ACT	(1 << I2S_INTSR_TXEI_SHIFT)
++
++/*
++ * XFER
++ * Transfer start register
++ */
++#define I2S_XFER_RXS_SHIFT	1
++#define I2S_XFER_RXS_STOP	(0 << I2S_XFER_RXS_SHIFT)
++#define I2S_XFER_RXS_START	(1 << I2S_XFER_RXS_SHIFT)
++#define I2S_XFER_TXS_SHIFT	0
++#define I2S_XFER_TXS_STOP	(0 << I2S_XFER_TXS_SHIFT)
++#define I2S_XFER_TXS_START	(1 << I2S_XFER_TXS_SHIFT)
++
++/*
++ * CLR
++ * clear SCLK domain logic register
++ */
++#define I2S_CLR_RXC	BIT(1)
++#define I2S_CLR_TXC	BIT(0)
++
++/*
++ * TXDR
++ * Transimt FIFO data register, write only.
++ */
++#define I2S_TXDR_MASK	(0xff)
++
++/*
++ * RXDR
++ * Receive FIFO data register, write only.
++ */
++#define I2S_RXDR_MASK	(0xff)
++
++/*
++ * TDM_CTRL
++ * TDM ctrl register
++ */
++#define TDM_FSYNC_WIDTH_SEL1_MSK	GENMASK(20, 18)
++#define TDM_FSYNC_WIDTH_SEL1(x)		((x - 1) << 18)
++#define TDM_FSYNC_WIDTH_SEL0_MSK	BIT(17)
++#define TDM_FSYNC_WIDTH_HALF_FRAME	0
++#define TDM_FSYNC_WIDTH_ONE_FRAME	BIT(17)
++#define TDM_SHIFT_CTRL_MSK		GENMASK(16, 14)
++#define TDM_SHIFT_CTRL(x)		((x) << 14)
++#define TDM_SLOT_BIT_WIDTH_MSK		GENMASK(13, 9)
++#define TDM_SLOT_BIT_WIDTH(x)		((x - 1) << 9)
++#define TDM_FRAME_WIDTH_MSK		GENMASK(8, 0)
++#define TDM_FRAME_WIDTH(x)		((x - 1) << 0)
++
++/*
++ * CLKDIV
++ * Mclk div register
++ */
++#define I2S_CLKDIV_TXM_SHIFT	0
++#define I2S_CLKDIV_TXM(x)		((x - 1) << I2S_CLKDIV_TXM_SHIFT)
++#define I2S_CLKDIV_TXM_MASK	(0xff << I2S_CLKDIV_TXM_SHIFT)
++#define I2S_CLKDIV_RXM_SHIFT	8
++#define I2S_CLKDIV_RXM(x)		((x - 1) << I2S_CLKDIV_RXM_SHIFT)
++#define I2S_CLKDIV_RXM_MASK	(0xff << I2S_CLKDIV_RXM_SHIFT)
++
++/* Clock divider id */
++enum {
++	ROCKCHIP_DIV_MCLK = 0,
++	ROCKCHIP_DIV_BCLK,
++};
++
++/* channel select */
++#define I2S_CSR_SHIFT	15
++#define I2S_CHN_2	(0 << I2S_CSR_SHIFT)
++#define I2S_CHN_4	(1 << I2S_CSR_SHIFT)
++#define I2S_CHN_6	(2 << I2S_CSR_SHIFT)
++#define I2S_CHN_8	(3 << I2S_CSR_SHIFT)
++
++/* io direction cfg register */
++#define I2S_IO_DIRECTION_MASK	(7)
++#define I2S_IO_8CH_OUT_2CH_IN	(7)
++#define I2S_IO_6CH_OUT_4CH_IN	(3)
++#define I2S_IO_4CH_OUT_6CH_IN	(1)
++#define I2S_IO_2CH_OUT_8CH_IN	(0)
++
++/* I2S REGS */
++#define I2S_TXCR	(0x0000)
++#define I2S_RXCR	(0x0004)
++#define I2S_CKR		(0x0008)
++#define I2S_TXFIFOLR	(0x000c)
++#define I2S_DMACR	(0x0010)
++#define I2S_INTCR	(0x0014)
++#define I2S_INTSR	(0x0018)
++#define I2S_XFER	(0x001c)
++#define I2S_CLR		(0x0020)
++#define I2S_TXDR	(0x0024)
++#define I2S_RXDR	(0x0028)
++#define I2S_RXFIFOLR	(0x002c)
++#define I2S_TDM_TXCR	(0x0030)
++#define I2S_TDM_RXCR	(0x0034)
++#define I2S_CLKDIV	(0x0038)
++
++/* PX30 GRF CONFIGS*/
++#define PX30_I2S0_CLK_IN_SRC_MASK		GENMASK(13, 12)
++#define PX30_I2S0_CLK_IN_SRC_FROM_TX		(0x1 << 12)
++#define PX30_I2S0_CLK_IN_SRC_FROM_RX		(0x2 << 12)
++#define PX30_I2S0_MCLK_OUT_SRC_MSK		BIT(5)
++#define PX30_I2S0_MCLK_OUT_SRC_FROM_TX		BIT(5)
++#define PX30_I2S0_MCLK_OUT_SRC_FROM_RX		0
++
++#define PX30_I2S0_CLK_MSK \
++	(PX30_I2S0_MCLK_OUT_SRC_MSK | \
++	PX30_I2S0_CLK_IN_SRC_MASK)
++
++#define PX30_I2S0_CLK_TXONLY \
++	(PX30_I2S0_MCLK_OUT_SRC_FROM_TX | \
++	PX30_I2S0_CLK_IN_SRC_FROM_TX | \
++	(PX30_I2S0_CLK_MSK << 16))
++
++#define PX30_I2S0_CLK_RXONLY \
++	(PX30_I2S0_MCLK_OUT_SRC_FROM_RX | \
++	PX30_I2S0_CLK_IN_SRC_FROM_RX | \
++	(PX30_I2S0_CLK_MSK << 16))
++
++/* RK1808 GRF CONFIGS*/
++#define RK1808_I2S0_MCLK_OUT_SRC_MSK		BIT(2)
++#define RK1808_I2S0_MCLK_OUT_SRC_FROM_RX	BIT(2)
++#define RK1808_I2S0_MCLK_OUT_SRC_FROM_TX	0
++#define RK1808_I2S0_CLK_IN_SRC_MASK		GENMASK(1, 0)
++#define RK1808_I2S0_CLK_IN_SRC_FROM_TX		(0x1 << 0)
++#define RK1808_I2S0_CLK_IN_SRC_FROM_RX		(0x2 << 0)
++
++#define RK1808_I2S0_CLK_MSK \
++	(RK1808_I2S0_MCLK_OUT_SRC_MSK | \
++	RK1808_I2S0_CLK_IN_SRC_MASK)
++
++#define RK1808_I2S0_CLK_TXONLY \
++	(RK1808_I2S0_MCLK_OUT_SRC_FROM_TX | \
++	RK1808_I2S0_CLK_IN_SRC_FROM_TX | \
++	(RK1808_I2S0_CLK_MSK << 16))
++
++#define RK1808_I2S0_CLK_RXONLY \
++	(RK1808_I2S0_MCLK_OUT_SRC_FROM_RX | \
++	RK1808_I2S0_CLK_IN_SRC_FROM_RX | \
++	(RK1808_I2S0_CLK_MSK << 16))
++
++/* RK3308 GRF CONFIGS*/
++#define RK3308_I2S0_8CH_MCLK_OUT_SRC_MSK	BIT(10)
++#define RK3308_I2S0_8CH_MCLK_OUT_SRC_FROM_RX	BIT(10)
++#define RK3308_I2S0_8CH_MCLK_OUT_SRC_FROM_TX	0
++#define RK3308_I2S0_8CH_CLK_IN_RX_SRC_MSK	BIT(9)
++#define RK3308_I2S0_8CH_CLK_IN_RX_SRC_FROM_TX	BIT(9)
++#define RK3308_I2S0_8CH_CLK_IN_RX_SRC_FROM_RX	0
++#define RK3308_I2S0_8CH_CLK_IN_TX_SRC_MSK	BIT(8)
++#define RK3308_I2S0_8CH_CLK_IN_TX_SRC_FROM_RX	BIT(8)
++#define RK3308_I2S0_8CH_CLK_IN_TX_SRC_FROM_TX	0
++#define RK3308_I2S1_8CH_MCLK_OUT_SRC_MSK	BIT(2)
++#define RK3308_I2S1_8CH_MCLK_OUT_SRC_FROM_RX	BIT(2)
++#define RK3308_I2S1_8CH_MCLK_OUT_SRC_FROM_TX	0
++#define RK3308_I2S1_8CH_CLK_IN_RX_SRC_MSK	BIT(1)
++#define RK3308_I2S1_8CH_CLK_IN_RX_SRC_FROM_TX	BIT(1)
++#define RK3308_I2S1_8CH_CLK_IN_RX_SRC_FROM_RX	0
++#define RK3308_I2S1_8CH_CLK_IN_TX_SRC_MSK	BIT(0)
++#define RK3308_I2S1_8CH_CLK_IN_TX_SRC_FROM_RX	BIT(0)
++#define RK3308_I2S1_8CH_CLK_IN_TX_SRC_FROM_TX	0
++
++#define RK3308_I2S0_CLK_MSK \
++	(RK3308_I2S0_8CH_MCLK_OUT_SRC_MSK | \
++	RK3308_I2S0_8CH_CLK_IN_RX_SRC_MSK | \
++	RK3308_I2S0_8CH_CLK_IN_TX_SRC_MSK)
++
++#define RK3308_I2S0_CLK_TXONLY \
++	(RK3308_I2S0_8CH_MCLK_OUT_SRC_FROM_TX | \
++	RK3308_I2S0_8CH_CLK_IN_RX_SRC_FROM_TX | \
++	RK3308_I2S0_8CH_CLK_IN_TX_SRC_FROM_TX | \
++	(RK3308_I2S0_CLK_MSK << 16))
++
++#define RK3308_I2S0_CLK_RXONLY \
++	(RK3308_I2S0_8CH_MCLK_OUT_SRC_FROM_RX | \
++	RK3308_I2S0_8CH_CLK_IN_RX_SRC_FROM_RX | \
++	RK3308_I2S0_8CH_CLK_IN_TX_SRC_FROM_RX | \
++	(RK3308_I2S0_CLK_MSK << 16))
++
++#define RK3308_I2S1_CLK_MSK \
++	(RK3308_I2S1_8CH_MCLK_OUT_SRC_MSK | \
++	RK3308_I2S1_8CH_CLK_IN_RX_SRC_MSK | \
++	RK3308_I2S1_8CH_CLK_IN_TX_SRC_MSK)
++
++#define RK3308_I2S1_CLK_TXONLY \
++	(RK3308_I2S1_8CH_MCLK_OUT_SRC_FROM_TX | \
++	RK3308_I2S1_8CH_CLK_IN_RX_SRC_FROM_TX | \
++	RK3308_I2S1_8CH_CLK_IN_TX_SRC_FROM_TX | \
++	(RK3308_I2S1_CLK_MSK << 16))
++
++#define RK3308_I2S1_CLK_RXONLY \
++	(RK3308_I2S1_8CH_MCLK_OUT_SRC_FROM_RX | \
++	RK3308_I2S1_8CH_CLK_IN_RX_SRC_FROM_RX | \
++	RK3308_I2S1_8CH_CLK_IN_TX_SRC_FROM_RX | \
++	(RK3308_I2S1_CLK_MSK << 16))
++
++#endif /* _ROCKCHIP_I2S_TDM_H */
+Index: linux-5.10.27/sound/soc/rockchip/rockchip_multi_dais.c
+===================================================================
+--- /dev/null
++++ linux-5.10.27/sound/soc/rockchip/rockchip_multi_dais.c
+@@ -0,0 +1,521 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * ALSA SoC Audio Layer - Rockchip Multi-DAIS  driver
++ *
++ * Copyright (c) 2018 Rockchip Electronics Co. Ltd.
++ * Author: Sugar Zhang <sugar.zhang@rock-chips.com>
++ *
++ */
++
++#include <linux/module.h>
++#include <linux/mfd/syscon.h>
++#include <linux/of_device.h>
++#include <linux/pm_runtime.h>
++#include <sound/pcm_params.h>
++#include <sound/soc.h>
++
++#include "rockchip_multi_dais.h"
++
++#define BITCLOCK_INV_STR	"bitclock-inversion"
++#define FRAME_INV_STR		"frame-inversion"
++#define BITCLOCK_MASTER_STR	"bitclock-master"
++#define FRAME_MASTER_STR	"frame-master"
++#define DAIS_DRV_NAME		"rockchip-mdais"
++#define RK3308_GRF_SOC_CON2	0x308
++
++static inline struct rk_mdais_dev *to_info(struct snd_soc_dai *dai)
++{
++	return snd_soc_dai_get_drvdata(dai);
++}
++
++static void hw_refine_channels(struct snd_pcm_hw_params *params,
++			       unsigned int channel)
++{
++	struct snd_interval *c =
++		hw_param_interval(params, SNDRV_PCM_HW_PARAM_CHANNELS);
++
++	c->min = channel;
++	c->max = channel;
++}
++
++static int rockchip_mdais_hw_params(struct snd_pcm_substream *substream,
++				    struct snd_pcm_hw_params *params,
++				    struct snd_soc_dai *dai)
++{
++	struct rk_mdais_dev *mdais = to_info(dai);
++	struct snd_pcm_hw_params *cparams;
++	struct snd_soc_dai *child;
++	unsigned int *channel_maps;
++	int ret = 0, i = 0;
++
++	cparams = kmemdup(params, sizeof(*params), GFP_KERNEL);
++	if (IS_ERR(cparams))
++		return PTR_ERR(cparams);
++
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		channel_maps = mdais->playback_channel_maps;
++	else
++		channel_maps = mdais->capture_channel_maps;
++
++	for (i = 0; i < mdais->num_dais; i++) {
++		child = mdais->dais[i].dai;
++		if (channel_maps[i])
++			hw_refine_channels(cparams, channel_maps[i]);
++		if (child->driver->ops && child->driver->ops->hw_params) {
++			ret = child->driver->ops->hw_params(substream, cparams, child);
++			if (ret < 0) {
++				dev_err(dai->dev, "ASoC: can't set %s hw params: %d\n",
++					dai->name, ret);
++				return ret;
++			}
++		}
++	}
++
++	kfree(cparams);
++	return 0;
++}
++
++static int rockchip_mdais_trigger(struct snd_pcm_substream *substream,
++				  int cmd, struct snd_soc_dai *dai)
++{
++	struct rk_mdais_dev *mdais = to_info(dai);
++	struct snd_soc_dai *child;
++	int ret = 0, i = 0;
++
++	for (i = 0; i < mdais->num_dais; i++) {
++		child = mdais->dais[i].dai;
++		if (child->driver->ops && child->driver->ops->trigger) {
++			ret = child->driver->ops->trigger(substream,
++							  cmd, child);
++			if (ret < 0)
++				return ret;
++		}
++	}
++
++	return 0;
++}
++
++static int rockchip_mdais_set_sysclk(struct snd_soc_dai *cpu_dai, int clk_id,
++				     unsigned int freq, int dir)
++{
++	struct rk_mdais_dev *mdais = to_info(cpu_dai);
++	struct snd_soc_dai *child;
++	int ret, i = 0;
++
++	for (i = 0; i < mdais->num_dais; i++) {
++		child = mdais->dais[i].dai;
++		ret = snd_soc_dai_set_sysclk(child, clk_id, freq, dir);
++		if (ret && ret != -ENOTSUPP)
++			return ret;
++	}
++
++	return 0;
++}
++
++static int rockchip_mdais_set_fmt(struct snd_soc_dai *cpu_dai,
++				  unsigned int fmt)
++{
++	struct rk_mdais_dev *mdais = to_info(cpu_dai);
++	struct snd_soc_dai *child;
++	unsigned int dai_fmt;
++	int ret, i = 0;
++
++	for (i = 0; i < mdais->num_dais; i++) {
++		child = mdais->dais[i].dai;
++		dai_fmt = fmt;
++		if (mdais->dais[i].fmt_msk) {
++			dai_fmt &= ~(mdais->dais[i].fmt_msk);
++			dai_fmt |= mdais->dais[i].fmt;
++		}
++		ret = snd_soc_dai_set_fmt(child, dai_fmt);
++		if (ret && ret != -ENOTSUPP)
++			return ret;
++	}
++
++	return 0;
++}
++
++static int rockchip_mdais_dai_probe(struct snd_soc_dai *dai)
++{
++	struct rk_mdais_dev *mdais = to_info(dai);
++	struct snd_soc_dai *child;
++	int ret, i = 0;
++
++	for (i = 0; i < mdais->num_dais; i++) {
++		child = mdais->dais[i].dai;
++		if (!child->probed && child->driver->probe) {
++			ret = child->driver->probe(child);
++			if (ret < 0) {
++				dev_err(child->dev,
++					"ASoC: failed to probe DAI %s: %d\n",
++					child->name, ret);
++				return ret;
++			}
++			dai->probed = 1;
++		}
++	}
++
++	return 0;
++}
++
++static const struct snd_soc_dai_ops rockchip_mdais_dai_ops = {
++	.hw_params = rockchip_mdais_hw_params,
++	.set_sysclk = rockchip_mdais_set_sysclk,
++	.set_fmt = rockchip_mdais_set_fmt,
++	.trigger = rockchip_mdais_trigger,
++};
++
++static const struct snd_soc_component_driver rockchip_mdais_component = {
++	.name = DAIS_DRV_NAME,
++};
++
++static const struct of_device_id rockchip_mdais_match[] = {
++	{ .compatible = "rockchip,multi-dais", },
++	{ .compatible = "rockchip,rk3308-multi-dais", },
++	{},
++};
++
++static struct snd_soc_dai *rockchip_mdais_find_dai(struct device_node *np)
++{
++	struct snd_soc_dai_link_component dai_component = { 0 };
++
++	dai_component.of_node = np;
++
++	return snd_soc_find_dai(&dai_component);
++}
++
++static int mdais_runtime_suspend(struct device *dev)
++{
++	struct rk_mdais_dev *mdais = dev_get_drvdata(dev);
++	struct snd_soc_dai *child;
++	int i = 0;
++
++	for (i = 0; i < mdais->num_dais; i++) {
++		child = mdais->dais[i].dai;
++		pm_runtime_put(child->dev);
++	}
++
++	return 0;
++}
++
++static int mdais_runtime_resume(struct device *dev)
++{
++	struct rk_mdais_dev *mdais = dev_get_drvdata(dev);
++	struct snd_soc_dai *child;
++	int i = 0;
++
++	for (i = 0; i < mdais->num_dais; i++) {
++		child = mdais->dais[i].dai;
++		pm_runtime_get_sync(child->dev);
++	}
++
++	return 0;
++}
++
++static int mdais_read_prop_array(struct device_node *node,
++				 const char *propname,
++				 unsigned int *array, int num)
++{
++	int ret = 0;
++
++	memset(array, 0, sizeof(*array) * num);
++	if (of_property_read_bool(node, propname)) {
++		ret = of_property_read_u32_array(node, propname, array, num);
++		if (ret)
++			ret = -EINVAL;
++	} else {
++		ret = -EINVAL;
++	}
++
++	return ret;
++}
++
++static void mdais_parse_daifmt(struct device_node *node, struct rk_dai *dais,
++			       int num_dai)
++{
++	unsigned int cinv[MAX_DAIS], finv[MAX_DAIS];
++	unsigned int cmst[MAX_DAIS], fmst[MAX_DAIS];
++	unsigned int format = 0, format_mask = 0;
++	int i = 0, ret = 0;
++
++	ret = mdais_read_prop_array(node, BITCLOCK_INV_STR, cinv, num_dai);
++	if (!ret)
++		format_mask |= SND_SOC_DAIFMT_INV_MASK;
++	ret = mdais_read_prop_array(node, FRAME_INV_STR, finv, num_dai);
++	if (!ret)
++		format_mask |= SND_SOC_DAIFMT_INV_MASK;
++	ret = mdais_read_prop_array(node, BITCLOCK_MASTER_STR, cmst, num_dai);
++	if (!ret)
++		format_mask |= SND_SOC_DAIFMT_MASTER_MASK;
++	ret = mdais_read_prop_array(node, FRAME_MASTER_STR, fmst, num_dai);
++	if (!ret)
++		format_mask |= SND_SOC_DAIFMT_MASTER_MASK;
++
++	for (i = 0; i < num_dai; i++) {
++		format = 0;
++
++		switch ((cinv[i] << 4) + finv[i]) {
++		case 0x11:
++			format |= SND_SOC_DAIFMT_IB_IF;
++			break;
++		case 0x10:
++			format |= SND_SOC_DAIFMT_IB_NF;
++			break;
++		case 0x01:
++			format |= SND_SOC_DAIFMT_NB_IF;
++			break;
++		default:
++			/* SND_SOC_DAIFMT_NB_NF is default */
++			break;
++		}
++
++		switch ((!cmst[i] << 4) + !fmst[i]) {
++		case 0x11:
++			format |= SND_SOC_DAIFMT_CBM_CFM;
++			break;
++		case 0x10:
++			format |= SND_SOC_DAIFMT_CBM_CFS;
++			break;
++		case 0x01:
++			format |= SND_SOC_DAIFMT_CBS_CFM;
++			break;
++		default:
++			format |= SND_SOC_DAIFMT_CBS_CFS;
++			break;
++		}
++
++		dais[i].fmt = format & format_mask;
++		dais[i].fmt_msk = format_mask;
++	}
++}
++
++static int rockchip_mdais_dai_prepare(struct platform_device *pdev,
++				      struct snd_soc_dai_driver **soc_dai)
++{
++	struct snd_soc_dai_driver rockchip_mdais_dai = {
++		.probe = rockchip_mdais_dai_probe,
++		.playback = {
++			.stream_name = "Playback",
++			.channels_min = 2,
++			.channels_max = 32,
++			.rates = SNDRV_PCM_RATE_8000_192000,
++			.formats = (SNDRV_PCM_FMTBIT_S8 |
++				    SNDRV_PCM_FMTBIT_S16_LE |
++				    SNDRV_PCM_FMTBIT_S20_3LE |
++				    SNDRV_PCM_FMTBIT_S24_LE |
++				    SNDRV_PCM_FMTBIT_S32_LE),
++		},
++		.capture = {
++			.stream_name = "Capture",
++			.channels_min = 2,
++			.channels_max = 32,
++			.rates = SNDRV_PCM_RATE_8000_192000,
++			.formats = (SNDRV_PCM_FMTBIT_S8 |
++				    SNDRV_PCM_FMTBIT_S16_LE |
++				    SNDRV_PCM_FMTBIT_S20_3LE |
++				    SNDRV_PCM_FMTBIT_S24_LE |
++				    SNDRV_PCM_FMTBIT_S32_LE),
++		},
++		.ops = &rockchip_mdais_dai_ops,
++	};
++
++	*soc_dai = devm_kmemdup(&pdev->dev, &rockchip_mdais_dai,
++				sizeof(rockchip_mdais_dai), GFP_KERNEL);
++	if (!(*soc_dai))
++		return -ENOMEM;
++
++	return 0;
++}
++
++static void mdais_fixup_dai(struct snd_soc_dai_driver *soc_dai,
++			    struct rk_mdais_dev *mdais)
++{
++	int i, tch, rch;
++	unsigned int *tx_maps, *rx_maps;
++
++	tch = 0;
++	rch = 0;
++	tx_maps = mdais->playback_channel_maps;
++	rx_maps = mdais->capture_channel_maps;
++	for (i = 0; i < mdais->num_dais; i++) {
++		tch += tx_maps[i];
++		rch += rx_maps[i];
++	}
++
++	soc_dai->playback.channels_min = tch;
++	soc_dai->playback.channels_max = tch;
++	soc_dai->capture.channels_min = rch;
++	soc_dai->capture.channels_max = rch;
++}
++
++static int rockchip_mdais_probe(struct platform_device *pdev)
++{
++	struct device_node *np = pdev->dev.of_node;
++	struct platform_device  *sub_pdev;
++	struct rk_mdais_dev *mdais;
++	struct device_node *node;
++	struct snd_soc_dai_driver *soc_dai;
++	struct rk_dai *dais;
++	unsigned int *map;
++	int count, mp_count;
++	int ret = 0, i = 0;
++
++	ret = rockchip_mdais_dai_prepare(pdev, &soc_dai);
++	if (ret < 0)
++		return ret;
++
++	mdais = devm_kzalloc(&pdev->dev, sizeof(*mdais), GFP_KERNEL);
++	if (!mdais)
++		return -ENOMEM;
++
++	count = of_count_phandle_with_args(np, "dais", NULL);
++	if (count < 0 || count > MAX_DAIS)
++		return -EINVAL;
++
++	mp_count = of_property_count_u32_elems(np, "capture,channel-mapping");
++	if (mp_count != count)
++		return -EINVAL;
++	mp_count = of_property_count_u32_elems(np, "playback,channel-mapping");
++	if (mp_count != count)
++		return -EINVAL;
++
++	mdais->num_dais = count;
++	dais = devm_kcalloc(&pdev->dev, count,
++			    sizeof(*dais), GFP_KERNEL);
++	if (!dais)
++		return -ENOMEM;
++
++	map = devm_kcalloc(&pdev->dev, count,
++			   sizeof(*map), GFP_KERNEL);
++	if (!map)
++		return -ENOMEM;
++	ret = of_property_read_u32_array(np, "capture,channel-mapping",
++					 map, count);
++	if (ret)
++		return -EINVAL;
++	mdais->capture_channel_maps = map;
++	map = devm_kcalloc(&pdev->dev, count,
++			   sizeof(*map), GFP_KERNEL);
++	if (!map)
++		return -ENOMEM;
++	ret = of_property_read_u32_array(np, "playback,channel-mapping",
++					 map, count);
++	if (ret)
++		return -EINVAL;
++	mdais->playback_channel_maps = map;
++
++	for (i = 0; i < count; i++) {
++		node = of_parse_phandle(np, "dais", i);
++		sub_pdev = of_find_device_by_node(node);
++		if (!sub_pdev) {
++			dev_err(&pdev->dev, "fail to find subnode dev\n");
++			return -ENODEV;
++		}
++		dais[i].of_node = node;
++		dais[i].dev = &sub_pdev->dev;
++		dais[i].dai = rockchip_mdais_find_dai(node);
++		if (!dais[i].dai)
++			return -EPROBE_DEFER;
++	}
++
++	mdais_parse_daifmt(np, dais, count);
++	mdais_fixup_dai(soc_dai, mdais);
++
++	if (of_device_is_compatible(np, "rockchip,rk3308-multi-dais")) {
++		struct regmap *grf;
++		const char *name;
++		unsigned int i2s0_fmt = 0, i2s1_fmt = 0;
++
++		for (i = 0; i < count; i++) {
++			name = dev_name(dais[i].dev);
++			if (strstr(name, "ff300000"))
++				i2s0_fmt = dais[i].fmt;
++			else if (strstr(name, "ff310000"))
++				i2s1_fmt = dais[i].fmt;
++		}
++		i2s0_fmt &= SND_SOC_DAIFMT_MASTER_MASK;
++		i2s1_fmt &= SND_SOC_DAIFMT_MASTER_MASK;
++
++		if ((i2s0_fmt == SND_SOC_DAIFMT_CBS_CFS &&
++		     i2s1_fmt == SND_SOC_DAIFMT_CBM_CFM) ||
++		    (i2s0_fmt == SND_SOC_DAIFMT_CBM_CFM &&
++		     i2s1_fmt == SND_SOC_DAIFMT_CBS_CFS)) {
++			grf = syscon_regmap_lookup_by_phandle(np,
++							      "rockchip,grf");
++			if (IS_ERR(grf))
++				return PTR_ERR(grf);
++
++			dev_info(&pdev->dev, "enable i2s 16ch ctrl en\n");
++			regmap_write(grf, RK3308_GRF_SOC_CON2,
++				     BIT(14) << 16 | BIT(14));
++		}
++	}
++
++	mdais->dais = dais;
++	mdais->dev = &pdev->dev;
++	dev_set_drvdata(&pdev->dev, mdais);
++
++	pm_runtime_enable(&pdev->dev);
++	if (!pm_runtime_enabled(&pdev->dev)) {
++		ret = mdais_runtime_resume(&pdev->dev);
++		if (ret)
++			goto err_pm_disable;
++	}
++
++	ret = devm_snd_soc_register_component(&pdev->dev,
++					      &rockchip_mdais_component,
++					      soc_dai, 1);
++
++	if (ret) {
++		dev_err(&pdev->dev, "could not register dai: %d\n", ret);
++		goto err_suspend;
++	}
++
++	ret = snd_dmaengine_mpcm_register(mdais);
++	if (ret) {
++		dev_err(&pdev->dev, "Could not register PCM\n");
++		return ret;
++	}
++
++	return 0;
++
++err_suspend:
++	if (!pm_runtime_status_suspended(&pdev->dev))
++		mdais_runtime_resume(&pdev->dev);
++err_pm_disable:
++	pm_runtime_disable(&pdev->dev);
++
++	return ret;
++}
++
++static int rockchip_mdais_remove(struct platform_device *pdev)
++{
++	snd_dmaengine_mpcm_unregister(&pdev->dev);
++	pm_runtime_disable(&pdev->dev);
++	if (!pm_runtime_status_suspended(&pdev->dev))
++		mdais_runtime_suspend(&pdev->dev);
++
++	return 0;
++}
++
++static const struct dev_pm_ops rockchip_mdais_pm_ops = {
++	SET_RUNTIME_PM_OPS(mdais_runtime_suspend, mdais_runtime_resume,
++			   NULL)
++};
++
++static struct platform_driver rockchip_mdais_driver = {
++	.probe = rockchip_mdais_probe,
++	.remove = rockchip_mdais_remove,
++	.driver = {
++		.name = DAIS_DRV_NAME,
++		.of_match_table = of_match_ptr(rockchip_mdais_match),
++		.pm = &rockchip_mdais_pm_ops,
++	},
++};
++module_platform_driver(rockchip_mdais_driver);
++
++MODULE_DESCRIPTION("ROCKCHIP MULTI-DAIS ASoC Interface");
++MODULE_AUTHOR("Sugar Zhang <sugar.zhang@rock-chips.com>");
++MODULE_LICENSE("GPL v2");
++MODULE_ALIAS("platform:" DAIS_DRV_NAME);
++MODULE_DEVICE_TABLE(of, rockchip_mdais_match);
+Index: linux-5.10.27/sound/soc/rockchip/rockchip_multi_dais.h
+===================================================================
+--- /dev/null
++++ linux-5.10.27/sound/soc/rockchip/rockchip_multi_dais.h
+@@ -0,0 +1,33 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * Rockchip MULTI DAIS driver
++ *
++ * Copyright (C) 2018 Fuzhou Rockchip Electronics Co., Ltd
++ *
++ */
++
++#ifndef _ROCKCHIP_MULTI_DAIS_H
++#define _ROCKCHIP_MULTI_DAIS_H
++
++#define MAX_DAIS 4
++
++struct rk_dai {
++	struct device *dev;
++	struct device_node *of_node;
++	struct snd_soc_dai *dai;
++	unsigned int fmt;
++	unsigned int fmt_msk;
++};
++
++struct rk_mdais_dev {
++	struct device *dev;
++	struct rk_dai *dais;
++	unsigned int *playback_channel_maps;
++	unsigned int *capture_channel_maps;
++	int num_dais;
++};
++
++int snd_dmaengine_mpcm_register(struct rk_mdais_dev *mdais);
++void snd_dmaengine_mpcm_unregister(struct device *dev);
++
++#endif
+Index: linux-5.10.27/sound/soc/rockchip/rockchip_multi_dais_pcm.c
+===================================================================
+--- /dev/null
++++ linux-5.10.27/sound/soc/rockchip/rockchip_multi_dais_pcm.c
+@@ -0,0 +1,704 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * ALSA SoC Audio Layer - Rockchip Multi-DAIS-PCM driver
++ *
++ * Copyright (c) 2018 Rockchip Electronics Co. Ltd.
++ * Author: Sugar Zhang <sugar.zhang@rock-chips.com>
++ *
++ */
++
++#include <linux/module.h>
++#include <linux/dmaengine.h>
++#include <linux/dma-mapping.h>
++#include <sound/dmaengine_pcm.h>
++#include <sound/pcm.h>
++#include <sound/pcm_params.h>
++#include <sound/soc.h>
++
++#include "rockchip_multi_dais.h"
++
++#define MAX_FIFO_SIZE	32 /* max fifo size in frames */
++
++struct dmaengine_mpcm {
++	struct rk_mdais_dev *mdais;
++	struct dma_chan *tx_chans[MAX_DAIS];
++	struct dma_chan *rx_chans[MAX_DAIS];
++	struct snd_soc_platform platform;
++};
++
++struct dmaengine_mpcm_runtime_data {
++	struct dma_chan *chans[MAX_DAIS];
++	dma_cookie_t cookies[MAX_DAIS];
++	unsigned int *channel_maps;
++	int num_chans;
++	unsigned int pos;
++	unsigned int master_chan;
++	bool start_flag;
++#ifdef CONFIG_SND_SOC_ROCKCHIP_VAD
++	unsigned int vpos;
++	unsigned int vresidue_bytes;
++#endif
++};
++
++static inline struct dmaengine_mpcm_runtime_data *substream_to_prtd(
++	const struct snd_pcm_substream *substream)
++{
++	return substream->runtime->private_data;
++}
++
++static struct dmaengine_mpcm *soc_platform_to_pcm(struct snd_soc_platform *p)
++{
++	return container_of(p, struct dmaengine_mpcm, platform);
++}
++
++static struct dma_chan *to_chan(struct dmaengine_mpcm *pcm,
++				struct snd_pcm_substream *substream)
++{
++	struct dma_chan *chan = NULL;
++	int i;
++
++	for (i = 0; i < pcm->mdais->num_dais; i++) {
++		chan = substream->stream ? pcm->rx_chans[i] : pcm->tx_chans[i];
++		if (chan)
++			break;
++	}
++
++	return chan;
++}
++
++static struct device *dmaengine_dma_dev(struct dmaengine_mpcm *pcm,
++					struct snd_pcm_substream *substream)
++{
++	struct dma_chan *chan;
++
++	chan = to_chan(pcm, substream);
++	if (!chan)
++		return NULL;
++
++	return chan->device->dev;
++}
++
++static void snd_dmaengine_mpcm_set_config_from_dai_data(
++	const struct snd_pcm_substream *substream,
++	const struct snd_dmaengine_dai_dma_data *dma_data,
++	struct dma_slave_config *slave_config)
++{
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
++		slave_config->dst_addr = dma_data->addr;
++		if (dma_data->addr_width != DMA_SLAVE_BUSWIDTH_UNDEFINED)
++			slave_config->dst_addr_width = dma_data->addr_width;
++	} else {
++		slave_config->src_addr = dma_data->addr;
++		if (dma_data->addr_width != DMA_SLAVE_BUSWIDTH_UNDEFINED)
++			slave_config->src_addr_width = dma_data->addr_width;
++	}
++
++	slave_config->slave_id = dma_data->slave_id;
++}
++
++static void dmaengine_mpcm_dma_complete(void *arg)
++{
++	struct snd_pcm_substream *substream = arg;
++#ifdef CONFIG_SND_SOC_ROCKCHIP_VAD
++	struct dmaengine_mpcm_runtime_data *prtd = substream_to_prtd(substream);
++
++	if (snd_pcm_vad_attached(substream) &&
++	    substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
++		void *buf = substream->runtime->dma_area + prtd->pos;
++
++		snd_pcm_vad_preprocess(substream, buf,
++				       substream->runtime->period_size);
++	}
++
++	prtd->pos += snd_pcm_lib_period_bytes(substream);
++	if (prtd->pos >= snd_pcm_lib_buffer_bytes(substream))
++		prtd->pos = 0;
++
++#endif
++	snd_pcm_period_elapsed(substream);
++}
++
++static int dmaengine_mpcm_prepare_and_submit(struct snd_pcm_substream *substream)
++{
++	struct dmaengine_mpcm_runtime_data *prtd = substream_to_prtd(substream);
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct dma_async_tx_descriptor *desc;
++	enum dma_transfer_direction direction;
++	unsigned long flags = DMA_CTRL_ACK;
++	unsigned int *maps = prtd->channel_maps;
++	int offset, buffer_bytes, period_bytes;
++	int i;
++	bool callback = false;
++
++	direction = snd_pcm_substream_to_dma_direction(substream);
++
++	if (!substream->runtime->no_period_wakeup)
++		flags |= DMA_PREP_INTERRUPT;
++
++	prtd->pos = 0;
++	offset = 0;
++	period_bytes = snd_pcm_lib_period_bytes(substream);
++	buffer_bytes = snd_pcm_lib_buffer_bytes(substream);
++	for (i = 0; i < prtd->num_chans; i++) {
++		if (!prtd->chans[i])
++			continue;
++		desc = dmaengine_prep_dma_cyclic(prtd->chans[i],
++						 runtime->dma_addr + offset,
++						 buffer_bytes, period_bytes,
++						 direction, flags);
++
++		if (!desc)
++			return -ENOMEM;
++		if (!callback) {
++			desc->callback = dmaengine_mpcm_dma_complete;
++			desc->callback_param = substream;
++			callback = true;
++			prtd->master_chan = i;
++		}
++		prtd->cookies[i] = dmaengine_submit(desc);
++		offset += samples_to_bytes(runtime, maps[i]);
++	}
++
++	return 0;
++}
++
++static void mpcm_dma_async_issue_pending(struct dmaengine_mpcm_runtime_data *prtd)
++{
++	int i;
++
++	for (i = 0; i < prtd->num_chans; i++) {
++		if (prtd->chans[i])
++			dma_async_issue_pending(prtd->chans[i]);
++	}
++}
++
++static void mpcm_dmaengine_resume(struct dmaengine_mpcm_runtime_data *prtd)
++{
++	int i;
++
++	for (i = 0; i < prtd->num_chans; i++) {
++		if (prtd->chans[i])
++			dmaengine_resume(prtd->chans[i]);
++	}
++}
++
++static void mpcm_dmaengine_pause(struct dmaengine_mpcm_runtime_data *prtd)
++{
++	int i;
++
++	for (i = 0; i < prtd->num_chans; i++) {
++		if (prtd->chans[i])
++			dmaengine_pause(prtd->chans[i]);
++	}
++}
++
++static void mpcm_dmaengine_terminate_all(struct dmaengine_mpcm_runtime_data *prtd)
++{
++	int i;
++
++	for (i = 0; i < prtd->num_chans; i++) {
++		if (prtd->chans[i])
++			dmaengine_terminate_all(prtd->chans[i]);
++	}
++}
++
++#ifdef CONFIG_SND_SOC_ROCKCHIP_VAD
++static void dmaengine_mpcm_single_dma_complete(void *arg)
++{
++	struct snd_pcm_substream *substream = arg;
++	struct dmaengine_mpcm_runtime_data *prtd = substream_to_prtd(substream);
++	unsigned int pos, size;
++	void *buf;
++
++	if (snd_pcm_vad_attached(substream) &&
++	    substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
++		buf = substream->runtime->dma_area + prtd->vpos;
++		pos = prtd->vpos + snd_pcm_lib_period_bytes(substream);
++
++		if (pos <= snd_pcm_lib_buffer_bytes(substream))
++			size = substream->runtime->period_size;
++		else
++			size = bytes_to_frames(substream->runtime,
++					       prtd->vresidue_bytes);
++		snd_pcm_vad_preprocess(substream, buf, size);
++	}
++
++	prtd->vpos += snd_pcm_lib_period_bytes(substream);
++	if (prtd->vpos >= snd_pcm_lib_buffer_bytes(substream))
++		prtd->vpos = 0;
++	snd_pcm_period_elapsed(substream);
++}
++
++static int __mpcm_prepare_single_and_submit(struct snd_pcm_substream *substream,
++					    dma_addr_t buf_start, int size)
++{
++	struct dmaengine_mpcm_runtime_data *prtd = substream_to_prtd(substream);
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct dma_async_tx_descriptor *desc;
++	enum dma_transfer_direction direction;
++	unsigned long flags = DMA_CTRL_ACK;
++	unsigned int *maps = prtd->channel_maps;
++	int offset, i;
++	bool callback = false;
++
++	direction = snd_pcm_substream_to_dma_direction(substream);
++
++	if (!substream->runtime->no_period_wakeup)
++		flags |= DMA_PREP_INTERRUPT;
++
++	offset = 0;
++	for (i = 0; i < prtd->num_chans; i++) {
++		if (!prtd->chans[i])
++			continue;
++		desc = dmaengine_prep_slave_single(prtd->chans[i],
++						   buf_start + offset,
++						   size,
++						   direction, flags);
++
++		if (!desc)
++			return -ENOMEM;
++		if (!callback) {
++			desc->callback = dmaengine_mpcm_single_dma_complete;
++			desc->callback_param = substream;
++			callback = true;
++		}
++		dmaengine_submit(desc);
++		offset += samples_to_bytes(runtime, maps[i]);
++	}
++
++	return 0;
++}
++
++static int dmaengine_mpcm_prepare_single_and_submit(struct snd_pcm_substream *substream)
++{
++	struct dmaengine_mpcm_runtime_data *prtd = substream_to_prtd(substream);
++	enum dma_transfer_direction direction;
++	unsigned long flags = DMA_CTRL_ACK;
++	snd_pcm_uframes_t avail;
++	dma_addr_t buf_start, buf_end;
++	int offset, i, count, ret;
++	int buffer_bytes, period_bytes, residue_bytes;
++
++	direction = snd_pcm_substream_to_dma_direction(substream);
++
++	if (!substream->runtime->no_period_wakeup)
++		flags |= DMA_PREP_INTERRUPT;
++
++	period_bytes = snd_pcm_lib_period_bytes(substream);
++	buffer_bytes = snd_pcm_lib_buffer_bytes(substream);
++	avail = snd_pcm_vad_avail(substream);
++	offset = frames_to_bytes(substream->runtime, avail);
++	prtd->vpos = offset;
++	buf_start = substream->runtime->dma_addr + offset;
++	buf_end = substream->runtime->dma_addr + snd_pcm_lib_buffer_bytes(substream);
++	count = (buf_end - buf_start) / period_bytes;
++	residue_bytes = (buf_end - buf_start) % period_bytes;
++	prtd->vresidue_bytes = residue_bytes;
++	pr_debug("%s: offset: %d, buffer_bytes: %d\n", __func__, offset, buffer_bytes);
++	pr_debug("%s: count: %d, residue_bytes: %d\n", __func__, count, residue_bytes);
++	for (i = 0; i < count; i++) {
++		ret = __mpcm_prepare_single_and_submit(substream, buf_start,
++						       period_bytes);
++		if (ret)
++			return ret;
++		buf_start += period_bytes;
++	}
++
++	if (residue_bytes) {
++		ret = __mpcm_prepare_single_and_submit(substream, buf_start,
++						       residue_bytes);
++		if (ret)
++			return ret;
++	}
++
++	return 0;
++}
++#endif
++
++static int snd_dmaengine_mpcm_trigger(struct snd_pcm_substream *substream, int cmd)
++{
++	struct dmaengine_mpcm_runtime_data *prtd = substream_to_prtd(substream);
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	int ret;
++
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++#ifdef CONFIG_SND_SOC_ROCKCHIP_VAD
++		if (substream->stream == SNDRV_PCM_STREAM_CAPTURE &&
++		    snd_pcm_vad_attached(substream) &&
++		    snd_pcm_vad_avail(substream)) {
++			dmaengine_mpcm_prepare_single_and_submit(substream);
++			mpcm_dma_async_issue_pending(prtd);
++		}
++#endif
++		ret = dmaengine_mpcm_prepare_and_submit(substream);
++		if (ret)
++			return ret;
++		mpcm_dma_async_issue_pending(prtd);
++		break;
++	case SNDRV_PCM_TRIGGER_RESUME:
++	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
++		mpcm_dmaengine_resume(prtd);
++		break;
++	case SNDRV_PCM_TRIGGER_SUSPEND:
++		if (runtime->info & SNDRV_PCM_INFO_PAUSE)
++			mpcm_dmaengine_pause(prtd);
++		else
++			mpcm_dmaengine_terminate_all(prtd);
++		prtd->start_flag = false;
++		break;
++	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
++		mpcm_dmaengine_pause(prtd);
++		prtd->start_flag = false;
++		break;
++	case SNDRV_PCM_TRIGGER_STOP:
++		mpcm_dmaengine_terminate_all(prtd);
++		prtd->start_flag = false;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
++static int dmaengine_mpcm_hw_params(struct snd_pcm_substream *substream,
++				    struct snd_pcm_hw_params *params)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct dmaengine_mpcm *pcm = soc_platform_to_pcm(rtd->platform);
++	struct dma_chan *chan;
++	struct snd_dmaengine_dai_dma_data *dma_data;
++	struct dma_slave_config slave_config;
++	snd_pcm_format_t format;
++	unsigned int *maps;
++	int frame_bytes;
++	int ret, num, i, sz;
++
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		maps = pcm->mdais->playback_channel_maps;
++	else
++		maps = pcm->mdais->capture_channel_maps;
++	format = params_format(params);
++	frame_bytes = snd_pcm_format_size(format, params_channels(params));
++	num = pcm->mdais->num_dais;
++
++	for (i = 0; i < num; i++) {
++		memset(&slave_config, 0, sizeof(slave_config));
++		ret = snd_hwparams_to_dma_slave_config(substream, params,
++						       &slave_config);
++		if (ret)
++			return ret;
++
++		dma_data = snd_soc_dai_get_dma_data(pcm->mdais->dais[i].dai,
++						    substream);
++		if (!dma_data)
++			continue;
++
++		snd_dmaengine_mpcm_set_config_from_dai_data(substream,
++							    dma_data,
++							    &slave_config);
++
++		/* refine params for interlace access */
++		sz = snd_pcm_format_size(format, maps[i]);
++		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
++			chan = pcm->tx_chans[i];
++			if (sz) {
++				slave_config.src_interlace_size = frame_bytes - sz;
++				if (slave_config.src_interlace_size)
++					slave_config.dst_maxburst = sz / slave_config.dst_addr_width;
++			}
++		} else {
++			chan = pcm->rx_chans[i];
++			if (sz) {
++				slave_config.dst_interlace_size = frame_bytes - sz;
++				if (slave_config.dst_interlace_size)
++					slave_config.src_maxburst = sz / slave_config.src_addr_width;
++			}
++		}
++		if (!chan)
++			continue;
++
++		ret = dmaengine_slave_config(chan, &slave_config);
++		if (ret)
++			return ret;
++	}
++	return snd_pcm_lib_malloc_pages(substream, params_buffer_bytes(params));
++}
++
++static int dmaengine_mpcm_set_runtime_hwparams(struct snd_pcm_substream *substream)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct dmaengine_mpcm *pcm = soc_platform_to_pcm(rtd->platform);
++	struct device *dma_dev = dmaengine_dma_dev(pcm, substream);
++	struct dma_chan *chan;
++	struct dma_slave_caps dma_caps;
++	struct snd_pcm_hardware hw;
++	u32 addr_widths = BIT(DMA_SLAVE_BUSWIDTH_1_BYTE) |
++			  BIT(DMA_SLAVE_BUSWIDTH_2_BYTES) |
++			  BIT(DMA_SLAVE_BUSWIDTH_4_BYTES);
++	int i, ret;
++
++	chan = to_chan(pcm, substream);
++	if (!chan)
++		return -EINVAL;
++
++	memset(&hw, 0, sizeof(hw));
++	hw.info = SNDRV_PCM_INFO_MMAP | SNDRV_PCM_INFO_MMAP_VALID |
++			SNDRV_PCM_INFO_INTERLEAVED;
++	hw.periods_min = 2;
++	hw.periods_max = UINT_MAX;
++	hw.period_bytes_min = 256;
++	hw.period_bytes_max = dma_get_max_seg_size(dma_dev);
++	hw.buffer_bytes_max = SIZE_MAX;
++
++	ret = dma_get_slave_caps(chan, &dma_caps);
++	if (ret == 0) {
++		if (dma_caps.cmd_pause)
++			hw.info |= SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_RESUME;
++		if (dma_caps.residue_granularity <= DMA_RESIDUE_GRANULARITY_SEGMENT)
++			hw.info |= SNDRV_PCM_INFO_BATCH;
++
++		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++			addr_widths = dma_caps.dst_addr_widths;
++		else
++			addr_widths = dma_caps.src_addr_widths;
++	}
++
++	/*
++	 * Prepare formats mask for valid/allowed sample types. If the dma does
++	 * not have support for the given physical word size, it needs to be
++	 * masked out so user space can not use the format which produces
++	 * corrupted audio.
++	 * In case the dma driver does not implement the slave_caps the default
++	 * assumption is that it supports 1, 2 and 4 bytes widths.
++	 */
++	for (i = 0; i <= SNDRV_PCM_FORMAT_LAST; i++) {
++		int bits = snd_pcm_format_physical_width(i);
++
++		/* Enable only samples with DMA supported physical widths */
++		switch (bits) {
++		case 8:
++		case 16:
++		case 24:
++		case 32:
++		case 64:
++			if (addr_widths & (1 << (bits / 8)))
++				hw.formats |= (1LL << i);
++			break;
++		default:
++			/* Unsupported types */
++			break;
++		}
++	}
++
++	return snd_soc_set_runtime_hwparams(substream, &hw);
++}
++
++static int dmaengine_mpcm_open(struct snd_pcm_substream *substream)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct dmaengine_mpcm *pcm = soc_platform_to_pcm(rtd->platform);
++	struct dmaengine_mpcm_runtime_data *prtd;
++	int ret, i;
++
++	ret = dmaengine_mpcm_set_runtime_hwparams(substream);
++	if (ret)
++		return ret;
++
++	ret = snd_pcm_hw_constraint_integer(substream->runtime,
++					    SNDRV_PCM_HW_PARAM_PERIODS);
++	if (ret < 0)
++		return ret;
++
++	prtd = kzalloc(sizeof(*prtd), GFP_KERNEL);
++	if (!prtd)
++		return -ENOMEM;
++
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
++		prtd->channel_maps = pcm->mdais->playback_channel_maps;
++		for (i = 0; i < pcm->mdais->num_dais; i++)
++			prtd->chans[i] = pcm->tx_chans[i];
++	} else {
++		prtd->channel_maps = pcm->mdais->capture_channel_maps;
++		for (i = 0; i < pcm->mdais->num_dais; i++)
++			prtd->chans[i] = pcm->rx_chans[i];
++	}
++
++	prtd->num_chans = pcm->mdais->num_dais;
++	prtd->start_flag = false;
++	substream->runtime->private_data = prtd;
++
++	return 0;
++}
++
++static int dmaengine_mpcm_new(struct snd_soc_pcm_runtime *rtd)
++{
++	struct dmaengine_mpcm *pcm = soc_platform_to_pcm(rtd->platform);
++	struct snd_pcm_substream *substream;
++	size_t prealloc_buffer_size;
++	size_t max_buffer_size;
++	unsigned int i;
++	int ret;
++
++	prealloc_buffer_size = 512 * 1024;
++	max_buffer_size = SIZE_MAX;
++
++	for (i = SNDRV_PCM_STREAM_PLAYBACK; i <= SNDRV_PCM_STREAM_CAPTURE; i++) {
++		substream = rtd->pcm->streams[i].substream;
++		if (!substream)
++			continue;
++
++		ret = snd_pcm_lib_preallocate_pages(substream,
++						    SNDRV_DMA_TYPE_DEV_IRAM,
++						    dmaengine_dma_dev(pcm, substream),
++						    prealloc_buffer_size,
++						    max_buffer_size);
++		if (ret)
++			return ret;
++	}
++
++	return 0;
++}
++
++static snd_pcm_uframes_t dmaengine_mpcm_pointer(struct snd_pcm_substream *substream)
++{
++	struct dmaengine_mpcm_runtime_data *prtd = substream_to_prtd(substream);
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct dma_tx_state state;
++	snd_pcm_uframes_t frames;
++	unsigned int buf_size;
++	unsigned int pos = 0;
++	unsigned int master = prtd->master_chan;
++
++	buf_size = snd_pcm_lib_buffer_bytes(substream);
++	dmaengine_tx_status(prtd->chans[master], prtd->cookies[master], &state);
++	if (state.residue > 0 && state.residue <= buf_size)
++		pos = buf_size - state.residue;
++
++	frames = bytes_to_frames(substream->runtime, pos);
++#ifdef CONFIG_SND_SOC_ROCKCHIP_VAD
++	if (prtd->vpos)
++		frames = bytes_to_frames(substream->runtime, prtd->vpos);
++#endif
++	if (!prtd->start_flag && frames >= MAX_FIFO_SIZE)
++		prtd->start_flag = true;
++
++	if (prtd->start_flag) {
++		if (frames >= MAX_FIFO_SIZE)
++			frames -= MAX_FIFO_SIZE;
++		else
++			frames = runtime->buffer_size + frames - MAX_FIFO_SIZE;
++	} else {
++		frames = 0;
++	}
++
++	return frames;
++}
++
++static int dmaengine_mpcm_close(struct snd_pcm_substream *substream)
++{
++	struct dmaengine_mpcm_runtime_data *prtd = substream_to_prtd(substream);
++
++	kfree(prtd);
++
++	return 0;
++}
++
++static const struct snd_pcm_ops dmaengine_mpcm_ops = {
++	.open		= dmaengine_mpcm_open,
++	.close		= dmaengine_mpcm_close,
++	.ioctl		= snd_pcm_lib_ioctl,
++	.hw_params	= dmaengine_mpcm_hw_params,
++	.hw_free	= snd_pcm_lib_free_pages,
++	.trigger	= snd_dmaengine_mpcm_trigger,
++	.pointer	= dmaengine_mpcm_pointer,
++};
++
++static const struct snd_soc_platform_driver dmaengine_mpcm_platform = {
++	.component_driver = {
++		.probe_order = SND_SOC_COMP_ORDER_LATE,
++	},
++	.ops		= &dmaengine_mpcm_ops,
++	.pcm_new	= dmaengine_mpcm_new,
++};
++
++static void dmaengine_mpcm_release_chan(struct dmaengine_mpcm *pcm)
++{
++	int i;
++
++	for (i = 0; i < pcm->mdais->num_dais; i++) {
++		if (pcm->tx_chans[i])
++			dma_release_channel(pcm->tx_chans[i]);
++		if (pcm->rx_chans[i])
++			dma_release_channel(pcm->rx_chans[i]);
++	}
++}
++
++int snd_dmaengine_mpcm_register(struct rk_mdais_dev *mdais)
++{
++	struct device *dev;
++	struct device *child;
++	struct dmaengine_mpcm *pcm;
++	struct dma_chan *chan;
++	unsigned int *tx_maps, *rx_maps;
++	int ret, i, num;
++
++	dev = mdais->dev;
++	num = mdais->num_dais;
++	tx_maps = mdais->playback_channel_maps;
++	rx_maps = mdais->capture_channel_maps;
++	pcm = kzalloc(sizeof(*pcm), GFP_KERNEL);
++	if (!pcm)
++		return -ENOMEM;
++
++	pcm->mdais = mdais;
++	for (i = 0; i < num; i++) {
++		child = mdais->dais[i].dev;
++		if (tx_maps[i]) {
++			chan = dma_request_slave_channel_reason(child, "tx");
++			if (IS_ERR(chan))
++				chan = NULL;
++			pcm->tx_chans[i] = chan;
++		}
++
++		if (rx_maps[i]) {
++			chan = dma_request_slave_channel_reason(child, "rx");
++			if (IS_ERR(chan))
++				chan = NULL;
++			pcm->rx_chans[i] = chan;
++		}
++	}
++
++	ret = snd_soc_add_platform(dev, &pcm->platform,
++				   &dmaengine_mpcm_platform);
++	if (ret)
++		goto err_free_dma;
++
++	return 0;
++
++err_free_dma:
++	dmaengine_mpcm_release_chan(pcm);
++	kfree(pcm);
++	return ret;
++}
++EXPORT_SYMBOL_GPL(snd_dmaengine_mpcm_register);
++
++void snd_dmaengine_mpcm_unregister(struct device *dev)
++{
++	struct snd_soc_platform *platform;
++	struct dmaengine_mpcm *pcm;
++
++	platform = snd_soc_lookup_platform(dev);
++	if (!platform)
++		return;
++
++	pcm = soc_platform_to_pcm(platform);
++
++	snd_soc_remove_platform(platform);
++	dmaengine_mpcm_release_chan(pcm);
++	kfree(pcm);
++}
++EXPORT_SYMBOL_GPL(snd_dmaengine_mpcm_unregister);
++
++MODULE_LICENSE("GPL");
+Index: linux-5.10.27/sound/soc/rockchip/rockchip_multicodecs.c
+===================================================================
+--- /dev/null
++++ linux-5.10.27/sound/soc/rockchip/rockchip_multicodecs.c
+@@ -0,0 +1,346 @@
++/*
++ * Rockchip machine ASoC driver for Rockchip Multi-codecs audio
++ *
++ * Copyright (C) 2018 Fuzhou Rockchip Electronics Co., Ltd
++ *
++ * Authors: Sugar Zhang <sugar.zhang@rock-chips.com>,
++ *
++ * This program is free software; you can redistribute it and/or modify it
++ * under the terms and conditions of the GNU General Public License,
++ * version 2, as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope it will be useful, but WITHOUT
++ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
++ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
++ * more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
++ *
++ */
++
++#include <linux/module.h>
++#include <linux/platform_device.h>
++#include <linux/slab.h>
++#include <sound/core.h>
++#include <sound/jack.h>
++#include <sound/pcm.h>
++#include <sound/pcm_params.h>
++#include <sound/soc.h>
++#include <sound/soc-dapm.h>
++
++#include "../codecs/rk3308_codec_provider.h"
++
++#define DRV_NAME "rk-multicodecs"
++#define MAX_CODECS	2
++#define WAIT_CARDS	(SNDRV_CARDS - 1)
++#define DEFAULT_MCLK_FS	256
++
++struct multicodecs_data {
++	struct snd_soc_card snd_card;
++	struct snd_soc_dai_link dai_link;
++	unsigned int mclk_fs;
++	bool codec_hp_det;
++};
++
++static struct snd_soc_jack mc_hp_jack;
++
++static int rk_multicodecs_hw_params(struct snd_pcm_substream *substream,
++				    struct snd_pcm_hw_params *params)
++{
++	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
++	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
++	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
++
++
++	struct multicodecs_data *mc_data = snd_soc_card_get_drvdata(rtd->card);
++	unsigned int mclk;
++	int ret;
++
++	mclk = params_rate(params) * mc_data->mclk_fs;
++
++	ret = snd_soc_dai_set_sysclk(codec_dai, substream->stream, mclk,
++				     SND_SOC_CLOCK_IN);
++	if (ret && ret != -ENOTSUPP) {
++		pr_err("Set codec_dai sysclk failed: %d\n", ret);
++		goto out;
++	}
++
++	ret = snd_soc_dai_set_sysclk(cpu_dai, substream->stream, mclk,
++				     SND_SOC_CLOCK_OUT);
++	if (ret && ret != -ENOTSUPP) {
++		pr_err("Set cpu_dai sysclk failed: %d\n", ret);
++		goto out;
++	}
++
++	return 0;
++
++out:
++	return ret;
++}
++
++static int rk_dailink_init(struct snd_soc_pcm_runtime *rtd)
++{
++	struct multicodecs_data *mc_data = snd_soc_card_get_drvdata(rtd->card);
++
++	if (mc_data->codec_hp_det) {
++		snd_soc_card_jack_new(rtd->card, "Headphones",
++				      SND_JACK_HEADPHONE,
++				      &mc_hp_jack, NULL, 0);
++
++#ifdef CONFIG_SND_SOC_RK3308
++		rk3308_codec_set_jack_detect(asoc_rtd_to_codec(rtd, 0)->component, &mc_hp_jack);
++#endif
++	}
++
++	return 0;
++}
++
++static int rk_multicodecs_parse_daifmt(struct device_node *node,
++				       struct device_node *codec,
++				       struct multicodecs_data *mc_data,
++				       const char *prefix)
++{
++	struct snd_soc_dai_link *dai_link = &mc_data->dai_link;
++	struct device_node *bitclkmaster = NULL;
++	struct device_node *framemaster = NULL;
++	unsigned int daifmt;
++
++	daifmt = snd_soc_of_parse_daifmt(node, prefix,
++					 &bitclkmaster, &framemaster);
++
++	daifmt &= ~SND_SOC_DAIFMT_MASTER_MASK;
++
++	if (strlen(prefix) && !bitclkmaster && !framemaster) {
++		/*
++		 * No dai-link level and master setting was not found from
++		 * sound node level, revert back to legacy DT parsing and
++		 * take the settings from codec node.
++		 */
++		pr_debug("%s: Revert to legacy daifmt parsing\n", __func__);
++
++		daifmt = snd_soc_of_parse_daifmt(codec, NULL, NULL, NULL) |
++			(daifmt & ~SND_SOC_DAIFMT_CLOCK_MASK);
++	} else {
++		if (codec == bitclkmaster)
++			daifmt |= (codec == framemaster) ?
++				SND_SOC_DAIFMT_CBM_CFM : SND_SOC_DAIFMT_CBM_CFS;
++		else
++			daifmt |= (codec == framemaster) ?
++				SND_SOC_DAIFMT_CBS_CFM : SND_SOC_DAIFMT_CBS_CFS;
++	}
++
++	/*
++	 * If there is NULL format means that the format isn't specified, we
++	 * need to set i2s format by default.
++	 */
++	if (!(daifmt & SND_SOC_DAIFMT_FORMAT_MASK))
++		daifmt |= SND_SOC_DAIFMT_I2S;
++
++	dai_link->dai_fmt = daifmt;
++
++	of_node_put(bitclkmaster);
++	of_node_put(framemaster);
++
++	return 0;
++}
++
++static int wait_locked_card(struct device_node *np, struct device *dev)
++{
++	char *propname = "rockchip,wait-card-locked";
++	u32 cards[WAIT_CARDS];
++	int num, i;
++	int ret;
++
++	ret = of_property_count_u32_elems(np, propname);
++	if (ret < 0) {
++		if (ret == -EINVAL) {
++			/*
++			 * -EINVAL means the property does not exist, this is
++			 * fine.
++			 */
++			return 0;
++		}
++
++		dev_err(dev, "Property '%s' elems could not be read: %d\n",
++			propname, ret);
++		return ret;
++	}
++
++	num = ret;
++	if (num > WAIT_CARDS)
++		num = WAIT_CARDS;
++
++	ret = of_property_read_u32_array(np, propname, cards, num);
++	if (ret < 0) {
++		if (ret == -EINVAL) {
++			/*
++			 * -EINVAL means the property does not exist, this is
++			 * fine.
++			 */
++			return 0;
++		}
++
++		dev_err(dev, "Property '%s' could not be read: %d\n",
++			propname, ret);
++		return ret;
++	}
++
++	ret = 0;
++	for (i = 0; i < num; i++) {
++		if (!snd_card_locked(cards[i])) {
++			dev_warn(dev, "card: %d has not been locked, re-probe again\n",
++				 cards[i]);
++			ret = -EPROBE_DEFER;
++			break;
++		}
++	}
++
++	return ret;
++}
++
++static struct snd_soc_ops rk_ops = {
++	.hw_params = rk_multicodecs_hw_params,
++};
++
++static int rk_multicodecs_probe(struct platform_device *pdev)
++{
++	struct snd_soc_card *card;
++	struct device_node *np = pdev->dev.of_node;
++	struct snd_soc_dai_link *link;
++	struct snd_soc_dai_link_component *codecs, *cpus, *platforms;
++	struct multicodecs_data *mc_data;
++	struct of_phandle_args args;
++	struct device_node *node;
++	u32 val;
++	int count;
++	int ret = 0, i = 0, idx = 0;
++	const char *prefix = "rockchip,";
++	struct device_node *np_cpu;
++
++	ret = wait_locked_card(np, &pdev->dev);
++	if (ret < 0) {
++		dev_err(&pdev->dev, "check_lock_card failed: %d\n", ret);
++		return ret;
++	}
++
++	mc_data = devm_kzalloc(&pdev->dev, sizeof(*mc_data), GFP_KERNEL);
++	if (!mc_data)
++		return -ENOMEM;
++
++	card = &mc_data->snd_card;
++	card->dev = &pdev->dev;
++
++	/* Parse the card name from DT */
++	ret = snd_soc_of_parse_card_name(card, "rockchip,card-name");
++	if (ret < 0)
++		return ret;
++
++	link = &mc_data->dai_link;
++	link->name = "dailink-multicodecs";
++	link->stream_name = link->name;
++	link->init = rk_dailink_init;
++	link->ops = &rk_ops;
++
++	card->dai_link = link;
++	card->num_links = 1;
++	card->num_aux_devs = 0;
++
++	count = of_count_phandle_with_args(np, "rockchip,codec", NULL);
++	if (count < 0 || count > MAX_CODECS)
++		return -EINVAL;
++
++	/* refine codecs, remove unavailable node */
++	for (i = 0; i < count; i++) {
++		node = of_parse_phandle(np, "rockchip,codec", i);
++		if (!node)
++			return -ENODEV;
++		if (of_device_is_available(node))
++			idx++;
++	}
++
++	if (!idx)
++		return -ENODEV;
++
++	codecs = devm_kcalloc(&pdev->dev, idx,
++			      sizeof(*codecs), GFP_KERNEL);
++	link->codecs = codecs;
++	link->num_codecs = idx;
++	idx = 0;
++	for (i = 0; i < count; i++) {
++		node = of_parse_phandle(np, "rockchip,codec", i);
++		if (!node)
++			return -ENODEV;
++		if (!of_device_is_available(node))
++			continue;
++
++		ret = of_parse_phandle_with_fixed_args(np, "rockchip,codec",
++						       0, i, &args);
++		if (ret)
++			return ret;
++
++		codecs[idx].of_node = node;
++		ret = snd_soc_get_dai_name(&args, &codecs[idx].dai_name);
++		if (ret)
++			return ret;
++		idx++;
++	}
++
++	/* Only reference the codecs[0].of_node which maybe as master. */
++	rk_multicodecs_parse_daifmt(np, codecs[0].of_node, mc_data, prefix);
++
++	np_cpu = of_parse_phandle(np, "rockchip,cpu", 0);
++	if (!np_cpu)
++		return -ENODEV;
++
++	link->platforms = devm_kcalloc(&pdev->dev, 1,
++			      sizeof(*link->platforms), GFP_KERNEL);
++	link->cpus = devm_kcalloc(&pdev->dev, 1,
++			      sizeof(*link->cpus), GFP_KERNEL);
++	link->platforms->of_node = link->cpus->of_node = np_cpu;
++	link->num_cpus=link->num_platforms=1;
++
++	mc_data->mclk_fs = DEFAULT_MCLK_FS;
++	if (!of_property_read_u32(np, "rockchip,mclk-fs", &val))
++		mc_data->mclk_fs = val;
++
++	mc_data->codec_hp_det =
++		of_property_read_bool(np, "rockchip,codec-hp-det");
++
++	snd_soc_card_set_drvdata(card, mc_data);
++
++	ret = devm_snd_soc_register_card(&pdev->dev, card);
++	if (ret == -EPROBE_DEFER)
++		return -EPROBE_DEFER;
++	if (ret) {
++		dev_err(&pdev->dev, "card register failed %d\n", ret);
++		return ret;
++	}
++
++	platform_set_drvdata(pdev, card);
++
++	return ret;
++}
++
++static const struct of_device_id rockchip_multicodecs_of_match[] = {
++	{ .compatible = "rockchip,multicodecs-card", },
++	{},
++};
++
++MODULE_DEVICE_TABLE(of, rockchip_multicodecs_of_match);
++
++static struct platform_driver rockchip_multicodecs_driver = {
++	.probe = rk_multicodecs_probe,
++	.driver = {
++		.name = DRV_NAME,
++		.pm = &snd_soc_pm_ops,
++		.of_match_table = rockchip_multicodecs_of_match,
++	},
++};
++
++module_platform_driver(rockchip_multicodecs_driver);
++
++MODULE_AUTHOR("Sugar Zhang <sugar.zhang@rock-chips.com>");
++MODULE_DESCRIPTION("Rockchip General Multicodecs ASoC driver");
++MODULE_LICENSE("GPL v2");
++MODULE_ALIAS("platform:" DRV_NAME);
+Index: linux-5.10.27/sound/soc/rockchip/rockchip_pdm.c
+===================================================================
+--- linux-5.10.27.orig/sound/soc/rockchip/rockchip_pdm.c
++++ linux-5.10.27/sound/soc/rockchip/rockchip_pdm.c
+@@ -1,8 +1,17 @@
+-// SPDX-License-Identifier: GPL-2.0-only
+ /*
+  * Rockchip PDM ALSA SoC Digital Audio Interface(DAI)  driver
+  *
+  * Copyright (C) 2017 Fuzhou Rockchip Electronics Co., Ltd
++ *
++ * This software is licensed under the terms of the GNU General Public
++ * License version 2, as published by the Free Software Foundation, and
++ * may be copied, distributed, and modified under those terms.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
+  */
+ 
+ #include <linux/module.h>
+@@ -149,7 +158,7 @@ static int rockchip_pdm_hw_params(struct
+ 	struct rk_pdm_dev *pdm = to_info(dai);
+ 	unsigned int val = 0;
+ 	unsigned int clk_rate, clk_div, samplerate;
+-	unsigned int clk_src, clk_out = 0;
++	unsigned int clk_src, clk_out;
+ 	unsigned long m, n;
+ 	bool change;
+ 	int ret;
+@@ -201,9 +210,7 @@ static int rockchip_pdm_hw_params(struct
+ 	regmap_update_bits(pdm->regmap, PDM_HPF_CTRL,
+ 			   PDM_HPF_LE | PDM_HPF_RE, PDM_HPF_LE | PDM_HPF_RE);
+ 	regmap_update_bits(pdm->regmap, PDM_CLK_CTRL, PDM_CLK_EN, PDM_CLK_EN);
+-	if (pdm->version != RK_PDM_RK3229)
+-		regmap_update_bits(pdm->regmap, PDM_CTRL0,
+-				   PDM_MODE_MSK, PDM_MODE_LJ);
++	regmap_update_bits(pdm->regmap, PDM_CTRL0, PDM_MODE_MSK, PDM_MODE_LJ);
+ 
+ 	val = 0;
+ 	switch (params_format(params)) {
+@@ -229,13 +236,13 @@ static int rockchip_pdm_hw_params(struct
+ 	switch (params_channels(params)) {
+ 	case 8:
+ 		val |= PDM_PATH3_EN;
+-		fallthrough;
++		/* fallthrough */
+ 	case 6:
+ 		val |= PDM_PATH2_EN;
+-		fallthrough;
++		/* fallthrough */
+ 	case 4:
+ 		val |= PDM_PATH1_EN;
+-		fallthrough;
++		/* fallthrough */
+ 	case 2:
+ 		val |= PDM_PATH0_EN;
+ 		break;
+@@ -248,9 +255,8 @@ static int rockchip_pdm_hw_params(struct
+ 	regmap_update_bits(pdm->regmap, PDM_CTRL0,
+ 			   PDM_PATH_MSK | PDM_VDW_MSK,
+ 			   val);
+-	/* all channels share the single FIFO */
+ 	regmap_update_bits(pdm->regmap, PDM_DMA_CTRL, PDM_DMA_RDL_MSK,
+-			   PDM_DMA_RDL(8 * params_channels(params)));
++			   PDM_DMA_RDL(16));
+ 
+ 	return 0;
+ }
+@@ -316,7 +322,7 @@ static int rockchip_pdm_dai_probe(struct
+ 	return 0;
+ }
+ 
+-static const struct snd_soc_dai_ops rockchip_pdm_dai_ops = {
++static struct snd_soc_dai_ops rockchip_pdm_dai_ops = {
+ 	.set_fmt = rockchip_pdm_set_fmt,
+ 	.trigger = rockchip_pdm_trigger,
+ 	.hw_params = rockchip_pdm_hw_params,
+@@ -408,7 +414,6 @@ static bool rockchip_pdm_rd_reg(struct d
+ 	case PDM_INT_CLR:
+ 	case PDM_INT_ST:
+ 	case PDM_DATA_VALID:
+-	case PDM_RXFIFO_DATA:
+ 	case PDM_VERSION:
+ 		return true;
+ 	default:
+@@ -423,17 +428,6 @@ static bool rockchip_pdm_volatile_reg(st
+ 	case PDM_FIFO_CTRL:
+ 	case PDM_INT_CLR:
+ 	case PDM_INT_ST:
+-	case PDM_RXFIFO_DATA:
+-		return true;
+-	default:
+-		return false;
+-	}
+-}
+-
+-static bool rockchip_pdm_precious_reg(struct device *dev, unsigned int reg)
+-{
+-	switch (reg) {
+-	case PDM_RXFIFO_DATA:
+ 		return true;
+ 	default:
+ 		return false;
+@@ -456,17 +450,13 @@ static const struct regmap_config rockch
+ 	.writeable_reg = rockchip_pdm_wr_reg,
+ 	.readable_reg = rockchip_pdm_rd_reg,
+ 	.volatile_reg = rockchip_pdm_volatile_reg,
+-	.precious_reg = rockchip_pdm_precious_reg,
+ 	.cache_type = REGCACHE_FLAT,
+ };
+ 
+ static const struct of_device_id rockchip_pdm_match[] = {
+-	{ .compatible = "rockchip,pdm",
+-	  .data = (void *)RK_PDM_RK3229 },
++	{ .compatible = "rockchip,pdm", },
+ 	{ .compatible = "rockchip,px30-pdm",
+ 	  .data = (void *)RK_PDM_RK3308 },
+-	{ .compatible = "rockchip,rk1808-pdm",
+-	  .data = (void *)RK_PDM_RK3308 },
+ 	{ .compatible = "rockchip,rk3308-pdm",
+ 	  .data = (void *)RK_PDM_RK3308 },
+ 	{},
+@@ -475,6 +465,7 @@ MODULE_DEVICE_TABLE(of, rockchip_pdm_mat
+ 
+ static int rockchip_pdm_probe(struct platform_device *pdev)
+ {
++	struct device_node *node = pdev->dev.of_node;
+ 	const struct of_device_id *match;
+ 	struct rk_pdm_dev *pdm;
+ 	struct resource *res;
+@@ -541,6 +532,8 @@ static int rockchip_pdm_probe(struct pla
+ 	}
+ 
+ 	rockchip_pdm_rxctrl(pdm, 0);
++	if (of_property_read_bool(node, "rockchip,no-dmaengine"))
++		return ret;
+ 	ret = devm_snd_dmaengine_pcm_register(&pdev->dev, NULL, 0);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "could not register pcm: %d\n", ret);
+@@ -590,10 +583,8 @@ static int rockchip_pdm_resume(struct de
+ 	int ret;
+ 
+ 	ret = pm_runtime_get_sync(dev);
+-	if (ret < 0) {
+-		pm_runtime_put(dev);
++	if (ret < 0)
+ 		return ret;
+-	}
+ 
+ 	ret = regcache_sync(pdm->regmap);
+ 
+Index: linux-5.10.27/sound/soc/rockchip/rockchip_pdm.h
+===================================================================
+--- linux-5.10.27.orig/sound/soc/rockchip/rockchip_pdm.h
++++ linux-5.10.27/sound/soc/rockchip/rockchip_pdm.h
+@@ -1,8 +1,17 @@
+-/* SPDX-License-Identifier: GPL-2.0-only */
+ /*
+  * Rockchip PDM ALSA SoC Digital Audio Interface(DAI)  driver
+  *
+  * Copyright (C) 2017 Fuzhou Rockchip Electronics Co., Ltd
++ *
++ * This software is licensed under the terms of the GNU General Public
++ * License version 2, as published by the Free Software Foundation, and
++ * may be copied, distributed, and modified under those terms.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
+  */
+ 
+ #ifndef _ROCKCHIP_PDM_H
+Index: linux-5.10.27/sound/soc/rockchip/rockchip_spdif.c
+===================================================================
+--- linux-5.10.27.orig/sound/soc/rockchip/rockchip_spdif.c
++++ linux-5.10.27/sound/soc/rockchip/rockchip_spdif.c
+@@ -1,4 +1,3 @@
+-// SPDX-License-Identifier: GPL-2.0-only
+ /* sound/soc/rockchip/rk_spdif.c
+  *
+  * ALSA SoC Audio Layer - Rockchip I2S Controller driver
+@@ -7,6 +6,10 @@
+  * Author: Jianqun <jay.xu@rock-chips.com>
+  * Copyright (c) 2015 Collabora Ltd.
+  * Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
+  */
+ 
+ #include <linux/module.h>
+@@ -66,7 +69,6 @@ static int __maybe_unused rk_spdif_runti
+ {
+ 	struct rk_spdif_dev *spdif = dev_get_drvdata(dev);
+ 
+-	regcache_cache_only(spdif->regmap, true);
+ 	clk_disable_unprepare(spdif->mclk);
+ 	clk_disable_unprepare(spdif->hclk);
+ 
+@@ -90,16 +92,7 @@ static int __maybe_unused rk_spdif_runti
+ 		return ret;
+ 	}
+ 
+-	regcache_cache_only(spdif->regmap, false);
+-	regcache_mark_dirty(spdif->regmap);
+-
+-	ret = regcache_sync(spdif->regmap);
+-	if (ret) {
+-		clk_disable_unprepare(spdif->mclk);
+-		clk_disable_unprepare(spdif->hclk);
+-	}
+-
+-	return ret;
++	return 0;
+ }
+ 
+ static int rk_spdif_hw_params(struct snd_pcm_substream *substream,
+@@ -112,7 +105,21 @@ static int rk_spdif_hw_params(struct snd
+ 	int ret;
+ 
+ 	srate = params_rate(params);
+-	mclk = srate * 128;
++	switch (srate) {
++	case 32000:
++	case 48000:
++	case 96000:
++		mclk = 96000 * 128; /* 12288000 hz */
++		break;
++	case 44100:
++		mclk = 44100 * 256; /* 11289600 hz */
++		break;
++	case 192000:
++		mclk = 192000 * 128; /* 24576000 hz */
++		break;
++	default:
++		return -EINVAL;
++	}
+ 
+ 	switch (params_format(params)) {
+ 	case SNDRV_PCM_FORMAT_S16_LE:
+@@ -136,6 +143,7 @@ static int rk_spdif_hw_params(struct snd
+ 		return ret;
+ 	}
+ 
++	val |= SPDIF_CFGR_CLK_DIV(mclk/(srate * 256));
+ 	ret = regmap_update_bits(spdif->regmap, SPDIF_CFGR,
+ 		SPDIF_CFGR_CLK_DIV_MASK | SPDIF_CFGR_HALFWORD_ENABLE |
+ 		SDPIF_CFGR_VDW_MASK,
+@@ -306,22 +314,44 @@ static int rk_spdif_probe(struct platfor
+ 		return -ENOMEM;
+ 
+ 	spdif->hclk = devm_clk_get(&pdev->dev, "hclk");
+-	if (IS_ERR(spdif->hclk))
++	if (IS_ERR(spdif->hclk)) {
++		dev_err(&pdev->dev, "Can't retrieve rk_spdif bus clock\n");
+ 		return PTR_ERR(spdif->hclk);
++	}
++	ret = clk_prepare_enable(spdif->hclk);
++	if (ret) {
++		dev_err(spdif->dev, "hclock enable failed %d\n", ret);
++		return ret;
++	}
+ 
+ 	spdif->mclk = devm_clk_get(&pdev->dev, "mclk");
+-	if (IS_ERR(spdif->mclk))
+-		return PTR_ERR(spdif->mclk);
++	if (IS_ERR(spdif->mclk)) {
++		dev_err(&pdev->dev, "Can't retrieve rk_spdif master clock\n");
++		ret = PTR_ERR(spdif->mclk);
++		goto err_disable_hclk;
++	}
++
++	ret = clk_prepare_enable(spdif->mclk);
++	if (ret) {
++		dev_err(spdif->dev, "clock enable failed %d\n", ret);
++		goto err_disable_clocks;
++	}
+ 
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	regs = devm_ioremap_resource(&pdev->dev, res);
+-	if (IS_ERR(regs))
+-		return PTR_ERR(regs);
++	if (IS_ERR(regs)) {
++		ret = PTR_ERR(regs);
++		goto err_disable_clocks;
++	}
+ 
+ 	spdif->regmap = devm_regmap_init_mmio_clk(&pdev->dev, "hclk", regs,
+ 						  &rk_spdif_regmap_config);
+-	if (IS_ERR(spdif->regmap))
+-		return PTR_ERR(spdif->regmap);
++	if (IS_ERR(spdif->regmap)) {
++		dev_err(&pdev->dev,
++			"Failed to initialise managed register map\n");
++		ret = PTR_ERR(spdif->regmap);
++		goto err_disable_clocks;
++	}
+ 
+ 	spdif->playback_dma_data.addr = res->start + SPDIF_SMPDR;
+ 	spdif->playback_dma_data.addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
+@@ -330,50 +360,79 @@ static int rk_spdif_probe(struct platfor
+ 	spdif->dev = &pdev->dev;
+ 	dev_set_drvdata(&pdev->dev, spdif);
+ 
++	pm_runtime_set_active(&pdev->dev);
+ 	pm_runtime_enable(&pdev->dev);
+-	if (!pm_runtime_enabled(&pdev->dev)) {
+-		ret = rk_spdif_runtime_resume(&pdev->dev);
+-		if (ret)
+-			goto err_pm_runtime;
+-	}
++	pm_request_idle(&pdev->dev);
+ 
+ 	ret = devm_snd_soc_register_component(&pdev->dev,
+ 					      &rk_spdif_component,
+ 					      &rk_spdif_dai, 1);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "Could not register DAI\n");
+-		goto err_pm_suspend;
++		goto err_pm_runtime;
+ 	}
+ 
+ 	ret = devm_snd_dmaengine_pcm_register(&pdev->dev, NULL, 0);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "Could not register PCM\n");
+-		goto err_pm_suspend;
++		goto err_pm_runtime;
+ 	}
+ 
+ 	return 0;
+ 
+-err_pm_suspend:
+-	if (!pm_runtime_status_suspended(&pdev->dev))
+-		rk_spdif_runtime_suspend(&pdev->dev);
+ err_pm_runtime:
+ 	pm_runtime_disable(&pdev->dev);
++err_disable_clocks:
++	clk_disable_unprepare(spdif->mclk);
++err_disable_hclk:
++	clk_disable_unprepare(spdif->hclk);
+ 
+ 	return ret;
+ }
+ 
+ static int rk_spdif_remove(struct platform_device *pdev)
+ {
++	struct rk_spdif_dev *spdif = dev_get_drvdata(&pdev->dev);
++
+ 	pm_runtime_disable(&pdev->dev);
+ 	if (!pm_runtime_status_suspended(&pdev->dev))
+ 		rk_spdif_runtime_suspend(&pdev->dev);
+ 
++	clk_disable_unprepare(spdif->mclk);
++	clk_disable_unprepare(spdif->hclk);
++
+ 	return 0;
+ }
+ 
++#ifdef CONFIG_PM_SLEEP
++static int rockchip_spdif_suspend(struct device *dev)
++{
++	struct rk_spdif_dev *spdif = dev_get_drvdata(dev);
++
++	regcache_mark_dirty(spdif->regmap);
++
++	return 0;
++}
++
++static int rockchip_spdif_resume(struct device *dev)
++{
++	struct rk_spdif_dev *spdif = dev_get_drvdata(dev);
++	int ret;
++
++	ret = pm_runtime_get_sync(dev);
++	if (ret < 0)
++		return ret;
++	ret = regcache_sync(spdif->regmap);
++	pm_runtime_put(dev);
++
++	return ret;
++}
++#endif
++
+ static const struct dev_pm_ops rk_spdif_pm_ops = {
+ 	SET_RUNTIME_PM_OPS(rk_spdif_runtime_suspend, rk_spdif_runtime_resume,
+ 			   NULL)
++	SET_SYSTEM_SLEEP_PM_OPS(rockchip_spdif_suspend, rockchip_spdif_resume)
+ };
+ 
+ static struct platform_driver rk_spdif_driver = {
+Index: linux-5.10.27/sound/soc/rockchip/rockchip_spdif.h
+===================================================================
+--- linux-5.10.27.orig/sound/soc/rockchip/rockchip_spdif.h
++++ linux-5.10.27/sound/soc/rockchip/rockchip_spdif.h
+@@ -1,9 +1,12 @@
+-/* SPDX-License-Identifier: GPL-2.0-only */
+ /*
+  * ALSA SoC Audio Layer - Rockchip SPDIF transceiver driver
+  *
+  * Copyright (c) 2015 Collabora Ltd.
+  * Author: Sjoerd Simons <sjoerd.simons@collabora.co.uk>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
+  */
+ 
+ #ifndef _ROCKCHIP_SPDIF_H

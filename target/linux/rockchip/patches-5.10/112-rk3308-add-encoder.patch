@@ -53,15 +53,15 @@ Index: linux-5.10.27/arch/arm64/boot/dts/rockchip/rk3308-rock-pi-s.dts
 +		pinctrl-names = "default";
 +		pinctrl-0 = <&gpio_keys>;
 +
-+		volume-button {
++		button_1 {
 +			debounce-interval = <20>;
 +			gpios = <&gpio2 RK_PA7 GPIO_ACTIVE_LOW>;
-+			label = "Play Pause";
-+			linux,code = <KEY_PLAYPAUSE>;
++			label = "Button 1";
++			linux,code = <BTN_1>;
  		};
  	};
  
-+	volume {
++	rotary1: rotary-encoder {
 +		compatible = "rotary-encoder";
 +		pinctrl-names = "default";
 +		pinctrl-0 = <&gpio_rotary>;
@@ -96,13 +96,13 @@ Index: linux-5.10.27/arch/arm64/boot/dts/rockchip/rk3308-rock-pi-s.dts
  	};
 +
 +	keys {
-+		gpio_keys: gpio-key-volume-button {
++		gpio_keys: gpio-key-button-1 {
 +			rockchip,pins = <2 RK_PA7 RK_FUNC_GPIO &pcfg_pull_up_4ma>;
 +		};
 +	};
 +
-+	volume {
-+		gpio_rotary: gpio-volume {
++	rotary1 {
++		gpio_rotary: gpio-rotary-1 {
 +			rockchip,pins = <1 RK_PC7 RK_FUNC_GPIO &pcfg_pull_up_4ma>,
 +					<1 RK_PC6 RK_FUNC_GPIO &pcfg_pull_up_4ma>;
 +		};
@@ -110,12 +110,13 @@ Index: linux-5.10.27/arch/arm64/boot/dts/rockchip/rk3308-rock-pi-s.dts
  };
  
  &pwm0 {
-@@ -234,6 +281,10 @@
+@@ -234,6 +281,11 @@
  	status = "okay";
  };
  
 +&spdif_tx {
 +	status = "okay";
++	#sound-dai-cells = <0>;
 +};
 +
  &spi2 {

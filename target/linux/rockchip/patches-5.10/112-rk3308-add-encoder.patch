@@ -126,7 +126,7 @@ Index: linux-5.10.27/sound/soc/codecs/dummy-codec.c
 +#include <sound/initval.h>
 +
 +struct dummy_codec_priv {
-+	struct snd_soc_codec *codec;
++	struct snd_soc_component *component;
 +	struct clk *mclk;
 +};
 +

@@ -38,7 +38,7 @@ Index: linux-5.10.27/arch/arm64/boot/dts/rockchip/rk3308-rock-pi-s.dts
  
  		green-led {
  			label = "rockpis:green:power";
-@@ -35,11 +49,32 @@
+@@ -35,11 +49,33 @@
  		blue-led {
  			label = "rockpis:blue:user";
  			gpios = <&gpio0 RK_PA5 GPIO_ACTIVE_HIGH>;
@@ -61,11 +61,12 @@ Index: linux-5.10.27/arch/arm64/boot/dts/rockchip/rk3308-rock-pi-s.dts
  		};
  	};
  
-+	rotary1: rotary-encoder {
++	rotary1 {
 +		compatible = "rotary-encoder";
 +		pinctrl-names = "default";
-+		pinctrl-0 = <&gpio_rotary>;
-+		gpios = <&gpio1 RK_PC7 GPIO_ACTIVE_LOW>, <&gpio1 RK_PC6 GPIO_ACTIVE_LOW>;
++		pinctrl-0 = <&gpio_rotary_1>;
++		gpios = <&gpio1 RK_PC7 GPIO_ACTIVE_LOW>,
++					<&gpio1 RK_PC6 GPIO_ACTIVE_LOW>;
 +		linux,axis = <1>; /* REL_Y */
 +		rotary-encoder,relative-axis;
 +	};
@@ -73,7 +74,7 @@ Index: linux-5.10.27/arch/arm64/boot/dts/rockchip/rk3308-rock-pi-s.dts
  	vcc5v0_sys: vcc5v0-sys {
  		compatible = "regulator-fixed";
  		regulator-name = "vcc5v0_sys";
-@@ -93,7 +128,6 @@
+@@ -93,7 +129,6 @@
  		vin-supply = <&vcc5v0_sys>;
  	};
  
@@ -81,7 +82,7 @@ Index: linux-5.10.27/arch/arm64/boot/dts/rockchip/rk3308-rock-pi-s.dts
  	vcc_1v8: vcc-1v8 {
  		compatible = "regulator-fixed";
  		regulator-name = "vcc_1v8";
-@@ -195,7 +229,7 @@
+@@ -195,7 +230,7 @@
  	pinctrl-0 = <&rtc_32k>;
  
  	leds {
@@ -90,7 +91,7 @@ Index: linux-5.10.27/arch/arm64/boot/dts/rockchip/rk3308-rock-pi-s.dts
  			rockchip,pins = <0 RK_PA6 RK_FUNC_GPIO &pcfg_pull_none>;
  		};
  
-@@ -209,6 +243,19 @@
+@@ -209,6 +244,19 @@
  			rockchip,pins = <0 RK_PC5 RK_FUNC_GPIO &pcfg_pull_none>;
  		};
  	};
@@ -101,8 +102,8 @@ Index: linux-5.10.27/arch/arm64/boot/dts/rockchip/rk3308-rock-pi-s.dts
 +		};
 +	};
 +
-+	rotary1 {
-+		gpio_rotary: gpio-rotary-1 {
++	rotary {
++		gpio_rotary_1: gpio-rotary-1 {
 +			rockchip,pins = <1 RK_PC7 RK_FUNC_GPIO &pcfg_pull_up_4ma>,
 +					<1 RK_PC6 RK_FUNC_GPIO &pcfg_pull_up_4ma>;
 +		};
@@ -110,7 +111,7 @@ Index: linux-5.10.27/arch/arm64/boot/dts/rockchip/rk3308-rock-pi-s.dts
  };
  
  &pwm0 {
-@@ -234,6 +281,11 @@
+@@ -234,6 +282,11 @@
  	status = "okay";
  };
  

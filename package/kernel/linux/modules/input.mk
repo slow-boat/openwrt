@@ -114,7 +114,9 @@ define KernelPackage/input-gpio-encoder
   SUBMENU:=$(INPUT_MODULES_MENU)
   TITLE:=GPIO rotary encoder
   DEPENDS:=@GPIO_SUPPORT +kmod-input-core
-  KCONFIG:=CONFIG_INPUT_GPIO_ROTARY_ENCODER
+  KCONFIG:= \
+	CONFIG_INPUT_MISC=y \
+	CONFIG_INPUT_GPIO_ROTARY_ENCODER
   FILES:=$(LINUX_DIR)/drivers/input/misc/rotary_encoder.ko
   AUTOLOAD:=$(call AutoProbe,rotary_encoder)
 endef

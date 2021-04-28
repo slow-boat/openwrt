@@ -71,11 +71,11 @@ define U-Boot/rockpro64-rk3399
 endef
 
 UBOOT_TARGETS := \
+  rock-pi-s-rk3308 \
   rock-pi-4-rk3399 \
   rockpro64-rk3399 \
   nanopi-r2s-rk3328 \
-  rock-pi-s-rk3308
-
+  
 UBOOT_CONFIGURE_VARS += USE_PRIVATE_LIBGCC=yes
 
 UBOOT_MAKE_FLAGS += \

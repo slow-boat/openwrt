@@ -2,7 +2,34 @@ Index: linux-5.10.27/arch/arm64/boot/dts/rockchip/rk3308-rock-pi-s.dts
 ===================================================================
 --- linux-5.10.27.orig/arch/arm64/boot/dts/rockchip/rk3308-rock-pi-s.dts
 +++ linux-5.10.27/arch/arm64/boot/dts/rockchip/rk3308-rock-pi-s.dts
-@@ -23,7 +23,7 @@
+@@ -5,6 +5,7 @@
+  */
+ 
+ /dts-v1/;
++#include <dt-bindings/input/input.h>
+ #include "rk3308.dtsi"
+ 
+ / {
+@@ -17,13 +18,26 @@
+ 
+ 	dummy_codec: dummy-codec {
+ 		compatible = "rockchip,dummy-codec";
++		clocks = <&cru SCLK_SPDIF_TX>;
++		clock-names = "mclk";
+ 		#sound-dai-cells = <0>;
+ 	};
+ 
++	spdif_tx_sound: spdif-tx-sound {
++		compatible = "simple-audio-card";
++		simple-audio-card,name = "rockchip,spdif-tx-sound";
++		simple-audio-card,cpu {
++			sound-dai = <&spdif_tx>;
++		};
++		simple-audio-card,codec {
++			sound-dai = <&dummy_codec>;
++		};
++	};
++
  	leds {
  		compatible = "gpio-leds";
  		pinctrl-names = "default";
@@ -11,7 +38,7 @@ Index: linux-5.10.27/arch/arm64/boot/dts/rockchip/rk3308-rock-pi-s.dts
  
  		green-led {
  			label = "rockpis:green:power";
-@@ -35,11 +35,32 @@
+@@ -35,11 +49,32 @@
  		blue-led {
  			label = "rockpis:blue:user";
  			gpios = <&gpio0 RK_PA5 GPIO_ACTIVE_HIGH>;
@@ -29,8 +56,8 @@ Index: linux-5.10.27/arch/arm64/boot/dts/rockchip/rk3308-rock-pi-s.dts
 +		volume-button {
 +			debounce-interval = <20>;
 +			gpios = <&gpio2 RK_PA7 GPIO_ACTIVE_LOW>;
-+			label = "Volume Button";
-+			linux,code = <119>; /* KEY_PAUSE */
++			label = "Play Pause";
++			linux,code = <KEY_PLAYPAUSE>;
  		};
  	};
  
@@ -46,7 +73,7 @@ Index: linux-5.10.27/arch/arm64/boot/dts/rockchip/rk3308-rock-pi-s.dts
  	vcc5v0_sys: vcc5v0-sys {
  		compatible = "regulator-fixed";
  		regulator-name = "vcc5v0_sys";
-@@ -93,7 +114,6 @@
+@@ -93,7 +128,6 @@
  		vin-supply = <&vcc5v0_sys>;
  	};
  
@@ -54,7 +81,7 @@ Index: linux-5.10.27/arch/arm64/boot/dts/rockchip/rk3308-rock-pi-s.dts
  	vcc_1v8: vcc-1v8 {
  		compatible = "regulator-fixed";
  		regulator-name = "vcc_1v8";
-@@ -195,7 +215,7 @@
+@@ -195,7 +229,7 @@
  	pinctrl-0 = <&rtc_32k>;
  
  	leds {
@@ -63,7 +90,7 @@ Index: linux-5.10.27/arch/arm64/boot/dts/rockchip/rk3308-rock-pi-s.dts
  			rockchip,pins = <0 RK_PA6 RK_FUNC_GPIO &pcfg_pull_none>;
  		};
  
-@@ -209,6 +229,19 @@
+@@ -209,6 +243,19 @@
  			rockchip,pins = <0 RK_PC5 RK_FUNC_GPIO &pcfg_pull_none>;
  		};
  	};
@@ -83,7 +110,7 @@ Index: linux-5.10.27/arch/arm64/boot/dts/rockchip/rk3308-rock-pi-s.dts
  };
  
  &pwm0 {
-@@ -234,6 +267,10 @@
+@@ -234,6 +281,10 @@
  	status = "okay";
  };
  
@@ -262,3 +289,24 @@ Index: linux-5.10.27/sound/soc/codecs/Makefile
  obj-$(CONFIG_SND_SOC_ES7134)	+= snd-soc-es7134.o
  obj-$(CONFIG_SND_SOC_ES7241)	+= snd-soc-es7241.o
  obj-$(CONFIG_SND_SOC_ES8316)    += snd-soc-es8316.o
+Index: linux-5.10.27/sound/soc/rockchip/rockchip_spdif.c
+===================================================================
+--- linux-5.10.27.orig/sound/soc/rockchip/rockchip_spdif.c
++++ linux-5.10.27/sound/soc/rockchip/rockchip_spdif.c
+@@ -28,6 +28,7 @@ enum rk_spdif_type {
+ 	RK_SPDIF_RK3066,
+ 	RK_SPDIF_RK3188,
+ 	RK_SPDIF_RK3288,
++	RK_SPDIF_RK3308,
+ 	RK_SPDIF_RK3366,
+ };
+ 
+@@ -53,6 +54,8 @@ static const struct of_device_id rk_spdi
+ 	  .data = (void *)RK_SPDIF_RK3366 },
+ 	{ .compatible = "rockchip,rk3288-spdif",
+ 	  .data = (void *)RK_SPDIF_RK3288 },
++	{ .compatible = "rockchip,rk3308-spdif",
++	  .data = (void *)RK_SPDIF_RK3308 },
+ 	{ .compatible = "rockchip,rk3328-spdif",
+ 	  .data = (void *)RK_SPDIF_RK3366 },
+ 	{ .compatible = "rockchip,rk3366-spdif",

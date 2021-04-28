@@ -87,10 +87,178 @@ Index: linux-5.10.27/arch/arm64/boot/dts/rockchip/rk3308-rock-pi-s.dts
  	status = "okay";
  };
  
-+&spdif_out {
++&spdif_tx {
 +	status = "okay";
 +};
 +
  &spi2 {
  	status = "okay";
  	max-freq = <10000000>;
+Index: linux-5.10.27/sound/soc/codecs/dummy-codec.c
+===================================================================
+--- /dev/null
++++ linux-5.10.27/sound/soc/codecs/dummy-codec.c
+@@ -0,0 +1,129 @@
++/*
++ * dummy_codec.c  --  dummy audio codec for rockchip
++ *
++ * Copyright (C) 2018 Fuzhou Rockchip Electronics Co., Ltd
++ *
++ * This software is licensed under the terms of the GNU General Public
++ * License version 2, as published by the Free Software Foundation, and
++ * may be copied, distributed, and modified under those terms.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ */
++
++#include <linux/clk.h>
++#include <linux/module.h>
++#include <linux/moduleparam.h>
++#include <linux/slab.h>
++#include <linux/of.h>
++#include <linux/of_gpio.h>
++#include <sound/soc.h>
++#include <sound/pcm.h>
++#include <sound/initval.h>
++
++struct dummy_codec_priv {
++	struct snd_soc_codec *codec;
++	struct clk *mclk;
++};
++
++static int dummy_codec_startup(struct snd_pcm_substream *substream,
++			       struct snd_soc_dai *dai)
++{
++	struct snd_soc_component *component = dai->component;
++	struct dummy_codec_priv *dummy_codec = snd_soc_component_get_drvdata(component);
++
++	if (!IS_ERR(dummy_codec->mclk))
++		clk_prepare_enable(dummy_codec->mclk);
++	return 0;
++}
++
++static void dummy_codec_shutdown(struct snd_pcm_substream *substream,
++				 struct snd_soc_dai *dai)
++{
++	struct snd_soc_component *component = dai->component;
++	struct dummy_codec_priv *dummy_codec = snd_soc_component_get_drvdata(component);
++
++	if (!IS_ERR(dummy_codec->mclk))
++		clk_disable_unprepare(dummy_codec->mclk);
++}
++
++static struct snd_soc_dai_ops dummy_codec_dai_ops = {
++	.startup	= dummy_codec_startup,
++	.shutdown	= dummy_codec_shutdown,
++};
++
++struct snd_soc_dai_driver dummy_dai = {
++	.name = "dummy_codec",
++	.playback = {
++		.stream_name = "Dummy Playback",
++		.channels_min = 2,
++		.channels_max = 384,
++		.rates = SNDRV_PCM_RATE_8000_192000,
++		.formats = (SNDRV_PCM_FMTBIT_S16_LE |
++			    SNDRV_PCM_FMTBIT_S20_3LE |
++			    SNDRV_PCM_FMTBIT_S24_LE |
++			    SNDRV_PCM_FMTBIT_S32_LE),
++	},
++	.capture = {
++		.stream_name = "Dummy Capture",
++		.channels_min = 2,
++		.channels_max = 384,
++		.rates = SNDRV_PCM_RATE_8000_192000,
++		.formats = (SNDRV_PCM_FMTBIT_S16_LE |
++			    SNDRV_PCM_FMTBIT_S20_3LE |
++			    SNDRV_PCM_FMTBIT_S24_LE |
++			    SNDRV_PCM_FMTBIT_S32_LE),
++	},
++	.ops = &dummy_codec_dai_ops,
++};
++
++static struct snd_soc_component_driver soc_dummy_component;
++
++static int rockchip_dummy_codec_probe(struct platform_device *pdev)
++{
++	struct dummy_codec_priv *codec_priv;
++
++	codec_priv = devm_kzalloc(&pdev->dev, sizeof(*codec_priv),
++				  GFP_KERNEL);
++	if (!codec_priv)
++		return -ENOMEM;
++	platform_set_drvdata(pdev, codec_priv);
++
++	codec_priv->mclk = devm_clk_get(&pdev->dev, "mclk");
++	if (IS_ERR(codec_priv->mclk)) {
++		/* some devices may not need mclk,so warnnig */
++		dev_warn(&pdev->dev, "Unable to get mclk\n");
++		if (PTR_ERR(codec_priv->mclk) == -EPROBE_DEFER)
++			return -EPROBE_DEFER;
++		else if (PTR_ERR(codec_priv->mclk) != -ENOENT)
++			return -EINVAL;
++	} else {
++		dev_info(&pdev->dev, "get mclk success\n");
++	}
++
++	return snd_soc_register_component(&pdev->dev, &soc_dummy_component,
++				      &dummy_dai, 1);
++}
++
++static const struct of_device_id rockchip_dummy_codec_of_match[] = {
++	{ .compatible = "rockchip,dummy-codec", },
++	{},
++};
++MODULE_DEVICE_TABLE(of, rockchip_dummy_codec_of_match);
++
++static struct platform_driver rockchip_dummy_codec_driver = {
++	.driver = {
++		.name = "dummy_codec",
++		.of_match_table = of_match_ptr(rockchip_dummy_codec_of_match),
++	},
++	.probe = rockchip_dummy_codec_probe,
++};
++
++module_platform_driver(rockchip_dummy_codec_driver);
++
++MODULE_AUTHOR("Sugar <sugar.zhang@rock-chips.com>");
++MODULE_DESCRIPTION("Rockchip Dummy Codec Driver");
++MODULE_LICENSE("GPL v2");
+Index: linux-5.10.27/sound/soc/codecs/Kconfig
+===================================================================
+--- linux-5.10.27.orig/sound/soc/codecs/Kconfig
++++ linux-5.10.27/sound/soc/codecs/Kconfig
+@@ -762,6 +762,9 @@ config SND_SOC_DMIC
+ 	  Enable support for the Generic Digital Microphone CODEC.
+ 	  Select this if your sound card has DMICs.
+ 
++config SND_SOC_DUMMY_CODEC
++	tristate "rk dummy codec"
++
+ config SND_SOC_HDMI_CODEC
+ 	tristate
+ 	select SND_PCM_ELD
+Index: linux-5.10.27/sound/soc/codecs/Makefile
+===================================================================
+--- linux-5.10.27.orig/sound/soc/codecs/Makefile
++++ linux-5.10.27/sound/soc/codecs/Makefile
+@@ -84,6 +84,7 @@ snd-soc-da7219-objs := da7219.o da7219-a
+ snd-soc-da732x-objs := da732x.o
+ snd-soc-da9055-objs := da9055.o
+ snd-soc-dmic-objs := dmic.o
++snd-soc-dummy-codec-objs := dummy-codec.o
+ snd-soc-es7134-objs := es7134.o
+ snd-soc-es7241-objs := es7241.o
+ snd-soc-es8316-objs := es8316.o
+@@ -394,6 +395,7 @@ obj-$(CONFIG_SND_SOC_DA7219)	+= snd-soc-
+ obj-$(CONFIG_SND_SOC_DA732X)	+= snd-soc-da732x.o
+ obj-$(CONFIG_SND_SOC_DA9055)	+= snd-soc-da9055.o
+ obj-$(CONFIG_SND_SOC_DMIC)	+= snd-soc-dmic.o
++obj-$(CONFIG_SND_SOC_DUMMY_CODEC)	+= snd-soc-dummy-codec.o
+ obj-$(CONFIG_SND_SOC_ES7134)	+= snd-soc-es7134.o
+ obj-$(CONFIG_SND_SOC_ES7241)	+= snd-soc-es7241.o
+ obj-$(CONFIG_SND_SOC_ES8316)    += snd-soc-es8316.o

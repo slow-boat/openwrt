@@ -43,11 +43,10 @@ Index: linux-5.10.27/arch/arm64/boot/dts/rockchip/rk3308-rock-pi-s.dts
  			label = "rockpis:blue:user";
  			gpios = <&gpio0 RK_PA5 GPIO_ACTIVE_HIGH>;
 -			default-state = "on";
--			linux,default-trigger = "heartbeat";
-+			linux,default-trigger = "ide-disk";
-+		};
-+	};
-+
+ 			linux,default-trigger = "heartbeat";
+ 		};
+ 	};
+ 
 +	keys {
 +		compatible = "gpio-keys";
 +		pinctrl-names = "default";
@@ -58,9 +57,9 @@ Index: linux-5.10.27/arch/arm64/boot/dts/rockchip/rk3308-rock-pi-s.dts
 +			gpios = <&gpio2 RK_PA7 GPIO_ACTIVE_LOW>;
 +			label = "Button 1";
 +			linux,code = <BTN_1>;
- 		};
- 	};
- 
++		};
++	};
++
 +	rotary1 {
 +		compatible = "rotary-encoder";
 +		pinctrl-names = "default";
@@ -111,18 +110,18 @@ Index: linux-5.10.27/arch/arm64/boot/dts/rockchip/rk3308-rock-pi-s.dts
  };
  
  &pwm0 {
-@@ -234,6 +282,11 @@
+@@ -234,9 +282,9 @@
  	status = "okay";
  };
  
+-&spi2 {
 +&spdif_tx {
-+	status = "okay";
-+	#sound-dai-cells = <0>;
-+};
-+
- &spi2 {
  	status = "okay";
- 	max-freq = <10000000>;
+-	max-freq = <10000000>;
++	#sound-dai-cells = <0>;
+ };
+ 
+ &tsadc {
 Index: linux-5.10.27/sound/soc/codecs/dummy-codec.c
 ===================================================================
 --- /dev/null

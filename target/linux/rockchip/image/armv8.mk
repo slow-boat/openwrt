@@ -45,6 +45,7 @@ define Device/radxa_rock-pi-s
   DEVICE_MODEL := Rock Pi S
   SOC := rk3308
   UBOOT_DEVICE_NAME := rock-pi-s-rk3308
+  DEVICE_PACKAGES := rtl8192cu-firmware kmod-rtl8xxxu hostapd iw wpa-supplicant
   IMAGE/sysupgrade.img.gz := boot-common | boot-script rock-pi-s | rockpis-img | gzip | append-metadata
 endef
 TARGET_DEVICES += radxa_rock-pi-s

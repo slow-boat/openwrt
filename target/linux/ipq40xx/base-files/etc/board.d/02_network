@@ -11,7 +11,6 @@ ipq40xx_setup_interfaces()
 	local board="$1"
 
 	case "$board" in
-	8dev,habanero-dvk|\
 	8dev,jalapeno|\
 	alfa-network,ap120c-ac|\
 	engenius,emr3500|\
@@ -112,6 +111,7 @@ ipq40xx_setup_interfaces()
 		ucidef_add_switch "switch0" \
 			"0u@eth0" "3:lan" "4:lan" "0u@eth1" "5:wan"
 		;;
+	8dev,habanero-dvk |\
 	unielec,u4019-32m)
 		ucidef_set_interfaces_lan_wan "eth0" "eth1"
 		ucidef_add_switch "switch0" \

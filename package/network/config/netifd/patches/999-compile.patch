@@ -1,0 +1,53 @@
+Index: netifd-2021-07-26-440eb064/bond.c
+===================================================================
+--- netifd-2021-07-26-440eb064.orig/bond.c
++++ netifd-2021-07-26-440eb064/bond.c
+@@ -431,7 +431,7 @@ bond_add_member(struct bond_state *bst,
+ }
+ 
+ static int
+-bond_hotplug_add(struct device *dev, struct device *member)
++bond_hotplug_add(struct device *dev, struct device *member, struct blob_attr *vlan)
+ {
+ 	struct bond_state *bst = container_of(dev, struct bond_state, dev);
+ 
+@@ -441,7 +441,7 @@ bond_hotplug_add(struct device *dev, str
+ }
+ 
+ static int
+-bond_hotplug_del(struct device *dev, struct device *member)
++bond_hotplug_del(struct device *dev, struct device *member, struct blob_attr *vlan)
+ {
+ 	struct bond_state *bst = container_of(dev, struct bond_state, dev);
+ 	struct bond_member *bm;
+@@ -455,10 +455,13 @@ bond_hotplug_del(struct device *dev, str
+ }
+ 
+ static int
+-bond_hotplug_prepare(struct device *dev)
++bond_hotplug_prepare(struct device *dev, struct device **bond_dev)
+ {
+ 	struct bond_state *bst;
+ 
++	if (bond_dev)
++		*bond_dev = dev;
++
+ 	bst = container_of(dev, struct bond_state, dev);
+ 	bst->force_active = true;
+ 	device_set_present(&bst->dev, true);
+Index: netifd-2021-07-26-440eb064/system-linux.c
+===================================================================
+--- netifd-2021-07-26-440eb064.orig/system-linux.c
++++ netifd-2021-07-26-440eb064/system-linux.c
+@@ -1671,11 +1671,6 @@ int system_netns_set(int netns_fd)
+ 	return setns(netns_fd, CLONE_NEWNET);
+ }
+ 
+-int system_ipvlan_del(struct device *ipvlan)
+-{
+-	return system_link_del(ipvlan->ifname);
+-}
+-
+ int system_veth_add(struct device *veth, struct veth_config *cfg)
+ {
+ 	struct nl_msg *msg;

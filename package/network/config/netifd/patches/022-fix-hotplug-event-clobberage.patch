@@ -1,0 +1,162 @@
+Index: netifd-2021-07-26-440eb064/interface-event.c
+===================================================================
+--- netifd-2021-07-26-440eb064.orig/interface-event.c
++++ netifd-2021-07-26-440eb064/interface-event.c
+@@ -86,18 +86,23 @@ static void
+ call_hotplug(void)
+ {
+ 	const char *device = NULL;
++
+ 	if (list_empty(&pending))
+ 		return;
+ 
+-	current = list_first_entry(&pending, struct interface, hotplug_list);
+-	current_ev = current->hotplug_ev;
+-	list_del_init(&current->hotplug_list);
++	struct list_head *entry=pending.next;
++	struct hotplug_event * event=(struct hotplug_event *)entry;
++	current = event->iface;
++	current_ev = event->hotplug_ev;
++	_list_del(entry);
++
++	free(entry);
+ 
+ 	if ((current_ev == IFEV_UP || current_ev == IFEV_UPDATE || current_ev == IFEV_DEFAULTROUTE) && current->l3_dev.dev)
+ 		device = current->l3_dev.dev->ifname;
+ 
+ 	D(SYSTEM, "Call hotplug handler for interface '%s', event '%s' (%s)\n",
+-	current->name, eventnames[current_ev], device ? device : "none");
++			current->name, eventnames[current_ev], device ? device : "none");
+ 	run_cmd(current->name, device, current_ev, current->updated);
+ }
+ 
+@@ -131,49 +136,31 @@ interface_queue_event(struct interface *
+ 	if (ev == IFEV_LINK_UP)
+ 		return;
+ 
+-	if (current == iface) {
+-		/* an event for iface is being processed */
+-		if (!list_empty(&iface->hotplug_list)) {
+-			/* an additional event for iface is pending   */
+-			/* overwrite pending event if it differs from */
+-			/* an update                                  */
+-			if (ev != IFEV_UPDATE)
+-				iface->hotplug_ev = ev;
+-		}
+-		else {
+-			/* no additional event for iface is pending */
+-			if (ev != current_ev || ev == IFEV_UPDATE) {
+-				/* only add the interface to the pending list if
+-				 * the event is different from the one being
+-				 * handled or if it is an update */
+-				iface->hotplug_ev = ev;
+-				/* Handle hotplug calls FIFO */
+-				list_add_tail(&iface->hotplug_list, &pending);
+-			}
+-		}
+-	}
+-	else {
+-		/* currently not handling an event or handling an event
+-		 * for another interface */
+-		if (!list_empty(&iface->hotplug_list)) {
+-			/* an event for iface is pending */
+-			if (!(iface->hotplug_ev == IFEV_UP &&
+-				ev == IFEV_UPDATE)) {
+-				/* overwrite pending event, unless the incoming
+-				 * event is an ifupdate while the pending one
+-				 * is an ifup */
+-				iface->hotplug_ev = ev;
+-			}
+-		}
+-		else {
+-			/* an event for the interface is not yet pending,
+-			 * queue it */
+-			iface->hotplug_ev = ev;
+-			/* Handle hotplug calls FIFO */
+-			list_add_tail(&iface->hotplug_list, &pending);
+-		}
++	/* if we are processing event for interface, skip repeats or ignore update events since the state change is fresh */
++	if ((current == iface) && ((ev == current_ev) || (ev == IFEV_UPDATE)))
++		goto interface_queue_event_check_tasks;
++
++	/* find last event pending for this interface */
++	struct hotplug_event * event;
++	struct list_head * p;
++
++	for (p=pending.prev; p!=&pending; p=p->prev){
++		event=(struct hotplug_event *)p;
++		if(event->iface!=iface)
++			continue;
++		if((event->hotplug_ev==ev) || (ev == IFEV_UPDATE))
++			goto interface_queue_event_check_tasks; /* last queued event for this interface is same */
++		break;
+ 	}
+ 
++	/* add event to queue */
++	if(!((event = calloc(1, sizeof(struct hotplug_event)))))
++		goto interface_queue_event_check_tasks;
++	event->hotplug_ev=ev;
++	event->iface=iface;
++	list_add_tail(&event->hotplug_list, &pending);
++
++interface_queue_event_check_tasks:
+ 	if (!task.pending && !current)
+ 		call_hotplug();
+ }
+@@ -184,8 +171,17 @@ interface_dequeue_event(struct interface
+ 	if (iface == current)
+ 		current = NULL;
+ 
+-	if (!list_empty(&iface->hotplug_list))
+-		list_del_init(&iface->hotplug_list);
++	if (!list_empty(&pending)){
++		struct list_head * p;
++		list_for_each(p, &pending){
++			struct hotplug_event * event=(struct hotplug_event *)p;
++			if(event->iface==iface){
++				p=p->prev; /* deadvance for loop */
++				_list_del((struct list_head *)event);
++				free(event);
++			}
++		}
++	}
+ }
+ 
+ static void interface_event_cb(struct interface_user *dep, struct interface *iface,
+Index: netifd-2021-07-26-440eb064/interface.c
+===================================================================
+--- netifd-2021-07-26-440eb064.orig/interface.c
++++ netifd-2021-07-26-440eb064/interface.c
+@@ -828,7 +828,6 @@ interface_alloc(const char *name, struct
+ 	iface->name = strcpy(iface_name, name);
+ 	INIT_LIST_HEAD(&iface->errors);
+ 	INIT_LIST_HEAD(&iface->users);
+-	INIT_LIST_HEAD(&iface->hotplug_list);
+ 	INIT_LIST_HEAD(&iface->assignment_classes);
+ 	interface_ip_init(iface);
+ 	avl_init(&iface->data, avl_strcmp, false, NULL);
+Index: netifd-2021-07-26-440eb064/interface.h
+===================================================================
+--- netifd-2021-07-26-440eb064.orig/interface.h
++++ netifd-2021-07-26-440eb064/interface.h
+@@ -99,13 +99,18 @@ struct interface_assignment_class {
+ 	char name[];
+ };
+ 
++struct interface;
++struct hotplug_event {
++	struct list_head hotplug_list;
++	struct interface * iface;
++	enum interface_event hotplug_ev;
++};
++
+ /*
+  * interface configuration
+  */
+ struct interface {
+ 	struct vlist_node node;
+-	struct list_head hotplug_list;
+-	enum interface_event hotplug_ev;
+ 
+ 	const char *name;
+ 	const char *device;

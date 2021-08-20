@@ -1,0 +1,58 @@
+Index: netifd-2021-07-26-440eb064/interface-ip.c
+===================================================================
+--- netifd-2021-07-26-440eb064.orig/interface-ip.c
++++ netifd-2021-07-26-440eb064/interface-ip.c
+@@ -1712,26 +1712,33 @@ void interface_ip_set_enabled(struct int
+ 		addr->enabled = enabled;
+ 	}
+ 
+-	vlist_for_each_element(&ip->route, route, node) {
+-		bool _enabled = enabled;
+-
+-		if (route->flags & DEVADDR_EXTERNAL)
+-			continue;
+-
+-		if (!enable_route(ip, route))
+-			_enabled = false;
+-		if (route->enabled == _enabled)
+-			continue;
+-
+-		if (_enabled) {
+-			interface_set_route_info(ip->iface, route);
+-
+-			if (system_add_route(dev, route))
+-				route->failed = true;
+-		} else
+-			system_del_route(dev, route);
+-
+-		route->enabled = _enabled;
++	int pass=0;
++	while(pass++<2){
++		vlist_for_each_element(&ip->route, route, node) {
++			/* ipv6 and non-gatewayed ipv4 first */
++			if((!!(route->flags & DEVADDR_FAMILY) || !route->nexthop.in.s_addr) != (pass==1))
++				continue;
++
++			bool _enabled = enabled;
++
++			if (route->flags & DEVADDR_EXTERNAL)
++				continue;
++
++			if (!enable_route(ip, route))
++				_enabled = false;
++			if (route->enabled == _enabled)
++				continue;
++
++			if (_enabled) {
++				interface_set_route_info(ip->iface, route);
++
++				/* process the non-gatewayed routes first */
++				if (system_add_route(dev, route))
++					route->failed = true;
++			} else
++				system_del_route(dev, route);
++			route->enabled = _enabled;
++		}
+ 	}
+ 
+ 	vlist_for_each_element(&ip->neighbor, neighbor, node) {

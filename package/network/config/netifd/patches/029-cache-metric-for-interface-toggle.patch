@@ -1,0 +1,227 @@
+Index: netifd-2021-07-26-440eb064/interface-ip.c
+===================================================================
+--- netifd-2021-07-26-440eb064.orig/interface-ip.c
++++ netifd-2021-07-26-440eb064/interface-ip.c
+@@ -325,7 +325,9 @@ interface_set_route_info(struct interfac
+ 	if (!iface)
+ 		return;
+ 
+-	if (!(route->flags & DEVROUTE_METRIC))
++	if(!v6 && iface->dyn_metric)
++		route->metric = iface->dyn_metric;
++	else if (!(route->flags & DEVROUTE_METRIC))
+ 		route->metric = iface->metric;
+ 
+ 	if (!(route->flags & DEVROUTE_TABLE)) {
+@@ -887,9 +889,12 @@ interface_update_proto_route(struct vlis
+ 	if (node_new) {
+ 		bool _enabled = enable_route(ip, route_new);
+ 
+-		if (!(route_new->flags & DEVADDR_EXTERNAL) && !keep && _enabled)
++		if (!(route_new->flags & DEVADDR_EXTERNAL) && !keep && _enabled){
++			if(iface->dyn_metric)
++				route_new->metric = iface->dyn_metric;
+ 			if (system_add_route(dev, route_new))
+ 				route_new->failed = true;
++		}
+ 
+ 		route_new->iface = iface;
+ 		route_new->enabled = _enabled;
+@@ -917,6 +922,8 @@ interface_update_host_route(struct vlist
+ 	}
+ 
+ 	if (node_new) {
++		if(iface->dyn_metric)
++			route_new->metric = iface->dyn_metric;
+ 		if (system_add_route(dev, route_new))
+ 			route_new->failed = true;
+ 	}
+Index: netifd-2021-07-26-440eb064/interface.c
+===================================================================
+--- netifd-2021-07-26-440eb064.orig/interface.c
++++ netifd-2021-07-26-440eb064/interface.c
+@@ -18,6 +18,7 @@
+ #include <sys/wait.h>
+ #include <limits.h>
+ #include <linux/rtnetlink.h>
++#include <sys/time.h>
+ 
+ #include "netifd.h"
+ #include "device.h"
+@@ -310,6 +311,9 @@ mark_interface_down(struct interface *if
+ 	interface_ip_flush(&iface->proto_ip);
+ 	interface_flush_state(iface);
+ 	system_flush_routes();
++
++	/* cache metric */
++	clock_gettime(CLOCK_MONOTONIC, &iface->ifdown_time);
+ }
+ 
+ static inline void
+@@ -347,12 +351,55 @@ __interface_set_down(struct interface *i
+ 	}
+ }
+ 
++static inline void
++_timespec_add_ms(struct timespec *lhs, int ms)
++{
++	lhs->tv_nsec += ms%1000 * 1000000L; /* restrict to sub-second magnitude to prevent overflow of nsec var */
++	lhs->tv_sec += ms/1000 + lhs->tv_nsec/1000000000L;
++	lhs->tv_nsec%=1000000000L;
++}
++
++static inline void
++_timespec_clear(struct timespec *lhs)
++{
++	lhs->tv_nsec = 0;
++	lhs->tv_sec = 0;
++}
++
++static inline int
++_timespec_compare(const struct timespec *lhs, const struct timespec *rhs)
++{
++	if (lhs->tv_sec < rhs->tv_sec)
++		return -1;
++	if (lhs->tv_sec > rhs->tv_sec)
++		return 1;
++	if (lhs->tv_nsec < rhs->tv_nsec)
++		return -1;
++	if (lhs->tv_nsec > rhs->tv_nsec)
++		return 1;
++	return 0;
++}
++
+ static int
+ __interface_set_up(struct interface *iface)
+ {
+ 	int ret;
+ 
+-	netifd_log_message(L_NOTICE, "Interface '%s' is setting up now\n", iface->name);
++	/* if wanswitch set the metric, and we just dropped and came back, override all metrics */
++	if(iface->ifdown_time.tv_sec && iface->dyn_metric){
++		struct timespec now;
++		clock_gettime(CLOCK_MONOTONIC, &now);
++		_timespec_add_ms(&iface->ifdown_time, 2000);
++		if(_timespec_compare(&now, &iface->ifdown_time) > 0)
++			iface->dyn_metric=0;
++	} else
++		iface->dyn_metric = 0;
++	_timespec_clear(&iface->ifdown_time);
++
++	if(!iface->dyn_metric)
++		netifd_log_message(L_NOTICE, "Interface '%s' is setting up now\n", iface->name);
++	else
++		netifd_log_message(L_NOTICE, "Interface '%s' is setting up now (using previous metric %d)\n", iface->name, iface->dyn_metric);
+ 
+ 	iface->state = IFS_SETUP;
+ 	ret = interface_proto_event(iface->proto, PROTO_CMD_SETUP, false);
+@@ -1313,19 +1360,28 @@ interface_set_metric(int ifindex, struct
+ 			vlist_for_each_element(&ip->route, cfgroute, node){
+ 				if((cfgroute->addr.in.s_addr==route->addr.in.s_addr) &&
+ 					(cfgroute->nexthop.in.s_addr==route->nexthop.in.s_addr)){
+-					if(route->enabled){ /* disable if route deleted */
++
++					char addr[INET_ADDRSTRLEN];
++					char gw[INET_ADDRSTRLEN];
++					inet_ntop(AF_INET, &route->addr.in, addr, sizeof(addr));
++					inet_ntop(AF_INET, &route->nexthop.in, gw, sizeof(gw));
++					char * cmd;
++
++					if(route->enabled){
+ 						cfgroute->dynamic_metric_on=true;
+ 						cfgroute->dynamic_metric=route->metric;
+ 						cfgroute->enabled = true;
+-						D(INTERFACE, "Updating interface %s %s route metric to %d\n",
+-								passnode, iface->name, route->metric);
+-					} else if (route->metric == cfgroute->dynamic_metric){
+-						D(INTERFACE, "Disable interface %s %s route\n", passnode, iface->name);
++						cmd="Update";
++					} else if (route->metric == cfgroute->dynamic_metric){ /* disable stored matching route */
+ 						cfgroute->dynamic_metric_on=false;
++						cfgroute->dynamic_metric=0;
+ 						cfgroute->enabled =false;
+-					} else {
+-						D(INTERFACE, "Old route metric %d on interface %s %s deleted\n", route->metric, passnode, iface->name);
+-					}
++						cmd="Disable matching ";
++					} else
++						cmd="Deleted old ";
++
++					D(INTERFACE, "%s route(%s) interface %s: %s/%d via %s dev %s metric %d\n",
++							cmd, passnode, iface->name, addr, route->mask, gw, (dev)?dev->ifname:"none", route->metric);
+ 					if(!cfgroute->iface){
+ 						D(INTERFACE, "Linking interface %s %s to route\n", passnode, iface->name);
+ 						cfgroute->iface=iface;
+@@ -1354,6 +1410,7 @@ interface_update_defaultroute(void)
+ 	vlist_for_each_element(&interfaces, iface, node) {
+ 		if(iface->state!=IFS_UP)continue; /* only interfaces that are up */
+ 		struct interface_ip_settings *ip=&iface->proto_ip; /* protocol routes first */
++		int dyn_metric=-1; /* flags- -1 disabled, -2 invalid */
+ 		for(int i=0; i< 2; i++){
+ 			struct device_route *route;
+ 			vlist_for_each_element(&ip->route, route, node){
+@@ -1362,6 +1419,14 @@ interface_update_defaultroute(void)
+ 				if(route->addr.in.s_addr) continue; /* not default route */
+ 				if(!route->enabled) continue;
+ 				if(route->dynamic_metric_on){
++					if(dyn_metric){
++						if(dyn_metric>-2){
++							if((dyn_metric>=0) && (route->dynamic_metric!=dyn_metric))
++								dyn_metric=-2;
++							else
++								dyn_metric=route->dynamic_metric;
++						}
++					}
+ 					if(min_dyn_metric<=route->dynamic_metric)continue;
+ 					min_dyn_metric=route->dynamic_metric;
+ 					dyn_defroute=route;
+@@ -1373,15 +1438,24 @@ interface_update_defaultroute(void)
+ 			}
+ 			ip=&iface->config_ip; /* check config routes */
+ 		}
++
++		if((dyn_metric>=0) && (iface->dyn_metric!=dyn_metric)){
++			D(INTERFACE, "Interface %s dynamic metric changed %d -> %d\n",
++					iface->name, iface->dyn_metric, dyn_metric);
++			iface->dyn_metric=dyn_metric;
++		}
+ 	}
+ 	if(dyn_defroute)
+ 		defroute=dyn_defroute;
+ 
+ 	if((pdefaultroute==defroute) && defroute && (defroute->iface==pdefaultroute->iface)) return; /* no change to default interface */
+ 
++	const char * orig=(pdefaultroute&&pdefaultroute->iface&&pdefaultroute->iface->name)?pdefaultroute->iface->name:"?";
++	const char * new=(defroute&&defroute->iface&&defroute->iface->name)?defroute->iface->name:"?";
+ 	if(defroute){
+-		netifd_log_message(L_NOTICE, "Default Route interface has changed to: %s, %smetric %d\n",
+-						defroute->iface->name,(defroute->dynamic_metric_on)?"(dynamic)":"", defroute->metric);
++		netifd_log_message(L_NOTICE, "Default Route Interface changed %s->%s, %smetric %d\n",
++			orig, new, (defroute->dynamic_metric_on)?"(dynamic)":"",
++			(defroute->dynamic_metric_on)?defroute->dynamic_metric:defroute->metric);
+ 		interface_event(defroute->iface, IFEV_DEFAULTROUTE);
+ 	}
+ 	else if(pdefaultroute)
+Index: netifd-2021-07-26-440eb064/interface.h
+===================================================================
+--- netifd-2021-07-26-440eb064.orig/interface.h
++++ netifd-2021-07-26-440eb064/interface.h
+@@ -14,6 +14,8 @@
+ #ifndef __NETIFD_INTERFACE_H
+ #define __NETIFD_INTERFACE_H
+ 
++#include <sys/time.h>
++
+ #include "device.h"
+ #include "config.h"
+ 
+@@ -160,6 +162,9 @@ struct interface {
+ 
+ 	int metric;
+ 	int dns_metric;
++	int dyn_metric; /* dynamic metric- all routes associated with this interface must have matching metric */
++	struct timespec ifdown_time; /* timestamp of when the interface last went down */
++
+ 	unsigned int ip4table;
+ 	unsigned int ip6table;
+ 	unsigned int ip4table_set; /* value set in system */

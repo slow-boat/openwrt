@@ -1,0 +1,517 @@
+Index: netifd-2021-07-26-440eb064/Debug-ARM/makefile
+===================================================================
+--- /dev/null
++++ netifd-2021-07-26-440eb064/Debug-ARM/makefile
+@@ -0,0 +1,48 @@
++################################################################################
++# Automatically-generated file. Do not edit!
++################################################################################
++
++-include ../makefile.init
++
++RM := rm -rf
++
++# All of the sources participating in the build are defined here
++-include sources.mk
++-include subdir.mk
++-include objects.mk
++
++ifneq ($(MAKECMDGOALS),clean)
++ifneq ($(strip $(C_DEPS)),)
++-include $(C_DEPS)
++endif
++endif
++
++-include ../makefile.defs
++
++# Add inputs and outputs from these tool invocations to the build variables 
++
++# All Target
++all: netifd
++
++# Tool invocations
++netifd: $(OBJS) $(USER_OBJS)
++	@echo 'Building target: $@'
++	@echo 'Invoking: Cross GCC Linker'
++	arm-openwrt-linux-gcc -L"/home/chris/builds/R5.27/staging_dir/target-arm_cortex-a9+neon_musl_eabi/root-imx6/lib" -L"/home/chris/builds/R5.27/staging_dir/target-arm_cortex-a9+neon_musl_eabi/usr/lib" -o "netifd" $(OBJS) $(USER_OBJS) $(LIBS)
++	@echo 'Finished building target: $@'
++	@echo ' '
++	$(MAKE) --no-print-directory post-build
++
++# Other Targets
++clean:
++	-$(RM) $(EXECUTABLES)$(OBJS)$(C_DEPS) netifd
++	-@echo ' '
++
++post-build:
++	-@echo 'make executable'
++	-chmod 755 netifd
++	-@echo ' '
++
++.PHONY: all clean dependents post-build
++
++-include ../makefile.targets
+Index: netifd-2021-07-26-440eb064/Debug/makefile
+===================================================================
+--- netifd-2021-07-26-440eb064.orig/Debug/makefile
++++ /dev/null
+@@ -1,48 +0,0 @@
+-################################################################################
+-# Automatically-generated file. Do not edit!
+-################################################################################
+-
+--include ../makefile.init
+-
+-RM := rm -rf
+-
+-# All of the sources participating in the build are defined here
+--include sources.mk
+--include subdir.mk
+--include objects.mk
+-
+-ifneq ($(MAKECMDGOALS),clean)
+-ifneq ($(strip $(C_DEPS)),)
+--include $(C_DEPS)
+-endif
+-endif
+-
+--include ../makefile.defs
+-
+-# Add inputs and outputs from these tool invocations to the build variables 
+-
+-# All Target
+-all: netifd
+-
+-# Tool invocations
+-netifd: $(OBJS) $(USER_OBJS)
+-	@echo 'Building target: $@'
+-	@echo 'Invoking: Cross GCC Linker'
+-	arm-openwrt-linux-gcc -L"/home/chris/builds/mainline_merge/staging_dir/target-arm_cortex-a9+neon_musl_eabi/root-imx6/lib" -L"/home/chris/builds/mainline_merge/staging_dir/target-arm_cortex-a9+neon_musl_eabi/usr/lib" -o "netifd" $(OBJS) $(USER_OBJS) $(LIBS)
+-	@echo 'Finished building target: $@'
+-	@echo ' '
+-	$(MAKE) --no-print-directory post-build
+-
+-# Other Targets
+-clean:
+-	-$(RM) $(EXECUTABLES)$(OBJS)$(C_DEPS) netifd
+-	-@echo ' '
+-
+-post-build:
+-	-@echo 'make executable'
+-	-chmod 755 netifd
+-	-@echo ' '
+-
+-.PHONY: all clean dependents post-build
+-
+--include ../makefile.targets
+Index: netifd-2021-07-26-440eb064/.cproject
+===================================================================
+--- netifd-2021-07-26-440eb064.orig/.cproject
++++ netifd-2021-07-26-440eb064/.cproject
+@@ -5,7 +5,7 @@
+         		
+         <cconfiguration id="cdt.managedbuild.config.gnu.cross.exe.debug.1160851661">
+             			
+-            <storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="cdt.managedbuild.config.gnu.cross.exe.debug.1160851661" moduleId="org.eclipse.cdt.core.settings" name="Debug">
++            <storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="cdt.managedbuild.config.gnu.cross.exe.debug.1160851661" moduleId="org.eclipse.cdt.core.settings" name="Debug-ARM">
+                 				
+                 <externalSettings/>
+                 				
+@@ -29,7 +29,7 @@
+             			
+             <storageModule moduleId="cdtBuildSystem" version="4.0.0">
+                 				
+-                <configuration artifactName="${ProjName}" buildArtefactType="org.eclipse.cdt.build.core.buildArtefactType.exe" buildProperties="org.eclipse.cdt.build.core.buildArtefactType=org.eclipse.cdt.build.core.buildArtefactType.exe,org.eclipse.cdt.build.core.buildType=org.eclipse.cdt.build.core.buildType.debug" cleanCommand="rm -rf" description="" id="cdt.managedbuild.config.gnu.cross.exe.debug.1160851661" name="Debug" parent="cdt.managedbuild.config.gnu.cross.exe.debug" postannouncebuildStep="make executable" postbuildStep="chmod 755 ${ProjName}">
++                <configuration artifactName="${ProjName}" buildArtefactType="org.eclipse.cdt.build.core.buildArtefactType.exe" buildProperties="org.eclipse.cdt.build.core.buildArtefactType=org.eclipse.cdt.build.core.buildArtefactType.exe,org.eclipse.cdt.build.core.buildType=org.eclipse.cdt.build.core.buildType.debug" cleanCommand="rm -rf" description="" id="cdt.managedbuild.config.gnu.cross.exe.debug.1160851661" name="Debug-ARM" parent="cdt.managedbuild.config.gnu.cross.exe.debug" postannouncebuildStep="make executable" postbuildStep="chmod 755 ${ProjName}">
+                     					
+                     <folderInfo id="cdt.managedbuild.config.gnu.cross.exe.debug.1160851661." name="/" resourcePath="">
+                         						
+@@ -37,7 +37,7 @@
+                             							
+                             <option id="cdt.managedbuild.option.gnu.cross.prefix.1193437944" name="Prefix" superClass="cdt.managedbuild.option.gnu.cross.prefix" useByScannerDiscovery="false" value="arm-openwrt-linux-" valueType="string"/>
+                             							
+-                            <option id="cdt.managedbuild.option.gnu.cross.path.1937142984" name="Path" superClass="cdt.managedbuild.option.gnu.cross.path" useByScannerDiscovery="false" value="/home/chris/builds/mainline-merge/staging_dir/toolchain-arm_cortex-a9+neon_gcc-7.4.0_musl_eabi" valueType="string"/>
++                            <option id="cdt.managedbuild.option.gnu.cross.path.1937142984" name="Path" superClass="cdt.managedbuild.option.gnu.cross.path" useByScannerDiscovery="false" value="/home/chris/builds/R5.27/staging_dir/toolchain-arm_cortex-a9+neon_gcc-7.4.0_musl_eabi" valueType="string"/>
+                             							
+                             <targetPlatform archList="all" binaryParser="org.eclipse.cdt.core.ELF" id="cdt.managedbuild.targetPlatform.gnu.cross.1013478883" isAbstract="false" osList="all" superClass="cdt.managedbuild.targetPlatform.gnu.cross"/>
+                             							
+@@ -61,7 +61,7 @@
+                                     								
+                                 </option>
+                                 								
+-                                <option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="gnu.c.compiler.option.preprocessor.def.symbols.1827278366" superClass="gnu.c.compiler.option.preprocessor.def.symbols" useByScannerDiscovery="false" valueType="definedSymbols">
++                                <option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="gnu.c.compiler.option.preprocessor.def.symbols.1827278366" name="Defined symbols (-D)" superClass="gnu.c.compiler.option.preprocessor.def.symbols" useByScannerDiscovery="false" valueType="definedSymbols">
+                                     									
+                                     <listOptionValue builtIn="false" value="DEBUG"/>
+                                     								
+@@ -138,6 +138,226 @@
+                 </configuration>
+                 			
+             </storageModule>
++            			
++            <storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
++            		
++        </cconfiguration>
++        		
++        <cconfiguration id="cdt.managedbuild.config.gnu.cross.exe.debug.182596244.1583400986.2109180689.1013197175.728122060.634323410.841927822.750779397">
++            			
++            <storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="cdt.managedbuild.config.gnu.cross.exe.debug.182596244.1583400986.2109180689.1013197175.728122060.634323410.841927822.750779397" moduleId="org.eclipse.cdt.core.settings" name="Debug-x86">
++                				
++                <externalSettings/>
++                				
++                <extensions>
++                    					
++                    <extension id="org.eclipse.cdt.core.ELF" point="org.eclipse.cdt.core.BinaryParser"/>
++                    					
++                    <extension id="org.eclipse.cdt.core.GmakeErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
++                    					
++                    <extension id="org.eclipse.cdt.core.CWDLocator" point="org.eclipse.cdt.core.ErrorParser"/>
++                    					
++                    <extension id="org.eclipse.cdt.core.GCCErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
++                    					
++                    <extension id="org.eclipse.cdt.core.GASErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
++                    					
++                    <extension id="org.eclipse.cdt.core.GLDErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
++                    				
++                </extensions>
++                			
++            </storageModule>
++            			
++            <storageModule moduleId="cdtBuildSystem" version="4.0.0">
++                				
++                <configuration artifactName="${ProjName}" buildArtefactType="org.eclipse.cdt.build.core.buildArtefactType.exe" buildProperties="org.eclipse.cdt.build.core.buildArtefactType=org.eclipse.cdt.build.core.buildArtefactType.exe,org.eclipse.cdt.build.core.buildType=org.eclipse.cdt.build.core.buildType.debug" cleanCommand="rm -rf" description="" id="cdt.managedbuild.config.gnu.cross.exe.debug.182596244.1583400986.2109180689.1013197175.728122060.634323410.841927822.750779397" name="Debug-x86" optionalBuildProperties="org.eclipse.cdt.docker.launcher.containerbuild.property.selectedvolumes=,org.eclipse.cdt.docker.launcher.containerbuild.property.volumes=" parent="cdt.managedbuild.config.gnu.cross.exe.debug" postbuildStep="chmod 755  ${ProjName}">
++                    					
++                    <folderInfo id="cdt.managedbuild.config.gnu.cross.exe.debug.182596244.1583400986.2109180689.1013197175.728122060.634323410.841927822.750779397." name="/" resourcePath="">
++                        						
++                        <toolChain id="cdt.managedbuild.toolchain.gnu.cross.exe.debug.2065146050" name="Cross GCC" nonInternalBuilderId="cdt.managedbuild.builder.gnu.cross" superClass="cdt.managedbuild.toolchain.gnu.cross.exe.debug">
++                            							
++                            <option id="cdt.managedbuild.option.gnu.cross.prefix.1461794645" name="Prefix" superClass="cdt.managedbuild.option.gnu.cross.prefix" useByScannerDiscovery="false" value="x86_64-openwrt-linux-" valueType="string"/>
++                            							
++                            <option id="cdt.managedbuild.option.gnu.cross.path.765476049" name="Path" superClass="cdt.managedbuild.option.gnu.cross.path" useByScannerDiscovery="false" value="/home/chris/builds/mainline_merge/staging_dir/toolchain-x86_64_gcc-7.4.0_musl" valueType="string"/>
++                            							
++                            <targetPlatform archList="all" binaryParser="org.eclipse.cdt.core.ELF" id="cdt.managedbuild.targetPlatform.gnu.cross.729619958" isAbstract="false" osList="all" superClass="cdt.managedbuild.targetPlatform.gnu.cross"/>
++                            							
++                            <builder buildPath="${workspace_loc:/atmanager}/armv7_debug" id="cdt.managedbuild.builder.gnu.cross.1982206489" keepEnvironmentInBuildfile="false" name="Gnu Make Builder" parallelBuildOn="false" superClass="cdt.managedbuild.builder.gnu.cross"/>
++                            							
++                            <tool command="gcc" commandLinePattern="${COMMAND} ${FLAGS} -MT ${OUTPUT_PREFIX}${OUTPUT} ${OUTPUT_FLAG} ${OUTPUT_PREFIX}${OUTPUT} ${INPUTS}" id="cdt.managedbuild.tool.gnu.cross.c.compiler.282302030" name="Cross GCC Compiler" superClass="cdt.managedbuild.tool.gnu.cross.c.compiler">
++                                								
++                                <option defaultValue="gnu.c.optimization.level.none" id="gnu.c.compiler.option.optimization.level.251877760" name="Optimization Level" superClass="gnu.c.compiler.option.optimization.level" useByScannerDiscovery="false" value="gnu.c.optimization.level.none" valueType="enumerated"/>
++                                								
++                                <option id="gnu.c.compiler.option.debugging.level.384712654" name="Debug Level" superClass="gnu.c.compiler.option.debugging.level" useByScannerDiscovery="false" value="gnu.c.debugging.level.max" valueType="enumerated"/>
++                                								
++                                <option id="gnu.c.compiler.option.dialect.std.58733189" name="Language standard" superClass="gnu.c.compiler.option.dialect.std" useByScannerDiscovery="true" value="gnu.c.compiler.dialect.default" valueType="enumerated"/>
++                                								
++                                <option id="gnu.c.compiler.option.warnings.allwarn.280607904" name="All warnings (-Wall)" superClass="gnu.c.compiler.option.warnings.allwarn" useByScannerDiscovery="false" value="true" valueType="boolean"/>
++                                								
++                                <option id="gnu.c.compiler.option.misc.other.1762866722" name="Other flags" superClass="gnu.c.compiler.option.misc.other" useByScannerDiscovery="false" value="-c -pipe -fno-caller-saves -fno-plt -fhonour-copts -Wno-error=unused-but-set-variable -Wno-error=unused-result -fstack-protector -D_FORTIFY_SOURCE=1 -Wl,-z,now -Wl,-z,relro -pthread" valueType="string"/>
++                                								
++                                <option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="gnu.c.compiler.option.include.paths.20764529" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
++                                    									
++                                    <listOptionValue builtIn="false" value="${STAGING_DIR}/target-x86_64_musl/usr/include"/>
++                                    									
++                                    <listOptionValue builtIn="false" value="&quot;${STAGING_DIR}/target-x86_64_musl/usr/include/libnl-tiny&quot;"/>
++                                    								
++                                </option>
++                                								
++                                <option id="gnu.c.compiler.option.preprocessor.nostdinc.1278484037" name="Do not search system directories (-nostdinc)" superClass="gnu.c.compiler.option.preprocessor.nostdinc" useByScannerDiscovery="false" value="false" valueType="boolean"/>
++                                								
++                                <option id="gnu.c.compiler.option.include.files.273351338" name="Include files (-include)" superClass="gnu.c.compiler.option.include.files" useByScannerDiscovery="false"/>
++                                								
++                                <option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="gnu.c.compiler.option.preprocessor.def.symbols.1198180492" superClass="gnu.c.compiler.option.preprocessor.def.symbols" useByScannerDiscovery="false" valueType="definedSymbols">
++                                    									
++                                    <listOptionValue builtIn="false" value="DEBUG"/>
++                                    								
++                                </option>
++                                								
++                                <inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.1261287850" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
++                                							
++                            </tool>
++                            							
++                            <tool id="cdt.managedbuild.tool.gnu.cross.cpp.compiler.492432827" name="Cross G++ Compiler" superClass="cdt.managedbuild.tool.gnu.cross.cpp.compiler">
++                                								
++                                <option id="gnu.cpp.compiler.option.optimization.level.1097432778" name="Optimization Level" superClass="gnu.cpp.compiler.option.optimization.level" useByScannerDiscovery="false" value="gnu.cpp.compiler.optimization.level.none" valueType="enumerated"/>
++                                								
++                                <option id="gnu.cpp.compiler.option.debugging.level.1210853627" name="Debug Level" superClass="gnu.cpp.compiler.option.debugging.level" useByScannerDiscovery="false" value="gnu.cpp.compiler.debugging.level.max" valueType="enumerated"/>
++                                								
++                                <inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1535669341" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
++                                							
++                            </tool>
++                            							
++                            <tool command="gcc" id="cdt.managedbuild.tool.gnu.cross.c.linker.1258359047" name="Cross GCC Linker" superClass="cdt.managedbuild.tool.gnu.cross.c.linker">
++                                								
++                                <option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="gnu.c.link.option.libs.2022657475" name="Libraries (-l)" superClass="gnu.c.link.option.libs" useByScannerDiscovery="false" valueType="libs">
++                                    									
++                                    <listOptionValue builtIn="false" value="json-c"/>
++                                    									
++                                    <listOptionValue builtIn="false" value="blobmsg_json"/>
++                                    									
++                                    <listOptionValue builtIn="false" value="ubus"/>
++                                    									
++                                    <listOptionValue builtIn="false" value="ubox"/>
++                                    									
++                                    <listOptionValue builtIn="false" value="uci"/>
++                                    									
++                                    <listOptionValue builtIn="false" value="nl-tiny"/>
++                                    								
++                                </option>
++                                								
++                                <option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="gnu.c.link.option.paths.1413056935" name="Library search path (-L)" superClass="gnu.c.link.option.paths" valueType="libPaths">
++                                    									
++                                    <listOptionValue builtIn="false" value="&quot;${STAGING_DIR}/target-x86_64_musl/root-x86/lib&quot;"/>
++                                    									
++                                    <listOptionValue builtIn="false" value="&quot;${STAGING_DIR}/target-x86_64_musl/usr/lib&quot;"/>
++                                    								
++                                </option>
++                                								
++                                <option id="gnu.c.link.option.ldflags.898736526" name="Linker flags" superClass="gnu.c.link.option.ldflags" value="" valueType="string"/>
++                                								
++                                <option id="gnu.c.link.option.userobjs.1311725374" name="Other objects" superClass="gnu.c.link.option.userobjs"/>
++                                								
++                                <inputType id="cdt.managedbuild.tool.gnu.c.linker.input.2089229128" superClass="cdt.managedbuild.tool.gnu.c.linker.input">
++                                    									
++                                    <additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
++                                    									
++                                    <additionalInput kind="additionalinput" paths="$(LIBS)"/>
++                                    								
++                                </inputType>
++                                							
++                            </tool>
++                            							
++                            <tool id="cdt.managedbuild.tool.gnu.cross.cpp.linker.1301002926" name="Cross G++ Linker" superClass="cdt.managedbuild.tool.gnu.cross.cpp.linker">
++                                								
++                                <option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="gnu.cpp.link.option.paths.1795381702" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" useByScannerDiscovery="false" valueType="libPaths">
++                                    									
++                                    <listOptionValue builtIn="false" value="&quot;${STAGING_DIR}/target-x86_64_musl/root-x86/lib&quot;"/>
++                                    									
++                                    <listOptionValue builtIn="false" value="&quot;${STAGING_DIR}/target-x86_64_musl/usr/lib&quot;"/>
++                                    								
++                                </option>
++                                								
++                                <option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="gnu.cpp.link.option.libs.926870237" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" useByScannerDiscovery="false" valueType="libs">
++                                    									
++                                    <listOptionValue builtIn="false" value="m"/>
++                                    									
++                                    <listOptionValue builtIn="false" value="ubox"/>
++                                    									
++                                    <listOptionValue builtIn="false" value="uci"/>
++                                    									
++                                    <listOptionValue builtIn="false" value="asound"/>
++                                    								
++                                </option>
++                                								
++                                <inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.2108792020" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
++                                    									
++                                    <additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
++                                    									
++                                    <additionalInput kind="additionalinput" paths="$(LIBS)"/>
++                                    								
++                                </inputType>
++                                							
++                            </tool>
++                            							
++                            <tool id="cdt.managedbuild.tool.gnu.cross.archiver.1365660236" name="Cross GCC Archiver" superClass="cdt.managedbuild.tool.gnu.cross.archiver"/>
++                            							
++                            <tool command="as" id="cdt.managedbuild.tool.gnu.cross.assembler.954004287" name="Cross GCC Assembler" superClass="cdt.managedbuild.tool.gnu.cross.assembler">
++                                								
++                                <inputType id="cdt.managedbuild.tool.gnu.assembler.input.95262445" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
++                                							
++                            </tool>
++                            						
++                        </toolChain>
++                        					
++                    </folderInfo>
++                    					
++                    <folderInfo id="cdt.managedbuild.config.gnu.cross.exe.debug.182596244.1583400986.2109180689.1013197175.728122060.634323410.841927822.750779397.x86_64 Debug" name="/" resourcePath="x86_64 Debug">
++                        						
++                        <toolChain id="cdt.managedbuild.toolchain.gnu.cross.exe.debug.1732100049" name="Cross GCC" superClass="cdt.managedbuild.toolchain.gnu.cross.exe.debug" unusedChildren="">
++                            							
++                            <option id="cdt.managedbuild.option.gnu.cross.prefix.1349444475.733402713.921054911" name="Prefix" superClass="cdt.managedbuild.option.gnu.cross.prefix.1349444475"/>
++                            							
++                            <option id="cdt.managedbuild.option.gnu.cross.path.152281510.31503628.192885102" name="Path" superClass="cdt.managedbuild.option.gnu.cross.path.152281510"/>
++                            							
++                            <targetPlatform archList="all" binaryParser="org.eclipse.cdt.core.ELF" id="cdt.managedbuild.targetPlatform.gnu.cross.77776405" isAbstract="false" osList="all" superClass="cdt.managedbuild.targetPlatform.gnu.cross"/>
++                            							
++                            <tool id="cdt.managedbuild.tool.gnu.cross.c.compiler.811779810" name="Cross GCC Compiler" superClass="cdt.managedbuild.tool.gnu.cross.c.compiler.282302030">
++                                								
++                                <inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.377995171" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
++                                							
++                            </tool>
++                            							
++                            <tool id="cdt.managedbuild.tool.gnu.cross.cpp.compiler.1926953630" name="Cross G++ Compiler" superClass="cdt.managedbuild.tool.gnu.cross.cpp.compiler.492432827">
++                                								
++                                <inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.528099441" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
++                                							
++                            </tool>
++                            							
++                            <tool id="cdt.managedbuild.tool.gnu.cross.c.linker.2130148581" name="Cross GCC Linker" superClass="cdt.managedbuild.tool.gnu.cross.c.linker.1258359047"/>
++                            							
++                            <tool id="cdt.managedbuild.tool.gnu.cross.cpp.linker.1108531811" name="Cross G++ Linker" superClass="cdt.managedbuild.tool.gnu.cross.cpp.linker.1301002926"/>
++                            							
++                            <tool id="cdt.managedbuild.tool.gnu.cross.archiver.1331591028" name="Cross GCC Archiver" superClass="cdt.managedbuild.tool.gnu.cross.archiver.1365660236"/>
++                            							
++                            <tool id="cdt.managedbuild.tool.gnu.cross.assembler.133249918" name="Cross GCC Assembler" superClass="cdt.managedbuild.tool.gnu.cross.assembler.954004287">
++                                								
++                                <inputType id="cdt.managedbuild.tool.gnu.assembler.input.586969612" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
++                                							
++                            </tool>
++                            						
++                        </toolChain>
++                        					
++                    </folderInfo>
++                    
++                    <sourceEntries>
++
++                        <entry excluding=".pc/|.pkgdir/|.settings/|CMakeFiles/|config/|Debug/|examples/|ipkg-arm_cortex-a9_neon/|ipkg-install/|patches/|scripts/|system-dummy.c" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name=""/>
++                        					
++                    </sourceEntries>
++                  
++                </configuration>
++                			
++            </storageModule>
+             			
+             <storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
+             		
+Index: netifd-2021-07-26-440eb064/.settings/language.settings.xml
+===================================================================
+--- netifd-2021-07-26-440eb064.orig/.settings/language.settings.xml
++++ netifd-2021-07-26-440eb064/.settings/language.settings.xml
+@@ -1,7 +1,7 @@
+ <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+ <project>
+     	
+-    <configuration id="cdt.managedbuild.config.gnu.cross.exe.debug.1160851661" name="Debug">
++    <configuration id="cdt.managedbuild.config.gnu.cross.exe.debug.1160851661" name="Debug-ARM">
+         		
+         <extension point="org.eclipse.cdt.core.LanguageSettingsProvider">
+             			
+@@ -11,7 +11,7 @@
+             			
+             <provider-reference id="org.eclipse.cdt.managedbuilder.core.MBSLanguageSettingsProvider" ref="shared-provider"/>
+             			
+-            <provider class="org.eclipse.cdt.internal.build.crossgcc.CrossGCCBuiltinSpecsDetector" console="false" env-hash="-1083446210662484671" id="org.eclipse.cdt.build.crossgcc.CrossGCCBuiltinSpecsDetector" keep-relative-paths="false" name="CDT Cross GCC Built-in Compiler Settings" parameter="${COMMAND} ${FLAGS} -E -P -v -dD &quot;${INPUTS}&quot;" prefer-non-shared="true">
++            <provider class="org.eclipse.cdt.internal.build.crossgcc.CrossGCCBuiltinSpecsDetector" console="false" env-hash="-784695452265718608" id="org.eclipse.cdt.build.crossgcc.CrossGCCBuiltinSpecsDetector" keep-relative-paths="false" name="CDT Cross GCC Built-in Compiler Settings" parameter="${COMMAND} ${FLAGS} -E -P -v -dD &quot;${INPUTS}&quot;" prefer-non-shared="true">
+                 				
+                 <language-scope id="org.eclipse.cdt.core.gcc"/>
+                 				
+@@ -21,6 +21,24 @@
+             		
+         </extension>
+         	
++    </configuration>
++    	
++    <configuration id="cdt.managedbuild.config.gnu.cross.exe.debug.182596244.1583400986.2109180689.1013197175.728122060.634323410.841927822.750779397" name="Debug-x86">
++        		
++        <extension point="org.eclipse.cdt.core.LanguageSettingsProvider">
++            			
++            <provider copy-of="extension" id="org.eclipse.cdt.ui.UserLanguageSettingsProvider"/>
++            			
++            <provider-reference id="org.eclipse.cdt.core.ReferencedProjectsLanguageSettingsProvider" ref="shared-provider"/>
++            			
++            <provider-reference id="org.eclipse.cdt.managedbuilder.core.MBSLanguageSettingsProvider" ref="shared-provider"/>
++            			
++            <provider-reference id="org.eclipse.cdt.build.crossgcc.CrossGCCBuiltinSpecsDetector" ref="shared-provider"/>
++            			
++            <provider-reference id="org.eclipse.cdt.managedbuilder.core.GCCBuiltinSpecsDetector" ref="shared-provider"/>
++            		
++        </extension>
++        	
+     </configuration>
+     
+ </project>
+Index: netifd-2021-07-26-440eb064/.settings/org.eclipse.cdt.core.prefs
+===================================================================
+--- netifd-2021-07-26-440eb064.orig/.settings/org.eclipse.cdt.core.prefs
++++ netifd-2021-07-26-440eb064/.settings/org.eclipse.cdt.core.prefs
+@@ -1,15 +1,37 @@
+ eclipse.preferences.version=1
+ environment/project/cdt.managedbuild.config.gnu.cross.exe.debug.1160851661/CWD/delimiter=\:
+ environment/project/cdt.managedbuild.config.gnu.cross.exe.debug.1160851661/CWD/operation=replace
+-environment/project/cdt.managedbuild.config.gnu.cross.exe.debug.1160851661/CWD/value=/home/chris/builds/mainline_merge/build_dir/target-arm_cortex-a9+neon_musl_eabi/netifd-2019-05-08-f6fb7000/Debug
++environment/project/cdt.managedbuild.config.gnu.cross.exe.debug.1160851661/CWD/value=/home/chris/builds/R5.27/build_dir/target-arm_cortex-a9+neon_musl_eabi/netifd-2019-05-08-f6fb7000/Debug-ARM
+ environment/project/cdt.managedbuild.config.gnu.cross.exe.debug.1160851661/PATH/delimiter=\:
+ environment/project/cdt.managedbuild.config.gnu.cross.exe.debug.1160851661/PATH/operation=replace
+ environment/project/cdt.managedbuild.config.gnu.cross.exe.debug.1160851661/PATH/value=${STAGING_DIR}/toolchain-arm_cortex-a9+neon_gcc-7.4.0_musl_eabi/bin\:/usr/local/bin\:/usr/bin\:/bin
+ environment/project/cdt.managedbuild.config.gnu.cross.exe.debug.1160851661/PWD/delimiter=\:
+ environment/project/cdt.managedbuild.config.gnu.cross.exe.debug.1160851661/PWD/operation=replace
+-environment/project/cdt.managedbuild.config.gnu.cross.exe.debug.1160851661/PWD/value=/home/chris/builds/mainline_merge/build_dir/target-arm_cortex-a9+neon_musl_eabi/netifd-2019-05-08-f6fb7000/Debug
++environment/project/cdt.managedbuild.config.gnu.cross.exe.debug.1160851661/PWD/value=/home/chris/builds/R5.27/build_dir/target-arm_cortex-a9+neon_musl_eabi/netifd-2019-05-08-f6fb7000/Debug-ARM
+ environment/project/cdt.managedbuild.config.gnu.cross.exe.debug.1160851661/STAGING_DIR/delimiter=\:
+ environment/project/cdt.managedbuild.config.gnu.cross.exe.debug.1160851661/STAGING_DIR/operation=replace
+-environment/project/cdt.managedbuild.config.gnu.cross.exe.debug.1160851661/STAGING_DIR/value=/home/chris/builds/mainline_merge/staging_dir
++environment/project/cdt.managedbuild.config.gnu.cross.exe.debug.1160851661/STAGING_DIR/value=/home/chris/builds/R5.27/staging_dir
+ environment/project/cdt.managedbuild.config.gnu.cross.exe.debug.1160851661/append=true
+ environment/project/cdt.managedbuild.config.gnu.cross.exe.debug.1160851661/appendContributed=true
++environment/project/cdt.managedbuild.config.gnu.cross.exe.debug.182596244.1583400986.2109180689.1013197175.728122060.634323410.841927822.1975030898/CWD/delimiter=\:
++environment/project/cdt.managedbuild.config.gnu.cross.exe.debug.182596244.1583400986.2109180689.1013197175.728122060.634323410.841927822.1975030898/CWD/operation=replace
++environment/project/cdt.managedbuild.config.gnu.cross.exe.debug.182596244.1583400986.2109180689.1013197175.728122060.634323410.841927822.1975030898/CWD/value=/home/chris/builds/R5.27/build_dir/target-x86_64_musl/netifd-2019-05-08-f6fb7000/Debug-X86
++environment/project/cdt.managedbuild.config.gnu.cross.exe.debug.182596244.1583400986.2109180689.1013197175.728122060.634323410.841927822.1975030898/PATH/delimiter=\:
++environment/project/cdt.managedbuild.config.gnu.cross.exe.debug.182596244.1583400986.2109180689.1013197175.728122060.634323410.841927822.1975030898/PATH/operation=replace
++environment/project/cdt.managedbuild.config.gnu.cross.exe.debug.182596244.1583400986.2109180689.1013197175.728122060.634323410.841927822.1975030898/PATH/value=${STAGING_DIR}/toolchain-x86_64_gcc-7.4.0_musl/bin\:/usr/local/bin\:/usr/bin\:/bin
++environment/project/cdt.managedbuild.config.gnu.cross.exe.debug.182596244.1583400986.2109180689.1013197175.728122060.634323410.841927822.1975030898/PWD/delimiter=\:
++environment/project/cdt.managedbuild.config.gnu.cross.exe.debug.182596244.1583400986.2109180689.1013197175.728122060.634323410.841927822.1975030898/PWD/operation=replace
++environment/project/cdt.managedbuild.config.gnu.cross.exe.debug.182596244.1583400986.2109180689.1013197175.728122060.634323410.841927822.1975030898/PWD/value=/home/chris/builds/R5.27/build_dir/target-x86_64_musl/netifd-2019-05-08-f6fb7000/Debug-X86
++environment/project/cdt.managedbuild.config.gnu.cross.exe.debug.182596244.1583400986.2109180689.1013197175.728122060.634323410.841927822.1975030898/STAGING_DIR/delimiter=\:
++environment/project/cdt.managedbuild.config.gnu.cross.exe.debug.182596244.1583400986.2109180689.1013197175.728122060.634323410.841927822.1975030898/STAGING_DIR/operation=replace
++environment/project/cdt.managedbuild.config.gnu.cross.exe.debug.182596244.1583400986.2109180689.1013197175.728122060.634323410.841927822.1975030898/STAGING_DIR/value=/home/chris/builds/R5.27/staging_dir
++environment/project/cdt.managedbuild.config.gnu.cross.exe.debug.182596244.1583400986.2109180689.1013197175.728122060.634323410.841927822.1975030898/append=true
++environment/project/cdt.managedbuild.config.gnu.cross.exe.debug.182596244.1583400986.2109180689.1013197175.728122060.634323410.841927822.1975030898/appendContributed=true
++environment/project/cdt.managedbuild.config.gnu.cross.exe.debug.182596244.1583400986.2109180689.1013197175.728122060.634323410.841927822.750779397/PATH/delimiter=\:
++environment/project/cdt.managedbuild.config.gnu.cross.exe.debug.182596244.1583400986.2109180689.1013197175.728122060.634323410.841927822.750779397/PATH/operation=replace
++environment/project/cdt.managedbuild.config.gnu.cross.exe.debug.182596244.1583400986.2109180689.1013197175.728122060.634323410.841927822.750779397/PATH/value=${STAGING_DIR}/toolchain-x86_64_gcc-7.4.0_musl/bin\:/usr/local/bin\:/usr/bin\:/bin
++environment/project/cdt.managedbuild.config.gnu.cross.exe.debug.182596244.1583400986.2109180689.1013197175.728122060.634323410.841927822.750779397/STAGING_DIR/delimiter=\:
++environment/project/cdt.managedbuild.config.gnu.cross.exe.debug.182596244.1583400986.2109180689.1013197175.728122060.634323410.841927822.750779397/STAGING_DIR/operation=replace
++environment/project/cdt.managedbuild.config.gnu.cross.exe.debug.182596244.1583400986.2109180689.1013197175.728122060.634323410.841927822.750779397/STAGING_DIR/value=/home/chris/builds/R5.27/staging_dir
++environment/project/cdt.managedbuild.config.gnu.cross.exe.debug.182596244.1583400986.2109180689.1013197175.728122060.634323410.841927822.750779397/append=true
++environment/project/cdt.managedbuild.config.gnu.cross.exe.debug.182596244.1583400986.2109180689.1013197175.728122060.634323410.841927822.750779397/appendContributed=true
+Index: netifd-2021-07-26-440eb064/Debug-x86/makefile
+===================================================================
+--- /dev/null
++++ netifd-2021-07-26-440eb064/Debug-x86/makefile
+@@ -0,0 +1,47 @@
++################################################################################
++# Automatically-generated file. Do not edit!
++################################################################################
++
++-include ../makefile.init
++
++RM := rm -rf
++
++# All of the sources participating in the build are defined here
++-include sources.mk
++-include subdir.mk
++-include objects.mk
++
++ifneq ($(MAKECMDGOALS),clean)
++ifneq ($(strip $(C_DEPS)),)
++-include $(C_DEPS)
++endif
++endif
++
++-include ../makefile.defs
++
++# Add inputs and outputs from these tool invocations to the build variables 
++
++# All Target
++all: netifd
++
++# Tool invocations
++netifd: $(OBJS) $(USER_OBJS)
++	@echo 'Building target: $@'
++	@echo 'Invoking: Cross GCC Linker'
++	x86_64-openwrt-linux-gcc -L"/home/chris/builds/R5.27/staging_dir/target-x86_64_musl/root-x86/lib" -L"/home/chris/builds/R5.27/staging_dir/target-x86_64_musl/usr/lib" -o "netifd" $(OBJS) $(USER_OBJS) $(LIBS)
++	@echo 'Finished building target: $@'
++	@echo ' '
++	$(MAKE) --no-print-directory post-build
++
++# Other Targets
++clean:
++	-$(RM) $(EXECUTABLES)$(OBJS)$(C_DEPS) netifd
++	-@echo ' '
++
++post-build:
++	-chmod 755  netifd
++	-@echo ' '
++
++.PHONY: all clean dependents post-build
++
++-include ../makefile.targets

@@ -1,0 +1,227 @@
+Index: netifd-2021-07-26-440eb064/interface.c
+===================================================================
+--- netifd-2021-07-26-440eb064.orig/interface.c
++++ netifd-2021-07-26-440eb064/interface.c
+@@ -1277,6 +1277,39 @@ interface_stop_jail(const char *jail, co
+ 	_exit(0);
+ }
+ 
++/* override interface metric, and any route metrics */
++void
++interface_set_metric(int ifindex, struct device_route * route)
++{
++	struct interface *iface;
++
++	vlist_for_each_element(&interfaces, iface, node) {
++		struct device *dev= iface->l3_dev.dev;
++		if (dev && (dev->ifindex == ifindex)){
++			struct interface_ip_settings *ip=&iface->proto_ip;
++			int pass=0;
++			while(true) {
++				struct device_route *cfgroute;
++				vlist_for_each_element(&ip->route, cfgroute, node){
++					cfgroute->dynamic_metric_on=false;
++					if((cfgroute->addr.in.s_addr==route->addr.in.s_addr) &&
++						(cfgroute->nexthop.in.s_addr==route->nexthop.in.s_addr)){
++						if((cfgroute->enabled = route->enabled)){ /* disable if route deleted */
++							cfgroute->dynamic_metric_on=true;
++							cfgroute->dynamic_metric=route->metric;
++							D(INTERFACE, "Updating interface %s route metric to %d\n", iface->name, route->metric);
++						} else {
++							D(INTERFACE, "Disable interface %s route\n", iface->name);
++						}
++					}
++				}
++				if(pass++)break;
++				ip=&iface->config_ip;
++			}
++		}
++	}
++}
++
+ static void
+ set_config_state(struct interface *iface, enum interface_config_state s)
+ {
+Index: netifd-2021-07-26-440eb064/interface.h
+===================================================================
+--- netifd-2021-07-26-440eb064.orig/interface.h
++++ netifd-2021-07-26-440eb064/interface.h
+@@ -211,4 +211,7 @@ void interface_start_pending(void);
+ void interface_start_jail(const char *jail, const pid_t netns_pid);
+ void interface_stop_jail(const char *jail, const pid_t netns_pid);
+ 
++struct device_route;
++void interface_set_metric(int ifindex, struct device_route * route);
++
+ #endif
+Index: netifd-2021-07-26-440eb064/system-linux.c
+===================================================================
+--- netifd-2021-07-26-440eb064.orig/system-linux.c
++++ netifd-2021-07-26-440eb064/system-linux.c
+@@ -168,10 +168,10 @@ create_raw_event_socket(struct event_soc
+ }
+ 
+ static bool
+-create_event_socket(struct event_socket *ev, int protocol,
++create_event_socket(struct event_socket *ev, int protocol, int groups,
+ 		    int (*cb)(struct nl_msg *msg, void *arg))
+ {
+-	if (!create_raw_event_socket(ev, protocol, 0, handler_nl_event, ULOOP_ERROR_CB))
++	if (!create_raw_event_socket(ev, protocol, groups, handler_nl_event, ULOOP_ERROR_CB))
+ 		return false;
+ 
+ 	/* Install the valid custom callback handler */
+@@ -192,7 +192,7 @@ static bool
+ create_hotplug_event_socket(struct event_socket *ev, int protocol,
+ 			    void (*cb)(struct uloop_fd *u, unsigned int events))
+ {
+-	if (!create_raw_event_socket(ev, protocol, 1, cb, ULOOP_ERROR_CB))
++	if (!create_raw_event_socket(ev, protocol, RTNLGRP_LINK, cb, ULOOP_ERROR_CB))
+ 		return false;
+ 
+ 	/* Increase rx buffer size to 65K on event sockets */
+@@ -268,7 +268,7 @@ int system_init(void)
+ 	if (!sock_rtnl)
+ 		return -1;
+ 
+-	if (!create_event_socket(&rtnl_event, NETLINK_ROUTE, cb_rtnl_event))
++	if (!create_event_socket(&rtnl_event, NETLINK_ROUTE, 0, cb_rtnl_event))
+ 		return -1;
+ 
+ 	if (!create_hotplug_event_socket(&hotplug_event, NETLINK_KOBJECT_UEVENT,
+@@ -277,6 +277,11 @@ int system_init(void)
+ 
+ 	/* Receive network link events form kernel */
+ 	nl_socket_add_membership(rtnl_event.sock, RTNLGRP_LINK);
++	nl_socket_add_membership(rtnl_event.sock, RTNLGRP_NOTIFY);
++	nl_socket_add_membership(rtnl_event.sock, RTNLGRP_IPV4_IFADDR);
++	nl_socket_add_membership(rtnl_event.sock, RTNLGRP_IPV6_IFADDR);
++	nl_socket_add_membership(rtnl_event.sock, RTNLGRP_IPV4_ROUTE);
++	nl_socket_add_membership(rtnl_event.sock, RTNLGRP_IPV6_ROUTE);
+ 
+ 	return 0;
+ }
+@@ -654,34 +659,68 @@ static int system_get_arp_accept(struct
+ }
+ 
+ /* Evaluate netlink messages */
+-static int cb_rtnl_event(struct nl_msg *msg, void *arg)
+-{
+-	struct nlmsghdr *nh = nlmsg_hdr(msg);
+-	struct nlattr *nla[__IFLA_MAX];
+-	int link_state = 0;
+-	char buf[10];
+-
+-	if (nh->nlmsg_type != RTM_NEWLINK)
+-		goto out;
+-
+-	nlmsg_parse(nh, sizeof(struct ifinfomsg), nla, __IFLA_MAX - 1, NULL);
+-	if (!nla[IFLA_IFNAME])
+-		goto out;
+-
+-	struct device *dev = device_find(nla_data(nla[IFLA_IFNAME]));
+-	if (!dev)
+-		goto out;
+-
+-	if (!system_get_dev_sysctl("/sys/class/net/%s/carrier", dev->ifname, buf, sizeof(buf)))
+-		link_state = strtoul(buf, NULL, 0);
+-
+-	if (dev->type == &simple_device_type)
+-		device_set_present(dev, true);
++static void process_nl_message(struct nlmsghdr *nh) {
++	D(SYSTEM, "Message Type: %u\n", nh->nlmsg_type);
++	if ((nh->nlmsg_type == RTM_NEWROUTE)||(nh->nlmsg_type == RTM_DELROUTE)){
++		struct rtmsg *rtp= (struct rtmsg *) NLMSG_DATA(nh);
++		if(rtp->rtm_table == RT_TABLE_LOCAL) return; /* skip local route */
++		struct rtattr * rtap = (struct rtattr *) RTM_RTA(rtp);
++		int rtl = IFA_PAYLOAD(nh);
++		struct device_route route = {
++			.metric=0,
++			.enabled=true,
++			.source.in.s_addr=0,
++			.addr.in.s_addr=0,
++			.nexthop.in.s_addr=0,
++			.table=0,
++		};
++		unsigned index=0;
++
++		for(;RTA_OK(rtap, rtl);rtap=RTA_NEXT(rtap,rtl)) {
++			if (rtap->rta_type == RTA_PRIORITY)
++				route.metric=*((int *)RTA_DATA(rtap));
++			else if(rtap->rta_type == RTA_OIF)
++				index=*((int *)RTA_DATA(rtap));
++			else if(rtap->rta_type == RTA_SRC)
++				route.source.in.s_addr=((struct in_addr *)RTA_DATA(rtap))->s_addr;
++			else if(rtap->rta_type == RTA_DST)
++				route.addr.in.s_addr=((struct in_addr *)RTA_DATA(rtap))->s_addr;
++			else if(rtap->rta_type == RTA_GATEWAY)
++				route.nexthop.in.s_addr=((struct in_addr *)RTA_DATA(rtap))->s_addr;
++			else if(rtap->rta_type == RTA_TABLE)
++				route.table=*((int *)RTA_DATA(rtap));
++		}
++		if(nh->nlmsg_type == RTM_DELROUTE)route.enabled=false;
++		interface_set_metric(index, &route);
++	}
+ 
+-	device_set_link(dev, link_state ? true : false);
++	if (nh->nlmsg_type == RTM_NEWLINK){
++		struct nlattr *nla[__IFLA_MAX];
++		int link_state = 0;
++		char buf[10];
++		nlmsg_parse(nh, sizeof(struct ifinfomsg), nla, __IFLA_MAX - 1, NULL);
++		if (!nla[IFLA_IFNAME])
++			return;
++
++		struct device *dev = device_find(nla_data(nla[IFLA_IFNAME]));
++		if (!dev)
++			return;
++
++		if (!system_get_dev_sysctl("/sys/class/net/%s/carrier", dev->ifname, buf, sizeof(buf)))
++			link_state = strtoul(buf, NULL, 0);
++		device_set_link(dev, link_state ? true : false);
++	}
++}
+ 
+-out:
+-	return 0;
++static int cb_rtnl_event(struct nl_msg *msg, void *arg)
++{
++	struct nlmsghdr *nl_msg = nlmsg_hdr(msg);
++	int nl_msg_sz = nlmsg_get_max_size(msg);
++	while (nlmsg_ok(nl_msg, nl_msg_sz)) {
++	process_nl_message(nl_msg);
++		nl_msg = nlmsg_next(nl_msg, &nl_msg_sz);
++	}
++ 	return 0;
+ }
+ 
+ static void
+Index: netifd-2021-07-26-440eb064/interface-ip.h
+===================================================================
+--- netifd-2021-07-26-440eb064.orig/interface-ip.h
++++ netifd-2021-07-26-440eb064/interface-ip.h
+@@ -98,6 +98,9 @@ struct device_route {
+ 	unsigned int type;
+ 	unsigned int proto;
+ 	time_t valid_until;
++	// overriden by route change monitor (interface_set_metric)
++	bool dynamic_metric_on;
++	int dynamic_metric;
+ 
+ 	/* must be last */
+ 	enum device_addr_flags flags;
+Index: netifd-2021-07-26-440eb064/ubus.c
+===================================================================
+--- netifd-2021-07-26-440eb064.orig/ubus.c
++++ netifd-2021-07-26-440eb064/ubus.c
+@@ -620,7 +620,9 @@ interface_ip_dump_route_list(struct inte
+ 		if (route->flags & DEVROUTE_MTU)
+ 			blobmsg_add_u32(&b, "mtu", route->mtu);
+ 
+-		if (route->flags & DEVROUTE_METRIC)
++		if (route->dynamic_metric_on)
++			blobmsg_add_u32(&b, "metric", route->dynamic_metric);
++		else if (route->flags & DEVROUTE_METRIC)
+ 			blobmsg_add_u32(&b, "metric", route->metric);
+ 
+ 		if (route->flags & DEVROUTE_TABLE)

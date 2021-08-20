@@ -1,0 +1,344 @@
+Index: netifd-2021-07-26-440eb064/interface.c
+===================================================================
+--- netifd-2021-07-26-440eb064.orig/interface.c
++++ netifd-2021-07-26-440eb064/interface.c
+@@ -16,6 +16,8 @@
+ #include <stdio.h>
+ #include <sys/types.h>
+ #include <sys/wait.h>
++#include <limits.h>
++#include <linux/rtnetlink.h>
+ 
+ #include "netifd.h"
+ #include "device.h"
+@@ -28,6 +30,7 @@
+ 
+ struct vlist_tree interfaces;
+ static LIST_HEAD(iface_all_users);
++struct device_route *pdefaultroute;
+ 
+ enum {
+ 	IFACE_ATTR_DEVICE,
+@@ -408,6 +411,8 @@ interface_set_link_state(struct interfac
+ 		interface_event(iface, IFEV_LINK_UP);
+ 		iface->link_up_event = true;
+ 	}
++	if(!new_state)
++		interface_update_defaultroute();
+ }
+ 
+ static void
+@@ -1282,32 +1287,96 @@ void
+ interface_set_metric(int ifindex, struct device_route * route)
+ {
+ 	struct interface *iface;
++	int changes =0;
+ 
+ 	vlist_for_each_element(&interfaces, iface, node) {
+ 		struct device *dev= iface->l3_dev.dev;
+-		if (dev && (dev->ifindex == ifindex)){
+-			struct interface_ip_settings *ip=&iface->proto_ip;
+-			int pass=0;
+-			while(true) {
+-				struct device_route *cfgroute;
+-				vlist_for_each_element(&ip->route, cfgroute, node){
+-					if((cfgroute->addr.in.s_addr==route->addr.in.s_addr) &&
+-						(cfgroute->nexthop.in.s_addr==route->nexthop.in.s_addr)){
+-						if((cfgroute->enabled = route->enabled)){ /* disable if route deleted */
+-							cfgroute->dynamic_metric_on=true;
+-							cfgroute->dynamic_metric=route->metric;
+-							D(INTERFACE, "Updating interface %s route metric to %d\n", iface->name, route->metric);
+-						} else {
+-							D(INTERFACE, "Disable interface %s route\n", iface->name);
+-							cfgroute->dynamic_metric_on=false;
+-						}
++		if (!dev || (dev->ifindex != ifindex)) continue;
++
++		struct interface_ip_settings *ip=&iface->proto_ip;
++		int pass=0;
++
++		while(true) {
++			struct device_route *cfgroute;
++			char* passnode=(pass)?"config_ip":"proto_ip";
++			vlist_for_each_element(&ip->route, cfgroute, node){
++				if((cfgroute->addr.in.s_addr==route->addr.in.s_addr) &&
++					(cfgroute->nexthop.in.s_addr==route->nexthop.in.s_addr)){
++					if(route->enabled){ /* disable if route deleted */
++						cfgroute->dynamic_metric_on=true;
++						cfgroute->dynamic_metric=route->metric;
++						cfgroute->enabled = true;
++						D(INTERFACE, "Updating interface %s %s route metric to %d\n",
++								passnode, iface->name, route->metric);
++					} else if (route->metric == cfgroute->dynamic_metric){
++						D(INTERFACE, "Disable interface %s %s route\n", passnode, iface->name);
++						cfgroute->dynamic_metric_on=false;
++						cfgroute->enabled =false;
++					} else {
++						D(INTERFACE, "Old route metric %d on interface %s %s deleted\n", route->metric, passnode, iface->name);
+ 					}
++					if(!cfgroute->iface){
++						D(INTERFACE, "Linking interface %s %s to route\n", passnode, iface->name);
++						cfgroute->iface=iface;
++					}
++					changes++;
++				}
++			}
++			if(pass++)break;
++			ip=&iface->config_ip;
++		}
++		break;
++	}
++	if(changes)
++		interface_update_defaultroute();
++}
++
++void
++interface_update_defaultroute(void)
++{
++	struct interface *iface;
++	struct device_route *defroute=NULL;
++	/* find the minimum default route and update
++	 * struct device_route *pdefaultroute;
++	 * If the interface changes, send a callback.
++	 */
++	int min_metric=INT_MAX;
++	vlist_for_each_element(&interfaces, iface, node) {
++		if(iface->state!=IFS_UP)continue; /* only interfaces that are up */
++		struct interface_ip_settings *ip=&iface->proto_ip; /* protocol routes first */
++		for(int i=0; i< 2; i++){
++			struct device_route *route;
++			vlist_for_each_element(&ip->route, route, node){
++				if(!route->iface)continue; /* probably means we havent finished setting it up */
++				if(route->table&&(route->table != RT_TABLE_MAIN)) continue; /* only main routing table */
++				if(route->addr.in.s_addr) continue; /* not default route */
++				if(!route->enabled) continue;
++				if(route->dynamic_metric_on){
++					if(min_metric<=route->dynamic_metric)continue;
++					min_metric=route->dynamic_metric;
++				} else {
++					if(min_metric<=route->metric)continue;
++					min_metric=route->metric;
+ 				}
+-				if(pass++)break;
+-				ip=&iface->config_ip;
++				defroute=route;
++				if(!min_metric) goto interface_update_defaultroute_change;
+ 			}
++			ip=&iface->config_ip; /* check config routes */
+ 		}
+ 	}
++
++interface_update_defaultroute_change:
++	if((pdefaultroute==defroute) && defroute && (defroute->iface==pdefaultroute->iface)) return; /* no change to default interface */
++
++	if(defroute){
++		netifd_log_message(L_NOTICE, "Default Route interface has changed to: %s, metric %d\n",
++						defroute->iface->name, min_metric);
++		interface_event(defroute->iface, IFEV_DEFAULTROUTE);
++	}
++	else if(pdefaultroute)
++		netifd_log_message(L_NOTICE, "Default Route Removed\n");
++	pdefaultroute=defroute;
++	return;
+ }
+ 
+ static void
+Index: netifd-2021-07-26-440eb064/interface.h
+===================================================================
+--- netifd-2021-07-26-440eb064.orig/interface.h
++++ netifd-2021-07-26-440eb064/interface.h
+@@ -28,6 +28,7 @@ enum interface_event {
+ 	IFEV_FREE,
+ 	IFEV_RELOAD,
+ 	IFEV_LINK_UP,
++	IFEV_DEFAULTROUTE,
+ 	/* send when a new interface created. This is before proto handlers has been attached. */
+ 	IFEV_CREATE,
+ };
+@@ -178,6 +179,7 @@ struct interface {
+ 
+ extern struct vlist_tree interfaces;
+ extern const struct uci_blob_param_list interface_attr_list;
++extern struct device_route *pdefaultroute;
+ 
+ struct interface *interface_alloc(const char *name, struct blob_attr *config, bool dynamic);
+ 
+@@ -213,5 +215,6 @@ void interface_stop_jail(const char *jai
+ 
+ struct device_route;
+ void interface_set_metric(int ifindex, struct device_route * route);
++void interface_update_defaultroute(void);
+ 
+ #endif
+Index: netifd-2021-07-26-440eb064/proto.c
+===================================================================
+--- netifd-2021-07-26-440eb064.orig/proto.c
++++ netifd-2021-07-26-440eb064/proto.c
+@@ -614,6 +614,56 @@ proto_dump_handlers(struct blob_buf *b)
+ }
+ 
+ void
++proto_dump_default_route(struct blob_buf *b)
++{
++	struct device_route * route =pdefaultroute;
++	if (!route || !route->enabled) return;
++
++	int af =((route->flags & DEVADDR_FAMILY) == DEVADDR_INET4)?AF_INET:AF_INET6;
++	int buflen = 128;
++	char *buf = blobmsg_alloc_string_buffer(b, "interface", buflen);
++	strncpy(buf, route->iface->name, buflen);
++	blobmsg_add_string_buffer(b);
++
++	buf = blobmsg_alloc_string_buffer(b, "target", buflen);
++	inet_ntop(af, &route->addr, buf, buflen);
++	blobmsg_add_string_buffer(b);
++
++	blobmsg_add_u32(b, "mask", route->mask);
++
++	buf = blobmsg_alloc_string_buffer(b, "nexthop", buflen);
++	inet_ntop(af, &route->nexthop, buf, buflen);
++	blobmsg_add_string_buffer(b);
++
++	if (route->flags & DEVROUTE_TYPE)
++		blobmsg_add_u32(b, "type", route->type);
++
++	if (route->flags & DEVROUTE_PROTO)
++		blobmsg_add_u32(b, "proto", route->proto);
++
++	if (route->flags & DEVROUTE_MTU)
++		blobmsg_add_u32(b, "mtu", route->mtu);
++
++	if (route->dynamic_metric_on)
++		blobmsg_add_u32(b, "metric", route->dynamic_metric);
++	else if (route->flags & DEVROUTE_METRIC)
++		blobmsg_add_u32(b, "metric", route->metric);
++
++	if (route->flags & DEVROUTE_TABLE)
++		blobmsg_add_u32(b, "table", route->table);
++
++	if (route->valid_until){
++		time_t now = system_get_rtime();
++		blobmsg_add_u32(b, "valid", route->valid_until - now);
++	}
++
++	buf = blobmsg_alloc_string_buffer(b, "source", buflen);
++	inet_ntop(af, &route->source, buf, buflen);
++	snprintf(buf + strlen(buf), buflen - strlen(buf), "/%u", route->sourcemask);
++	blobmsg_add_string_buffer(b);
++}
++
++void
+ proto_init_interface(struct interface *iface, struct blob_attr *attr)
+ {
+ 	const struct proto_handler *proto = iface->proto_handler;
+Index: netifd-2021-07-26-440eb064/proto.h
+===================================================================
+--- netifd-2021-07-26-440eb064.orig/proto.h
++++ netifd-2021-07-26-440eb064/proto.h
+@@ -80,6 +80,7 @@ unsigned int parse_netmask_string(const
+ int proto_apply_static_ip_settings(struct interface *iface, struct blob_attr *attr);
+ int proto_apply_ip_settings(struct interface *iface, struct blob_attr *attr, bool ext);
+ void proto_dump_handlers(struct blob_buf *b);
++void proto_dump_default_route(struct blob_buf *b);
+ void proto_shell_init(void);
+ 
+ #endif
+Index: netifd-2021-07-26-440eb064/system-linux.c
+===================================================================
+--- netifd-2021-07-26-440eb064.orig/system-linux.c
++++ netifd-2021-07-26-440eb064/system-linux.c
+@@ -2680,11 +2680,13 @@ nla_put_failure:
+ 
+ int system_add_route(struct device *dev, struct device_route *route)
+ {
++	interface_update_defaultroute();
+ 	return system_rt(dev, route, RTM_NEWROUTE);
+ }
+ 
+ int system_del_route(struct device *dev, struct device_route *route)
+ {
++	interface_update_defaultroute();
+ 	return system_rt(dev, route, RTM_DELROUTE);
+ }
+ 
+@@ -2704,6 +2706,7 @@ int system_flush_routes(void)
+ 		if (write(fd, "-1", 2)) {}
+ 		close(fd);
+ 	}
++	interface_update_defaultroute();
+ 	return 0;
+ }
+ 
+Index: netifd-2021-07-26-440eb064/ubus.c
+===================================================================
+--- netifd-2021-07-26-440eb064.orig/ubus.c
++++ netifd-2021-07-26-440eb064/ubus.c
+@@ -111,6 +111,17 @@ netifd_get_proto_handlers(struct ubus_co
+ 	return 0;
+ }
+ 
++static int
++netifd_get_default_route(struct ubus_context *ctx, struct ubus_object *obj,
++			  struct ubus_request_data *req, const char *method,
++			  struct blob_attr *msg)
++{
++	blob_buf_init(&b, 0);
++	proto_dump_default_route(&b);
++	ubus_send_reply(ctx, req, b.head);
++
++	return 0;
++}
+ 
+ enum {
+ 	DI_NAME,
+@@ -203,6 +214,7 @@ static struct ubus_method main_object_me
+ 	{ .name = "get_proto_handlers", .handler = netifd_get_proto_handlers },
+ 	UBUS_METHOD("add_dynamic", netifd_add_dynamic, dynamic_policy),
+ 	UBUS_METHOD("netns_updown", netifd_netns_updown, netns_updown_policy),
++	{ .name = "get_default_route", .handler = netifd_get_default_route },
+ };
+ 
+ static struct ubus_object_type main_object_type =
+Index: netifd-2021-07-26-440eb064/proto-static.c
+===================================================================
+--- netifd-2021-07-26-440eb064.orig/proto-static.c
++++ netifd-2021-07-26-440eb064/proto-static.c
+@@ -100,8 +100,7 @@ error:
+ 
+ static struct proto_handler static_proto = {
+ 	.name = "static",
+-	.flags = PROTO_FLAG_IMMEDIATE |
+-		 PROTO_FLAG_FORCE_LINK_DEFAULT,
++	.flags = PROTO_FLAG_IMMEDIATE,
+ 	.config_params = &proto_ip_attr,
+ 	.attach = static_attach,
+ };
+Index: netifd-2021-07-26-440eb064/interface-event.c
+===================================================================
+--- netifd-2021-07-26-440eb064.orig/interface-event.c
++++ netifd-2021-07-26-440eb064/interface-event.c
+@@ -38,6 +38,7 @@ static const char * const eventnames[] =
+ 	[IFEV_FREE] = "free",
+ 	[IFEV_RELOAD] = "reload",
+ 	[IFEV_LINK_UP] = "iflink",
++	[IFEV_DEFAULTROUTE] = "defaultroute",
+ 	[IFEV_CREATE] = "create",
+ };
+ 
+@@ -92,7 +93,7 @@ call_hotplug(void)
+ 	current_ev = current->hotplug_ev;
+ 	list_del_init(&current->hotplug_list);
+ 
+-	if ((current_ev == IFEV_UP || current_ev == IFEV_UPDATE) && current->l3_dev.dev)
++	if ((current_ev == IFEV_UP || current_ev == IFEV_UPDATE || current_ev == IFEV_DEFAULTROUTE) && current->l3_dev.dev)
+ 		device = current->l3_dev.dev->ifname;
+ 
+ 	D(SYSTEM, "Call hotplug handler for interface '%s', event '%s' (%s)\n",
+@@ -195,6 +196,7 @@ static void interface_event_cb(struct in
+ 		case IFEV_UP:
+ 		case IFEV_UP_FAILED:
+ 		case IFEV_UPDATE:
++		case IFEV_DEFAULTROUTE:
+ 		case IFEV_DOWN:
+ 			interface_queue_event(iface, ev);
+ 			break;

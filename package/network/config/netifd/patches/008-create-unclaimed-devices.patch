@@ -1,0 +1,280 @@
+Index: netifd-2021-07-26-440eb064/ipvlan.c
+===================================================================
+--- netifd-2021-07-26-440eb064.orig/ipvlan.c
++++ netifd-2021-07-26-440eb064/ipvlan.c
+@@ -64,14 +64,14 @@ struct ipvlan_device {
+ static void
+ ipvlan_base_cb(struct device_user *dev, enum device_event ev)
+ {
+-	struct ipvlan_device *mvdev = container_of(dev, struct ipvlan_device, parent);
++	struct ipvlan_device *ipvdev = container_of(dev, struct ipvlan_device, parent);
+ 
+ 	switch (ev) {
+ 	case DEV_EVENT_ADD:
+-		device_set_present(&mvdev->dev, true);
++		device_set_present(&ipvdev->dev, true);
+ 		break;
+ 	case DEV_EVENT_REMOVE:
+-		device_set_present(&mvdev->dev, false);
++		device_set_present(&ipvdev->dev, false);
+ 		break;
+ 	default:
+ 		return;
+@@ -79,93 +79,94 @@ ipvlan_base_cb(struct device_user *dev,
+ }
+ 
+ static int
+-ipvlan_set_down(struct ipvlan_device *mvdev)
++ipvlan_set_down(struct ipvlan_device *ipvdev)
+ {
+-	mvdev->set_state(&mvdev->dev, false);
+-	system_ipvlan_del(&mvdev->dev);
+-	device_release(&mvdev->parent);
++	ipvdev->set_state(&ipvdev->dev, false);
++	system_ipvlan_del(&ipvdev->dev);
++	device_release(&ipvdev->parent);
+ 
+ 	return 0;
+ }
+ 
+ static int
+-ipvlan_set_up(struct ipvlan_device *mvdev)
++ipvlan_set_up(struct ipvlan_device *ipvdev)
+ {
+ 	int ret;
+ 
+-	ret = device_claim(&mvdev->parent);
++	ret = device_claim(&ipvdev->parent);
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	ret = system_ipvlan_add(&mvdev->dev, mvdev->parent.dev, &mvdev->config);
++	ret = system_ipvlan_add(&ipvdev->dev, ipvdev->parent.dev, &ipvdev->config);
+ 	if (ret < 0)
+ 		goto release;
+ 
+-	ret = mvdev->set_state(&mvdev->dev, true);
++	ret = ipvdev->set_state(&ipvdev->dev, true); /* generic device set_state function */
+ 	if (ret)
+ 		goto delete;
+ 
+ 	return 0;
+ 
+ delete:
+-	system_ipvlan_del(&mvdev->dev);
++	system_ipvlan_del(&ipvdev->dev);
+ release:
+-	device_release(&mvdev->parent);
++	device_release(&ipvdev->parent);
+ 	return ret;
+ }
+ 
+ static int
+ ipvlan_set_state(struct device *dev, bool up)
+ {
+-	struct ipvlan_device *mvdev;
++	struct ipvlan_device *ipvdev;
+ 
+ 	D(SYSTEM, "ipvlan_set_state(%s, %u)\n", dev->ifname, up);
+ 
+-	mvdev = container_of(dev, struct ipvlan_device, dev);
++	ipvdev = container_of(dev, struct ipvlan_device, dev);
+ 	if (up)
+-		return ipvlan_set_up(mvdev);
++		return ipvlan_set_up(ipvdev);
+ 	else
+-		return ipvlan_set_down(mvdev);
++		return ipvlan_set_down(ipvdev);
+ }
+ 
+ static void
+ ipvlan_free(struct device *dev)
+ {
+-	struct ipvlan_device *mvdev;
++	struct ipvlan_device *ipvdev;
+ 
+-	mvdev = container_of(dev, struct ipvlan_device, dev);
+-	device_remove_user(&mvdev->parent);
+-	free(mvdev->config_data);
+-	free(mvdev);
++	ipvdev = container_of(dev, struct ipvlan_device, dev);
++	device_remove_user(&ipvdev->parent);
++	free(ipvdev->config_data);
++	free(ipvdev);
+ }
+ 
+ static void
+ ipvlan_dump_info(struct device *dev, struct blob_buf *b)
+ {
+-	struct ipvlan_device *mvdev;
++	struct ipvlan_device *ipvdev;
+ 
+-	mvdev = container_of(dev, struct ipvlan_device, dev);
+-	blobmsg_add_string(b, "parent", mvdev->parent.dev->ifname);
++	ipvdev = container_of(dev, struct ipvlan_device, dev);
++	blobmsg_add_string(b, "parent", ipvdev->parent.dev->ifname);
+ 	system_if_dump_info(dev, b);
+ }
+ 
+ static void
+ ipvlan_config_init(struct device *dev)
+ {
+-	struct ipvlan_device *mvdev;
++	struct ipvlan_device *ipvdev;
+ 	struct device *basedev = NULL;
+ 
+-	mvdev = container_of(dev, struct ipvlan_device, dev);
+-	if (mvdev->ifname)
+-		basedev = device_get(blobmsg_data(mvdev->ifname), true);
++	ipvdev = container_of(dev, struct ipvlan_device, dev);
++	if (ipvdev->ifname)
++		basedev = device_get(blobmsg_data(ipvdev->ifname), true);
+ 
+-	device_add_user(&mvdev->parent, basedev);
++	D(SYSTEM, "ipvlan_config_init(%s) add basedev %s\n", dev->ifname, basedev->ifname);
++	device_add_user(&ipvdev->parent, basedev);
+ }
+ 
+ static void
+-ipvlan_apply_settings(struct ipvlan_device *mvdev, struct blob_attr **tb)
++ipvlan_apply_settings(struct ipvlan_device *ipvdev, struct blob_attr **tb)
+ {
+-	struct ipvlan_config *cfg = &mvdev->config;
++	struct ipvlan_config *cfg = &ipvdev->config;
+ 	struct blob_attr *cur;
+ 
+ 	cfg->flags = 0;
+@@ -181,43 +182,43 @@ static enum dev_change_type
+ ipvlan_reload(struct device *dev, struct blob_attr *attr)
+ {
+ 	struct blob_attr *tb_dev[__DEV_ATTR_MAX];
+-	struct blob_attr *tb_mv[__IPVLAN_ATTR_MAX];
++	struct blob_attr *tb_ipv[__IPVLAN_ATTR_MAX];
+ 	enum dev_change_type ret = DEV_CONFIG_APPLIED;
+-	struct ipvlan_device *mvdev;
++	struct ipvlan_device *ipvdev;
+ 
+-	mvdev = container_of(dev, struct ipvlan_device, dev);
++	ipvdev = container_of(dev, struct ipvlan_device, dev);
+ 	attr = blob_memdup(attr);
+ 
+ 	blobmsg_parse(device_attr_list.params, __DEV_ATTR_MAX, tb_dev,
+ 		blob_data(attr), blob_len(attr));
+-	blobmsg_parse(ipvlan_attrs, __IPVLAN_ATTR_MAX, tb_mv,
++	blobmsg_parse(ipvlan_attrs, __IPVLAN_ATTR_MAX, tb_ipv,
+ 		blob_data(attr), blob_len(attr));
+ 
+ 	device_init_settings(dev, tb_dev);
+-	ipvlan_apply_settings(mvdev, tb_mv);
+-	mvdev->ifname = tb_mv[IPVLAN_ATTR_IFNAME];
++	ipvlan_apply_settings(ipvdev, tb_ipv);
++	ipvdev->ifname = tb_ipv[IPVLAN_ATTR_IFNAME];
+ 
+-	if (mvdev->config_data) {
++	if (ipvdev->config_data) {
+ 		struct blob_attr *otb_dev[__DEV_ATTR_MAX];
+-		struct blob_attr *otb_mv[__IPVLAN_ATTR_MAX];
++		struct blob_attr *otb_ipv[__IPVLAN_ATTR_MAX];
+ 
+ 		blobmsg_parse(device_attr_list.params, __DEV_ATTR_MAX, otb_dev,
+-			blob_data(mvdev->config_data), blob_len(mvdev->config_data));
++			blob_data(ipvdev->config_data), blob_len(ipvdev->config_data));
+ 
+ 		if (uci_blob_diff(tb_dev, otb_dev, &device_attr_list, NULL))
+ 		    ret = DEV_CONFIG_RESTART;
+ 
+-		blobmsg_parse(ipvlan_attrs, __IPVLAN_ATTR_MAX, otb_mv,
+-			blob_data(mvdev->config_data), blob_len(mvdev->config_data));
++		blobmsg_parse(ipvlan_attrs, __IPVLAN_ATTR_MAX, otb_ipv,
++			blob_data(ipvdev->config_data), blob_len(ipvdev->config_data));
+ 
+-		if (uci_blob_diff(tb_mv, otb_mv, &ipvlan_attr_list, NULL))
++		if (uci_blob_diff(tb_ipv, otb_ipv, &ipvlan_attr_list, NULL))
+ 		    ret = DEV_CONFIG_RESTART;
+ 
+ 		ipvlan_config_init(dev);
+ 	}
+ 
+-	free(mvdev->config_data);
+-	mvdev->config_data = attr;
++	free(ipvdev->config_data);
++	ipvdev->config_data = attr;
+ 	return ret;
+ }
+ 
+@@ -225,22 +226,22 @@ static struct device *
+ ipvlan_create(const char *name, struct device_type *devtype,
+ 	struct blob_attr *attr)
+ {
+-	struct ipvlan_device *mvdev;
++	struct ipvlan_device *ipvdev;
+ 	struct device *dev = NULL;
+ 
+-	mvdev = calloc(1, sizeof(*mvdev));
+-	if (!mvdev)
++	ipvdev = calloc(1, sizeof(*ipvdev));
++	if (!ipvdev)
+ 		return NULL;
+ 
+-	dev = &mvdev->dev;
++	dev = &ipvdev->dev;
+ 	device_init(dev, devtype, name);
+ 	dev->config_pending = true;
+ 
+-	mvdev->set_state = dev->set_state;
++	ipvdev->set_state = dev->set_state;
+ 	dev->set_state = ipvlan_set_state;
+ 
+ 	dev->hotplug_ops = NULL;
+-	mvdev->parent.cb = ipvlan_base_cb;
++	ipvdev->parent.cb = ipvlan_base_cb;
+ 
+ 	ipvlan_reload(dev, attr);
+ 
+Index: netifd-2021-07-26-440eb064/config.c
+===================================================================
+--- netifd-2021-07-26-440eb064.orig/config.c
++++ netifd-2021-07-26-440eb064/config.c
+@@ -784,6 +784,7 @@ config_init_all(void)
+ 	interface_refresh_assignments(false);
+ 	interface_start_pending();
+ 	wireless_start_pending();
++	device_start_pending();
+ 
+ 	return ret;
+ }
+Index: netifd-2021-07-26-440eb064/device.c
+===================================================================
+--- netifd-2021-07-26-440eb064.orig/device.c
++++ netifd-2021-07-26-440eb064/device.c
+@@ -1241,3 +1241,17 @@ void device_hotplug_event(const char *na
+ 
+ 	device_set_present(dev, add);
+ }
++
++void
++device_start_pending(void)
++{
++	struct device *dev, *tmp;
++
++	avl_for_each_element_safe(&devices, dev, avl, tmp) {
++		if (dev->active)
++			continue;
++
++		D(DEVICE, "Set up unclaimed Device '%s'\n", dev->ifname);
++		dev->set_state(dev, true);
++	}
++}
+Index: netifd-2021-07-26-440eb064/device.h
+===================================================================
+--- netifd-2021-07-26-440eb064.orig/device.h
++++ netifd-2021-07-26-440eb064/device.h
+@@ -344,6 +344,8 @@ void device_dump_status(struct blob_buf
+ 
+ void device_free_unused(struct device *dev);
+ 
++void device_start_pending(void);
++
+ struct device *get_vlan_device_chain(const char *ifname, int create);
+ void alias_notify_device(const char *name, struct device *dev);
+ struct device *device_alias_get(const char *name);

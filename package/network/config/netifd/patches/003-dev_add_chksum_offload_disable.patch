@@ -1,0 +1,132 @@
+Index: netifd-2021-07-26-440eb064/device.c
+===================================================================
+--- netifd-2021-07-26-440eb064.orig/device.c
++++ netifd-2021-07-26-440eb064/device.c
+@@ -61,6 +61,7 @@ static const struct blobmsg_policy dev_a
+ 	[DEV_ATTR_DROP_UNSOLICITED_NA] = { .name = "drop_unsolicited_na", .type = BLOBMSG_TYPE_BOOL },
+ 	[DEV_ATTR_ARP_ACCEPT] = { .name = "arp_accept", .type = BLOBMSG_TYPE_BOOL },
+ 	[DEV_ATTR_AUTH] = { .name = "auth", .type = BLOBMSG_TYPE_BOOL },
++	[DEV_ATTR_DIS_CHKSUM_OFFLOAD] = { .name = "dis_chksum_offload", .type = BLOBMSG_TYPE_BOOL },
+ };
+ 
+ const struct uci_blob_param_list device_attr_list = {
+@@ -276,6 +277,8 @@ device_merge_settings(struct device *dev
+ 	n->arp_accept = s->flags & DEV_OPT_ARP_ACCEPT ?
+ 		s->arp_accept : os->arp_accept;
+ 	n->auth = s->flags & DEV_OPT_AUTH ? s->auth : os->auth;
++	n->dis_chksum_offload = s->flags & DEV_OPT_DIS_CHKSUM_OFFLOAD ?
++		s->dis_chksum_offload : os->dis_chksum_offload;
+ 	n->flags = s->flags | os->flags | os->valid_flags;
+ }
+ 
+@@ -450,6 +453,11 @@ device_init_settings(struct device *dev,
+ 		s->flags |= DEV_OPT_AUTH;
+ 	}
+ 
++	if ((cur = tb[DEV_ATTR_DIS_CHKSUM_OFFLOAD])) {
++		s->dis_chksum_offload = blobmsg_get_bool(cur);
++		s->flags |= DEV_OPT_DIS_CHKSUM_OFFLOAD;
++	}
++
+ 	device_set_disabled(dev, disabled);
+ }
+ 
+@@ -1195,6 +1203,8 @@ device_dump_status(struct blob_buf *b, s
+ 			blobmsg_add_u8(b, "arp_accept", st.arp_accept);
+ 		if (st.flags & DEV_OPT_AUTH)
+ 			blobmsg_add_u8(b, "auth", st.auth);
++		if (st.flags & DEV_OPT_DIS_CHKSUM_OFFLOAD)
++			blobmsg_add_u8(b, "dis_chksum_offload", st.dis_chksum_offload);
+ 	}
+ 
+ 	s = blobmsg_open_table(b, "statistics");
+Index: netifd-2021-07-26-440eb064/device.h
+===================================================================
+--- netifd-2021-07-26-440eb064.orig/device.h
++++ netifd-2021-07-26-440eb064/device.h
+@@ -60,6 +60,7 @@ enum {
+ 	DEV_ATTR_DROP_UNSOLICITED_NA,
+ 	DEV_ATTR_ARP_ACCEPT,
+ 	DEV_ATTR_AUTH,
++	DEV_ATTR_DIS_CHKSUM_OFFLOAD,
+ 	__DEV_ATTR_MAX,
+ };
+ 
+@@ -121,6 +122,7 @@ enum {
+ 	DEV_OPT_DROP_GRATUITOUS_ARP	= (1 << 27),
+ 	DEV_OPT_DROP_UNSOLICITED_NA	= (1 << 28),
+ 	DEV_OPT_ARP_ACCEPT		= (1 << 29),
++	DEV_OPT_DIS_CHKSUM_OFFLOAD	= (1 << 30),
+ };
+ 
+ /* events broadcasted to all users of a device */
+@@ -196,6 +198,7 @@ struct device_settings {
+ 	bool drop_unsolicited_na;
+ 	bool arp_accept;
+ 	bool auth;
++	bool dis_chksum_offload;
+ };
+ 
+ /*
+Index: netifd-2021-07-26-440eb064/system-linux.c
+===================================================================
+--- netifd-2021-07-26-440eb064.orig/system-linux.c
++++ netifd-2021-07-26-440eb064/system-linux.c
+@@ -1708,6 +1708,18 @@ system_if_get_settings(struct device *de
+ 		s->arp_accept = strtoul(buf, NULL, 0);
+ 		s->flags |= DEV_OPT_ARP_ACCEPT;
+ 	}
++
++	struct ethtool_value ecmd;
++	memset(&ecmd, 0, sizeof(ecmd));
++	ifr.ifr_data = (caddr_t) &ecmd;
++	ecmd.cmd = ETHTOOL_GRXCSUM;
++	if (!ioctl(sock_ioctl, SIOCETHTOOL, &ifr) && !ecmd.data){
++		ecmd.cmd = ETHTOOL_GTXCSUM;
++		if (!ioctl(sock_ioctl, SIOCETHTOOL, &ifr) && !ecmd.data){
++			s->dis_chksum_offload=1;
++			s->flags |= DEV_OPT_DIS_CHKSUM_OFFLOAD;
++		}
++	}
+ }
+ 
+ void
+@@ -1806,6 +1818,17 @@ system_if_apply_settings(struct device *
+ 		system_set_drop_unsolicited_na(dev, s->drop_unsolicited_na ? "1" : "0");
+ 	if (apply_mask & DEV_OPT_ARP_ACCEPT)
+ 		system_set_arp_accept(dev, s->arp_accept ? "1" : "0");
++
++	if (s->flags & DEV_OPT_DIS_CHKSUM_OFFLOAD & apply_mask){
++		struct ethtool_value ecmd;
++		memset(&ecmd, 0, sizeof(ecmd));
++		ifr.ifr_data = (caddr_t) &ecmd;
++		ecmd.cmd = ETHTOOL_SRXCSUM;
++		ecmd.data=!s->dis_chksum_offload;
++		ioctl(sock_ioctl, SIOCETHTOOL, &ifr);
++		ecmd.cmd = ETHTOOL_STXCSUM;
++		ioctl(sock_ioctl, SIOCETHTOOL, &ifr);
++	}
+ }
+ 
+ int system_if_up(struct device *dev)
+@@ -3371,7 +3394,7 @@ static void system_vxlan_map_bool_attr(s
+ 
+ 		if ((attrtype == IFLA_VXLAN_GBP) && val)
+ 			nla_put_flag(msg, attrtype);
+-		else 
++		else
+ 			nla_put_u8(msg, attrtype, val);
+ 
+ 	}
+Index: netifd-2021-07-26-440eb064/system.h
+===================================================================
+--- netifd-2021-07-26-440eb064.orig/system.h
++++ netifd-2021-07-26-440eb064/system.h
+@@ -229,7 +229,6 @@ int system_if_down(struct device *dev);
+ int system_if_check(struct device *dev);
+ int system_if_resolve(struct device *dev);
+ int system_if_flags(const char *ifname, unsigned add, unsigned rem);
+-
+ int system_if_dump_info(struct device *dev, struct blob_buf *b);
+ int system_if_dump_stats(struct device *dev, struct blob_buf *b);
+ struct device *system_if_get_parent(struct device *dev);

@@ -1,0 +1,41 @@
+Index: netifd-2021-07-26-440eb064/ipvlan.c
+===================================================================
+--- netifd-2021-07-26-440eb064.orig/ipvlan.c
++++ netifd-2021-07-26-440eb064/ipvlan.c
+@@ -198,7 +198,8 @@ ipvlan_reload(struct device *dev, struct
+ 	blobmsg_parse(ipvlan_attrs, __IPVLAN_ATTR_MAX, tb_ipv,
+ 		blob_data(attr), blob_len(attr));
+ 
+-	device_init_settings(dev, tb_dev);
++	device_append_settings(dev, tb_dev);
++
+ 	if (ipvdev->config_data) { /* not first pass of this function */
+ 		struct blob_attr *otb_dev[__DEV_ATTR_MAX];
+ 		struct blob_attr *otb_ipv[__IPVLAN_ATTR_MAX];
+Index: netifd-2021-07-26-440eb064/macvlan.c
+===================================================================
+--- netifd-2021-07-26-440eb064.orig/macvlan.c
++++ netifd-2021-07-26-440eb064/macvlan.c
+@@ -210,7 +210,8 @@ macvlan_reload(struct device *dev, struc
+ 	blobmsg_parse(macvlan_attrs, __MACVLAN_ATTR_MAX, tb_mv,
+ 		blob_data(attr), blob_len(attr));
+ 
+-	device_init_settings(dev, tb_dev);
++	device_append_settings(dev, tb_dev);
++
+ 	if (mvdev->config_data) {
+ 		struct blob_attr *otb_dev[__DEV_ATTR_MAX];
+ 		struct blob_attr *otb_mv[__MACVLAN_ATTR_MAX];
+Index: netifd-2021-07-26-440eb064/veth.c
+===================================================================
+--- netifd-2021-07-26-440eb064.orig/veth.c
++++ netifd-2021-07-26-440eb064/veth.c
+@@ -174,7 +174,7 @@ veth_reload(struct device *dev, struct b
+ 	blobmsg_parse(veth_attrs, __VETH_ATTR_MAX, tb_mv,
+ 		blob_data(attr), blob_len(attr));
+ 
+-	device_init_settings(dev, tb_dev);
++	device_append_settings(dev, tb_dev);
+ 	veth_apply_settings(veth, tb_mv);
+ 
+ 	if (veth->config_data) {

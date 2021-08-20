@@ -1,0 +1,84 @@
+Index: netifd-2021-07-26-440eb064/interface-ip.c
+===================================================================
+--- netifd-2021-07-26-440eb064.orig/interface-ip.c
++++ netifd-2021-07-26-440eb064/interface-ip.c
+@@ -1708,8 +1708,10 @@ void interface_ip_set_enabled(struct int
+ 
+ 	if (ip->iface->policy_rules_set != enabled &&
+ 	    ip->iface->l3_dev.dev) {
+-		set_ip_lo_policy(enabled, true, ip->iface);
+-		set_ip_lo_policy(enabled, false, ip->iface);
++		if(!ip->iface->add_rule || !ip->iface->ip6table)
++			set_ip_lo_policy(enabled, true, ip->iface);
++		if(!ip->iface->add_rule || !ip->iface->ip4table)
++			set_ip_lo_policy(enabled, false, ip->iface);
+ 
+ 		set_ip_source_policy(enabled, true, IPRULE_PRIORITY_REJECT + ip->iface->l3_dev.dev->ifindex,
+ 			NULL, 0, 0, ip->iface, "failed_policy", true);
+Index: netifd-2021-07-26-440eb064/iprule.c
+===================================================================
+--- netifd-2021-07-26-440eb064.orig/iprule.c
++++ netifd-2021-07-26-440eb064/iprule.c
+@@ -71,10 +71,10 @@ const struct uci_blob_param_list rule_at
+ static bool
+ rule_ready(struct iprule *rule)
+ {
+-	if (rule->flags & IPRULE_OUT && !rule->out_dev[0])
++	if ((rule->flags & IPRULE_OUT) && !rule->out_dev[0])
+ 		return false;
+ 
+-	if (rule->flags & IPRULE_IN && !rule->in_dev[0])
++	if ((rule->flags & IPRULE_IN) && !rule->in_dev[0])
+ 		return false;
+ 
+ 	return true;
+@@ -290,7 +290,7 @@ iprule_add(struct blob_attr *attr, bool
+ 		rule->flags |= IPRULE_GOTO;
+ 	}
+ 
+-	vlist_add(&iprules, &rule->node, rule);
++	vlist_add(&iprules, &rule->node, (void *)rule);
+ 	return;
+ 
+ error:
+@@ -350,10 +350,10 @@ rule_cmp(const void *k1, const void *k2,
+ 
+ static void deregister_interfaces(struct iprule *rule)
+ {
+-	if (rule->flags & IPRULE_IN && rule->in_iface_user.iface)
++	if ((rule->flags & IPRULE_IN) && rule->in_iface_user.iface)
+ 		interface_remove_user(&rule->in_iface_user);
+ 
+-	if (rule->flags & IPRULE_OUT && rule->out_iface_user.iface)
++	if ((rule->flags & IPRULE_OUT) && rule->out_iface_user.iface)
+ 		interface_remove_user(&rule->out_iface_user);
+ }
+ 
+@@ -361,12 +361,12 @@ static void register_interfaces(struct i
+ {
+ 	struct interface *iface, *tmp;
+ 
+-	if (rule->flags & IPRULE_IN) {
++	if ((rule->flags & IPRULE_IN) && rule->in_iface) {
+ 		tmp = vlist_find(&interfaces, rule->in_iface, iface, node);
+ 		if (tmp)
+ 			interface_add_user(&rule->in_iface_user, tmp);
+ 	}
+-	if (rule->flags & IPRULE_OUT) {
++	if ((rule->flags & IPRULE_OUT) && rule->out_iface) {
+ 		tmp = vlist_find(&interfaces, rule->out_iface, iface, node);
+ 		if (tmp)
+ 			interface_add_user(&rule->out_iface_user, tmp);
+Index: netifd-2021-07-26-440eb064/iprule.h
+===================================================================
+--- netifd-2021-07-26-440eb064.orig/iprule.h
++++ netifd-2021-07-26-440eb064/iprule.h
+@@ -84,7 +84,7 @@ struct iprule {
+ 	char *in_iface;
+ 	char *out_iface;
+ 
+-	enum iprule_flags flags;
++	unsigned flags;
+ 
+ 	bool invert;
+ 

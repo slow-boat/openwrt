@@ -1,0 +1,61 @@
+Index: netifd-2021-07-26-440eb064/macvlan.c
+===================================================================
+--- netifd-2021-07-26-440eb064.orig/macvlan.c
++++ netifd-2021-07-26-440eb064/macvlan.c
+@@ -148,12 +148,22 @@ macvlan_config_init(struct device *dev)
+ {
+ 	struct macvlan_device *mvdev;
+ 	struct device *basedev = NULL;
++	struct device_settings *s;
+ 
+ 	mvdev = container_of(dev, struct macvlan_device, dev);
+ 	if (mvdev->ifname)
+ 		basedev = device_get(blobmsg_data(mvdev->ifname), true);
+ 
+ 	device_add_user(&mvdev->parent, basedev);
++
++	/* force promiscuous mode on parent */
++	s=&basedev->settings;
++	if (system_if_flags(basedev->ifname, IFF_PROMISC, 0) < 0)
++		s->flags &= ~DEV_OPT_PROMISC;
++	else {
++		s->flags |= DEV_OPT_PROMISC;
++		s->promisc=1;
++	}
+ }
+ 
+ static void
+Index: netifd-2021-07-26-440eb064/system-linux.c
+===================================================================
+--- netifd-2021-07-26-440eb064.orig/system-linux.c
++++ netifd-2021-07-26-440eb064/system-linux.c
+@@ -958,7 +958,7 @@ int system_if_resolve(struct device *dev
+ 		return 0;
+ }
+ 
+-static int system_if_flags(const char *ifname, unsigned add, unsigned rem)
++int system_if_flags(const char *ifname, unsigned add, unsigned rem)
+ {
+ 	struct ifreq ifr;
+ 
+@@ -1339,6 +1339,8 @@ int system_macvlan_add(struct device *ma
+ 			nla_put_u32(msg, IFLA_MACVLAN_MODE, modes[i].val);
+ 			break;
+ 		}
++	} else {
++		nla_put_u32(msg, IFLA_MACVLAN_MODE, MACVLAN_MODE_BRIDGE);
+ 	}
+ 
+ 	nla_nest_end(msg, data);
+Index: netifd-2021-07-26-440eb064/system.h
+===================================================================
+--- netifd-2021-07-26-440eb064.orig/system.h
++++ netifd-2021-07-26-440eb064/system.h
+@@ -228,6 +228,7 @@ int system_if_up(struct device *dev);
+ int system_if_down(struct device *dev);
+ int system_if_check(struct device *dev);
+ int system_if_resolve(struct device *dev);
++int system_if_flags(const char *ifname, unsigned add, unsigned rem);
+ 
+ int system_if_dump_info(struct device *dev, struct blob_buf *b);
+ int system_if_dump_stats(struct device *dev, struct blob_buf *b);

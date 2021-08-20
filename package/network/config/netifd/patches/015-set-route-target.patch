@@ -1,0 +1,20 @@
+Index: netifd-2021-07-26-440eb064/interface.c
+===================================================================
+--- netifd-2021-07-26-440eb064.orig/interface.c
++++ netifd-2021-07-26-440eb064/interface.c
+@@ -1291,7 +1291,6 @@ interface_set_metric(int ifindex, struct
+ 			while(true) {
+ 				struct device_route *cfgroute;
+ 				vlist_for_each_element(&ip->route, cfgroute, node){
+-					cfgroute->dynamic_metric_on=false;
+ 					if((cfgroute->addr.in.s_addr==route->addr.in.s_addr) &&
+ 						(cfgroute->nexthop.in.s_addr==route->nexthop.in.s_addr)){
+ 						if((cfgroute->enabled = route->enabled)){ /* disable if route deleted */
+@@ -1300,6 +1299,7 @@ interface_set_metric(int ifindex, struct
+ 							D(INTERFACE, "Updating interface %s route metric to %d\n", iface->name, route->metric);
+ 						} else {
+ 							D(INTERFACE, "Disable interface %s route\n", iface->name);
++							cfgroute->dynamic_metric_on=false;
+ 						}
+ 					}
+ 				}

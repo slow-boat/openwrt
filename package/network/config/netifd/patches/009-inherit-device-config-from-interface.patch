@@ -1,0 +1,242 @@
+Index: netifd-2021-07-26-440eb064/config.c
+===================================================================
+--- netifd-2021-07-26-440eb064.orig/config.c
++++ netifd-2021-07-26-440eb064/config.c
+@@ -299,7 +299,6 @@ config_init_devices(bool bridge)
+ 			dev->current_config = true;
+ 			device_apply_config(dev, dev->type, b.head);
+ 		}
+-		dev->default_config = false;
+ 	}
+ }
+ 
+Index: netifd-2021-07-26-440eb064/ipvlan.c
+===================================================================
+--- netifd-2021-07-26-440eb064.orig/ipvlan.c
++++ netifd-2021-07-26-440eb064/ipvlan.c
+@@ -159,7 +159,7 @@ ipvlan_config_init(struct device *dev)
+ 	if (ipvdev->ifname)
+ 		basedev = device_get(blobmsg_data(ipvdev->ifname), true);
+ 
+-	D(SYSTEM, "ipvlan_config_init(%s) add basedev %s\n", dev->ifname, basedev->ifname);
++	D(SYSTEM, "%s add basedev %s\n", dev->ifname, basedev->ifname);
+ 	device_add_user(&ipvdev->parent, basedev);
+ }
+ 
+@@ -176,6 +176,8 @@ ipvlan_apply_settings(struct ipvlan_devi
+ 		cfg->mode = blobmsg_data(cur);
+ 	if ((cur = tb[IPVLAN_ATTR_FLAGS]))
+ 		cfg->flags = blobmsg_data(cur);
++	if ((cur = tb[IPVLAN_ATTR_IFNAME]))
++		ipvdev->ifname = cur;
+ }
+ 
+ static enum dev_change_type
+@@ -187,7 +189,9 @@ ipvlan_reload(struct device *dev, struct
+ 	struct ipvlan_device *ipvdev;
+ 
+ 	ipvdev = container_of(dev, struct ipvlan_device, dev);
+-	attr = blob_memdup(attr);
++
++	if(!ipvdev->config_data)
++		attr=blob_memdup(attr); /* copy first time */
+ 
+ 	blobmsg_parse(device_attr_list.params, __DEV_ATTR_MAX, tb_dev,
+ 		blob_data(attr), blob_len(attr));
+@@ -195,30 +199,29 @@ ipvlan_reload(struct device *dev, struct
+ 		blob_data(attr), blob_len(attr));
+ 
+ 	device_init_settings(dev, tb_dev);
+-	ipvlan_apply_settings(ipvdev, tb_ipv);
+-	ipvdev->ifname = tb_ipv[IPVLAN_ATTR_IFNAME];
+-
+-	if (ipvdev->config_data) {
++	if (ipvdev->config_data) { /* not first pass of this function */
+ 		struct blob_attr *otb_dev[__DEV_ATTR_MAX];
+ 		struct blob_attr *otb_ipv[__IPVLAN_ATTR_MAX];
+-
++		unsigned long dev_diff_bits=0;
++		unsigned long ipvdev_diff_bits=0;
+ 		blobmsg_parse(device_attr_list.params, __DEV_ATTR_MAX, otb_dev,
+ 			blob_data(ipvdev->config_data), blob_len(ipvdev->config_data));
+-
+-		if (uci_blob_diff(tb_dev, otb_dev, &device_attr_list, NULL))
+-		    ret = DEV_CONFIG_RESTART;
+-
+ 		blobmsg_parse(ipvlan_attrs, __IPVLAN_ATTR_MAX, otb_ipv,
+ 			blob_data(ipvdev->config_data), blob_len(ipvdev->config_data));
+ 
+-		if (uci_blob_diff(tb_ipv, otb_ipv, &ipvlan_attr_list, NULL))
+-		    ret = DEV_CONFIG_RESTART;
++		uci_blob_diff(tb_dev, otb_dev, &device_attr_list, &dev_diff_bits);
++		uci_blob_diff(tb_ipv, otb_ipv, &ipvlan_attr_list, &ipvdev_diff_bits);
+ 
++		if(dev_diff_bits || ipvdev_diff_bits){
++			device_append_settings(dev, otb_dev); /* override with base settings- ifname etc */
++			ret= DEV_CONFIG_RESTART;
++		}
+ 		ipvlan_config_init(dev);
++	} else { /* first pass */
++		ipvdev->config_data=attr;
++		ipvlan_apply_settings(ipvdev, tb_ipv);
+ 	}
+ 
+-	free(ipvdev->config_data);
+-	ipvdev->config_data = attr;
+ 	return ret;
+ }
+ 
+@@ -241,6 +244,7 @@ ipvlan_create(const char *name, struct d
+ 	dev->set_state = ipvlan_set_state;
+ 
+ 	dev->hotplug_ops = NULL;
++	dev->default_config = true;
+ 	ipvdev->parent.cb = ipvlan_base_cb;
+ 
+ 	ipvlan_reload(dev, attr);
+Index: netifd-2021-07-26-440eb064/device.h
+===================================================================
+--- netifd-2021-07-26-440eb064.orig/device.h
++++ netifd-2021-07-26-440eb064/device.h
+@@ -307,6 +307,7 @@ struct device_type *device_type_get(cons
+ struct device *device_create(const char *name, struct device_type *type,
+ 			     struct blob_attr *config);
+ void device_merge_settings(struct device *dev, struct device_settings *n);
++void device_append_settings(struct device *dev, struct blob_attr **tb);
+ void device_init_settings(struct device *dev, struct blob_attr **tb);
+ void device_init_pending(void);
+ 
+Index: netifd-2021-07-26-440eb064/macvlan.c
+===================================================================
+--- netifd-2021-07-26-440eb064.orig/macvlan.c
++++ netifd-2021-07-26-440eb064/macvlan.c
+@@ -2,6 +2,7 @@
+  * netifd - network interface daemon
+  * Copyright (C) 2012 Felix Fietkau <nbd@openwrt.org>
+  * Copyright (C) 2013 Jo-Philipp Wich <jow@openwrt.org>
++ * Copyright (C) 2018 Chris Lockwood <chris@avi.com.au>
+  *
+  * This program is free software; you can redistribute it and/or modify
+  * it under the terms of the GNU General Public License version 2
+@@ -154,6 +155,7 @@ macvlan_config_init(struct device *dev)
+ 	if (mvdev->ifname)
+ 		basedev = device_get(blobmsg_data(mvdev->ifname), true);
+ 
++	D(SYSTEM, "%s add basedev %s\n", dev->ifname, basedev->ifname);
+ 	device_add_user(&mvdev->parent, basedev);
+ 
+ 	/* force promiscuous mode on parent */
+@@ -186,6 +188,8 @@ macvlan_apply_settings(struct macvlan_de
+ 
+ 	if ((cur = tb[MACVLAN_ATTR_MODE]))
+ 		cfg->mode = blobmsg_data(cur);
++	if ((cur = tb[MACVLAN_ATTR_IFNAME]))
++		mvdev->ifname = cur;
+ }
+ 
+ static enum dev_change_type
+@@ -197,7 +201,9 @@ macvlan_reload(struct device *dev, struc
+ 	struct macvlan_device *mvdev;
+ 
+ 	mvdev = container_of(dev, struct macvlan_device, dev);
+-	attr = blob_memdup(attr);
++
++	if(!mvdev->config_data)
++		attr=blob_memdup(attr); /* copy first time */
+ 
+ 	blobmsg_parse(device_attr_list.params, __DEV_ATTR_MAX, tb_dev,
+ 		blob_data(attr), blob_len(attr));
+@@ -205,30 +211,29 @@ macvlan_reload(struct device *dev, struc
+ 		blob_data(attr), blob_len(attr));
+ 
+ 	device_init_settings(dev, tb_dev);
+-	macvlan_apply_settings(mvdev, tb_mv);
+-	mvdev->ifname = tb_mv[MACVLAN_ATTR_IFNAME];
+-
+ 	if (mvdev->config_data) {
+ 		struct blob_attr *otb_dev[__DEV_ATTR_MAX];
+ 		struct blob_attr *otb_mv[__MACVLAN_ATTR_MAX];
+-
++		unsigned long dev_diff_bits=0;
++		unsigned long mvdev_diff_bits=0;
+ 		blobmsg_parse(device_attr_list.params, __DEV_ATTR_MAX, otb_dev,
+ 			blob_data(mvdev->config_data), blob_len(mvdev->config_data));
+-
+-		if (uci_blob_diff(tb_dev, otb_dev, &device_attr_list, NULL))
+-		    ret = DEV_CONFIG_RESTART;
+-
+ 		blobmsg_parse(macvlan_attrs, __MACVLAN_ATTR_MAX, otb_mv,
+ 			blob_data(mvdev->config_data), blob_len(mvdev->config_data));
+ 
+-		if (uci_blob_diff(tb_mv, otb_mv, &macvlan_attr_list, NULL))
+-		    ret = DEV_CONFIG_RESTART;
++		uci_blob_diff(tb_dev, otb_dev, &device_attr_list, &dev_diff_bits);
++		uci_blob_diff(tb_mv, otb_mv, &macvlan_attr_list, &mvdev_diff_bits);
+ 
++		if(dev_diff_bits || mvdev_diff_bits){
++			device_append_settings(dev, otb_dev); /* override with base settings- ifname etc */
++			ret= DEV_CONFIG_RESTART;
++		}
+ 		macvlan_config_init(dev);
++	} else { /* first pass */
++		mvdev->config_data=attr;
++		macvlan_apply_settings(mvdev, tb_mv);
+ 	}
+ 
+-	free(mvdev->config_data);
+-	mvdev->config_data = attr;
+ 	return ret;
+ }
+ 
+@@ -256,6 +261,7 @@ macvlan_create(const char *name, struct
+ 	dev->set_state = macvlan_set_state;
+ 
+ 	dev->hotplug_ops = NULL;
++	dev->default_config = true;
+ 	mvdev->parent.cb = macvlan_base_cb;
+ 
+ 	macvlan_reload(dev, attr);
+Index: netifd-2021-07-26-440eb064/device.c
+===================================================================
+--- netifd-2021-07-26-440eb064.orig/device.c
++++ netifd-2021-07-26-440eb064/device.c
+@@ -285,14 +285,13 @@ device_merge_settings(struct device *dev
+ }
+ 
+ void
+-device_init_settings(struct device *dev, struct blob_attr **tb)
++device_append_settings(struct device *dev, struct blob_attr **tb)
+ {
+ 	struct device_settings *s = &dev->settings;
+ 	struct blob_attr *cur;
+ 	struct ether_addr *ea;
+ 	bool disabled = false;
+ 
+-	s->flags = 0;
+ 	if ((cur = tb[DEV_ATTR_ENABLED]))
+ 		disabled = !blobmsg_get_bool(cur);
+ 
+@@ -468,6 +467,14 @@ device_init_settings(struct device *dev,
+ 	device_set_disabled(dev, disabled);
+ }
+ 
++
++void
++device_init_settings(struct device *dev, struct blob_attr **tb)
++{
++	dev->settings.flags = 0;
++	device_append_settings(dev,tb);
++}
++
+ static void __init dev_init(void)
+ {
+ 	avl_init(&devices, avl_strcmp, true, NULL);
+@@ -994,7 +1001,7 @@ device_apply_config(struct device *dev,
+ 	switch (change) {
+ 		case DEV_CONFIG_RESTART:
+ 		case DEV_CONFIG_APPLIED:
+-			D(DEVICE, "Device '%s': config applied\n", dev->ifname);
++			D(DEVICE, "Device '%s': config applied. Flags 0x%x\n", dev->ifname, dev->settings.flags);
+ 			config = blob_memdup(config);
+ 			free(dev->config);
+ 			dev->config = config;

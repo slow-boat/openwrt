@@ -1,0 +1,439 @@
+Index: netifd-2021-07-26-440eb064/CMakeLists.txt
+===================================================================
+--- netifd-2021-07-26-440eb064.orig/CMakeLists.txt
++++ netifd-2021-07-26-440eb064/CMakeLists.txt
+@@ -20,7 +20,7 @@ SET(SOURCES
+ 	interface.c interface-ip.c interface-event.c
+ 	iprule.c proto.c proto-static.c proto-shell.c
+ 	config.c device.c bridge.c veth.c vlan.c alias.c
+-	macvlan.c ubus.c vlandev.c wireless.c
++	macvlan.c ipvlan.c ubus.c vlandev.c wireless.c
+ 	extdev.c)
+ 
+ 
+Index: netifd-2021-07-26-440eb064/ipvlan.c
+===================================================================
+--- /dev/null
++++ netifd-2021-07-26-440eb064/ipvlan.c
+@@ -0,0 +1,263 @@
++/*
++ * netifd - network interface daemon
++ * Copyright (C) 2012 Felix Fietkau <nbd@openwrt.org>
++ * Copyright (C) 2013 Jo-Philipp Wich <jow@openwrt.org>
++ * Copyright (C) 2018 Chris Lockwood <chris@avi.com.au>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2
++ * as published by the Free Software Foundation
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ */
++#include <string.h>
++#include <stdlib.h>
++#include <stdio.h>
++#include <assert.h>
++#include <errno.h>
++#include <net/ethernet.h>
++
++#ifdef linux
++#include <netinet/ether.h>
++#endif
++
++#include "netifd.h"
++#include "device.h"
++#include "interface.h"
++#include "system.h"
++
++enum {
++	IPVLAN_ATTR_IFNAME,
++	IPVLAN_ATTR_MODE,
++	IPVLAN_ATTR_FLAGS,
++	__IPVLAN_ATTR_MAX
++};
++
++static const struct blobmsg_policy ipvlan_attrs[__IPVLAN_ATTR_MAX] = {
++	[IPVLAN_ATTR_IFNAME]  = { "ifname", BLOBMSG_TYPE_STRING },
++	[IPVLAN_ATTR_MODE] = { "mode", BLOBMSG_TYPE_STRING },
++	[IPVLAN_ATTR_FLAGS] = { "flags", BLOBMSG_TYPE_STRING },
++};
++
++static const struct uci_blob_param_list ipvlan_attr_list = {
++	.n_params = __IPVLAN_ATTR_MAX,
++	.params = ipvlan_attrs,
++
++	.n_next = 1,
++	.next = { &device_attr_list },
++};
++
++struct ipvlan_device {
++	struct device dev;
++	struct device_user parent;
++
++	device_state_cb set_state;
++
++	struct blob_attr *config_data;
++	struct blob_attr *ifname;
++	struct ipvlan_config config;
++};
++
++static void
++ipvlan_base_cb(struct device_user *dev, enum device_event ev)
++{
++	struct ipvlan_device *mvdev = container_of(dev, struct ipvlan_device, parent);
++
++	switch (ev) {
++	case DEV_EVENT_ADD:
++		device_set_present(&mvdev->dev, true);
++		break;
++	case DEV_EVENT_REMOVE:
++		device_set_present(&mvdev->dev, false);
++		break;
++	default:
++		return;
++	}
++}
++
++static int
++ipvlan_set_down(struct ipvlan_device *mvdev)
++{
++	mvdev->set_state(&mvdev->dev, false);
++	system_ipvlan_del(&mvdev->dev);
++	device_release(&mvdev->parent);
++
++	return 0;
++}
++
++static int
++ipvlan_set_up(struct ipvlan_device *mvdev)
++{
++	int ret;
++
++	ret = device_claim(&mvdev->parent);
++	if (ret < 0)
++		return ret;
++
++	ret = system_ipvlan_add(&mvdev->dev, mvdev->parent.dev, &mvdev->config);
++	if (ret < 0)
++		goto release;
++
++	ret = mvdev->set_state(&mvdev->dev, true);
++	if (ret)
++		goto delete;
++
++	return 0;
++
++delete:
++	system_ipvlan_del(&mvdev->dev);
++release:
++	device_release(&mvdev->parent);
++	return ret;
++}
++
++static int
++ipvlan_set_state(struct device *dev, bool up)
++{
++	struct ipvlan_device *mvdev;
++
++	D(SYSTEM, "ipvlan_set_state(%s, %u)\n", dev->ifname, up);
++
++	mvdev = container_of(dev, struct ipvlan_device, dev);
++	if (up)
++		return ipvlan_set_up(mvdev);
++	else
++		return ipvlan_set_down(mvdev);
++}
++
++static void
++ipvlan_free(struct device *dev)
++{
++	struct ipvlan_device *mvdev;
++
++	mvdev = container_of(dev, struct ipvlan_device, dev);
++	device_remove_user(&mvdev->parent);
++	free(mvdev->config_data);
++	free(mvdev);
++}
++
++static void
++ipvlan_dump_info(struct device *dev, struct blob_buf *b)
++{
++	struct ipvlan_device *mvdev;
++
++	mvdev = container_of(dev, struct ipvlan_device, dev);
++	blobmsg_add_string(b, "parent", mvdev->parent.dev->ifname);
++	system_if_dump_info(dev, b);
++}
++
++static void
++ipvlan_config_init(struct device *dev)
++{
++	struct ipvlan_device *mvdev;
++	struct device *basedev = NULL;
++
++	mvdev = container_of(dev, struct ipvlan_device, dev);
++	if (mvdev->ifname)
++		basedev = device_get(blobmsg_data(mvdev->ifname), true);
++
++	device_add_user(&mvdev->parent, basedev);
++}
++
++static void
++ipvlan_apply_settings(struct ipvlan_device *mvdev, struct blob_attr **tb)
++{
++	struct ipvlan_config *cfg = &mvdev->config;
++	struct blob_attr *cur;
++
++	cfg->flags = 0;
++	cfg->mode = NULL;
++
++	if ((cur = tb[IPVLAN_ATTR_MODE]))
++		cfg->mode = blobmsg_data(cur);
++	if ((cur = tb[IPVLAN_ATTR_FLAGS]))
++		cfg->flags = blobmsg_data(cur);
++}
++
++static enum dev_change_type
++ipvlan_reload(struct device *dev, struct blob_attr *attr)
++{
++	struct blob_attr *tb_dev[__DEV_ATTR_MAX];
++	struct blob_attr *tb_mv[__IPVLAN_ATTR_MAX];
++	enum dev_change_type ret = DEV_CONFIG_APPLIED;
++	struct ipvlan_device *mvdev;
++
++	mvdev = container_of(dev, struct ipvlan_device, dev);
++	attr = blob_memdup(attr);
++
++	blobmsg_parse(device_attr_list.params, __DEV_ATTR_MAX, tb_dev,
++		blob_data(attr), blob_len(attr));
++	blobmsg_parse(ipvlan_attrs, __IPVLAN_ATTR_MAX, tb_mv,
++		blob_data(attr), blob_len(attr));
++
++	device_init_settings(dev, tb_dev);
++	ipvlan_apply_settings(mvdev, tb_mv);
++	mvdev->ifname = tb_mv[IPVLAN_ATTR_IFNAME];
++
++	if (mvdev->config_data) {
++		struct blob_attr *otb_dev[__DEV_ATTR_MAX];
++		struct blob_attr *otb_mv[__IPVLAN_ATTR_MAX];
++
++		blobmsg_parse(device_attr_list.params, __DEV_ATTR_MAX, otb_dev,
++			blob_data(mvdev->config_data), blob_len(mvdev->config_data));
++
++		if (uci_blob_diff(tb_dev, otb_dev, &device_attr_list, NULL))
++		    ret = DEV_CONFIG_RESTART;
++
++		blobmsg_parse(ipvlan_attrs, __IPVLAN_ATTR_MAX, otb_mv,
++			blob_data(mvdev->config_data), blob_len(mvdev->config_data));
++
++		if (uci_blob_diff(tb_mv, otb_mv, &ipvlan_attr_list, NULL))
++		    ret = DEV_CONFIG_RESTART;
++
++		ipvlan_config_init(dev);
++	}
++
++	free(mvdev->config_data);
++	mvdev->config_data = attr;
++	return ret;
++}
++
++static struct device *
++ipvlan_create(const char *name, struct device_type *devtype,
++	struct blob_attr *attr)
++{
++	struct ipvlan_device *mvdev;
++	struct device *dev = NULL;
++
++	mvdev = calloc(1, sizeof(*mvdev));
++	if (!mvdev)
++		return NULL;
++
++	dev = &mvdev->dev;
++	device_init(dev, devtype, name);
++	dev->config_pending = true;
++
++	mvdev->set_state = dev->set_state;
++	dev->set_state = ipvlan_set_state;
++
++	dev->hotplug_ops = NULL;
++	mvdev->parent.cb = ipvlan_base_cb;
++
++	ipvlan_reload(dev, attr);
++
++	return dev;
++}
++
++static struct device_type ipvlan_device_type = {
++	.name = "ipvlan",
++	.config_params = &ipvlan_attr_list,
++	.create = ipvlan_create,
++	.config_init = ipvlan_config_init,
++	.reload = ipvlan_reload,
++	.free = ipvlan_free,
++	.dump_info = ipvlan_dump_info,
++};
++
++static void __init ipvlan_device_type_init(void)
++{
++	device_type_add(&ipvlan_device_type);
++}
+Index: netifd-2021-07-26-440eb064/system-dummy.c
+===================================================================
+--- netifd-2021-07-26-440eb064.orig/system-dummy.c
++++ netifd-2021-07-26-440eb064/system-dummy.c
+@@ -346,6 +346,16 @@ int system_macvlan_del(struct device *ma
+ 	return 0;
+ }
+ 
++int system_ipvlan_add(struct device *ipvlan, struct device *dev, struct ipvlan_config *cfg)
++{
++	return 0;
++}
++
++int system_ipvlan_del(struct device *ipvlan)
++{
++	return 0;
++}
++
+ int system_veth_add(struct device *veth, struct veth_config *cfg)
+ {
+ 	return 0;
+Index: netifd-2021-07-26-440eb064/system-linux.c
+===================================================================
+--- netifd-2021-07-26-440eb064.orig/system-linux.c
++++ netifd-2021-07-26-440eb064/system-linux.c
+@@ -1320,6 +1320,7 @@ int system_macvlan_add(struct device *ma
+ 		{ "vepa", MACVLAN_MODE_VEPA },
+ 		{ "bridge", MACVLAN_MODE_BRIDGE },
+ 		{ "passthru", MACVLAN_MODE_PASSTHRU },
++		{ "source", MACVLAN_MODE_SOURCE },
+ 	};
+ 
+ 	msg = nlmsg_alloc_simple(RTM_NEWLINK, NLM_F_REQUEST | NLM_F_CREATE | NLM_F_EXCL);
+@@ -1392,6 +1393,86 @@ int system_link_netns_move(struct device
+ 	return system_rtnl_call(msg);
+ }
+ 
++int system_ipvlan_add(struct device *ipvlan, struct device *dev, struct ipvlan_config *cfg)
++{
++	struct nl_msg *msg;
++	struct nlattr *linkinfo, *data;
++	struct ifinfomsg iim = { .ifi_family = AF_UNSPEC, };
++	int i, rv;
++	static const struct {
++		const char *name;
++		enum ipvlan_mode val;
++	} modes[] = {
++		{ "l2", IPVLAN_MODE_L2 },
++		{ "l3", IPVLAN_MODE_L3 },
++		{ "l3s", IPVLAN_MODE_L3S },
++	};
++
++	msg = nlmsg_alloc_simple(RTM_NEWLINK, NLM_F_REQUEST | NLM_F_CREATE | NLM_F_EXCL);
++
++	if (!msg)
++		return -1;
++
++	nlmsg_append(msg, &iim, sizeof(iim), 0);
++
++	nla_put_string(msg, IFLA_IFNAME, ipvlan->ifname);
++	nla_put_u32(msg, IFLA_LINK, dev->ifindex);
++
++	if (!(linkinfo = nla_nest_start(msg, IFLA_LINKINFO)))
++		goto nla_put_failure;
++
++	nla_put_string(msg, IFLA_INFO_KIND, "ipvlan");
++
++	if (!(data = nla_nest_start(msg, IFLA_INFO_DATA)))
++		goto nla_put_failure;
++
++	if (cfg->mode) {
++		for (i = 0; i < ARRAY_SIZE(modes); i++) {
++			if (strcmp(cfg->mode, modes[i].name) != 0)
++				continue;
++
++			nla_put_u32(msg, IFLA_IPVLAN_MODE, modes[i].val);
++			break;
++		}
++	} else {
++		nla_put_u32(msg, IFLA_IPVLAN_MODE, IPVLAN_MODE_L2);
++	}
++
++#ifdef IFLA_IPVLAN_FLAGS
++	static const struct {
++		const char *name;
++		enum ipvlan_flags val;
++	} flags[] = {
++		{ "bridge", 0 },
++		{ "private", IPVLAN_F_PRIVATE },
++		{ "vepa", IPVLAN_F_VEPA },
++	};
++
++	if (cfg->flags) {
++		for (i = 0; i < ARRAY_SIZE(flags); i++) {
++			if (strcmp(cfg->flags, flags[i].name) != 0)
++				continue;
++
++			nla_put_u32(msg, IFLA_IPVLAN_FLAGS, flags[i].val);
++			break;
++		}
++	}
++#endif
++
++	nla_nest_end(msg, data);
++	nla_nest_end(msg, linkinfo);
++
++	rv = system_rtnl_call(msg);
++	if (rv)
++		D(SYSTEM, "Error adding ipvlan '%s' over '%s': %d\n", ipvlan->ifname, dev->ifname, rv);
++
++	return rv;
++
++nla_put_failure:
++	nlmsg_free(msg);
++	return -ENOMEM;
++}
++
+ static int system_link_del(const char *ifname)
+ {
+ 	struct nl_msg *msg;
+@@ -1429,6 +1510,11 @@ int system_netns_set(int netns_fd)
+ 	return setns(netns_fd, CLONE_NEWNET);
+ }
+ 
++int system_ipvlan_del(struct device *ipvlan)
++{
++	return system_link_del(ipvlan->ifname);
++}
++
+ int system_veth_add(struct device *veth, struct veth_config *cfg)
+ {
+ 	struct nl_msg *msg;
+Index: netifd-2021-07-26-440eb064/system.h
+===================================================================
+--- netifd-2021-07-26-440eb064.orig/system.h
++++ netifd-2021-07-26-440eb064/system.h
+@@ -153,6 +153,11 @@ struct macvlan_config {
+ 	unsigned char macaddr[6];
+ };
+ 
++struct ipvlan_config {
++	const char *mode;
++	const char *flags;
++};
++
+ enum veth_opt {
+ 	VETH_OPT_MACADDR = (1 << 0),
+ 	VETH_OPT_PEER_NAME = (1 << 1),
+@@ -213,6 +218,9 @@ int system_bridge_vlan_check(struct devi
+ int system_macvlan_add(struct device *macvlan, struct device *dev, struct macvlan_config *cfg);
+ int system_macvlan_del(struct device *macvlan);
+ 
++int system_ipvlan_add(struct device *ipvlan, struct device *dev, struct ipvlan_config *cfg);
++int system_ipvlan_del(struct device *ipvlan);
++
+ int system_veth_add(struct device *veth, struct veth_config *cfg);
+ int system_veth_del(struct device *veth);
+ 

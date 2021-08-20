@@ -1,0 +1,26 @@
+Index: netifd-2021-07-26-440eb064/veth.c
+===================================================================
+--- netifd-2021-07-26-440eb064.orig/veth.c
++++ netifd-2021-07-26-440eb064/veth.c
+@@ -131,8 +131,6 @@ veth_apply_settings(struct veth *veth, s
+ 	struct blob_attr *cur;
+ 	struct ether_addr *ea;
+ 
+-	cfg->flags = 0;
+-
+ 	if ((cur = tb[VETH_ATTR_MACADDR]))
+ 	{
+ 		ea = ether_aton(blobmsg_data(cur));
+@@ -219,11 +217,10 @@ veth_create(const char *name, struct dev
+ 		return NULL;
+ 	}
+ 
++	dev->default_config = true;
+ 	dev->config_pending = true;
+-
+ 	veth->set_state = dev->set_state;
+ 	dev->set_state = veth_set_state;
+-
+ 	dev->hotplug_ops = NULL;
+ 
+ 	veth_reload(dev, attr);

@@ -1,0 +1,87 @@
+Index: netifd-2021-07-26-440eb064/config.c
+===================================================================
+--- netifd-2021-07-26-440eb064.orig/config.c
++++ netifd-2021-07-26-440eb064/config.c
+@@ -15,7 +15,7 @@
+ #include <string.h>
+ #include <stdlib.h>
+ #include <stdio.h>
+-
++#include <fcntl.h>
+ #include <uci.h>
+ 
+ #include <libubox/blobmsg_json.h>
+@@ -524,6 +524,21 @@ config_init_rules(void)
+ 	iprule_update_complete();
+ }
+ 
++/* if set defined override set flag with specified value, otherwise use option string value. def applied if option not defined. */
++static void config_set_sysctl_flag(struct uci_context *ctx, struct uci_section *s, const char * option, const char *path, const char * def, const char * set)
++{
++	const char * val;
++	if(!((val=uci_lookup_option_string(ctx, s, option))))
++		val=def;
++	else if(set && (*val=='1'))
++		val=set;
++
++	FILE* f=fopen(path, "w");
++	if(!f) return;
++	fprintf(f, "%s\n", val);
++	fclose(f);
++}
++
+ static void
+ config_init_globals(void)
+ {
+@@ -535,6 +550,36 @@ config_init_globals(void)
+ 	const char *ula_prefix = uci_lookup_option_string(
+ 			uci_ctx, globals, "ula_prefix");
+ 	interface_ip_set_ula_prefix(ula_prefix);
++
++	config_set_sysctl_flag(uci_ctx, globals, "nf_arptables", "/proc/sys/net/bridge/bridge-nf-call-arptables", "0", NULL);
++	config_set_sysctl_flag(uci_ctx, globals, "nf_ip6tables", "/proc/sys/net/bridge/bridge-nf-call-ip6tables", "0", NULL);
++	config_set_sysctl_flag(uci_ctx, globals, "nf_iptables", "/proc/sys/net/bridge/bridge-nf-call-iptables", "0", NULL);
++
++	config_set_sysctl_flag(uci_ctx, globals, "route_localnet", "/proc/sys/net/ipv4/conf/default/route_localnet", "0", NULL);
++	config_set_sysctl_flag(uci_ctx, globals, "route_localnet", "/proc/sys/net/ipv4/conf/all/route_localnet", "0", NULL);
++
++	config_set_sysctl_flag(uci_ctx, globals, "accept_redirects", "/proc/sys/net/ipv4/conf/default/accept_redirects", "1", NULL);
++	config_set_sysctl_flag(uci_ctx, globals, "accept_redirects", "/proc/sys/net/ipv4/conf/all/accept_redirects", "1", NULL);
++
++	config_set_sysctl_flag(uci_ctx, globals, "accept_6redirects", "/proc/sys/net/ipv6/conf/default/route_localnet", "0", NULL);
++	config_set_sysctl_flag(uci_ctx, globals, "accept_6redirects", "/proc/sys/net/ipv6/conf/all/route_localnet", "0", NULL);
++
++	config_set_sysctl_flag(uci_ctx, globals, "send_redirects", "/proc/sys/net/ipv4/conf/default/send_redirects", "1", NULL);
++	config_set_sysctl_flag(uci_ctx, globals, "send_redirects", "/proc/sys/net/ipv4/conf/all/send_redirects", "1", NULL);
++
++	config_set_sysctl_flag(uci_ctx, globals, "arp_ignore", "/proc/sys/net/ipv4/conf/default/arp_ignore", "1", NULL);
++	config_set_sysctl_flag(uci_ctx, globals, "arp_ignore", "/proc/sys/net/ipv4/conf/all/arp_ignore", "1", NULL);
++
++	config_set_sysctl_flag(uci_ctx, globals, "arp_announce", "/proc/sys/net/ipv4/conf/default/arp_announce", "2", NULL);
++	config_set_sysctl_flag(uci_ctx, globals, "arp_announce", "/proc/sys/net/ipv4/conf/all/arp_announce", "2", NULL);
++
++	config_set_sysctl_flag(uci_ctx, globals, "arp_notify", "/proc/sys/net/ipv4/conf/default/arp_notify", "1", NULL);
++	config_set_sysctl_flag(uci_ctx, globals, "arp_notify", "/proc/sys/net/ipv4/conf/all/arp_notify", "1", NULL);
++
++	config_set_sysctl_flag(uci_ctx, globals, "nat_helpers", "/proc/sys/net/netfilter/nf_conntrack_helper", "0", NULL);
++
++	config_set_sysctl_flag(uci_ctx, globals, "udp_ct_en", "/proc/sys/net/netfilter/nf_conntrack_udp_timeout", "60", "60");
++	config_set_sysctl_flag(uci_ctx, globals, "udp_ct_en", "/proc/sys/net/netfilter/nf_conntrack_udp_timeout_stream", "180", "180");
+ }
+ 
+ static void
+@@ -764,13 +809,13 @@ config_init_all(void)
+ 	device_lock();
+ 
+ 	device_reset_config();
++	config_init_globals();
+ 	config_init_devices(true);
+ 	config_init_vlans();
+ 	config_init_devices(false);
+ 	config_init_interfaces();
+ 	config_init_ip();
+ 	config_init_rules();
+-	config_init_globals();
+ 	config_init_wireless();
+ 
+ 	config_init = false;

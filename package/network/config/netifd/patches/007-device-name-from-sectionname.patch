@@ -1,0 +1,13 @@
+Index: netifd-2021-07-26-440eb064/config.c
+===================================================================
+--- netifd-2021-07-26-440eb064.orig/config.c
++++ netifd-2021-07-26-440eb064/config.c
+@@ -265,7 +265,7 @@ config_init_devices(bool bridge)
+ 			continue;
+ 
+ 		name = uci_lookup_option_string(uci_ctx, s, "name");
+-		if (!name)
++		if (!name && !((name=e->name)))
+ 			continue;
+ 
+ 		type = uci_lookup_option_string(uci_ctx, s, "type");

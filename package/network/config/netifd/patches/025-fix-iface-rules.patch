@@ -1,0 +1,129 @@
+Index: netifd-2021-07-26-440eb064/interface-ip.c
+===================================================================
+--- netifd-2021-07-26-440eb064.orig/interface-ip.c
++++ netifd-2021-07-26-440eb064/interface-ip.c
+@@ -1754,16 +1754,38 @@ void interface_ip_set_enabled(struct int
+ 			if (!strcmp(a->name, ip->iface->name))
+ 				interface_set_prefix_address(a, c, ip->iface, enabled);
+ 
+-	if (ip->iface->policy_rules_set != enabled &&
+-	    ip->iface->l3_dev.dev) {
+-		if(!ip->iface->devrule || !ip->iface->ip6table)
+-			set_ip_lo_policy(enabled, true, ip->iface);
+-		if(!ip->iface->devrule || !ip->iface->ip4table)
+-			set_ip_lo_policy(enabled, false, ip->iface);
++	if (ip->iface->policy != enabled && ip->iface->l3_dev.dev) {
++		/* do we need to delete existing because are we changing the route table? or adding a device rule? */
++		if(ip->iface->ip4table_set && ((ip->iface->ip4table_set!=ip->iface->ip4table) || ip->iface->devrule)){
++			unsigned int newtable=ip->iface->ip4table;
++			ip->iface->ip4table=ip->iface->ip4table_set;
++			set_ip_lo_policy(false, false, ip->iface); /* delete old */
++			ip->iface->ip4table=newtable; /* restore */
++			ip->iface->ip4table_set=0;
++		}
++		if(ip->iface->ip6table_set && ((ip->iface->ip6table_set!=ip->iface->ip6table) || ip->iface->devrule)){
++			unsigned int newtable=ip->iface->ip6table;
++			ip->iface->ip6table=ip->iface->ip6table_set;
++			set_ip_lo_policy(false, true, ip->iface); /* delete old */
++			ip->iface->ip6table=newtable; /* restore */
++			ip->iface->ip6table_set=0;
++		}
++
++		/* add or delete rule - only if no device rule defined */
++		if(!ip->iface->devrule){
++			if(ip->iface->ip4table){
++				set_ip_lo_policy(enabled, false, ip->iface);
++				ip->iface->ip4table_set=(enabled)?ip->iface->ip4table:0;
++			}
++			if(ip->iface->ip6table){
++				set_ip_lo_policy(enabled, true, ip->iface);
++				ip->iface->ip6table_set=(enabled)?ip->iface->ip6table:0;
++			}
++		}
+ 
+ 		set_ip_source_policy(enabled, true, IPRULE_PRIORITY_REJECT + ip->iface->l3_dev.dev->ifindex,
+ 			NULL, 0, 0, ip->iface, NULL, "failed_policy", true);
+-		ip->iface->policy_rules_set = enabled;
++		ip->iface->policy = enabled;
+ 	}
+ }
+ 
+Index: netifd-2021-07-26-440eb064/interface.h
+===================================================================
+--- netifd-2021-07-26-440eb064.orig/interface.h
++++ netifd-2021-07-26-440eb064/interface.h
+@@ -126,7 +126,7 @@ struct interface {
+ 	bool link_state;
+ 	bool force_link;
+ 	bool dynamic;
+-	bool policy_rules_set;
++	bool policy;
+ 	bool link_up_event;
+ 
+ 	time_t start_time;
+@@ -162,6 +162,8 @@ struct interface {
+ 	int dns_metric;
+ 	unsigned int ip4table;
+ 	unsigned int ip6table;
++	unsigned int ip4table_set; /* value set in system */
++	unsigned int ip6table_set;
+ 	bool devrule; /* in/out rule for this interface' l3 device to specified route table */
+ 	int hostrule; /* add lo rule to allow host routing to this interface's subnet (1) or just address (2) */
+ 
+Index: netifd-2021-07-26-440eb064/iprule.c
+===================================================================
+--- netifd-2021-07-26-440eb064.orig/iprule.c
++++ netifd-2021-07-26-440eb064/iprule.c
+@@ -199,7 +199,7 @@ iprule_rebuild_interface_rules(){
+ 	struct interface *iface;
+ 
+ 	vlist_for_each_element(&interfaces, iface, node) {
+-		if(!iface->devrule || !iface->enabled) continue;
++		if(!iface->devrule || (iface->state!=IFS_UP)) continue;
+ 		for(int i=1; i>=0; i--){
+ 			struct interface_ip_settings *ip_settings=(i)?&iface->proto_ip:&iface->config_ip;
+ 			struct device_addr *addr;
+@@ -234,17 +234,16 @@ iprule_sync_ifrule(struct device_addr *a
+ 			}
+ 		}
+ 
+-		if (!add) continue;
++		if (!add || !iface->hostrule) continue;
+ 		if(!((rule = calloc(1, sizeof(*rule)))))
+ 			return;
+ 
+ 		/* todo- look this up based on lo*/
+-		char * ifname;
+-		if(!((ifname=malloc(sizeof("loopback"))))){
++		char * ifname=strdup("loopback");
++		if(!ifname){
+ 			free(rule);
+ 			return;
+ 		}
+-		strcpy(ifname,"loopback");
+ 
+ 		rule->flags = v6 ? IPRULE_INET6 : IPRULE_INET4;
+ 		rule->order = IPRULE_PRIORITY_CONFIG + iprules_counter[rule->flags]++;
+@@ -262,6 +261,7 @@ iprule_sync_ifrule(struct device_addr *a
+ 			rule->flags |= IPRULE_SRC;
+ 		}
+ 		addr->lo_rule[i] = rule;
++		D(SYSTEM, "Interface %s (%s) add lo rule %d \n", iface->name, (iface->enabled)?"enabled":"disabled", i);
+ 		vlist_add(&iprules, &rule->node, (void * )rule);
+ 		rule->node.version = -1;
+ 	}
+Index: netifd-2021-07-26-440eb064/interface.c
+===================================================================
+--- netifd-2021-07-26-440eb064.orig/interface.c
++++ netifd-2021-07-26-440eb064/interface.c
+@@ -1457,6 +1457,10 @@ interface_change_config(struct interface
+ 	struct blob_attr *old_config = if_old->config;
+ 	bool reload = false, reload_ip = false, update_prefix_delegation = false;
+ 
++	/* delete old interface rule from system */
++	if (if_old->devrule && (if_old->devrule!=if_new->devrule))
++		interface_add_dev_rules(if_old, false);
++
+ #define FIELD_CHANGED_STR(field)					\
+ 		((!!if_old->field != !!if_new->field) ||		\
+ 		 (if_old->field &&					\

@@ -1,0 +1,26 @@
+Index: netifd-2021-07-26-440eb064/ipvlan.c
+===================================================================
+--- netifd-2021-07-26-440eb064.orig/ipvlan.c
++++ netifd-2021-07-26-440eb064/ipvlan.c
+@@ -96,7 +96,7 @@ ipvlan_set_up(struct ipvlan_device *ipvd
+ 	ret = device_claim(&ipvdev->parent);
+ 	if (ret < 0)
+ 		return ret;
+-
++	system_ipvlan_del(&ipvdev->dev);
+ 	ret = system_ipvlan_add(&ipvdev->dev, ipvdev->parent.dev, &ipvdev->config);
+ 	if (ret < 0)
+ 		goto release;
+Index: netifd-2021-07-26-440eb064/macvlan.c
+===================================================================
+--- netifd-2021-07-26-440eb064.orig/macvlan.c
++++ netifd-2021-07-26-440eb064/macvlan.c
+@@ -91,7 +91,7 @@ macvlan_set_up(struct macvlan_device *mv
+ 	ret = device_claim(&mvdev->parent);
+ 	if (ret < 0)
+ 		return ret;
+-
++	system_macvlan_del(&mvdev->dev);
+ 	ret = system_macvlan_add(&mvdev->dev, mvdev->parent.dev, &mvdev->config);
+ 	if (ret < 0)
+ 		goto release;

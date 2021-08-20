@@ -1,0 +1,58 @@
+Index: netifd-2021-07-26-440eb064/bridge.c
+===================================================================
+--- netifd-2021-07-26-440eb064.orig/bridge.c
++++ netifd-2021-07-26-440eb064/bridge.c
+@@ -28,6 +28,7 @@ enum {
+ 	BRIDGE_ATTR_FORWARD_DELAY,
+ 	BRIDGE_ATTR_PRIORITY,
+ 	BRIDGE_ATTR_IGMP_SNOOP,
++	BRIDGE_ATTR_LLDP_PASSTHRU,
+ 	BRIDGE_ATTR_AGEING_TIME,
+ 	BRIDGE_ATTR_HELLO_TIME,
+ 	BRIDGE_ATTR_MAX_AGE,
+@@ -52,6 +53,7 @@ static const struct blobmsg_policy bridg
+ 	[BRIDGE_ATTR_HELLO_TIME] = { "hello_time", BLOBMSG_TYPE_INT32 },
+ 	[BRIDGE_ATTR_MAX_AGE] = { "max_age", BLOBMSG_TYPE_INT32 },
+ 	[BRIDGE_ATTR_IGMP_SNOOP] = { "igmp_snooping", BLOBMSG_TYPE_BOOL },
++	[BRIDGE_ATTR_LLDP_PASSTHRU] = { "lldp_passthru", BLOBMSG_TYPE_BOOL },
+ 	[BRIDGE_ATTR_BRIDGE_EMPTY] = { "bridge_empty", BLOBMSG_TYPE_BOOL },
+ 	[BRIDGE_ATTR_MULTICAST_QUERIER] = { "multicast_querier", BLOBMSG_TYPE_BOOL },
+ 	[BRIDGE_ATTR_HASH_MAX] = { "hash_max", BLOBMSG_TYPE_INT32 },
+@@ -1023,7 +1025,10 @@ bridge_apply_settings(struct bridge_stat
+ 	if ((cur = tb[BRIDGE_ATTR_IGMP_SNOOP]))
+ 		cfg->multicast_querier = cfg->igmp_snoop = blobmsg_get_bool(cur);
+ 
+-	if ((cur = tb[BRIDGE_ATTR_MULTICAST_QUERIER]))
++	if ((cur = tb[BRIDGE_ATTR_LLDP_PASSTHRU]))
++		cfg->lldp_passthru = blobmsg_get_bool(cur);
++
++	if (((cur = tb[BRIDGE_ATTR_MULTICAST_QUERIER])) && cfg->igmp_snoop)
+ 		cfg->multicast_querier = blobmsg_get_bool(cur);
+ 
+ 	if ((cur = tb[BRIDGE_ATTR_HASH_MAX]))
+Index: netifd-2021-07-26-440eb064/system-linux.c
+===================================================================
+--- netifd-2021-07-26-440eb064.orig/system-linux.c
++++ netifd-2021-07-26-440eb064/system-linux.c
+@@ -1274,6 +1274,9 @@ int system_bridge_addbr(struct device *b
+ 	snprintf(buf, sizeof(buf), "%d", cfg->priority);
+ 	system_bridge_set_priority(bridge, buf);
+ 
++	system_set_dev_sysctl("/sys/class/net/%s/bridge/group_fwd_mask",
++		bridge->ifname, cfg->lldp_passthru ? "0x4000" : "0");
++
+ 	if (cfg->flags & BRIDGE_OPT_AGEING_TIME) {
+ 		snprintf(buf, sizeof(buf), "%lu", sec_to_jiffies(cfg->ageing_time));
+ 		system_bridge_set_ageing_time(bridge, buf);
+Index: netifd-2021-07-26-440eb064/system.h
+===================================================================
+--- netifd-2021-07-26-440eb064.orig/system.h
++++ netifd-2021-07-26-440eb064/system.h
+@@ -123,6 +123,7 @@ struct bridge_config {
+ 	bool stp;
+ 
+ 	bool igmp_snoop;
++	bool lldp_passthru;
+ 	bool multicast_querier;
+ 	int robustness;
+ 	int query_interval;

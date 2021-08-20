@@ -1,26 +1,7 @@
+// SPDX-License-Identifier: BSD-2-Clause
 /*
   Copyright (c) 2014, Matthias Schiffer <mschiffer@universe-factory.net>
   All rights reserved.
-
-  Redistribution and use in source and binary forms, with or without
-  modification, are permitted provided that the following conditions are met:
-
-    1. Redistributions of source code must retain the above copyright notice,
-       this list of conditions and the following disclaimer.
-    2. Redistributions in binary form must reproduce the above copyright notice,
-       this list of conditions and the following disclaimer in the documentation
-       and/or other materials provided with the distribution.
-
-  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-  DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
-  FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-  DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-  SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-  CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
@@ -33,8 +14,10 @@
 
 
 #include <assert.h>
+#include <ctype.h>
 #include <errno.h>
 #include <stdbool.h>
+#include <stddef.h>
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
@@ -154,8 +137,7 @@ static struct device_info boards[] = {
 			{"default-mac", 0x30000, 0x00020},
 			{"product-info", 0x31100, 0x00100},
 			{"signature", 0x32000, 0x00400},
-			{"os-image", 0x40000, 0x300000},
-			{"file-system", 0x340000, 0x470000},
+			{"firmware", 0x40000, 0x770000},
 			{"soft-version", 0x7b0000, 0x00100},
 			{"support-list", 0x7b1000, 0x00400},
 			{"user-config", 0x7c0000, 0x10000},
@@ -277,8 +259,7 @@ static struct device_info boards[] = {
 			{"default-mac", 0x30000, 0x00020},
 			{"product-info", 0x31100, 0x00100},
 			{"signature", 0x32000, 0x00400},
-			{"os-image", 0x40000, 0x300000},
-			{"file-system", 0x340000, 0x470000},
+			{"firmware", 0x40000, 0x770000},
 			{"soft-version", 0x7b0000, 0x00100},
 			{"support-list", 0x7b1000, 0x00400},
 			{"user-config", 0x7c0000, 0x10000},
@@ -356,8 +337,7 @@ static struct device_info boards[] = {
 			{"default-mac", 0x30000, 0x00020},
 			{"product-info", 0x31100, 0x00100},
 			{"signature", 0x32000, 0x00400},
-			{"os-image", 0x40000, 0x300000},
-			{"file-system", 0x340000, 0x470000},
+			{"firmware", 0x40000, 0x770000},
 			{"soft-version", 0x7b0000, 0x00100},
 			{"support-list", 0x7b1000, 0x00400},
 			{"user-config", 0x7c0000, 0x10000},
@@ -398,8 +378,7 @@ static struct device_info boards[] = {
 			{"default-mac", 0x30000, 0x00020},
 			{"product-info", 0x31100, 0x00100},
 			{"signature", 0x32000, 0x00400},
-			{"os-image", 0x40000, 0x300000},
-			{"file-system", 0x340000, 0x470000},
+			{"firmware", 0x40000, 0x770000},
 			{"soft-version", 0x7b0000, 0x00100},
 			{"support-list", 0x7b1000, 0x00400},
 			{"user-config", 0x7c0000, 0x10000},
@@ -443,8 +422,7 @@ static struct device_info boards[] = {
 			{"default-mac", 0x30000, 0x00020},
 			{"product-info", 0x31100, 0x00100},
 			{"signature", 0x32000, 0x00400},
-			{"os-image", 0x40000, 0x300000},
-			{"file-system", 0x340000, 0x470000},
+			{"firmware", 0x40000, 0x770000},
 			{"soft-version", 0x7b0000, 0x00100},
 			{"support-list", 0x7b1000, 0x00400},
 			{"user-config", 0x7c0000, 0x10000},
@@ -483,8 +461,7 @@ static struct device_info boards[] = {
 			{"default-mac", 0x30000, 0x00020},
 			{"product-info", 0x31100, 0x00100},
 			{"signature", 0x32000, 0x00400},
-			{"os-image", 0x40000, 0x300000},
-			{"file-system", 0x340000, 0x470000},
+			{"firmware", 0x40000, 0x770000},
 			{"soft-version", 0x7b0000, 0x00100},
 			{"support-list", 0x7b1000, 0x00400},
 			{"user-config", 0x7c0000, 0x10000},
@@ -523,8 +500,7 @@ static struct device_info boards[] = {
 			{"default-mac", 0x30000, 0x00020},
 			{"product-info", 0x31100, 0x00100},
 			{"signature", 0x32000, 0x00400},
-			{"os-image", 0x40000, 0x300000},
-			{"file-system", 0x340000, 0x470000},
+			{"firmware", 0x40000, 0x770000},
 			{"soft-version", 0x7b0000, 0x00100},
 			{"support-list", 0x7b1000, 0x00400},
 			{"user-config", 0x7c0000, 0x10000},
@@ -555,8 +531,7 @@ static struct device_info boards[] = {
 			{"default-mac", 0x30000, 0x00020},
 			{"product-info", 0x31100, 0x00100},
 			{"signature", 0x32000, 0x00400},
-			{"os-image", 0x40000, 0x300000},
-			{"file-system", 0x340000, 0x470000},
+			{"firmware", 0x40000, 0x770000},
 			{"soft-version", 0x7b0000, 0x00100},
 			{"support-list", 0x7b1000, 0x00400},
 			{"user-config", 0x7c0000, 0x10000},
@@ -587,8 +562,7 @@ static struct device_info boards[] = {
 			{"default-mac", 0x30000, 0x00020},
 			{"product-info", 0x31100, 0x00100},
 			{"signature", 0x32000, 0x00400},
-			{"os-image", 0x40000, 0x300000},
-			{"file-system", 0x340000, 0x470000},
+			{"firmware", 0x40000, 0x770000},
 			{"soft-version", 0x7b0000, 0x00100},
 			{"support-list", 0x7b1000, 0x00400},
 			{"user-config", 0x7c0000, 0x10000},
@@ -620,8 +594,7 @@ static struct device_info boards[] = {
 			{"default-mac", 0x30000, 0x00020},
 			{"product-info", 0x31100, 0x00100},
 			{"signature", 0x32000, 0x00400},
-			{"os-image", 0x40000, 0x300000},
-			{"file-system", 0x340000, 0x470000},
+			{"firmware", 0x40000, 0x770000},
 			{"soft-version", 0x7b0000, 0x00100},
 			{"support-list", 0x7b1000, 0x00400},
 			{"user-config", 0x7c0000, 0x10000},
@@ -653,8 +626,7 @@ static struct device_info boards[] = {
 			{"default-mac", 0x30000, 0x00020},
 			{"product-info", 0x31100, 0x00100},
 			{"signature", 0x32000, 0x00400},
-			{"os-image", 0x40000, 0x300000},
-			{"file-system", 0x340000, 0x470000},
+			{"firmware", 0x40000, 0x770000},
 			{"soft-version", 0x7b0000, 0x00100},
 			{"support-list", 0x7b1000, 0x00400},
 			{"user-config", 0x7c0000, 0x10000},
@@ -674,7 +646,7 @@ static struct device_info boards[] = {
 		.vendor = "",
 		.support_list =
 			"SupportList:\r\n"
-			"{product_name:Talon AD7200,product_ver:1.0.0,special_id:00000000}\r\n",
+			"{product_name:AD7200,product_ver:1.0.0,special_id:00000000}\r\n",
 		.part_trail = 0x00,
 		.soft_ver = NULL,
 
@@ -1059,7 +1031,120 @@ static struct device_info boards[] = {
 		.first_sysupgrade_partition = "os-image",
 		.last_sysupgrade_partition = "file-system",
 	},
+	/** Firmware layout for the Archer C6 v3 */
+	{
+		.id     = "ARCHER-C6-V3",
+		.vendor = "",
+		.support_list =
+			"SupportList:\n"
+			"{product_name:Archer C6,product_ver:3.20,special_id:55530000}"
+			"{product_name:Archer C6,product_ver:3.20,special_id:45550000}"
+			"{product_name:Archer C6,product_ver:3.20,special_id:52550000}"
+			"{product_name:Archer C6,product_ver:3.20,special_id:4A500000}"
+			"{product_name:Archer C6,product_ver:3.20,special_id:4B520000}",
+		.part_trail = 0x00,
+		.soft_ver = "soft_ver:1.0.9\n",
 
+		.partitions = {
+			{"fs-uboot", 0x00000, 0x40000},
+			{"firmware", 0x40000, 0xf60000},
+			{"default-mac", 0xfa0000, 0x00200},
+			{"pin", 0xfa0200, 0x00100},
+			{"device-id", 0xfa0300, 0x00100},
+			{"product-info", 0xfa0400, 0x0fc00},
+			{"default-config", 0xfb0000, 0x08000},
+			{"ap-def-config", 0xfb8000, 0x08000},
+			{"user-config", 0xfc0000, 0x0a000},
+			{"ag-config", 0xfca000, 0x04000},
+			{"certificate", 0xfce000, 0x02000},
+			{"ap-config", 0xfd0000, 0x06000},
+			{"router-config", 0xfd6000, 0x06000},
+			{"favicon", 0xfdc000, 0x02000},
+			{"logo", 0xfde000, 0x02000},
+			{"partition-table", 0xfe0000, 0x00800},
+			{"soft-version", 0xfe0800, 0x00100},
+			{"support-list", 0xfe0900, 0x00200},
+			{"profile", 0xfe0b00, 0x03000},
+			{"extra-para", 0xfe3b00, 0x00100},
+			{"radio", 0xff0000, 0x10000},
+			{NULL, 0, 0}
+		},
+		.first_sysupgrade_partition = "os-image",
+		.last_sysupgrade_partition = "file-system",
+	},
+	/** Firmware layout for the Archer A6 v3  */
+	{
+		.id     = "ARCHER-A6-V3",
+		.vendor = "",
+		.support_list =
+			"SupportList:\n"
+			"{product_name:Archer A6,product_ver:3.0.0,special_id:43410000}\n"
+			"{product_name:Archer A6,product_ver:3.0.0,special_id:55530000}\n"
+			"{product_name:Archer A6,product_ver:3.0.0,special_id:54570000}\n",
+		.part_trail = 0x00,
+		.soft_ver = "soft_ver:1.0.5\n",
+
+		.partitions = {
+			{"fs-uboot", 0x00000, 0x40000},
+			{"firmware", 0x40000, 0xf60000},
+			{"default-mac", 0xfa0000, 0x00200},
+			{"pin", 0xfa0200, 0x00100},
+			{"device-id", 0xfa0300, 0x00100},
+			{"product-info", 0xfa0400, 0x0fc00},
+			{"default-config", 0xfb0000, 0x08000},
+			{"ap-def-config", 0xfb8000, 0x08000},
+			{"user-config", 0xfc0000, 0x0a000},
+			{"ag-config", 0xfca000, 0x04000},
+			{"certificate", 0xfce000, 0x02000},
+			{"ap-config", 0xfd0000, 0x06000},
+			{"router-config", 0xfd6000, 0x06000},
+			{"favicon", 0xfdc000, 0x02000},
+			{"logo", 0xfde000, 0x02000},
+			{"partition-table", 0xfe0000, 0x00800},
+			{"soft-version", 0xfe0800, 0x00100},
+			{"support-list", 0xfe0900, 0x00200},
+			{"profile", 0xfe0b00, 0x03000},
+			{"extra-para", 0xfe3b00, 0x00100},
+			{"radio", 0xff0000, 0x10000},
+			{NULL, 0, 0}
+		},
+		.first_sysupgrade_partition = "os-image",
+		.last_sysupgrade_partition = "file-system",
+	},
+	/** Firmware layout for the Archer C6U v1 */
+	{
+		.id     = "ARCHER-C6U-V1",
+		.vendor = "",
+		.support_list =
+			"SupportList:\n"
+			"{product_name:Archer C6U,product_ver:1.0.0,special_id:45550000}\n",
+		.part_trail = 0x00,
+		.soft_ver = "soft_ver:1.0.2\n",
+
+		.partitions = {
+			{"fs-uboot", 0x00000, 0x40000},
+			{"firmware", 0x40000, 0xf60000},
+			{"default-mac", 0xfa0000, 0x00200},
+			{"pin", 0xfa0200, 0x00100},
+			{"device-id", 0xfa0300, 0x00100},
+			{"product-info", 0xfa0400, 0x0fc00},
+			{"default-config", 0xfb0000, 0x08000},
+			{"ap-def-config", 0xfb8000, 0x08000},
+			{"user-config", 0xfc0000, 0x0c000},
+			{"certificate", 0xfcc000, 0x04000},
+			{"ap-config", 0xfd0000, 0x08000},
+			{"router-config", 0xfd8000, 0x08000},
+			{"partition-table", 0xfe0000, 0x00800},
+			{"soft-version", 0xfe0800, 0x00100},
+			{"support-list", 0xfe0900, 0x00200},
+			{"profile", 0xfe0b00, 0x03000},
+			{"extra-para", 0xfe3b00, 0x00100},
+			{"radio", 0xff0000, 0x10000},
+			{NULL, 0, 0}
+		},
+		.first_sysupgrade_partition = "os-image",
+		.last_sysupgrade_partition = "file-system",
+	},
 	/** Firmware layout for the C60v1 */
 	{
 		.id     = "ARCHER-C60-V1",
@@ -1262,7 +1347,7 @@ static struct device_info boards[] = {
 			"{product_name:Archer C7,product_ver:5.0.0,special_id:4B520000}\n",
 
 		.part_trail = 0x00,
-		.soft_ver = "soft_ver:1.0.0\n",
+		.soft_ver = "soft_ver:7.0.0\n",
 
 		/* We're using a dynamic kernel/rootfs split here */
 		.partitions = {
@@ -1826,6 +1911,37 @@ static struct device_info boards[] = {
 		.last_sysupgrade_partition = "file-system",
 	},
 
+	/** Firmware layout for the TL-WR941HP v1 */
+	{
+		.id     = "TL-WR941HP-V1",
+		.vendor = "",
+		.support_list =
+			"SupportList:\n"
+			"{product_name:TL-WR941HP,product_ver:1.0.0,special_id:00000000}\n",
+		.part_trail = 0x00,
+		.soft_ver = NULL,
+
+		.partitions = {
+			{"fs-uboot", 0x00000, 0x20000},
+			{"firmware", 0x20000, 0x730000},
+			{"default-mac", 0x750000, 0x00200},
+			{"pin", 0x750200, 0x00200},
+			{"product-info", 0x750400, 0x0fc00},
+			{"soft-version", 0x760000, 0x0b000},
+			{"support-list", 0x76b000, 0x04000},
+			{"profile", 0x770000, 0x04000},
+			{"default-config", 0x774000, 0x0b000},
+			{"user-config", 0x780000, 0x40000},
+			{"partition-table", 0x7c0000, 0x10000},
+			{"log", 0x7d0000, 0x20000},
+			{"radio", 0x7f0000, 0x10000},
+			{NULL, 0, 0}
+		},
+
+		.first_sysupgrade_partition = "os-image",
+		.last_sysupgrade_partition = "file-system",
+	},
+
 	/** Firmware layout for the TL-WR942N V1 */
 	{
 		.id     = "TLWR942NV1",
@@ -2271,6 +2387,46 @@ static struct device_info boards[] = {
 			"{product_name:RE450,product_ver:3.0.0,special_id:41530000}\r\n"
 			"{product_name:RE450,product_ver:3.0.0,special_id:4B520000}\r\n"
 			"{product_name:RE450,product_ver:3.0.0,special_id:42520000}\r\n",
+		.part_trail = 0x00,
+		.soft_ver = NULL,
+
+		/* We're using a dynamic kernel/rootfs split here */
+		.partitions = {
+			{"fs-uboot", 0x00000, 0x20000},
+			{"default-mac", 0x20000, 0x00020},
+			{"pin", 0x20020, 0x00020},
+			{"product-info", 0x21000, 0x01000},
+			{"partition-table", 0x22000, 0x02000},
+			{"soft-version", 0x24000, 0x01000},
+			{"support-list", 0x25000, 0x01000},
+			{"profile", 0x26000, 0x08000},
+			{"user-config", 0x2e000, 0x10000},
+			{"default-config", 0x3e000, 0x10000},
+			{"config-info", 0x4e000, 0x00400},
+			{"firmware", 0x50000, 0x7a0000},
+			{"radio", 0x7f0000, 0x10000},
+			{NULL, 0, 0}
+		},
+
+		.first_sysupgrade_partition = "os-image",
+		.last_sysupgrade_partition = "file-system"
+	},
+
+	/** Firmware layout for the RE455 v1 */
+	{
+		.id     = "RE455-V1",
+		.vendor = "",
+		.support_list =
+			"SupportList:\r\n"
+			"{product_name:RE455,product_ver:1.0.0,special_id:00000000}\r\n"
+			"{product_name:RE455,product_ver:1.0.0,special_id:55530000}\r\n"
+			"{product_name:RE455,product_ver:1.0.0,special_id:45550000}\r\n"
+			"{product_name:RE455,product_ver:1.0.0,special_id:4A500000}\r\n"
+			"{product_name:RE455,product_ver:1.0.0,special_id:43410000}\r\n"
+			"{product_name:RE455,product_ver:1.0.0,special_id:41550000}\r\n"
+			"{product_name:RE455,product_ver:1.0.0,special_id:41530000}\r\n"
+			"{product_name:RE455,product_ver:1.0.0,special_id:4B520000}\r\n"
+			"{product_name:RE455,product_ver:1.0.0,special_id:42520000}\r\n",
 		.part_trail = 0x00,
 		.soft_ver = NULL,
 
@@ -2824,7 +2980,8 @@ static void build_image(const char *output,
 	parts[4] = read_file("file-system", rootfs_image, add_jffs2_eof, file_system_partition);
 
 	/* Some devices need the extra-para partition to accept the firmware */
-	if (strcasecmp(info->id, "ARCHER-A7-V5") == 0 ||
+	if (strcasecmp(info->id, "ARCHER-A6-V3") == 0 ||
+	    strcasecmp(info->id, "ARCHER-A7-V5") == 0 ||
 	    strcasecmp(info->id, "ARCHER-C2-V3") == 0 ||
 	    strcasecmp(info->id, "ARCHER-C7-V4") == 0 ||
 	    strcasecmp(info->id, "ARCHER-C7-V5") == 0 ||
@@ -2832,6 +2989,8 @@ static void build_image(const char *output,
 	    strcasecmp(info->id, "ARCHER-C59-V2") == 0 ||
 	    strcasecmp(info->id, "ARCHER-C60-V2") == 0 ||
 	    strcasecmp(info->id, "ARCHER-C60-V3") == 0 ||
+	    strcasecmp(info->id, "ARCHER-C6U-V1") == 0 ||
+	    strcasecmp(info->id, "ARCHER-C6-V3") == 0 ||
 	    strcasecmp(info->id, "TLWR1043NV5") == 0) {
 		const uint8_t extra_para[2] = {0x01, 0x00};
 		parts[5] = make_extra_para(info, extra_para,
@@ -2877,6 +3036,8 @@ static void usage(const char *argv0) {
 		"Options:\n"
 		"  -h              show this help\n"
 		"\n"
+		"Info about an image:\n"
+		"  -i <file>       input file to read from\n"
 		"Create a new image:\n"
 		"  -B <board>      create image for the board specified with <board>\n"
 		"  -k <file>       read kernel image from the file <file>\n"
@@ -3141,8 +3302,121 @@ static struct flash_partition_entry *find_partition(
 			return entries;
 	}
 
-	error(1, 0, "%s", error_msg);
+	if (error_msg) {
+		error(1, 0, "%s", error_msg);
+	}
+
 	return NULL;
+}
+
+static int firmware_info(const char *input)
+{
+	struct flash_partition_entry pointers[MAX_PARTITIONS] = { };
+	struct flash_partition_entry *e;
+	FILE *fp;
+	int i;
+
+	fp = fopen(input, "r");
+
+	if (read_partition_table(fp, 0x1014, pointers, MAX_PARTITIONS, 0)) {
+		error(1, 0, "Error can not read the partition table (fwup-ptn)");
+	}
+
+	printf("Firmware image partitions:\n");
+	printf("%-8s %-8s %s\n", "base", "size", "name");
+	for (i = 0; i < MAX_PARTITIONS; i++) {
+		e = &pointers[i];
+
+		if (!e->name && !e->base && !e->size)
+			continue;
+
+		printf("%08x %08x %s\n", e->base, e->size, e->name ? e->name : "");
+	}
+
+	e = find_partition(pointers, MAX_PARTITIONS, "soft-version", NULL);
+	if (e) {
+		size_t data_len = e->size - sizeof(struct meta_header);
+		char *buf = malloc(data_len);
+		struct soft_version *s;
+		bool isstr;
+		int i;
+
+		if (!buf)
+			error(1, errno, "Failed to alloc buffer");
+
+		if (fseek(fp, 0x1014 + e->base + sizeof(struct meta_header), SEEK_SET))
+			error(1, errno, "Can not seek in the firmware");
+
+		if (fread(buf, data_len, 1, fp) != 1)
+			error(1, errno, "Can not read fwup-ptn data from the firmware");
+
+		/* Check for string ignoring padding character */
+		isstr = true;
+		for (i = 0; i < data_len - 1; i++) {
+			if (!isascii(buf[i])) {
+				isstr = false;
+				break;
+			}
+		}
+
+		printf("\n[Software version]\n");
+		if (isstr) {
+			fwrite(buf, data_len, 1, stdout);
+			putchar('\n');
+		} else if (data_len >= offsetof(struct soft_version, rev)) {
+			s = (struct soft_version *)buf;
+
+			printf("Version: %d.%d.%d\n", s->version_major, s->version_minor, s->version_patch);
+			printf("Date: %02x%02x-%02x-%02x\n", s->year_hi, s->year_lo, s->month, s->day);
+		} else {
+			printf("Failed to parse data\n");
+		}
+
+		free(buf);
+	}
+
+	e = find_partition(pointers, MAX_PARTITIONS, "support-list", NULL);
+	if (e) {
+		char buf[128];
+		size_t length;
+		size_t bytes;
+
+		if (fseek(fp, 0x1014 + e->base + sizeof(struct meta_header), SEEK_SET))
+			error(1, errno, "Can not seek in the firmware");
+
+		printf("\n[Support list]\n");
+		for (length = e->size - sizeof(struct meta_header); length; length -= bytes) {
+			bytes = fread(buf, 1, length > sizeof(buf) ? sizeof(buf) : length, fp);
+			if (bytes <= 0)
+				error(1, errno, "Can not read fwup-ptn data from the firmware");
+
+			puts(buf);
+		}
+	}
+
+	e = find_partition(pointers, MAX_PARTITIONS, "partition-table", NULL);
+	if (e) {
+		struct flash_partition_entry parts[MAX_PARTITIONS] = { };
+
+		if (read_partition_table(fp, 0x1014 + e->base + 4, parts, MAX_PARTITIONS, 1)) {
+			error(1, 0, "Error can not read the partition table (partition)");
+		}
+
+		printf("\n[Partition table]\n");
+		printf("%-8s %-8s %s\n", "base", "size", "name");
+		for (i = 0; i < MAX_PARTITIONS; i++) {
+			e = &parts[i];
+
+			if (!e->name && !e->base && !e->size)
+				continue;
+
+			printf("%08x %08x %s\n", e->base, e->size, e->name ? e->name : "");
+		}
+	}
+
+	fclose(fp);
+
+	return 0;
 }
 
 static void write_ff(FILE *output_file, size_t size)
@@ -3224,7 +3498,7 @@ static void convert_firmware(const char *input, const char *output)
 }
 
 int main(int argc, char *argv[]) {
-	const char *board = NULL, *kernel_image = NULL, *rootfs_image = NULL, *output = NULL;
+	const char *info_image = NULL, *board = NULL, *kernel_image = NULL, *rootfs_image = NULL, *output = NULL;
 	const char *extract_image = NULL, *output_directory = NULL, *convert_image = NULL;
 	bool add_jffs2_eof = false, sysupgrade = false;
 	unsigned rev = 0;
@@ -3234,11 +3508,15 @@ int main(int argc, char *argv[]) {
 	while (true) {
 		int c;
 
-		c = getopt(argc, argv, "B:k:r:o:V:jSh:x:d:z:");
+		c = getopt(argc, argv, "i:B:k:r:o:V:jSh:x:d:z:");
 		if (c == -1)
 			break;
 
 		switch (c) {
+		case 'i':
+			info_image = optarg;
+			break;
+
 		case 'B':
 			board = optarg;
 			break;
@@ -3289,7 +3567,9 @@ int main(int argc, char *argv[]) {
 		}
 	}
 
-	if (extract_image || output_directory) {
+	if (info_image) {
+		firmware_info(info_image);
+	} else if (extract_image || output_directory) {
 		if (!extract_image)
 			error(1, 0, "No factory/oem image given via -x <file>. Output directory is only valid with -x");
 		if (!output_directory)

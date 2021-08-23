@@ -1,0 +1,34 @@
+From 3bca80966bf4363fd784cb545de17dc10c6ce8d4 Mon Sep 17 00:00:00 2001
+Message-Id: <3bca80966bf4363fd784cb545de17dc10c6ce8d4.1628521257.git.zanussi@kernel.org>
+In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Date: Fri, 15 Feb 2019 14:34:20 +0100
+Subject: [PATCH 045/307] arm: remove printk_nmi_.*()
+
+It is no longer provided by the printk core code.
+
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+---
+ arch/arm/kernel/smp.c | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/arch/arm/kernel/smp.c b/arch/arm/kernel/smp.c
+index 46e1be9e57a8..581caf6493a9 100644
+--- a/arch/arm/kernel/smp.c
++++ b/arch/arm/kernel/smp.c
+@@ -682,11 +682,9 @@ void handle_IPI(int ipinr, struct pt_regs *regs)
+ 		break;
+ 
+ 	case IPI_CPU_BACKTRACE:
+-		printk_nmi_enter();
+ 		irq_enter();
+ 		nmi_cpu_backtrace(regs);
+ 		irq_exit();
+-		printk_nmi_exit();
+ 		break;
+ 
+ 	default:
+-- 
+2.17.1
+

@@ -1,0 +1,33 @@
+From 52789088806f3c674b39441850932f8c26887a33 Mon Sep 17 00:00:00 2001
+Message-Id: <52789088806f3c674b39441850932f8c26887a33.1628521258.git.zanussi@kernel.org>
+In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Date: Thu, 16 Apr 2020 12:42:15 +0200
+Subject: [PATCH 287/307] fs/dcache: Include swait.h header
+
+Include the swait.h header so it compiles even if not all patches are
+applied.
+
+Reported-by: kbuild test robot <lkp@intel.com>
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+---
+ fs/proc/base.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/fs/proc/base.c b/fs/proc/base.c
+index 465a17d32dd5..3e2c76c1932d 100644
+--- a/fs/proc/base.c
++++ b/fs/proc/base.c
+@@ -95,6 +95,7 @@
+ #include <linux/sched/stat.h>
+ #include <linux/posix-timers.h>
+ #include <trace/events/oom.h>
++#include <linux/swait.h>
+ #include "internal.h"
+ #include "fd.h"
+ 
+-- 
+2.17.1
+

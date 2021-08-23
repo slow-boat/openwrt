@@ -1,0 +1,40 @@
+From 1f1e531ae7d53b6232adc08901a6f30ffe20cda4 Mon Sep 17 00:00:00 2001
+Message-Id: <1f1e531ae7d53b6232adc08901a6f30ffe20cda4.1628521258.git.zanussi@kernel.org>
+In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From: Scott Wood <swood@redhat.com>
+Date: Fri, 24 Jan 2020 06:11:47 -0500
+Subject: [PATCH 177/307] sched: migrate_enable: Remove __schedule() call
+
+We can rely on preempt_enable() to schedule.  Besides simplifying the
+code, this potentially allows sequences such as the following to be
+permitted:
+
+migrate_disable();
+preempt_disable();
+migrate_enable();
+preempt_enable();
+
+Suggested-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Signed-off-by: Scott Wood <swood@redhat.com>
+Reviewed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+---
+ kernel/sched/core.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 688e83d49435..d1866c7b0ecc 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -8283,7 +8283,6 @@ void migrate_enable(void)
+ 
+ 		stop_one_cpu_nowait(task_cpu(p), migration_cpu_stop,
+ 				    arg, work);
+-		__schedule(true);
+ 	}
+ 
+ out:
+-- 
+2.17.1
+

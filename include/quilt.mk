@@ -99,6 +99,7 @@ define Kernel/Patch/Default
 		echo "generic patches directory is present. please move your patches to the pending directory" ; \
 		exit 1; \
 	fi
+	$(call PatchDir,$(LINUX_DIR),$(GENERIC_RT_DIR),generic-rt/)
 	$(call PatchDir,$(LINUX_DIR),$(GENERIC_BACKPORT_DIR),generic-backport/)
 	$(call PatchDir,$(LINUX_DIR),$(GENERIC_PATCH_DIR),generic/)
 	$(call PatchDir,$(LINUX_DIR),$(GENERIC_HACK_DIR),generic-hack/)
@@ -128,6 +129,7 @@ define Quilt/Refresh/Kernel
 		echo "All kernel patches must start with either generic/ or platform/"; \
 		false; \
 	}
+	$(call Quilt/RefreshDir,$(PKG_BUILD_DIR),$(GENERIC_RT_DIR),generic-rt/)
 	$(call Quilt/RefreshDir,$(PKG_BUILD_DIR),$(GENERIC_BACKPORT_DIR),generic-backport/)
 	$(call Quilt/RefreshDir,$(PKG_BUILD_DIR),$(GENERIC_PATCH_DIR),generic/)
 	$(call Quilt/RefreshDir,$(PKG_BUILD_DIR),$(GENERIC_HACK_DIR),generic-hack/)

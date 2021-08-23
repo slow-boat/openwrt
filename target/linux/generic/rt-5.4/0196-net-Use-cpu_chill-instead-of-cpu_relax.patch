@@ -1,0 +1,50 @@
+From 32b87f7c8999339b28063e502bd2fca1a3fbd03d Mon Sep 17 00:00:00 2001
+Message-Id: <32b87f7c8999339b28063e502bd2fca1a3fbd03d.1628521258.git.zanussi@kernel.org>
+In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From: Thomas Gleixner <tglx@linutronix.de>
+Date: Wed, 7 Mar 2012 21:10:04 +0100
+Subject: [PATCH 196/307] net: Use cpu_chill() instead of cpu_relax()
+
+Retry loops on RT might loop forever when the modifying side was
+preempted. Use cpu_chill() instead of cpu_relax() to let the system
+make progress.
+
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+---
+ net/packet/af_packet.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/net/packet/af_packet.c b/net/packet/af_packet.c
+index 0ffbf3d17911..4dcead8de57d 100644
+--- a/net/packet/af_packet.c
++++ b/net/packet/af_packet.c
+@@ -57,6 +57,7 @@
+ #include <linux/if_packet.h>
+ #include <linux/wireless.h>
+ #include <linux/kernel.h>
++#include <linux/delay.h>
+ #include <linux/kmod.h>
+ #include <linux/slab.h>
+ #include <linux/vmalloc.h>
+@@ -660,7 +661,7 @@ static void prb_retire_rx_blk_timer_expired(struct timer_list *t)
+ 	if (BLOCK_NUM_PKTS(pbd)) {
+ 		while (atomic_read(&pkc->blk_fill_in_prog)) {
+ 			/* Waiting for skb_copy_bits to finish... */
+-			cpu_relax();
++			cpu_chill();
+ 		}
+ 	}
+ 
+@@ -922,7 +923,7 @@ static void prb_retire_current_block(struct tpacket_kbdq_core *pkc,
+ 		if (!(status & TP_STATUS_BLK_TMO)) {
+ 			while (atomic_read(&pkc->blk_fill_in_prog)) {
+ 				/* Waiting for skb_copy_bits to finish... */
+-				cpu_relax();
++				cpu_chill();
+ 			}
+ 		}
+ 		prb_close_block(pkc, pbd, po, status);
+-- 
+2.17.1
+

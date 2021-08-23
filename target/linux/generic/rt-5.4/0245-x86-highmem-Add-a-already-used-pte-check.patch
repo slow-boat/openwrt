@@ -1,0 +1,31 @@
+From fc4b02a68de4f2c2452b517adc92d947185b7692 Mon Sep 17 00:00:00 2001
+Message-Id: <fc4b02a68de4f2c2452b517adc92d947185b7692.1628521258.git.zanussi@kernel.org>
+In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Date: Mon, 11 Mar 2013 17:09:55 +0100
+Subject: [PATCH 245/307] x86/highmem: Add a "already used pte" check
+
+This is a copy from kmap_atomic_prot().
+
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+---
+ arch/x86/mm/iomap_32.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/arch/x86/mm/iomap_32.c b/arch/x86/mm/iomap_32.c
+index c57d15fc63fb..54e2f28fe189 100644
+--- a/arch/x86/mm/iomap_32.c
++++ b/arch/x86/mm/iomap_32.c
+@@ -56,6 +56,8 @@ void *kmap_atomic_prot_pfn(unsigned long pfn, pgprot_t prot)
+ 	type = kmap_atomic_idx_push();
+ 	idx = type + KM_TYPE_NR * smp_processor_id();
+ 	vaddr = __fix_to_virt(FIX_KMAP_BEGIN + idx);
++	WARN_ON(!pte_none(*(kmap_pte - idx)));
++
+ #ifdef CONFIG_PREEMPT_RT
+ 	current->kmap_pte[type] = pte;
+ #endif
+-- 
+2.17.1
+

@@ -1,0 +1,23 @@
+From 946116390ff5a3d4b4db82fbe8dd8262de69a4cf Mon Sep 17 00:00:00 2001
+Message-Id: <946116390ff5a3d4b4db82fbe8dd8262de69a4cf.1628521258.git.zanussi@kernel.org>
+In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From: Tom Zanussi <zanussi@kernel.org>
+Date: Sun, 8 Aug 2021 09:49:40 -0500
+Subject: [PATCH 307/307] Linux 5.4.138-rt62 REBASE
+
+Signed-off-by: Tom Zanussi <zanussi@kernel.org>
+---
+ localversion-rt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/localversion-rt b/localversion-rt
+index 483ad771f201..40d81d8e61b6 100644
+--- a/localversion-rt
++++ b/localversion-rt
+@@ -1 +1 @@
+--rt19
++-rt62
+-- 
+2.17.1
+

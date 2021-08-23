@@ -1,0 +1,35 @@
+From c219a0f9df8b553d9a3b331a549ede8fffa391bd Mon Sep 17 00:00:00 2001
+Message-Id: <c219a0f9df8b553d9a3b331a549ede8fffa391bd.1628521258.git.zanussi@kernel.org>
+In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From: Thomas Gleixner <tglx@linutronix.de>
+Date: Mon, 6 Jun 2011 12:12:51 +0200
+Subject: [PATCH 138/307] sched: Limit the number of task migrations per batch
+
+Put an upper limit on the number of tasks which are migrated per batch
+to avoid large latencies.
+
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+---
+ kernel/sched/core.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 8294debf68c4..9ea5e4802770 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -56,7 +56,11 @@ const_debug unsigned int sysctl_sched_features =
+  * Number of tasks to iterate in a single balance run.
+  * Limited because this is done with IRQs disabled.
+  */
++#ifdef CONFIG_PREEMPT_RT
++const_debug unsigned int sysctl_sched_nr_migrate = 8;
++#else
+ const_debug unsigned int sysctl_sched_nr_migrate = 32;
++#endif
+ 
+ /*
+  * period over which we measure -rt task CPU usage in us.
+-- 
+2.17.1
+

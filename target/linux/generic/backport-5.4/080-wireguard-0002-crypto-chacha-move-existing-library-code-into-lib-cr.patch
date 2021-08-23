@@ -349,6 +349,21 @@ Index: linux-5.4.140/include/crypto/internal/chacha.h
 +int crypto_xchacha_crypt(struct skcipher_request *req);
 +
 +#endif /* _CRYPTO_CHACHA_H */
+Index: linux-5.4.140/lib/Makefile
+===================================================================
+--- linux-5.4.140.orig/lib/Makefile
++++ linux-5.4.140/lib/Makefile
+@@ -26,8 +26,8 @@ endif
+ 
+ lib-y := ctype.o string.o vsprintf.o cmdline.o \
+ 	 rbtree.o radix-tree.o timerqueue.o xarray.o \
+-	 idr.o extable.o printk_ringbuffer.o \
+-	 sha1.o chacha.o irq_regs.o argv_split.o \
++	 printk_ringbuffer.o \
++	 idr.o extable.o sha1.o irq_regs.o argv_split.o \
+ 	 flex_proportions.o ratelimit.o show_mem.o \
+ 	 is_single_threaded.o plist.o decompress.o kobject_uevent.o \
+ 	 earlycpio.o seq_buf.o siphash.o dec_and_lock.o \
 Index: linux-5.4.140/lib/crypto/Kconfig
 ===================================================================
 --- linux-5.4.140.orig/lib/crypto/Kconfig

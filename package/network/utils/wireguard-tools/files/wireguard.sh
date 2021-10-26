@@ -19,6 +19,8 @@ proto_wireguard_init_config() {
 	proto_config_add_int "listen_port"
 	proto_config_add_int "mtu"
 	proto_config_add_string "fwmark"
+	proto_config_add_string "tunlink"
+	proto_config_add_boolean "nohostroute"
 	available=1
 	no_proto_task=1
 }

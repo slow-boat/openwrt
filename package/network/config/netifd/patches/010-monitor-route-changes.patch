@@ -1,9 +1,9 @@
-Index: netifd-2021-07-26-440eb064/interface.c
+Index: netifd-2021-10-21-f78bdec2/interface.c
 ===================================================================
---- netifd-2021-07-26-440eb064.orig/interface.c
-+++ netifd-2021-07-26-440eb064/interface.c
-@@ -1277,6 +1277,39 @@ interface_stop_jail(const char *jail, co
- 	_exit(0);
+--- netifd-2021-10-21-f78bdec2.orig/interface.c
++++ netifd-2021-10-21-f78bdec2/interface.c
+@@ -1199,6 +1199,39 @@ interface_stop_jail(int netns_fd)
+ 	}
  }
  
 +/* override interface metric, and any route metrics */
@@ -42,23 +42,23 @@ Index: netifd-2021-07-26-440eb064/interface.c
  static void
  set_config_state(struct interface *iface, enum interface_config_state s)
  {
-Index: netifd-2021-07-26-440eb064/interface.h
+Index: netifd-2021-10-21-f78bdec2/interface.h
 ===================================================================
---- netifd-2021-07-26-440eb064.orig/interface.h
-+++ netifd-2021-07-26-440eb064/interface.h
-@@ -211,4 +211,7 @@ void interface_start_pending(void);
- void interface_start_jail(const char *jail, const pid_t netns_pid);
- void interface_stop_jail(const char *jail, const pid_t netns_pid);
+--- netifd-2021-10-21-f78bdec2.orig/interface.h
++++ netifd-2021-10-21-f78bdec2/interface.h
+@@ -212,4 +212,7 @@ void interface_start_pending(void);
+ void interface_start_jail(int netns_fd, const char *jail);
+ void interface_stop_jail(int netns_fd);
  
 +struct device_route;
 +void interface_set_metric(int ifindex, struct device_route * route);
 +
  #endif
-Index: netifd-2021-07-26-440eb064/system-linux.c
+Index: netifd-2021-10-21-f78bdec2/system-linux.c
 ===================================================================
---- netifd-2021-07-26-440eb064.orig/system-linux.c
-+++ netifd-2021-07-26-440eb064/system-linux.c
-@@ -168,10 +168,10 @@ create_raw_event_socket(struct event_soc
+--- netifd-2021-10-21-f78bdec2.orig/system-linux.c
++++ netifd-2021-10-21-f78bdec2/system-linux.c
+@@ -170,10 +170,10 @@ create_raw_event_socket(struct event_soc
  }
  
  static bool
@@ -71,7 +71,7 @@ Index: netifd-2021-07-26-440eb064/system-linux.c
  		return false;
  
  	/* Install the valid custom callback handler */
-@@ -192,7 +192,7 @@ static bool
+@@ -194,7 +194,7 @@ static bool
  create_hotplug_event_socket(struct event_socket *ev, int protocol,
  			    void (*cb)(struct uloop_fd *u, unsigned int events))
  {
@@ -80,7 +80,7 @@ Index: netifd-2021-07-26-440eb064/system-linux.c
  		return false;
  
  	/* Increase rx buffer size to 65K on event sockets */
-@@ -268,7 +268,7 @@ int system_init(void)
+@@ -270,7 +270,7 @@ int system_init(void)
  	if (!sock_rtnl)
  		return -1;
  
@@ -89,7 +89,7 @@ Index: netifd-2021-07-26-440eb064/system-linux.c
  		return -1;
  
  	if (!create_hotplug_event_socket(&hotplug_event, NETLINK_KOBJECT_UEVENT,
-@@ -277,6 +277,11 @@ int system_init(void)
+@@ -279,6 +279,11 @@ int system_init(void)
  
  	/* Receive network link events form kernel */
  	nl_socket_add_membership(rtnl_event.sock, RTNLGRP_LINK);
@@ -101,7 +101,7 @@ Index: netifd-2021-07-26-440eb064/system-linux.c
  
  	return 0;
  }
-@@ -654,34 +659,68 @@ static int system_get_arp_accept(struct
+@@ -710,34 +715,68 @@ static int system_get_arp_accept(struct
  }
  
  /* Evaluate netlink messages */
@@ -123,7 +123,7 @@ Index: netifd-2021-07-26-440eb064/system-linux.c
 -	if (!dev)
 -		goto out;
 -
--	if (!system_get_dev_sysctl("/sys/class/net/%s/carrier", dev->ifname, buf, sizeof(buf)))
+-	if (!system_get_dev_sysfs("carrier", dev->ifname, buf, sizeof(buf)))
 -		link_state = strtoul(buf, NULL, 0);
 -
 -	if (dev->type == &simple_device_type)
@@ -196,10 +196,10 @@ Index: netifd-2021-07-26-440eb064/system-linux.c
  }
  
  static void
-Index: netifd-2021-07-26-440eb064/interface-ip.h
+Index: netifd-2021-10-21-f78bdec2/interface-ip.h
 ===================================================================
---- netifd-2021-07-26-440eb064.orig/interface-ip.h
-+++ netifd-2021-07-26-440eb064/interface-ip.h
+--- netifd-2021-10-21-f78bdec2.orig/interface-ip.h
++++ netifd-2021-10-21-f78bdec2/interface-ip.h
 @@ -98,6 +98,9 @@ struct device_route {
  	unsigned int type;
  	unsigned int proto;
@@ -210,11 +210,11 @@ Index: netifd-2021-07-26-440eb064/interface-ip.h
  
  	/* must be last */
  	enum device_addr_flags flags;
-Index: netifd-2021-07-26-440eb064/ubus.c
+Index: netifd-2021-10-21-f78bdec2/ubus.c
 ===================================================================
---- netifd-2021-07-26-440eb064.orig/ubus.c
-+++ netifd-2021-07-26-440eb064/ubus.c
-@@ -620,7 +620,9 @@ interface_ip_dump_route_list(struct inte
+--- netifd-2021-10-21-f78bdec2.orig/ubus.c
++++ netifd-2021-10-21-f78bdec2/ubus.c
+@@ -637,7 +637,9 @@ interface_ip_dump_route_list(struct inte
  		if (route->flags & DEVROUTE_MTU)
  			blobmsg_add_u32(&b, "mtu", route->mtu);
  

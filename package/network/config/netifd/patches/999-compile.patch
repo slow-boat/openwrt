@@ -1,7 +1,7 @@
-Index: netifd-2021-07-26-440eb064/bond.c
+Index: netifd-2021-10-21-f78bdec2/bond.c
 ===================================================================
---- netifd-2021-07-26-440eb064.orig/bond.c
-+++ netifd-2021-07-26-440eb064/bond.c
+--- netifd-2021-10-21-f78bdec2.orig/bond.c
++++ netifd-2021-10-21-f78bdec2/bond.c
 @@ -431,7 +431,7 @@ bond_add_member(struct bond_state *bst,
  }
  
@@ -35,11 +35,51 @@ Index: netifd-2021-07-26-440eb064/bond.c
  	bst = container_of(dev, struct bond_state, dev);
  	bst->force_active = true;
  	device_set_present(&bst->dev, true);
-Index: netifd-2021-07-26-440eb064/system-linux.c
+Index: netifd-2021-10-21-f78bdec2/system-linux.c
 ===================================================================
---- netifd-2021-07-26-440eb064.orig/system-linux.c
-+++ netifd-2021-07-26-440eb064/system-linux.c
-@@ -1671,11 +1671,6 @@ int system_netns_set(int netns_fd)
+--- netifd-2021-10-21-f78bdec2.orig/system-linux.c
++++ netifd-2021-10-21-f78bdec2/system-linux.c
+@@ -399,7 +399,7 @@ static void system_set_acceptlocal(struc
+ 
+ static void system_set_proxy_arp(struct device *dev, const char *val)
+ {
+-	system_set_dev_sysctl("/proc/sys/net/ipv4/conf/%s/proxy_arp", dev->ifname, val);
++	system_set_dev_sysctl("ipv4/conf", "proxy_arp", dev->ifname, val);
+ }
+ 
+ static void system_set_igmpversion(struct device *dev, const char *val)
+@@ -626,8 +626,8 @@ static int system_get_acceptlocal(struct
+ 
+ static int system_get_proxy_arp(struct device *dev, char *buf, const size_t buf_sz)
+ {
+-	return system_get_dev_sysctl("/proc/sys/net/ipv4/conf/%s/proxy_arp",
+-			dev->ifname, buf, buf_sz);
++	return system_get_dev_sysctl("ipv4/conf", "proxy_arp",
++				 dev->ifname, buf, buf_sz);
+ }
+ 
+ static int system_get_igmpversion(struct device *dev, char *buf, const size_t buf_sz)
+@@ -763,8 +763,9 @@ static void process_nl_message(struct nl
+ 		if (!dev)
+ 			return;
+ 
+-		if (!system_get_dev_sysctl("/sys/class/net/%s/carrier", dev->ifname, buf, sizeof(buf)))
++		if (system_get_dev_sysfs("carrier", dev->ifname, buf, sizeof(buf)) >=0)
+ 			link_state = strtoul(buf, NULL, 0);
++
+ 		device_set_link(dev, link_state ? true : false);
+ 	}
+ }
+@@ -1527,7 +1528,7 @@ int system_bridge_addbr(struct device *b
+ 	snprintf(buf, sizeof(buf), "%lu", sec_to_jiffies(cfg->max_age));
+ 	system_bridge_set_max_age(bridge, buf);
+ 
+-	system_set_dev_sysctl("/sys/class/net/%s/bridge/group_fwd_mask",
++	system_set_dev_sysfs("bridge/group_fwd_mask",
+ 		bridge->ifname, cfg->lldp_passthru ? "0x4000" : "0");
+ 
+ 	if (cfg->flags & BRIDGE_OPT_AGEING_TIME) {
+@@ -1809,11 +1810,6 @@ int system_netns_set(int netns_fd)
  	return setns(netns_fd, CLONE_NEWNET);
  }
  
@@ -51,3 +91,16 @@ Index: netifd-2021-07-26-440eb064/system-linux.c
  int system_veth_add(struct device *veth, struct veth_config *cfg)
  {
  	struct nl_msg *msg;
+Index: netifd-2021-10-21-f78bdec2/device.h
+===================================================================
+--- netifd-2021-10-21-f78bdec2.orig/device.h
++++ netifd-2021-10-21-f78bdec2/device.h
+@@ -129,7 +129,7 @@ enum {
+ 	DEV_OPT_SPEED			= (1ULL << 30),
+ 	DEV_OPT_DUPLEX			= (1ULL << 31),
+ 	DEV_OPT_DIS_CHKSUM_OFFLOAD	= (1ULL << 32),
+-	DEV_OPT_PROXYARP		= (1 << 33),
++	DEV_OPT_PROXYARP		= (1ULL << 33),
+ };
+ 
+ /* events broadcasted to all users of a device */

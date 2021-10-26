@@ -1,16 +1,16 @@
-Index: netifd-2021-07-26-440eb064/device.c
+Index: netifd-2021-10-21-f78bdec2/device.c
 ===================================================================
---- netifd-2021-07-26-440eb064.orig/device.c
-+++ netifd-2021-07-26-440eb064/device.c
-@@ -62,6 +62,7 @@ static const struct blobmsg_policy dev_a
- 	[DEV_ATTR_ARP_ACCEPT] = { .name = "arp_accept", .type = BLOBMSG_TYPE_BOOL },
- 	[DEV_ATTR_AUTH] = { .name = "auth", .type = BLOBMSG_TYPE_BOOL },
+--- netifd-2021-10-21-f78bdec2.orig/device.c
++++ netifd-2021-10-21-f78bdec2/device.c
+@@ -64,6 +64,7 @@ static const struct blobmsg_policy dev_a
+ 	[DEV_ATTR_SPEED] = { .name = "speed", .type = BLOBMSG_TYPE_INT32 },
+ 	[DEV_ATTR_DUPLEX] = { .name = "duplex", .type = BLOBMSG_TYPE_BOOL },
  	[DEV_ATTR_DIS_CHKSUM_OFFLOAD] = { .name = "dis_chksum_offload", .type = BLOBMSG_TYPE_BOOL },
 +	[DEV_ATTR_PROXYARP] = { .name = "proxy_arp", .type = BLOBMSG_TYPE_BOOL },
  };
  
  const struct uci_blob_param_list device_attr_list = {
-@@ -242,6 +243,7 @@ device_merge_settings(struct device *dev
+@@ -244,6 +245,7 @@ device_merge_settings(struct device *dev
  	n->ip6segmentrouting = s->flags & DEV_OPT_IP6SEGMENTROUTING ? s->ip6segmentrouting : os->ip6segmentrouting;
  	n->promisc = s->flags & DEV_OPT_PROMISC ? s->promisc : os->promisc;
  	n->rpfilter = s->flags & DEV_OPT_RPFILTER ? s->rpfilter : os->rpfilter;
@@ -18,7 +18,7 @@ Index: netifd-2021-07-26-440eb064/device.c
  	n->acceptlocal = s->flags & DEV_OPT_ACCEPTLOCAL ? s->acceptlocal : os->acceptlocal;
  	n->igmpversion = s->flags & DEV_OPT_IGMPVERSION ? s->igmpversion : os->igmpversion;
  	n->mldversion = s->flags & DEV_OPT_MLDVERSION ? s->mldversion : os->mldversion;
-@@ -332,6 +334,11 @@ device_init_settings(struct device *dev,
+@@ -336,6 +338,11 @@ device_init_settings(struct device *dev,
  		s->flags |= DEV_OPT_PROMISC;
  	}
  
@@ -30,7 +30,7 @@ Index: netifd-2021-07-26-440eb064/device.c
  	if ((cur = tb[DEV_ATTR_RPFILTER])) {
  		if (system_resolve_rpfilter(blobmsg_data(cur), &s->rpfilter))
  			s->flags |= DEV_OPT_RPFILTER;
-@@ -1205,6 +1212,8 @@ device_dump_status(struct blob_buf *b, s
+@@ -1220,6 +1227,8 @@ device_dump_status(struct blob_buf *b, s
  			blobmsg_add_u8(b, "auth", st.auth);
  		if (st.flags & DEV_OPT_DIS_CHKSUM_OFFLOAD)
  			blobmsg_add_u8(b, "dis_chksum_offload", st.dis_chksum_offload);
@@ -39,10 +39,10 @@ Index: netifd-2021-07-26-440eb064/device.c
  	}
  
  	s = blobmsg_open_table(b, "statistics");
-Index: netifd-2021-07-26-440eb064/device.h
+Index: netifd-2021-10-21-f78bdec2/device.h
 ===================================================================
---- netifd-2021-07-26-440eb064.orig/device.h
-+++ netifd-2021-07-26-440eb064/device.h
+--- netifd-2021-10-21-f78bdec2.orig/device.h
++++ netifd-2021-10-21-f78bdec2/device.h
 @@ -39,6 +39,7 @@ enum {
  	DEV_ATTR_PROMISC,
  	DEV_ATTR_RPFILTER,
@@ -51,28 +51,28 @@ Index: netifd-2021-07-26-440eb064/device.h
  	DEV_ATTR_IGMPVERSION,
  	DEV_ATTR_MLDVERSION,
  	DEV_ATTR_NEIGHREACHABLETIME,
-@@ -123,6 +124,7 @@ enum {
- 	DEV_OPT_DROP_UNSOLICITED_NA	= (1 << 28),
- 	DEV_OPT_ARP_ACCEPT		= (1 << 29),
- 	DEV_OPT_DIS_CHKSUM_OFFLOAD	= (1 << 30),
-+	DEV_OPT_PROXYARP	= (1 << 31),
+@@ -128,6 +129,7 @@ enum {
+ 	DEV_OPT_SPEED			= (1ULL << 30),
+ 	DEV_OPT_DUPLEX			= (1ULL << 31),
+ 	DEV_OPT_DIS_CHKSUM_OFFLOAD	= (1ULL << 32),
++	DEV_OPT_PROXYARP		= (1 << 33),
  };
  
  /* events broadcasted to all users of a device */
-@@ -199,6 +201,7 @@ struct device_settings {
- 	bool arp_accept;
- 	bool auth;
+@@ -206,6 +208,7 @@ struct device_settings {
+ 	unsigned int speed;
+ 	bool duplex;
  	bool dis_chksum_offload;
 +	bool proxy_arp;
  };
  
  /*
-Index: netifd-2021-07-26-440eb064/system-linux.c
+Index: netifd-2021-10-21-f78bdec2/system-linux.c
 ===================================================================
---- netifd-2021-07-26-440eb064.orig/system-linux.c
-+++ netifd-2021-07-26-440eb064/system-linux.c
-@@ -319,6 +319,11 @@ static void system_set_acceptlocal(struc
- 	system_set_dev_sysctl("/proc/sys/net/ipv4/conf/%s/accept_local", dev->ifname, val);
+--- netifd-2021-10-21-f78bdec2.orig/system-linux.c
++++ netifd-2021-10-21-f78bdec2/system-linux.c
+@@ -391,6 +391,11 @@ static void system_set_acceptlocal(struc
+ 	system_set_dev_sysctl("ipv4/conf", "accept_local", dev->ifname, val);
  }
  
 +static void system_set_proxy_arp(struct device *dev, const char *val)
@@ -82,9 +82,9 @@ Index: netifd-2021-07-26-440eb064/system-linux.c
 +
  static void system_set_igmpversion(struct device *dev, const char *val)
  {
- 	system_set_dev_sysctl("/proc/sys/net/ipv4/conf/%s/force_igmp_version", dev->ifname, val);
-@@ -557,6 +562,12 @@ static int system_get_acceptlocal(struct
- 			dev->ifname, buf, buf_sz);
+ 	system_set_dev_sysctl("ipv4/conf", "force_igmp_version", dev->ifname, val);
+@@ -613,6 +618,12 @@ static int system_get_acceptlocal(struct
+ 				     dev->ifname, buf, buf_sz);
  }
  
 +static int system_get_proxy_arp(struct device *dev, char *buf, const size_t buf_sz)
@@ -95,8 +95,8 @@ Index: netifd-2021-07-26-440eb064/system-linux.c
 +
  static int system_get_igmpversion(struct device *dev, char *buf, const size_t buf_sz)
  {
- 	return system_get_dev_sysctl("/proc/sys/net/ipv4/conf/%s/force_igmp_version",
-@@ -1639,6 +1650,11 @@ system_if_get_settings(struct device *de
+ 	return system_get_dev_sysctl("ipv4/conf", "force_igmp_version",
+@@ -1828,6 +1839,11 @@ system_if_get_settings(struct device *de
  		s->flags |= DEV_OPT_ACCEPTLOCAL;
  	}
  
@@ -108,7 +108,7 @@ Index: netifd-2021-07-26-440eb064/system-linux.c
  	if (!system_get_igmpversion(dev, buf, sizeof(buf))) {
  		s->igmpversion = strtoul(buf, NULL, 0);
  		s->flags |= DEV_OPT_IGMPVERSION;
-@@ -1773,6 +1789,10 @@ system_if_apply_settings(struct device *
+@@ -1962,6 +1978,10 @@ system_if_apply_settings(struct device *
  	}
  	if (apply_mask & DEV_OPT_ACCEPTLOCAL)
  		system_set_acceptlocal(dev, s->acceptlocal ? "1" : "0");
@@ -119,7 +119,7 @@ Index: netifd-2021-07-26-440eb064/system-linux.c
  	if (apply_mask & DEV_OPT_IGMPVERSION) {
  		snprintf(buf, sizeof(buf), "%u", s->igmpversion);
  		system_set_igmpversion(dev, buf);
-@@ -1819,7 +1839,7 @@ system_if_apply_settings(struct device *
+@@ -2008,7 +2028,7 @@ system_if_apply_settings(struct device *
  	if (apply_mask & DEV_OPT_ARP_ACCEPT)
  		system_set_arp_accept(dev, s->arp_accept ? "1" : "0");
  

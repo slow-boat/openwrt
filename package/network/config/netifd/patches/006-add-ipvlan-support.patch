@@ -1,20 +1,20 @@
-Index: netifd-2021-07-26-440eb064/CMakeLists.txt
+Index: netifd-2021-10-21-f78bdec2/CMakeLists.txt
 ===================================================================
---- netifd-2021-07-26-440eb064.orig/CMakeLists.txt
-+++ netifd-2021-07-26-440eb064/CMakeLists.txt
+--- netifd-2021-10-21-f78bdec2.orig/CMakeLists.txt
++++ netifd-2021-10-21-f78bdec2/CMakeLists.txt
 @@ -20,7 +20,7 @@ SET(SOURCES
  	interface.c interface-ip.c interface-event.c
  	iprule.c proto.c proto-static.c proto-shell.c
  	config.c device.c bridge.c veth.c vlan.c alias.c
 -	macvlan.c ubus.c vlandev.c wireless.c
 +	macvlan.c ipvlan.c ubus.c vlandev.c wireless.c
- 	extdev.c)
+ 	extdev.c bonding.c)
  
  
-Index: netifd-2021-07-26-440eb064/ipvlan.c
+Index: netifd-2021-10-21-f78bdec2/ipvlan.c
 ===================================================================
 --- /dev/null
-+++ netifd-2021-07-26-440eb064/ipvlan.c
++++ netifd-2021-10-21-f78bdec2/ipvlan.c
 @@ -0,0 +1,263 @@
 +/*
 + * netifd - network interface daemon
@@ -279,11 +279,11 @@ Index: netifd-2021-07-26-440eb064/ipvlan.c
 +{
 +	device_type_add(&ipvlan_device_type);
 +}
-Index: netifd-2021-07-26-440eb064/system-dummy.c
+Index: netifd-2021-10-21-f78bdec2/system-dummy.c
 ===================================================================
---- netifd-2021-07-26-440eb064.orig/system-dummy.c
-+++ netifd-2021-07-26-440eb064/system-dummy.c
-@@ -346,6 +346,16 @@ int system_macvlan_del(struct device *ma
+--- netifd-2021-10-21-f78bdec2.orig/system-dummy.c
++++ netifd-2021-10-21-f78bdec2/system-dummy.c
+@@ -360,6 +360,16 @@ int system_macvlan_del(struct device *ma
  	return 0;
  }
  
@@ -300,11 +300,11 @@ Index: netifd-2021-07-26-440eb064/system-dummy.c
  int system_veth_add(struct device *veth, struct veth_config *cfg)
  {
  	return 0;
-Index: netifd-2021-07-26-440eb064/system-linux.c
+Index: netifd-2021-10-21-f78bdec2/system-linux.c
 ===================================================================
---- netifd-2021-07-26-440eb064.orig/system-linux.c
-+++ netifd-2021-07-26-440eb064/system-linux.c
-@@ -1320,6 +1320,7 @@ int system_macvlan_add(struct device *ma
+--- netifd-2021-10-21-f78bdec2.orig/system-linux.c
++++ netifd-2021-10-21-f78bdec2/system-linux.c
+@@ -1458,6 +1458,7 @@ int system_macvlan_add(struct device *ma
  		{ "vepa", MACVLAN_MODE_VEPA },
  		{ "bridge", MACVLAN_MODE_BRIDGE },
  		{ "passthru", MACVLAN_MODE_PASSTHRU },
@@ -312,7 +312,7 @@ Index: netifd-2021-07-26-440eb064/system-linux.c
  	};
  
  	msg = nlmsg_alloc_simple(RTM_NEWLINK, NLM_F_REQUEST | NLM_F_CREATE | NLM_F_EXCL);
-@@ -1392,6 +1393,86 @@ int system_link_netns_move(struct device
+@@ -1530,6 +1531,86 @@ int system_link_netns_move(struct device
  	return system_rtnl_call(msg);
  }
  
@@ -399,7 +399,7 @@ Index: netifd-2021-07-26-440eb064/system-linux.c
  static int system_link_del(const char *ifname)
  {
  	struct nl_msg *msg;
-@@ -1429,6 +1510,11 @@ int system_netns_set(int netns_fd)
+@@ -1567,6 +1648,11 @@ int system_netns_set(int netns_fd)
  	return setns(netns_fd, CLONE_NEWNET);
  }
  
@@ -411,10 +411,10 @@ Index: netifd-2021-07-26-440eb064/system-linux.c
  int system_veth_add(struct device *veth, struct veth_config *cfg)
  {
  	struct nl_msg *msg;
-Index: netifd-2021-07-26-440eb064/system.h
+Index: netifd-2021-10-21-f78bdec2/system.h
 ===================================================================
---- netifd-2021-07-26-440eb064.orig/system.h
-+++ netifd-2021-07-26-440eb064/system.h
+--- netifd-2021-10-21-f78bdec2.orig/system.h
++++ netifd-2021-10-21-f78bdec2/system.h
 @@ -153,6 +153,11 @@ struct macvlan_config {
  	unsigned char macaddr[6];
  };
@@ -427,7 +427,7 @@ Index: netifd-2021-07-26-440eb064/system.h
  enum veth_opt {
  	VETH_OPT_MACADDR = (1 << 0),
  	VETH_OPT_PEER_NAME = (1 << 1),
-@@ -213,6 +218,9 @@ int system_bridge_vlan_check(struct devi
+@@ -257,6 +262,9 @@ int system_bonding_set_port(struct devic
  int system_macvlan_add(struct device *macvlan, struct device *dev, struct macvlan_config *cfg);
  int system_macvlan_del(struct device *macvlan);
  

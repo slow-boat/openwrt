@@ -1,10 +1,10 @@
-From 81aceca4949473a0c577315a2c80244e683b9fc5 Mon Sep 17 00:00:00 2001
-Message-Id: <81aceca4949473a0c577315a2c80244e683b9fc5.1628521258.git.zanussi@kernel.org>
-In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
-References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From fa2e39f4c9ece3d9818251f6b5e94f6e3b5de25c Mon Sep 17 00:00:00 2001
+Message-Id: <fa2e39f4c9ece3d9818251f6b5e94f6e3b5de25c.1634742095.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Thu, 28 May 2020 14:35:12 +0200
-Subject: [PATCH 294/307] Bluetooth: Acquire sk_lock.slock without disabling
+Subject: [PATCH 294/308] Bluetooth: Acquire sk_lock.slock without disabling
  interrupts
 
 [ Upstream commit e6da0edc24eecef2f6964d92fa9044e1821deace ]

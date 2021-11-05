@@ -1,10 +1,10 @@
-From 98eb71088a9dd1d6cb9a3941453ebba269eb61ad Mon Sep 17 00:00:00 2001
-Message-Id: <98eb71088a9dd1d6cb9a3941453ebba269eb61ad.1628521257.git.zanussi@kernel.org>
-In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
-References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From 860f84f2f4f264b1fdbeba5de8182e11ebb0aa84 Mon Sep 17 00:00:00 2001
+Message-Id: <860f84f2f4f264b1fdbeba5de8182e11ebb0aa84.1634742093.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
 From: John Ogness <john.ogness@linutronix.de>
 Date: Tue, 12 Feb 2019 15:29:50 +0100
-Subject: [PATCH 028/307] printk: minimize console locking implementation
+Subject: [PATCH 028/308] printk: minimize console locking implementation
 
 Since printing of the printk buffer is now handled by the printk
 kthread, minimize the console locking functions to just handle

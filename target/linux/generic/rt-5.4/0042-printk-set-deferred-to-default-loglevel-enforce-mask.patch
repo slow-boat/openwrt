@@ -1,10 +1,10 @@
-From ff9efda72d98083370578bfd3262b784abef70f2 Mon Sep 17 00:00:00 2001
-Message-Id: <ff9efda72d98083370578bfd3262b784abef70f2.1628521257.git.zanussi@kernel.org>
-In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
-References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From 4a765c31e1c3805e065ca8739d01414919aef761 Mon Sep 17 00:00:00 2001
+Message-Id: <4a765c31e1c3805e065ca8739d01414919aef761.1634742093.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
 From: John Ogness <john.ogness@linutronix.de>
 Date: Thu, 14 Feb 2019 23:13:30 +0100
-Subject: [PATCH 042/307] printk: set deferred to default loglevel, enforce
+Subject: [PATCH 042/308] printk: set deferred to default loglevel, enforce
  mask
 
 All messages printed via vpritnk_deferred() were being

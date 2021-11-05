@@ -1,10 +1,10 @@
-From a2718dad17b386c5b1ad532a3ac997a8c6f7efcc Mon Sep 17 00:00:00 2001
-Message-Id: <a2718dad17b386c5b1ad532a3ac997a8c6f7efcc.1628521258.git.zanussi@kernel.org>
-In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
-References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From 854f4e6f19cf8cef7c404c9b3a9c2501bfe4a969 Mon Sep 17 00:00:00 2001
+Message-Id: <854f4e6f19cf8cef7c404c9b3a9c2501bfe4a969.1634742094.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
 From: David Miller <davem@davemloft.net>
 Date: Mon, 24 Feb 2020 15:01:46 +0100
-Subject: [PATCH 236/307] bpf: Use migrate_disable/enable in array macros and
+Subject: [PATCH 236/308] bpf: Use migrate_disable/enable in array macros and
  cgroup/lirc code.
 
 Replace the preemption disable/enable with migrate_disable/enable() to
@@ -63,10 +63,10 @@ index 66590ae89c97..fee96633e079 100644
  			_ret = (_cn ? NET_XMIT_CN : NET_XMIT_SUCCESS);	\
  		else					\
 diff --git a/include/linux/filter.h b/include/linux/filter.h
-index 06b680f508d8..81ece78f77fc 100644
+index 100a4180b602..69763209b5bf 100644
 --- a/include/linux/filter.h
 +++ b/include/linux/filter.h
-@@ -669,6 +669,7 @@ static inline u8 *bpf_skb_cb(struct sk_buff *skb)
+@@ -684,6 +684,7 @@ static inline u8 *bpf_skb_cb(struct sk_buff *skb)
  	return qdisc_skb_cb(skb)->data;
  }
  
@@ -74,7 +74,7 @@ index 06b680f508d8..81ece78f77fc 100644
  static inline u32 __bpf_prog_run_save_cb(const struct bpf_prog *prog,
  					 struct sk_buff *skb)
  {
-@@ -694,9 +695,9 @@ static inline u32 bpf_prog_run_save_cb(const struct bpf_prog *prog,
+@@ -709,9 +710,9 @@ static inline u32 bpf_prog_run_save_cb(const struct bpf_prog *prog,
  {
  	u32 res;
  

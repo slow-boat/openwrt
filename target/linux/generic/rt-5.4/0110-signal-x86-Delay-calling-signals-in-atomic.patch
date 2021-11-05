@@ -1,10 +1,10 @@
-From 6704f4ac8e197f89a9abdd4feb24480d1a9d5b15 Mon Sep 17 00:00:00 2001
-Message-Id: <6704f4ac8e197f89a9abdd4feb24480d1a9d5b15.1628521258.git.zanussi@kernel.org>
-In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
-References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From ceaeee121568e22cadb9d4778b449eb95d6a0617 Mon Sep 17 00:00:00 2001
+Message-Id: <ceaeee121568e22cadb9d4778b449eb95d6a0617.1634742094.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
 From: Oleg Nesterov <oleg@redhat.com>
 Date: Tue, 14 Jul 2015 14:26:34 +0200
-Subject: [PATCH 110/307] signal/x86: Delay calling signals in atomic
+Subject: [PATCH 110/308] signal/x86: Delay calling signals in atomic
 
 On x86_64 we must disable preemption before we enable interrupts
 for stack faults, int3 and debugging, because the current task is using
@@ -84,7 +84,7 @@ index 33d3c88a7225..65b9a5d4132b 100644
  typedef sigset_t compat_sigset_t;
  #endif
 diff --git a/include/linux/sched.h b/include/linux/sched.h
-index c8bc02e729a6..bce2c2633e70 100644
+index 736498a524f3..8aba8f561dbb 100644
 --- a/include/linux/sched.h
 +++ b/include/linux/sched.h
 @@ -918,6 +918,10 @@ struct task_struct {

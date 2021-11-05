@@ -1,10 +1,10 @@
-From 266fb19a8d25e101dc38dc189581777f6e8ab49b Mon Sep 17 00:00:00 2001
-Message-Id: <266fb19a8d25e101dc38dc189581777f6e8ab49b.1628521258.git.zanussi@kernel.org>
-In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
-References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From f5d05feb5eedf931913eb899ce4f1ccd708127c7 Mon Sep 17 00:00:00 2001
+Message-Id: <f5d05feb5eedf931913eb899ce4f1ccd708127c7.1634742094.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Thu, 26 Sep 2019 12:29:05 +0200
-Subject: [PATCH 217/307] drm/i915: Don't disable interrupts for
+Subject: [PATCH 217/308] drm/i915: Don't disable interrupts for
  intel_engine_breadcrumbs_irq()
 
 The function intel_engine_breadcrumbs_irq() is always invoked from an interrupt

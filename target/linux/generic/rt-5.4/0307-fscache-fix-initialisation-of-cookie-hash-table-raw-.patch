@@ -1,0 +1,37 @@
+From 7087986929a74ba602d7952772a0af4c349cc886 Mon Sep 17 00:00:00 2001
+Message-Id: <7087986929a74ba602d7952772a0af4c349cc886.1634742095.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+From: Gregor Beck <gbeck@esigma-technology.com>
+Date: Fri, 3 Sep 2021 14:19:11 +0200
+Subject: [PATCH 307/308] fscache: fix initialisation of cookie hash table raw
+ spinlocks
+
+The original patch, 602660600bcd ("fscache: initialize cookie hash
+table raw spinlocks"), subtracted 1 from the shift and so still left
+some spinlocks uninitialized.  This fixes that.
+
+[zanussi: Added changelog text]
+
+Signed-off-by: Gregor Beck <gregor.beck@gmail.com>
+Fixes: 602660600bcd ("fscache: initialize cookie hash table raw spinlocks")
+Signed-off-by: Tom Zanussi <zanussi@kernel.org>
+---
+ fs/fscache/cookie.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/fs/fscache/cookie.c b/fs/fscache/cookie.c
+index 3cc20980950d..7446043d14fa 100644
+--- a/fs/fscache/cookie.c
++++ b/fs/fscache/cookie.c
+@@ -951,6 +951,6 @@ void __init fscache_cookie_init(void)
+ {
+ 	int i;
+ 
+-	for (i = 0; i < (1 << fscache_cookie_hash_shift) - 1; i++)
++	for (i = 0; i < ARRAY_SIZE(fscache_cookie_hash); i++)
+ 		INIT_HLIST_BL_HEAD(&fscache_cookie_hash[i]);
+ }
+-- 
+2.17.1
+

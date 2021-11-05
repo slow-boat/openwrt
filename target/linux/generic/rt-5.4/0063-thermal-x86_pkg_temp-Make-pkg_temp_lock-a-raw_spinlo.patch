@@ -1,10 +1,10 @@
-From 5a24e70623fa253b8a3e5396632d5e435a552d01 Mon Sep 17 00:00:00 2001
-Message-Id: <5a24e70623fa253b8a3e5396632d5e435a552d01.1628521257.git.zanussi@kernel.org>
-In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
-References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From 2d676eeb2175fc81e5e8ebe58a71ae8b78b883c4 Mon Sep 17 00:00:00 2001
+Message-Id: <2d676eeb2175fc81e5e8ebe58a71ae8b78b883c4.1634742094.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
 From: Clark Williams <williams@redhat.com>
 Date: Mon, 15 Jul 2019 15:25:00 -0500
-Subject: [PATCH 063/307] thermal/x86_pkg_temp: Make pkg_temp_lock a
+Subject: [PATCH 063/308] thermal/x86_pkg_temp: Make pkg_temp_lock a
  raw_spinlock_t
 
 The spinlock pkg_temp_lock has the potential of being taken in atomic

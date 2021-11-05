@@ -1,10 +1,10 @@
-From 6bc74a148afa93ad03d7e2b744490d79e6ee643e Mon Sep 17 00:00:00 2001
-Message-Id: <6bc74a148afa93ad03d7e2b744490d79e6ee643e.1628521257.git.zanussi@kernel.org>
-In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
-References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From 8572762e2c4d251a5a3105fe7d847a5e70885851 Mon Sep 17 00:00:00 2001
+Message-Id: <8572762e2c4d251a5a3105fe7d847a5e70885851.1634742093.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
 From: John Ogness <john.ogness@linutronix.de>
 Date: Wed, 24 Apr 2019 16:36:04 +0200
-Subject: [PATCH 049/307] printk: kmsg_dump: remove mutex usage
+Subject: [PATCH 049/308] printk: kmsg_dump: remove mutex usage
 
 The kmsg dumper can be called from any context, but the dumping
 helpers were using a mutex to synchronize the iterator against

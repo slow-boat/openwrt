@@ -1,10 +1,10 @@
-From b1008731639aff86fef3942acbf67147d55ffad7 Mon Sep 17 00:00:00 2001
-Message-Id: <b1008731639aff86fef3942acbf67147d55ffad7.1628521258.git.zanussi@kernel.org>
-In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
-References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From 8729008736a08c5b6138b530ef639fbddbbe4303 Mon Sep 17 00:00:00 2001
+Message-Id: <8729008736a08c5b6138b530ef639fbddbbe4303.1634742095.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
 From: Peter Zijlstra <peterz@infradead.org>
 Date: Thu, 28 Jul 2011 10:43:51 +0200
-Subject: [PATCH 244/307] mm, rt: kmap_atomic scheduling
+Subject: [PATCH 244/308] mm, rt: kmap_atomic scheduling
 
 In fact, with migrate_disable() existing one could play games with
 kmap_atomic. You could save/restore the kmap_atomic slots on context
@@ -250,7 +250,7 @@ index ea5cdbd8c2c3..c39f8cfd34ae 100644
  }
  
 diff --git a/include/linux/sched.h b/include/linux/sched.h
-index da4664e2c3fb..d27eecbeb7b1 100644
+index 7c96d0c61f4e..39abc9e2827f 100644
 --- a/include/linux/sched.h
 +++ b/include/linux/sched.h
 @@ -31,6 +31,7 @@

@@ -1,10 +1,10 @@
-From 4d883b1e676cd4df748a1115710fa9e8f030d5fd Mon Sep 17 00:00:00 2001
-Message-Id: <4d883b1e676cd4df748a1115710fa9e8f030d5fd.1628521258.git.zanussi@kernel.org>
-In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
-References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From ea25b93b71c4f2f571ddc7850c5dbe1bfa4e4b3b Mon Sep 17 00:00:00 2001
+Message-Id: <ea25b93b71c4f2f571ddc7850c5dbe1bfa4e4b3b.1634742095.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Fri, 11 Oct 2019 13:14:35 +0200
-Subject: [PATCH 270/307] ARM64: Allow to enable RT
+Subject: [PATCH 270/308] ARM64: Allow to enable RT
 
 Allow to select RT.
 

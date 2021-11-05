@@ -1,10 +1,10 @@
-From c74e8917cd86cb138d94d535c394bab9362abddb Mon Sep 17 00:00:00 2001
-Message-Id: <c74e8917cd86cb138d94d535c394bab9362abddb.1628521257.git.zanussi@kernel.org>
-In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
-References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From 3a4a0ff6900c3807413e4c17663908b6b6218af9 Mon Sep 17 00:00:00 2001
+Message-Id: <3a4a0ff6900c3807413e4c17663908b6b6218af9.1634742093.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
 From: John Ogness <john.ogness@linutronix.de>
 Date: Tue, 12 Feb 2019 15:29:57 +0100
-Subject: [PATCH 035/307] printk: introduce emergency messages
+Subject: [PATCH 035/308] printk: introduce emergency messages
 
 Console messages are generally either critical or non-critical.
 Critical messages are messages such as crashes or sysrq output.
@@ -253,7 +253,7 @@ index 783c03a0ad0a..8801b9a0eacd 100644
  
  void console_atomic_lock(unsigned int *flags)
 diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index ee00c6c8a373..bb30740f8cb5 100644
+index a846f03901db..1adc57413920 100644
 --- a/lib/Kconfig.debug
 +++ b/lib/Kconfig.debug
 @@ -61,6 +61,23 @@ config CONSOLE_LOGLEVEL_QUIET

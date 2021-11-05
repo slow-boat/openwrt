@@ -1,10 +1,10 @@
-From e48f041d752412c208578b823e6ba1e4243664c3 Mon Sep 17 00:00:00 2001
-Message-Id: <e48f041d752412c208578b823e6ba1e4243664c3.1628521257.git.zanussi@kernel.org>
-In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
-References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From 389cd3639a5aefb8a81a7d5b7ab1da9115d3f38f Mon Sep 17 00:00:00 2001
+Message-Id: <389cd3639a5aefb8a81a7d5b7ab1da9115d3f38f.1634742093.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
 From: John Ogness <john.ogness@linutronix.de>
 Date: Fri, 10 Jan 2020 16:45:32 +0106
-Subject: [PATCH 054/307] serial: 8250: fsl/ingenic/mtk: fix atomic console
+Subject: [PATCH 054/308] serial: 8250: fsl/ingenic/mtk: fix atomic console
 
 A few 8250 implementations have their own IER access. If the port
 is a console, wrap the accesses with console_atomic_lock.
@@ -67,10 +67,10 @@ index 424c07c5f629..47f1482bd818 100644
  		if (ier & UART_IER_MSI)
  			value |= UART_MCR_MDCE | UART_MCR_FCM;
 diff --git a/drivers/tty/serial/8250/8250_mtk.c b/drivers/tty/serial/8250/8250_mtk.c
-index e9eb454c2472..221e0c9efc36 100644
+index 98e68f25a5f3..ce0f4f1aa412 100644
 --- a/drivers/tty/serial/8250/8250_mtk.c
 +++ b/drivers/tty/serial/8250/8250_mtk.c
-@@ -212,12 +212,37 @@ static void mtk8250_shutdown(struct uart_port *port)
+@@ -217,12 +217,37 @@ static void mtk8250_shutdown(struct uart_port *port)
  
  static void mtk8250_disable_intrs(struct uart_8250_port *up, int mask)
  {

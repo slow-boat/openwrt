@@ -1,10 +1,10 @@
-From c290bf21a0b0e6f20d288d6a2f97b95adb3c538d Mon Sep 17 00:00:00 2001
-Message-Id: <c290bf21a0b0e6f20d288d6a2f97b95adb3c538d.1628521257.git.zanussi@kernel.org>
-In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
-References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From 79bdf9ee94d1403c82616c66a1e6ecdb0e3038a9 Mon Sep 17 00:00:00 2001
+Message-Id: <79bdf9ee94d1403c82616c66a1e6ecdb0e3038a9.1634742093.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
 From: John Ogness <john.ogness@linutronix.de>
 Date: Tue, 12 Feb 2019 15:29:43 +0100
-Subject: [PATCH 021/307] printk-rb: add basic non-blocking reading interface
+Subject: [PATCH 021/308] printk-rb: add basic non-blocking reading interface
 
 Add reader iterator static declaration/initializer, dynamic
 initializer, and functions to iterate and retrieve ring buffer data.

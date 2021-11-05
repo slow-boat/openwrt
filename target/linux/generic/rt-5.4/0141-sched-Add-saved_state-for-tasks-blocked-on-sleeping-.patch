@@ -1,10 +1,10 @@
-From fec1df1c3faeb146e8947d773be400a017ede5c6 Mon Sep 17 00:00:00 2001
-Message-Id: <fec1df1c3faeb146e8947d773be400a017ede5c6.1628521258.git.zanussi@kernel.org>
-In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
-References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From b798a44a2a9fc2660fb8ce4b963bacaf516d9977 Mon Sep 17 00:00:00 2001
+Message-Id: <b798a44a2a9fc2660fb8ce4b963bacaf516d9977.1634742094.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Sat, 25 Jun 2011 09:21:04 +0200
-Subject: [PATCH 141/307] sched: Add saved_state for tasks blocked on sleeping
+Subject: [PATCH 141/308] sched: Add saved_state for tasks blocked on sleeping
  locks
 
 Spinlocks are state preserving in !RT. RT changes the state when a
@@ -21,7 +21,7 @@ Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
  3 files changed, 43 insertions(+), 3 deletions(-)
 
 diff --git a/include/linux/sched.h b/include/linux/sched.h
-index bce2c2633e70..82335bb8bb22 100644
+index 8aba8f561dbb..bfcfe27ceba4 100644
 --- a/include/linux/sched.h
 +++ b/include/linux/sched.h
 @@ -631,6 +631,8 @@ struct task_struct {
@@ -42,10 +42,10 @@ index bce2c2633e70..82335bb8bb22 100644
  
  #ifdef CONFIG_SMP
 diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 6b190c07d9e9..4083e1005d5d 100644
+index fffd03e76ea4..7f7ebde31acb 100644
 --- a/kernel/sched/core.c
 +++ b/kernel/sched/core.c
-@@ -2605,6 +2605,8 @@ try_to_wake_up(struct task_struct *p, unsigned int state, int wake_flags)
+@@ -2618,6 +2618,8 @@ try_to_wake_up(struct task_struct *p, unsigned int state, int wake_flags)
  	int cpu, success = 0;
  
  	preempt_disable();
@@ -54,7 +54,7 @@ index 6b190c07d9e9..4083e1005d5d 100644
  	if (p == current) {
  		/*
  		 * We're waking current, this means 'p->on_rq' and 'task_cpu(p)
-@@ -2627,7 +2629,7 @@ try_to_wake_up(struct task_struct *p, unsigned int state, int wake_flags)
+@@ -2640,7 +2642,7 @@ try_to_wake_up(struct task_struct *p, unsigned int state, int wake_flags)
  		trace_sched_wakeup(p);
  		goto out;
  	}
@@ -63,7 +63,7 @@ index 6b190c07d9e9..4083e1005d5d 100644
  	/*
  	 * If we are going to wake up a thread waiting for CONDITION we
  	 * need to ensure that CONDITION=1 done by the caller can not be
-@@ -2636,8 +2638,27 @@ try_to_wake_up(struct task_struct *p, unsigned int state, int wake_flags)
+@@ -2649,8 +2651,27 @@ try_to_wake_up(struct task_struct *p, unsigned int state, int wake_flags)
  	 */
  	raw_spin_lock_irqsave(&p->pi_lock, flags);
  	smp_mb__after_spinlock();
@@ -93,7 +93,7 @@ index 6b190c07d9e9..4083e1005d5d 100644
  
  	trace_sched_waking(p);
  
-@@ -2729,9 +2750,12 @@ try_to_wake_up(struct task_struct *p, unsigned int state, int wake_flags)
+@@ -2742,9 +2763,12 @@ try_to_wake_up(struct task_struct *p, unsigned int state, int wake_flags)
  	ttwu_queue(p, cpu, wake_flags);
  unlock:
  	raw_spin_unlock_irqrestore(&p->pi_lock, flags);
@@ -106,7 +106,7 @@ index 6b190c07d9e9..4083e1005d5d 100644
  	preempt_enable();
  
  	return success;
-@@ -2754,6 +2778,18 @@ int wake_up_process(struct task_struct *p)
+@@ -2767,6 +2791,18 @@ int wake_up_process(struct task_struct *p)
  }
  EXPORT_SYMBOL(wake_up_process);
  
@@ -126,10 +126,10 @@ index 6b190c07d9e9..4083e1005d5d 100644
  {
  	return try_to_wake_up(p, state, 0);
 diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 4e490e3db2f8..b63f5a955453 100644
+index fe755c1a0af9..bd492b9b7a9f 100644
 --- a/kernel/sched/sched.h
 +++ b/kernel/sched/sched.h
-@@ -1654,6 +1654,7 @@ static inline int task_on_rq_migrating(struct task_struct *p)
+@@ -1656,6 +1656,7 @@ static inline int task_on_rq_migrating(struct task_struct *p)
  #define WF_SYNC			0x01		/* Waker goes to sleep after wakeup */
  #define WF_FORK			0x02		/* Child wakeup after fork */
  #define WF_MIGRATED		0x4		/* Internal use, task got migrated */

@@ -1,10 +1,10 @@
-From 7923b6e632712f5eb86cdc5f5c7e0020ed5b1613 Mon Sep 17 00:00:00 2001
-Message-Id: <7923b6e632712f5eb86cdc5f5c7e0020ed5b1613.1628521258.git.zanussi@kernel.org>
-In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
-References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From dd51c3d03732ca4c8afff86ee6e3ea2ebc2cbe7f Mon Sep 17 00:00:00 2001
+Message-Id: <dd51c3d03732ca4c8afff86ee6e3ea2ebc2cbe7f.1634742095.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
 From: Mike Galbraith <umgwanakikbuti@gmail.com>
 Date: Sun, 16 Oct 2016 05:11:54 +0200
-Subject: [PATCH 277/307] connector/cn_proc: Protect send_msg() with a local
+Subject: [PATCH 277/308] connector/cn_proc: Protect send_msg() with a local
  lock on RT
 
 |BUG: sleeping function called from invalid context at kernel/locking/rtmutex.c:931

@@ -1,10 +1,10 @@
-From 8f3235be038d8a7ad3c89fefbf9e568c5046ccf8 Mon Sep 17 00:00:00 2001
-Message-Id: <8f3235be038d8a7ad3c89fefbf9e568c5046ccf8.1628521258.git.zanussi@kernel.org>
-In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
-References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From 58ea88444afffb4771701bc51487b98dc7a77735 Mon Sep 17 00:00:00 2001
+Message-Id: <58ea88444afffb4771701bc51487b98dc7a77735.1634742095.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
 From: David Miller <davem@davemloft.net>
 Date: Mon, 24 Feb 2020 15:01:53 +0100
-Subject: [PATCH 242/307] bpf/stackmap: Dont trylock mmap_sem with PREEMPT_RT
+Subject: [PATCH 242/308] bpf/stackmap: Dont trylock mmap_sem with PREEMPT_RT
  and interrupts disabled
 
 In a RT kernel down_read_trylock() cannot be used from NMI context and
@@ -28,7 +28,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  1 file changed, 14 insertions(+), 3 deletions(-)
 
 diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
-index fba2ade28fb3..a9aca670b955 100644
+index 49c7a09d688d..15f04e9b9ed7 100644
 --- a/kernel/bpf/stackmap.c
 +++ b/kernel/bpf/stackmap.c
 @@ -40,6 +40,9 @@ static void do_up_read(struct irq_work *entry)
@@ -41,7 +41,7 @@ index fba2ade28fb3..a9aca670b955 100644
  	work = container_of(entry, struct stack_map_irq_work, irq_work);
  	up_read_non_owner(work->sem);
  	work->sem = NULL;
-@@ -290,10 +293,18 @@ static void stack_map_get_build_id_offset(struct bpf_stack_build_id *id_offs,
+@@ -291,10 +294,18 @@ static void stack_map_get_build_id_offset(struct bpf_stack_build_id *id_offs,
  	struct stack_map_irq_work *work = NULL;
  
  	if (irqs_disabled()) {

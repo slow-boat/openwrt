@@ -1,10 +1,10 @@
-From 6d8adfd734b05c58b024ea2ca1d095fbec15f7f7 Mon Sep 17 00:00:00 2001
-Message-Id: <6d8adfd734b05c58b024ea2ca1d095fbec15f7f7.1628521258.git.zanussi@kernel.org>
-In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
-References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From 5fc2ce87f53aa4f2b5cd828912188a40368d0e4c Mon Sep 17 00:00:00 2001
+Message-Id: <5fc2ce87f53aa4f2b5cd828912188a40368d0e4c.1634742094.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Thu, 12 Oct 2017 17:18:06 +0200
-Subject: [PATCH 166/307] rtmutex: add rwlock implementation based on rtmutex
+Subject: [PATCH 166/308] rtmutex: add rwlock implementation based on rtmutex
 
 The implementation is bias-based, similar to the rwsem implementation.
 

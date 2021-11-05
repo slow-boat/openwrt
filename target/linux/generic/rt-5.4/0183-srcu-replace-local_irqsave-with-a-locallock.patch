@@ -1,10 +1,10 @@
-From 538964dac572fb656c532e0e2bce39fda480e9f4 Mon Sep 17 00:00:00 2001
-Message-Id: <538964dac572fb656c532e0e2bce39fda480e9f4.1628521258.git.zanussi@kernel.org>
-In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
-References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From 46d62a3fcf7f4b1c23edcccb2af51d5681a37367 Mon Sep 17 00:00:00 2001
+Message-Id: <46d62a3fcf7f4b1c23edcccb2af51d5681a37367.1634742094.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Thu, 12 Oct 2017 18:37:12 +0200
-Subject: [PATCH 183/307] srcu: replace local_irqsave() with a locallock
+Subject: [PATCH 183/308] srcu: replace local_irqsave() with a locallock
 
 There are two instances which disable interrupts in order to become a
 stable this_cpu_ptr() pointer. The restore part is coupled with

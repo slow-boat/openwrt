@@ -1,10 +1,10 @@
-From 2f33c19ad3bdf62708b6cdda4aac1c4234c8be5d Mon Sep 17 00:00:00 2001
-Message-Id: <2f33c19ad3bdf62708b6cdda4aac1c4234c8be5d.1628521257.git.zanussi@kernel.org>
-In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
-References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From ad8e5a21c7b068fd61f45c50a65bdf91659bd000 Mon Sep 17 00:00:00 2001
+Message-Id: <ad8e5a21c7b068fd61f45c50a65bdf91659bd000.1634742093.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
 From: John Ogness <john.ogness@linutronix.de>
 Date: Tue, 12 Feb 2019 15:29:54 +0100
-Subject: [PATCH 032/307] printk: implement CON_PRINTBUFFER
+Subject: [PATCH 032/308] printk: implement CON_PRINTBUFFER
 
 If the CON_PRINTBUFFER flag is not set, do not replay the history
 for that console.

@@ -1,10 +1,10 @@
-From fe17488cab2ea83c31b2b978fc912127dc6561b6 Mon Sep 17 00:00:00 2001
-Message-Id: <fe17488cab2ea83c31b2b978fc912127dc6561b6.1628521258.git.zanussi@kernel.org>
-In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
-References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From 71b29a3fb50a6b159696d309eae05a7c8f9a14f2 Mon Sep 17 00:00:00 2001
+Message-Id: <71b29a3fb50a6b159696d309eae05a7c8f9a14f2.1634742094.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Mon, 24 Feb 2020 19:41:53 +0100
-Subject: [PATCH 232/307] bpf: Provide bpf_prog_run_pin_on_cpu() helper
+Subject: [PATCH 232/308] bpf: Provide bpf_prog_run_pin_on_cpu() helper
 
 BPF programs require to run on one CPU to completion as they use per CPU
 storage, but according to Alexei they don't need reentrancy protection as
@@ -34,10 +34,10 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  1 file changed, 22 insertions(+)
 
 diff --git a/include/linux/filter.h b/include/linux/filter.h
-index c53e2fe3c8f7..8550fb37f8aa 100644
+index c4f89340f498..6b19a02cbf6f 100644
 --- a/include/linux/filter.h
 +++ b/include/linux/filter.h
-@@ -570,6 +570,28 @@ DECLARE_STATIC_KEY_FALSE(bpf_stats_enabled_key);
+@@ -585,6 +585,28 @@ DECLARE_STATIC_KEY_FALSE(bpf_stats_enabled_key);
  	}							\
  	ret; })
  

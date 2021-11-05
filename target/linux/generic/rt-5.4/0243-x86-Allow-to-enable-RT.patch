@@ -1,10 +1,10 @@
-From 3b713538f4937aee900440e65e92198d6cd58cc4 Mon Sep 17 00:00:00 2001
-Message-Id: <3b713538f4937aee900440e65e92198d6cd58cc4.1628521258.git.zanussi@kernel.org>
-In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
-References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From cbb83252ddafaced8c7274d19d62176af19cd357 Mon Sep 17 00:00:00 2001
+Message-Id: <cbb83252ddafaced8c7274d19d62176af19cd357.1634742095.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Wed, 7 Aug 2019 18:15:38 +0200
-Subject: [PATCH 243/307] x86: Allow to enable RT
+Subject: [PATCH 243/308] x86: Allow to enable RT
 
 Allow to select RT.
 
@@ -14,7 +14,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  1 file changed, 1 insertion(+)
 
 diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 68f6ea067229..91635bb42fe9 100644
+index ee6c5d2fe1f1..f870d4136e0c 100644
 --- a/arch/x86/Kconfig
 +++ b/arch/x86/Kconfig
 @@ -25,6 +25,7 @@ config X86_64

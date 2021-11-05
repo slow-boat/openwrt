@@ -1,10 +1,10 @@
-From b82eaabfa771d94289f0648735accbea16f03d24 Mon Sep 17 00:00:00 2001
-Message-Id: <b82eaabfa771d94289f0648735accbea16f03d24.1628521257.git.zanussi@kernel.org>
-In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
-References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From 543364b7d955796d2152a60a18ad9a2299733bd2 Mon Sep 17 00:00:00 2001
+Message-Id: <543364b7d955796d2152a60a18ad9a2299733bd2.1634742093.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
 From: John Ogness <john.ogness@linutronix.de>
 Date: Tue, 12 Feb 2019 15:29:45 +0100
-Subject: [PATCH 023/307] printk-rb: add functionality required by printk
+Subject: [PATCH 023/308] printk-rb: add functionality required by printk
 
 The printk subsystem needs to be able to query the size of the ring
 buffer, seek to specific entries within the ring buffer, and track

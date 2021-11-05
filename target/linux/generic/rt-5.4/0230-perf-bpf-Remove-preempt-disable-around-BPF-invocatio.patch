@@ -1,10 +1,10 @@
-From 9ca5488d5c98068f69b929548134e2131b598ffe Mon Sep 17 00:00:00 2001
-Message-Id: <9ca5488d5c98068f69b929548134e2131b598ffe.1628521258.git.zanussi@kernel.org>
-In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
-References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From 0da28041ef52156327a0e5e023e5724b87765234 Mon Sep 17 00:00:00 2001
+Message-Id: <0da28041ef52156327a0e5e023e5724b87765234.1634742094.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Mon, 24 Feb 2020 15:01:38 +0100
-Subject: [PATCH 230/307] perf/bpf: Remove preempt disable around BPF
+Subject: [PATCH 230/308] perf/bpf: Remove preempt disable around BPF
  invocation
 
 The BPF invocation from the perf event overflow handler does not require to
@@ -18,7 +18,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  1 file changed, 2 deletions(-)
 
 diff --git a/kernel/events/core.c b/kernel/events/core.c
-index 26ef30f8031e..b9a3ed921371 100644
+index 0461eb35646f..f3c6962fb85d 100644
 --- a/kernel/events/core.c
 +++ b/kernel/events/core.c
 @@ -8993,7 +8993,6 @@ static void bpf_overflow_handler(struct perf_event *event,

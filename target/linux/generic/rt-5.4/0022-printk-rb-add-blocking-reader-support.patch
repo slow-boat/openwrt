@@ -1,10 +1,10 @@
-From fa76fe692dad7b79087f6b49432b54c8e91b8245 Mon Sep 17 00:00:00 2001
-Message-Id: <fa76fe692dad7b79087f6b49432b54c8e91b8245.1628521257.git.zanussi@kernel.org>
-In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
-References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From bc06cf1be0648d1d2b13b42f1d2e65ee2788de3b Mon Sep 17 00:00:00 2001
+Message-Id: <bc06cf1be0648d1d2b13b42f1d2e65ee2788de3b.1634742093.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
 From: John Ogness <john.ogness@linutronix.de>
 Date: Tue, 12 Feb 2019 15:29:44 +0100
-Subject: [PATCH 022/307] printk-rb: add blocking reader support
+Subject: [PATCH 022/308] printk-rb: add blocking reader support
 
 Add a blocking read function for readers. An irq_work function is
 used to signal the wait queue so that write notification can

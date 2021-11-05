@@ -1,10 +1,10 @@
-From dd5ada46cee3c41f6e57e286b51720ed7b6e4c5f Mon Sep 17 00:00:00 2001
-Message-Id: <dd5ada46cee3c41f6e57e286b51720ed7b6e4c5f.1628521258.git.zanussi@kernel.org>
-In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
-References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From ee60b3b25ba9217b6a23788ca7023fcf7c8baa33 Mon Sep 17 00:00:00 2001
+Message-Id: <ee60b3b25ba9217b6a23788ca7023fcf7c8baa33.1634742094.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Wed, 7 Mar 2012 20:51:03 +0100
-Subject: [PATCH 193/307] rt: Introduce cpu_chill()
+Subject: [PATCH 193/308] rt: Introduce cpu_chill()
 
 Retry loops on RT might loop forever when the modifying side was
 preempted. Add cpu_chill() to replace cpu_relax(). cpu_chill()
@@ -79,10 +79,10 @@ index 8e6828094c1e..7f2df975a53e 100644
 +
  #endif /* defined(_LINUX_DELAY_H) */
 diff --git a/kernel/time/hrtimer.c b/kernel/time/hrtimer.c
-index cc676f002f18..47cb86b1c61c 100644
+index a06096c18908..f1527cf224c5 100644
 --- a/kernel/time/hrtimer.c
 +++ b/kernel/time/hrtimer.c
-@@ -2000,6 +2000,38 @@ SYSCALL_DEFINE2(nanosleep_time32, struct old_timespec32 __user *, rqtp,
+@@ -2046,6 +2046,38 @@ SYSCALL_DEFINE2(nanosleep_time32, struct old_timespec32 __user *, rqtp,
  }
  #endif
  

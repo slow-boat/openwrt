@@ -1,10 +1,10 @@
-From e3fa33cca1597ef3b7c617362ac55dac344391ed Mon Sep 17 00:00:00 2001
-Message-Id: <e3fa33cca1597ef3b7c617362ac55dac344391ed.1628521258.git.zanussi@kernel.org>
-In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
-References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From c677dd995712bebcdd22f25c965103252da3c098 Mon Sep 17 00:00:00 2001
+Message-Id: <c677dd995712bebcdd22f25c965103252da3c098.1634742094.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Tue, 12 Jul 2011 15:38:34 +0200
-Subject: [PATCH 198/307] net: Use skbufhead with raw lock
+Subject: [PATCH 198/308] net: Use skbufhead with raw lock
 
 Use the rps lock as rawlock so we can keep irq-off regions. It looks low
 latency. However we can't kfree() from this context therefore we defer this
@@ -18,7 +18,7 @@ Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
  3 files changed, 28 insertions(+), 6 deletions(-)
 
 diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
-index 11a52f2fa35d..408e79242832 100644
+index ddc66ab8a1de..af2a74425931 100644
 --- a/include/linux/netdevice.h
 +++ b/include/linux/netdevice.h
 @@ -3050,6 +3050,7 @@ struct softnet_data {
@@ -30,7 +30,7 @@ index 11a52f2fa35d..408e79242832 100644
  };
  
 diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
-index 6493c98c8631..86389623bb4c 100644
+index b04b5bd43f54..053a2c21aa77 100644
 --- a/include/linux/skbuff.h
 +++ b/include/linux/skbuff.h
 @@ -293,6 +293,7 @@ struct sk_buff_head {

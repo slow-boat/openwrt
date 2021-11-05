@@ -1,10 +1,10 @@
-From 500be929b8e153a91d7f138a99dcd2a7b201d462 Mon Sep 17 00:00:00 2001
-Message-Id: <500be929b8e153a91d7f138a99dcd2a7b201d462.1628521258.git.zanussi@kernel.org>
-In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
-References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From 500b6e0ebc8a67b0e2eb733c3d57b9831663f236 Mon Sep 17 00:00:00 2001
+Message-Id: <500b6e0ebc8a67b0e2eb733c3d57b9831663f236.1634742094.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Mon, 24 Feb 2020 15:01:36 +0100
-Subject: [PATCH 227/307] bpf/trace: Remove EXPORT from trace_call_bpf()
+Subject: [PATCH 227/308] bpf/trace: Remove EXPORT from trace_call_bpf()
 
 All callers are built in. No point to export this.
 

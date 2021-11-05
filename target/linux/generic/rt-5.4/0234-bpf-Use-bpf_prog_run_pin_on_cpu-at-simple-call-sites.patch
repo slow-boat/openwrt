@@ -1,10 +1,10 @@
-From c675cdb0eb7176d5e08154f486d2c070ffe16c6c Mon Sep 17 00:00:00 2001
-Message-Id: <c675cdb0eb7176d5e08154f486d2c070ffe16c6c.1628521258.git.zanussi@kernel.org>
-In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
-References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From c2cb10cf9f02ec02e67585f99a03a9623ce2b895 Mon Sep 17 00:00:00 2001
+Message-Id: <c2cb10cf9f02ec02e67585f99a03a9623ce2b895.1634742094.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
 From: David Miller <davem@davemloft.net>
 Date: Mon, 24 Feb 2020 15:01:43 +0100
-Subject: [PATCH 234/307] bpf: Use bpf_prog_run_pin_on_cpu() at simple call
+Subject: [PATCH 234/308] bpf: Use bpf_prog_run_pin_on_cpu() at simple call
  sites.
 
 All of these cases are strictly of the form:
@@ -45,10 +45,10 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  5 files changed, 6 insertions(+), 18 deletions(-)
 
 diff --git a/include/linux/filter.h b/include/linux/filter.h
-index 8eb5ba79422c..06b680f508d8 100644
+index 4966111de278..100a4180b602 100644
 --- a/include/linux/filter.h
 +++ b/include/linux/filter.h
-@@ -709,9 +709,7 @@ static inline u32 bpf_prog_run_clear_cb(const struct bpf_prog *prog,
+@@ -724,9 +724,7 @@ static inline u32 bpf_prog_run_clear_cb(const struct bpf_prog *prog,
  	if (unlikely(prog->cb_access))
  		memset(cb_data, 0, BPF_SKB_CB_LEN);
  
@@ -82,7 +82,7 @@ index 1d62fa2b6b91..6a95761a62e0 100644
  }
  #endif /* CONFIG_SECCOMP_FILTER */
 diff --git a/net/core/flow_dissector.c b/net/core/flow_dissector.c
-index 96957a7c732f..a85849ae5f45 100644
+index b740a74f06f2..068c8c881530 100644
 --- a/net/core/flow_dissector.c
 +++ b/net/core/flow_dissector.c
 @@ -862,9 +862,7 @@ bool bpf_flow_dissect(struct bpf_prog *prog, struct bpf_flow_dissector *ctx,

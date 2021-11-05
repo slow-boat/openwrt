@@ -1,10 +1,10 @@
-From bfd3ceee093d67bc4b08a6e83b7d48357afd7ac9 Mon Sep 17 00:00:00 2001
-Message-Id: <bfd3ceee093d67bc4b08a6e83b7d48357afd7ac9.1628521258.git.zanussi@kernel.org>
-In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
-References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From 4bdb5be69519dfdc5bc0d5fc2e302a2c3a3f357e Mon Sep 17 00:00:00 2001
+Message-Id: <4bdb5be69519dfdc5bc0d5fc2e302a2c3a3f357e.1634742094.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Mon, 20 May 2019 13:09:08 +0200
-Subject: [PATCH 109/307] softirq: Add preemptible softirq
+Subject: [PATCH 109/308] softirq: Add preemptible softirq
 
 Add preemptible softirq for RT's needs. By removing the softirq count
 from the preempt counter, the softirq becomes preemptible. A per-CPU
@@ -117,7 +117,7 @@ index 070ef38657ca..d5d252488211 100644
  		RCU_LOCKDEP_WARN(lock_is_held(&rcu_sched_lock_map),	\
  				 "Illegal context switch in RCU-sched read-side critical section"); \
 diff --git a/include/linux/sched.h b/include/linux/sched.h
-index 5710b80f8050..c8bc02e729a6 100644
+index afee5d5eb945..736498a524f3 100644
 --- a/include/linux/sched.h
 +++ b/include/linux/sched.h
 @@ -978,6 +978,9 @@ struct task_struct {

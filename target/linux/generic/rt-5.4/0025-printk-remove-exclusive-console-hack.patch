@@ -1,10 +1,10 @@
-From f42dfe8c95a8dd3dd76480a4ccc8242b17c03cda Mon Sep 17 00:00:00 2001
-Message-Id: <f42dfe8c95a8dd3dd76480a4ccc8242b17c03cda.1628521257.git.zanussi@kernel.org>
-In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
-References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From 8b7bb5e23c99782c6f8c346f3c28b153a5c044e9 Mon Sep 17 00:00:00 2001
+Message-Id: <8b7bb5e23c99782c6f8c346f3c28b153a5c044e9.1634742093.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
 From: John Ogness <john.ogness@linutronix.de>
 Date: Tue, 12 Feb 2019 15:29:47 +0100
-Subject: [PATCH 025/307] printk: remove exclusive console hack
+Subject: [PATCH 025/308] printk: remove exclusive console hack
 
 In order to support printing the printk log history when new
 consoles are registered, a global exclusive_console variable is

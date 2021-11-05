@@ -1,10 +1,10 @@
-From 37370212b17b38c5e91078a0a3497f5bd496dacc Mon Sep 17 00:00:00 2001
-Message-Id: <37370212b17b38c5e91078a0a3497f5bd496dacc.1628521257.git.zanussi@kernel.org>
-In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
-References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From 8621d2f78ca16d5e9e33a66764dba5aaf6786b15 Mon Sep 17 00:00:00 2001
+Message-Id: <8621d2f78ca16d5e9e33a66764dba5aaf6786b15.1634742094.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
 From: Davidlohr Bueso <dave@stgolabs.net>
 Date: Fri, 31 Jan 2020 16:07:09 +0100
-Subject: [PATCH 060/307] locking/percpu-rwsem: Fold __percpu_up_read()
+Subject: [PATCH 060/308] locking/percpu-rwsem: Fold __percpu_up_read()
 
 Now that __percpu_up_read() is only ever used from percpu_up_read()
 merge them, it's a small function.

@@ -1,10 +1,10 @@
-From 061a4df6779b8d148ca15140c59ad8e019d7ac37 Mon Sep 17 00:00:00 2001
-Message-Id: <061a4df6779b8d148ca15140c59ad8e019d7ac37.1628521258.git.zanussi@kernel.org>
-In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
-References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From e5ad45577d1d350423678a1f3224a12ef6f4eccf Mon Sep 17 00:00:00 2001
+Message-Id: <e5ad45577d1d350423678a1f3224a12ef6f4eccf.1634742094.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Thu, 12 Oct 2017 17:11:19 +0200
-Subject: [PATCH 160/307] rtmutex: add sleeping lock implementation
+Subject: [PATCH 160/308] rtmutex: add sleeping lock implementation
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
@@ -106,7 +106,7 @@ index a355289b1fa1..138bd1e183e0 100644
   * rt_mutex_is_locked - is the mutex locked
   * @lock: the mutex to be queried
 diff --git a/include/linux/sched.h b/include/linux/sched.h
-index 82335bb8bb22..a47f9ba13107 100644
+index bfcfe27ceba4..00b95976b5ea 100644
 --- a/include/linux/sched.h
 +++ b/include/linux/sched.h
 @@ -140,6 +140,9 @@ struct task_group;
@@ -385,7 +385,7 @@ index 000000000000..3e3d8c5f7a9a
 +
 +#endif
 diff --git a/kernel/fork.c b/kernel/fork.c
-index 244a2435d705..3b570698abf2 100644
+index de8ae4effedf..943080941d13 100644
 --- a/kernel/fork.c
 +++ b/kernel/fork.c
 @@ -950,6 +950,7 @@ static struct task_struct *dup_task_struct(struct task_struct *orig, int node)
@@ -1134,7 +1134,7 @@ index 53a8c5d03d28..7c1dd1bd95c7 100644
  #ifdef CONFIG_DEBUG_RT_MUTEXES
  # include "rtmutex-debug.h"
 diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 94c74ecefa8c..3138f48d566a 100644
+index e2c437dba46e..ba896cba835f 100644
 --- a/kernel/sched/core.c
 +++ b/kernel/sched/core.c
 @@ -412,9 +412,15 @@ static bool set_nr_if_polling(struct task_struct *p)

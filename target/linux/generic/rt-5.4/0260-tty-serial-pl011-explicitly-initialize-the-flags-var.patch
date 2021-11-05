@@ -1,10 +1,10 @@
-From 7fa6a971e0a2b0820604b64b83d9684c87076385 Mon Sep 17 00:00:00 2001
-Message-Id: <7fa6a971e0a2b0820604b64b83d9684c87076385.1628521258.git.zanussi@kernel.org>
-In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
-References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From 66a396f99a01e3abe3bb9cc7ad9ec1285863d654 Mon Sep 17 00:00:00 2001
+Message-Id: <66a396f99a01e3abe3bb9cc7ad9ec1285863d654.1634742095.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
 From: Kurt Kanzenbach <kurt@linutronix.de>
 Date: Mon, 24 Sep 2018 10:29:01 +0200
-Subject: [PATCH 260/307] tty: serial: pl011: explicitly initialize the flags
+Subject: [PATCH 260/308] tty: serial: pl011: explicitly initialize the flags
  variable
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8

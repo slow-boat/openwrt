@@ -1,10 +1,10 @@
-From 574e925522359419f20cecaa5a27dbfb1c76583a Mon Sep 17 00:00:00 2001
-Message-Id: <574e925522359419f20cecaa5a27dbfb1c76583a.1628521258.git.zanussi@kernel.org>
-In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
-References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From bb54b7485819684b3060247c879ae50d7862f8e0 Mon Sep 17 00:00:00 2001
+Message-Id: <bb54b7485819684b3060247c879ae50d7862f8e0.1634742095.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Fri, 11 Oct 2019 13:14:29 +0200
-Subject: [PATCH 269/307] ARM: Allow to enable RT
+Subject: [PATCH 269/308] ARM: Allow to enable RT
 
 Allow to select RT.
 

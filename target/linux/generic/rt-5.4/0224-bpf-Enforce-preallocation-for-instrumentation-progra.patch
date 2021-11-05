@@ -1,10 +1,10 @@
-From 4bd3729d5cd1a0025f95c5ce82bd3315f1f1bd8a Mon Sep 17 00:00:00 2001
-Message-Id: <4bd3729d5cd1a0025f95c5ce82bd3315f1f1bd8a.1628521258.git.zanussi@kernel.org>
-In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
-References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From 83119804798d61de12b2f6f5550f1ede4cba7a4d Mon Sep 17 00:00:00 2001
+Message-Id: <83119804798d61de12b2f6f5550f1ede4cba7a4d.1634742094.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Mon, 24 Feb 2020 15:01:33 +0100
-Subject: [PATCH 224/307] bpf: Enforce preallocation for instrumentation
+Subject: [PATCH 224/308] bpf: Enforce preallocation for instrumentation
  programs on RT
 
 Aside of the general unsafety of run-time map allocation for
@@ -24,10 +24,10 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  1 file changed, 9 insertions(+), 4 deletions(-)
 
 diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index ce0c62b5837d..679d20b6a329 100644
+index 8fd5b1451380..69a3177c6c73 100644
 --- a/kernel/bpf/verifier.c
 +++ b/kernel/bpf/verifier.c
-@@ -8088,16 +8088,21 @@ static int check_map_prog_compatibility(struct bpf_verifier_env *env,
+@@ -8159,16 +8159,21 @@ static int check_map_prog_compatibility(struct bpf_verifier_env *env,
  	 * of the memory allocator or at a place where a recursion into the
  	 * memory allocator would see inconsistent state.
  	 *

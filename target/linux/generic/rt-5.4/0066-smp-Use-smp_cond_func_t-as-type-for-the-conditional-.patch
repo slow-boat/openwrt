@@ -1,10 +1,10 @@
-From 159cdc956971eb04c464c41ae2341d83f34a6445 Mon Sep 17 00:00:00 2001
-Message-Id: <159cdc956971eb04c464c41ae2341d83f34a6445.1628521257.git.zanussi@kernel.org>
-In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
-References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From d0c764ba229970c868c55241383051ba371edf0e Mon Sep 17 00:00:00 2001
+Message-Id: <d0c764ba229970c868c55241383051ba371edf0e.1634742094.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Thu, 16 Jan 2020 12:00:31 +0100
-Subject: [PATCH 066/307] smp: Use smp_cond_func_t as type for the conditional
+Subject: [PATCH 066/308] smp: Use smp_cond_func_t as type for the conditional
  function
 
 Use a typdef for the conditional function instead defining it each time in

@@ -1,10 +1,10 @@
-From 9076094b59046dc9741e509da55c190097946b42 Mon Sep 17 00:00:00 2001
-Message-Id: <9076094b59046dc9741e509da55c190097946b42.1628521258.git.zanussi@kernel.org>
-In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
-References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From 147564dd2a5509ad70a392cd53c51f96c2c1ade9 Mon Sep 17 00:00:00 2001
+Message-Id: <147564dd2a5509ad70a392cd53c51f96c2c1ade9.1634742095.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Fri, 3 Jul 2009 08:44:56 -0500
-Subject: [PATCH 282/307] signals: Allow rt tasks to cache one sigqueue struct
+Subject: [PATCH 282/308] signals: Allow rt tasks to cache one sigqueue struct
 
 To avoid allocation allow rt tasks to cache one sigqueue struct in
 task struct.
@@ -19,7 +19,7 @@ Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
  5 files changed, 70 insertions(+), 5 deletions(-)
 
 diff --git a/include/linux/sched.h b/include/linux/sched.h
-index f6beaecb0384..4a1ced4dcf16 100644
+index aac61dbe79e1..a55b28693237 100644
 --- a/include/linux/sched.h
 +++ b/include/linux/sched.h
 @@ -935,6 +935,8 @@ struct task_struct {
@@ -57,10 +57,10 @@ index 263a45f8c066..2393f1db779d 100644
  	spin_unlock(&sighand->siglock);
  
 diff --git a/kernel/fork.c b/kernel/fork.c
-index 3b570698abf2..1231a9880886 100644
+index 943080941d13..e506fbf604d2 100644
 --- a/kernel/fork.c
 +++ b/kernel/fork.c
-@@ -1944,6 +1944,7 @@ static __latent_entropy struct task_struct *copy_process(
+@@ -1945,6 +1945,7 @@ static __latent_entropy struct task_struct *copy_process(
  	spin_lock_init(&p->alloc_lock);
  
  	init_sigpending(&p->pending);

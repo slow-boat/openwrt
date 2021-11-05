@@ -1,10 +1,10 @@
-From bfc83d2112b6aa5c63be7db7ebb93b3eea0adfb9 Mon Sep 17 00:00:00 2001
-Message-Id: <bfc83d2112b6aa5c63be7db7ebb93b3eea0adfb9.1628521258.git.zanussi@kernel.org>
-In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
-References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From ed84ee5b2b21a6cda19933121b74c25262cb80e2 Mon Sep 17 00:00:00 2001
+Message-Id: <ed84ee5b2b21a6cda19933121b74c25262cb80e2.1634742095.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
 From: Bogdan Purcareata <bogdan.purcareata@freescale.com>
 Date: Fri, 24 Apr 2015 15:53:13 +0000
-Subject: [PATCH 272/307] powerpc/kvm: Disable in-kernel MPIC emulation for
+Subject: [PATCH 272/308] powerpc/kvm: Disable in-kernel MPIC emulation for
  PREEMPT_RT
 
 While converting the openpic emulation code to use a raw_spinlock_t enables

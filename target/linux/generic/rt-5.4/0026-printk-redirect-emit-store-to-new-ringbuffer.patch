@@ -1,10 +1,10 @@
-From 2dbe57efab1ceb4988eceffcd7cf25a54cbd2144 Mon Sep 17 00:00:00 2001
-Message-Id: <2dbe57efab1ceb4988eceffcd7cf25a54cbd2144.1628521257.git.zanussi@kernel.org>
-In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
-References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From 420e2dcc3b3c407ddf9b685abf5835b58bc3cbe0 Mon Sep 17 00:00:00 2001
+Message-Id: <420e2dcc3b3c407ddf9b685abf5835b58bc3cbe0.1634742093.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
 From: John Ogness <john.ogness@linutronix.de>
 Date: Tue, 12 Feb 2019 15:29:48 +0100
-Subject: [PATCH 026/307] printk: redirect emit/store to new ringbuffer
+Subject: [PATCH 026/308] printk: redirect emit/store to new ringbuffer
 
 vprintk_emit and vprintk_store are the main functions that all printk
 variants eventually go through. Change these to store the message in

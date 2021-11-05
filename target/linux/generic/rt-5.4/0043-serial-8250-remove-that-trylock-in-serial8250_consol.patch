@@ -1,10 +1,10 @@
-From ea29e21cbe0279b048b67d28b0388727f85c6a53 Mon Sep 17 00:00:00 2001
-Message-Id: <ea29e21cbe0279b048b67d28b0388727f85c6a53.1628521257.git.zanussi@kernel.org>
-In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
-References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From 66c0479e5fa3ec67ecd2edff1788c4a97e70265c Mon Sep 17 00:00:00 2001
+Message-Id: <66c0479e5fa3ec67ecd2edff1788c4a97e70265c.1634742093.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Thu, 14 Feb 2019 17:38:24 +0100
-Subject: [PATCH 043/307] serial: 8250: remove that trylock in
+Subject: [PATCH 043/308] serial: 8250: remove that trylock in
  serial8250_console_write_atomic()
 
 This does not work as rtmutex in NMI context. As per John, it is not
@@ -16,10 +16,10 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  1 file changed, 11 deletions(-)
 
 diff --git a/drivers/tty/serial/8250/8250_port.c b/drivers/tty/serial/8250/8250_port.c
-index 5c0d2f810bc2..8e756bf03da5 100644
+index 513cfeaaf0b3..9dc9c638c602 100644
 --- a/drivers/tty/serial/8250/8250_port.c
 +++ b/drivers/tty/serial/8250/8250_port.c
-@@ -3223,17 +3223,9 @@ void serial8250_console_write_atomic(struct uart_8250_port *up,
+@@ -3230,17 +3230,9 @@ void serial8250_console_write_atomic(struct uart_8250_port *up,
  {
  	struct uart_port *port = &up->port;
  	unsigned int flags;
@@ -37,7 +37,7 @@ index 5c0d2f810bc2..8e756bf03da5 100644
  	touch_nmi_watchdog();
  
  	clear_ier(up);
-@@ -3248,9 +3240,6 @@ void serial8250_console_write_atomic(struct uart_8250_port *up,
+@@ -3255,9 +3247,6 @@ void serial8250_console_write_atomic(struct uart_8250_port *up,
  	wait_for_xmitr(up, BOTH_EMPTY);
  	restore_ier(up);
  

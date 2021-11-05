@@ -1,10 +1,10 @@
-From 3bca80966bf4363fd784cb545de17dc10c6ce8d4 Mon Sep 17 00:00:00 2001
-Message-Id: <3bca80966bf4363fd784cb545de17dc10c6ce8d4.1628521257.git.zanussi@kernel.org>
-In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
-References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From 04e1085d257d9acb040896454601ac5d96f06a36 Mon Sep 17 00:00:00 2001
+Message-Id: <04e1085d257d9acb040896454601ac5d96f06a36.1634742093.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Fri, 15 Feb 2019 14:34:20 +0100
-Subject: [PATCH 045/307] arm: remove printk_nmi_.*()
+Subject: [PATCH 045/308] arm: remove printk_nmi_.*()
 
 It is no longer provided by the printk core code.
 

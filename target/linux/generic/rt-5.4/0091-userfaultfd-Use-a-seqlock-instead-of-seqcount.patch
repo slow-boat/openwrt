@@ -1,10 +1,10 @@
-From 742b31e759c860eecd8e5a820a5c36408ad45965 Mon Sep 17 00:00:00 2001
-Message-Id: <742b31e759c860eecd8e5a820a5c36408ad45965.1628521258.git.zanussi@kernel.org>
-In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
-References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From c7d6e89acd1ff07c037414b10e16b3749f5e3ee3 Mon Sep 17 00:00:00 2001
+Message-Id: <c7d6e89acd1ff07c037414b10e16b3749f5e3ee3.1634742094.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Wed, 18 Dec 2019 12:25:09 +0100
-Subject: [PATCH 091/307] userfaultfd: Use a seqlock instead of seqcount
+Subject: [PATCH 091/308] userfaultfd: Use a seqlock instead of seqcount
 
 On RT write_seqcount_begin() disables preemption which leads to warning
 in add_wait_queue() while the spinlock_t is acquired.
@@ -21,10 +21,10 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  1 file changed, 6 insertions(+), 6 deletions(-)
 
 diff --git a/fs/userfaultfd.c b/fs/userfaultfd.c
-index 2c807283115d..e436d1b22776 100644
+index ec57bbb6bb05..6f4254a7f448 100644
 --- a/fs/userfaultfd.c
 +++ b/fs/userfaultfd.c
-@@ -61,7 +61,7 @@ struct userfaultfd_ctx {
+@@ -56,7 +56,7 @@ struct userfaultfd_ctx {
  	/* waitqueue head for events */
  	wait_queue_head_t event_wqh;
  	/* a refile sequence protected by fault_pending_wqh lock */
@@ -33,7 +33,7 @@ index 2c807283115d..e436d1b22776 100644
  	/* pseudo fd refcounting */
  	refcount_t refcount;
  	/* userfaultfd syscall flags */
-@@ -1063,7 +1063,7 @@ static ssize_t userfaultfd_ctx_read(struct userfaultfd_ctx *ctx, int no_wait,
+@@ -1058,7 +1058,7 @@ static ssize_t userfaultfd_ctx_read(struct userfaultfd_ctx *ctx, int no_wait,
  			 * waitqueue could become empty if this is the
  			 * only userfault.
  			 */
@@ -42,7 +42,7 @@ index 2c807283115d..e436d1b22776 100644
  
  			/*
  			 * The fault_pending_wqh.lock prevents the uwq
-@@ -1089,7 +1089,7 @@ static ssize_t userfaultfd_ctx_read(struct userfaultfd_ctx *ctx, int no_wait,
+@@ -1084,7 +1084,7 @@ static ssize_t userfaultfd_ctx_read(struct userfaultfd_ctx *ctx, int no_wait,
  			list_del(&uwq->wq.entry);
  			add_wait_queue(&ctx->fault_wqh, &uwq->wq);
  
@@ -51,7 +51,7 @@ index 2c807283115d..e436d1b22776 100644
  
  			/* careful to always initialize msg if ret == 0 */
  			*msg = uwq->msg;
-@@ -1262,11 +1262,11 @@ static __always_inline void wake_userfault(struct userfaultfd_ctx *ctx,
+@@ -1257,11 +1257,11 @@ static __always_inline void wake_userfault(struct userfaultfd_ctx *ctx,
  	 * sure we've userfaults to wake.
  	 */
  	do {
@@ -65,7 +65,7 @@ index 2c807283115d..e436d1b22776 100644
  	if (need_wakeup)
  		__wake_userfault(ctx, range);
  }
-@@ -1937,7 +1937,7 @@ static void init_once_userfaultfd_ctx(void *mem)
+@@ -1935,7 +1935,7 @@ static void init_once_userfaultfd_ctx(void *mem)
  	init_waitqueue_head(&ctx->fault_wqh);
  	init_waitqueue_head(&ctx->event_wqh);
  	init_waitqueue_head(&ctx->fd_wqh);

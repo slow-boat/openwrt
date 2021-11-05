@@ -1,10 +1,10 @@
-From 32b87f7c8999339b28063e502bd2fca1a3fbd03d Mon Sep 17 00:00:00 2001
-Message-Id: <32b87f7c8999339b28063e502bd2fca1a3fbd03d.1628521258.git.zanussi@kernel.org>
-In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
-References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From 7b658fdd8260abd582591425da6d0ca1fbb43ea2 Mon Sep 17 00:00:00 2001
+Message-Id: <7b658fdd8260abd582591425da6d0ca1fbb43ea2.1634742094.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Wed, 7 Mar 2012 21:10:04 +0100
-Subject: [PATCH 196/307] net: Use cpu_chill() instead of cpu_relax()
+Subject: [PATCH 196/308] net: Use cpu_chill() instead of cpu_relax()
 
 Retry loops on RT might loop forever when the modifying side was
 preempted. Use cpu_chill() instead of cpu_relax() to let the system

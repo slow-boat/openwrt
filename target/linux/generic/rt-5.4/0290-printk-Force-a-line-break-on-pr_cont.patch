@@ -1,10 +1,10 @@
-From 3f83abe37faab53e5fd66744434d418addf7088b Mon Sep 17 00:00:00 2001
-Message-Id: <3f83abe37faab53e5fd66744434d418addf7088b.1628521258.git.zanussi@kernel.org>
-In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
-References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From f4edafa8b887c69b2dc8b4119274099d05f649a1 Mon Sep 17 00:00:00 2001
+Message-Id: <f4edafa8b887c69b2dc8b4119274099d05f649a1.1634742095.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
 From: =?UTF-8?q?=E6=B1=AA=E5=8B=8710269566?= <wang.yong12@zte.com.cn>
 Date: Thu, 21 May 2020 09:37:44 +0800
-Subject: [PATCH 290/307] printk: Force a line break on pr_cont(" ")
+Subject: [PATCH 290/308] printk: Force a line break on pr_cont(" ")
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit

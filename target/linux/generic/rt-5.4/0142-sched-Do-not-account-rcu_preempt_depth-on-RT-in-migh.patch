@@ -1,10 +1,10 @@
-From f363e5d17cb2d2ea6e5ac5fca5c71dad5b5a243f Mon Sep 17 00:00:00 2001
-Message-Id: <f363e5d17cb2d2ea6e5ac5fca5c71dad5b5a243f.1628521258.git.zanussi@kernel.org>
-In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
-References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From 8fd03455cf2244aa7de4354a70bdac5614913aa1 Mon Sep 17 00:00:00 2001
+Message-Id: <8fd03455cf2244aa7de4354a70bdac5614913aa1.1634742094.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Tue, 7 Jun 2011 09:19:06 +0200
-Subject: [PATCH 142/307] sched: Do not account rcu_preempt_depth on RT in
+Subject: [PATCH 142/308] sched: Do not account rcu_preempt_depth on RT in
  might_sleep()
 
 RT changes the rcu_preempt_depth semantics, so we cannot check for it
@@ -42,10 +42,10 @@ index d5d252488211..a84e0ab2f001 100644
  
  /* Internal to kernel */
 diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 4083e1005d5d..94c74ecefa8c 100644
+index 7f7ebde31acb..e2c437dba46e 100644
 --- a/kernel/sched/core.c
 +++ b/kernel/sched/core.c
-@@ -6848,7 +6848,7 @@ void __init sched_init(void)
+@@ -6861,7 +6861,7 @@ void __init sched_init(void)
  #ifdef CONFIG_DEBUG_ATOMIC_SLEEP
  static inline int preempt_count_equals(int preempt_offset)
  {

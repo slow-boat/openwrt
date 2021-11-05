@@ -1,10 +1,10 @@
-From 0f52559ff903fa58b25a8015cf2e1c7b50a597b4 Mon Sep 17 00:00:00 2001
-Message-Id: <0f52559ff903fa58b25a8015cf2e1c7b50a597b4.1628521258.git.zanussi@kernel.org>
-In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
-References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From 7e287bc8300d3adc8bc1fd3c0d124d89ba4953bc Mon Sep 17 00:00:00 2001
+Message-Id: <7e287bc8300d3adc8bc1fd3c0d124d89ba4953bc.1634742095.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Thu, 1 Nov 2012 11:03:47 +0100
-Subject: [PATCH 250/307] x86: Support for lazy preemption
+Subject: [PATCH 250/308] x86: Support for lazy preemption
 
 Implement the x86 pieces for lazy preempt.
 
@@ -20,7 +20,7 @@ Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
  7 files changed, 85 insertions(+), 3 deletions(-)
 
 diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 91635bb42fe9..38a0347f909b 100644
+index f870d4136e0c..3030ba5993eb 100644
 --- a/arch/x86/Kconfig
 +++ b/arch/x86/Kconfig
 @@ -200,6 +200,7 @@ config X86

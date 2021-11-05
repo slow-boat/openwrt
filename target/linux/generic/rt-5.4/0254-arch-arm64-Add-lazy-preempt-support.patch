@@ -1,10 +1,10 @@
-From 45409a7169325377ebd8fcdb69a3e8f42b58ba16 Mon Sep 17 00:00:00 2001
-Message-Id: <45409a7169325377ebd8fcdb69a3e8f42b58ba16.1628521258.git.zanussi@kernel.org>
-In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
-References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From 81ec074f6e344b7cbe9f8cf212313e6c6b770de5 Mon Sep 17 00:00:00 2001
+Message-Id: <81ec074f6e344b7cbe9f8cf212313e6c6b770de5.1634742095.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
 From: Anders Roxell <anders.roxell@linaro.org>
 Date: Thu, 14 May 2015 17:52:17 +0200
-Subject: [PATCH 254/307] arch/arm64: Add lazy preempt support
+Subject: [PATCH 254/308] arch/arm64: Add lazy preempt support
 
 arm64 is missing support for PREEMPT_RT. The main feature which is
 lacking is support for lazy preemption. The arch-specific entry code,
@@ -154,10 +154,10 @@ index 87c7d8523588..0d08fcba17cc 100644
  
  #ifdef CONFIG_ARM64_PSEUDO_NMI
 diff --git a/arch/arm64/kernel/signal.c b/arch/arm64/kernel/signal.c
-index ddb757b2c3e5..71ad20ebc2f3 100644
+index f6d3278c1a4e..4173b51a344b 100644
 --- a/arch/arm64/kernel/signal.c
 +++ b/arch/arm64/kernel/signal.c
-@@ -903,7 +903,7 @@ asmlinkage void do_notify_resume(struct pt_regs *regs,
+@@ -904,7 +904,7 @@ asmlinkage void do_notify_resume(struct pt_regs *regs,
  		/* Check valid user FS if needed */
  		addr_limit_user_check();
  

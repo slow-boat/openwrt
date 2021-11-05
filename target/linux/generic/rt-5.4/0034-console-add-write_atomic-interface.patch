@@ -1,10 +1,10 @@
-From ff27ad522d62c46a46f5091f4c14c9b17b1b4301 Mon Sep 17 00:00:00 2001
-Message-Id: <ff27ad522d62c46a46f5091f4c14c9b17b1b4301.1628521257.git.zanussi@kernel.org>
-In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
-References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From 2fae022bfd842a41df23bf1dd7dda95ac7b0e1e8 Mon Sep 17 00:00:00 2001
+Message-Id: <2fae022bfd842a41df23bf1dd7dda95ac7b0e1e8.1634742093.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
 From: John Ogness <john.ogness@linutronix.de>
 Date: Tue, 12 Feb 2019 15:29:56 +0100
-Subject: [PATCH 034/307] console: add write_atomic interface
+Subject: [PATCH 034/308] console: add write_atomic interface
 
 Add a write_atomic callback to the console. This is an optional
 function for console drivers. The function must be atomic (including

@@ -1,10 +1,10 @@
-From 9300c2bbd800f99e62a8c8d95915c04e99465b54 Mon Sep 17 00:00:00 2001
-Message-Id: <9300c2bbd800f99e62a8c8d95915c04e99465b54.1628521258.git.zanussi@kernel.org>
-In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
-References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From 32c2d1949a482789bc7c79a057b6f87874d25b1c Mon Sep 17 00:00:00 2001
+Message-Id: <32c2d1949a482789bc7c79a057b6f87874d25b1c.1634742095.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
 From: Matt Fleming <matt@codeblueprint.co.uk>
 Date: Tue, 7 Apr 2020 10:54:13 +0100
-Subject: [PATCH 292/307] signal: Prevent double-free of user struct
+Subject: [PATCH 292/308] signal: Prevent double-free of user struct
 
 The way user struct reference counting works changed significantly with,
 

@@ -1,10 +1,10 @@
-From 11e678478b7b53fd176d3a47e2843c6ff8ba23c3 Mon Sep 17 00:00:00 2001
-Message-Id: <11e678478b7b53fd176d3a47e2843c6ff8ba23c3.1628521258.git.zanussi@kernel.org>
-In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
-References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From 658f592a6d2e19cb3206fbdd4d1d60d1dbd22f12 Mon Sep 17 00:00:00 2001
+Message-Id: <658f592a6d2e19cb3206fbdd4d1d60d1dbd22f12.1634742094.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Wed, 7 Mar 2012 21:00:34 +0100
-Subject: [PATCH 195/307] fs: namespace: Use cpu_chill() in trylock loops
+Subject: [PATCH 195/308] fs: namespace: Use cpu_chill() in trylock loops
 
 Retry loops on RT might loop forever when the modifying side was
 preempted. Use cpu_chill() instead of cpu_relax() to let the system
@@ -16,7 +16,7 @@ Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
  1 file changed, 6 insertions(+), 2 deletions(-)
 
 diff --git a/fs/namespace.c b/fs/namespace.c
-index 76ea92994d26..d32961cf666d 100644
+index 5782cd55dfdb..6af700b53c73 100644
 --- a/fs/namespace.c
 +++ b/fs/namespace.c
 @@ -14,6 +14,7 @@

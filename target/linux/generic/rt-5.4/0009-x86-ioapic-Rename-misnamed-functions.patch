@@ -1,10 +1,10 @@
-From e4f96178ca83b9a53331def507d7bd45fc00bf0a Mon Sep 17 00:00:00 2001
-Message-Id: <e4f96178ca83b9a53331def507d7bd45fc00bf0a.1628521257.git.zanussi@kernel.org>
-In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
-References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From 38cda43b05e01c155d898aefc061a0e2d48d5655 Mon Sep 17 00:00:00 2001
+Message-Id: <38cda43b05e01c155d898aefc061a0e2d48d5655.1634742093.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Thu, 17 Oct 2019 12:19:02 +0200
-Subject: [PATCH 009/307] x86/ioapic: Rename misnamed functions
+Subject: [PATCH 009/308] x86/ioapic: Rename misnamed functions
 
 ioapic_irqd_[un]mask() are misnomers as both functions do way more than
 masking and unmasking the interrupt line. Both deal with the moving the
@@ -29,7 +29,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  1 file changed, 8 insertions(+), 8 deletions(-)
 
 diff --git a/arch/x86/kernel/apic/io_apic.c b/arch/x86/kernel/apic/io_apic.c
-index 0edcf69659ee..90287b555027 100644
+index 1622cff009c9..4c29e3b0ca3f 100644
 --- a/arch/x86/kernel/apic/io_apic.c
 +++ b/arch/x86/kernel/apic/io_apic.c
 @@ -1735,7 +1735,7 @@ static bool io_apic_level_ack_pending(struct mp_chip_data *data)

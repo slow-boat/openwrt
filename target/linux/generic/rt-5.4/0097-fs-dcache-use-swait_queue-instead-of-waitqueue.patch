@@ -1,10 +1,10 @@
-From df4a4e1bf4d531655d04428072792960049da885 Mon Sep 17 00:00:00 2001
-Message-Id: <df4a4e1bf4d531655d04428072792960049da885.1628521258.git.zanussi@kernel.org>
-In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
-References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From 24a04b293322234da8766dffd118e3553e314bac Mon Sep 17 00:00:00 2001
+Message-Id: <24a04b293322234da8766dffd118e3553e314bac.1634742094.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Wed, 14 Sep 2016 14:35:49 +0200
-Subject: [PATCH 097/307] fs/dcache: use swait_queue instead of waitqueue
+Subject: [PATCH 097/308] fs/dcache: use swait_queue instead of waitqueue
 
 __d_lookup_done() invokes wake_up_all() while holding a hlist_bl_lock()
 which disables preemption. As a workaround convert it to swait.
@@ -180,10 +180,10 @@ index 74ab24b11804..efa5adce9b30 100644
  	status = -EBUSY;
  	spin_lock(&dentry->d_lock);
 diff --git a/fs/proc/base.c b/fs/proc/base.c
-index 90d2f62a9672..465a17d32dd5 100644
+index 5a187e9b7221..0caa2d022b93 100644
 --- a/fs/proc/base.c
 +++ b/fs/proc/base.c
-@@ -1890,7 +1890,7 @@ bool proc_fill_cache(struct file *file, struct dir_context *ctx,
+@@ -1899,7 +1899,7 @@ bool proc_fill_cache(struct file *file, struct dir_context *ctx,
  
  	child = d_hash_and_lookup(dir, &qname);
  	if (!child) {

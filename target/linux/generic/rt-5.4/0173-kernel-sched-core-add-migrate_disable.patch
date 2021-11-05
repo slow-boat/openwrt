@@ -1,10 +1,10 @@
-From ac223ba0a944cf1c3a0e5b9882f3221c24b7d14d Mon Sep 17 00:00:00 2001
-Message-Id: <ac223ba0a944cf1c3a0e5b9882f3221c24b7d14d.1628521258.git.zanussi@kernel.org>
-In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
-References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From efcce5eed1230feb1765d2f751d3bb3273cf188f Mon Sep 17 00:00:00 2001
+Message-Id: <efcce5eed1230feb1765d2f751d3bb3273cf188f.1634742094.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Sat, 27 May 2017 19:02:06 +0200
-Subject: [PATCH 173/307] kernel/sched/core: add migrate_disable()
+Subject: [PATCH 173/308] kernel/sched/core: add migrate_disable()
 
 [bristot@redhat.com: rt: Increase/decrease the nr of migratory tasks when enabling/disabling migration
  Link: https://lkml.kernel.org/r/e981d271cbeca975bca710e2fbcc6078c09741b0.1498482127.git.bristot@redhat.com
@@ -80,7 +80,7 @@ index 0e88996747da..eb9a84306963 100644
  
  #ifdef MODULE
 diff --git a/include/linux/sched.h b/include/linux/sched.h
-index 73a2dba48ccf..da4664e2c3fb 100644
+index fe5553262cdd..7c96d0c61f4e 100644
 --- a/include/linux/sched.h
 +++ b/include/linux/sched.h
 @@ -233,6 +233,8 @@ extern void io_schedule_finish(int token);
@@ -406,10 +406,10 @@ index 5e73727f6408..25ea4d268fa6 100644
  	    !t->rcu_read_unlock_special.b.blocked) {
  
 diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 3852661c13b3..fdcad14bca4c 100644
+index 098f9122793a..2ececa339a56 100644
 --- a/kernel/sched/core.c
 +++ b/kernel/sched/core.c
-@@ -1569,7 +1569,7 @@ static inline bool is_cpu_allowed(struct task_struct *p, int cpu)
+@@ -1582,7 +1582,7 @@ static inline bool is_cpu_allowed(struct task_struct *p, int cpu)
  	if (!cpumask_test_cpu(cpu, p->cpus_ptr))
  		return false;
  
@@ -418,7 +418,7 @@ index 3852661c13b3..fdcad14bca4c 100644
  		return cpu_online(cpu);
  
  	return cpu_active(cpu);
-@@ -1693,9 +1693,18 @@ static int migration_cpu_stop(void *data)
+@@ -1706,9 +1706,18 @@ static int migration_cpu_stop(void *data)
  void set_cpus_allowed_common(struct task_struct *p, const struct cpumask *new_mask)
  {
  	cpumask_copy(&p->cpus_mask, new_mask);
@@ -438,7 +438,7 @@ index 3852661c13b3..fdcad14bca4c 100644
  void do_set_cpus_allowed(struct task_struct *p, const struct cpumask *new_mask)
  {
  	struct rq *rq = task_rq(p);
-@@ -1784,7 +1793,8 @@ static int __set_cpus_allowed_ptr(struct task_struct *p,
+@@ -1797,7 +1806,8 @@ static int __set_cpus_allowed_ptr(struct task_struct *p,
  	}
  
  	/* Can the task run on the task's current CPU? If so, we're done */
@@ -448,7 +448,7 @@ index 3852661c13b3..fdcad14bca4c 100644
  		goto out;
  
  	if (task_running(rq, p) || p->state == TASK_WAKING) {
-@@ -4114,6 +4124,8 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
+@@ -4127,6 +4137,8 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
  	BUG();
  }
  
@@ -457,7 +457,7 @@ index 3852661c13b3..fdcad14bca4c 100644
  /*
   * __schedule() is the main scheduler function.
   *
-@@ -4184,6 +4196,9 @@ static void __sched notrace __schedule(bool preempt)
+@@ -4197,6 +4209,9 @@ static void __sched notrace __schedule(bool preempt)
  	rq_lock(rq, &rf);
  	smp_mb__after_spinlock();
  
@@ -467,7 +467,7 @@ index 3852661c13b3..fdcad14bca4c 100644
  	/* Promote REQ to ACT */
  	rq->clock_update_flags <<= 1;
  	update_rq_clock(rq);
-@@ -6421,6 +6436,7 @@ static void migrate_tasks(struct rq *dead_rq, struct rq_flags *rf)
+@@ -6434,6 +6449,7 @@ static void migrate_tasks(struct rq *dead_rq, struct rq_flags *rf)
  			break;
  
  		next = __pick_migrate_task(rq);
@@ -475,7 +475,7 @@ index 3852661c13b3..fdcad14bca4c 100644
  
  		/*
  		 * Rules for changing task_struct::cpus_mask are holding
-@@ -8140,3 +8156,162 @@ const u32 sched_prio_to_wmult[40] = {
+@@ -8153,3 +8169,162 @@ const u32 sched_prio_to_wmult[40] = {
  };
  
  #undef CREATE_TRACE_POINTS
@@ -654,10 +654,10 @@ index faada713cfae..383e1f30df3b 100644
  #undef PN
  #undef __PN
 diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index b63f5a955453..d3381bc00f2c 100644
+index bd492b9b7a9f..ede3adee7be0 100644
 --- a/kernel/sched/sched.h
 +++ b/kernel/sched/sched.h
-@@ -1002,6 +1002,10 @@ struct rq {
+@@ -1004,6 +1004,10 @@ struct rq {
  	/* Must be inspected within a rcu lock section */
  	struct cpuidle_state	*idle_state;
  #endif

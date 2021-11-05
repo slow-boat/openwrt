@@ -1,10 +1,10 @@
-From 6907bae3ced26bfd81f9f85cffe1a23a9e93b710 Mon Sep 17 00:00:00 2001
-Message-Id: <6907bae3ced26bfd81f9f85cffe1a23a9e93b710.1628521257.git.zanussi@kernel.org>
-In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
-References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From 890777bbeb625e662d53df7f2d05bab9b8da14e5 Mon Sep 17 00:00:00 2001
+Message-Id: <890777bbeb625e662d53df7f2d05bab9b8da14e5.1634742094.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Fri, 15 Nov 2019 18:04:07 +0100
-Subject: [PATCH 064/307] perf/core: Add SRCU annotation for pmus list walk
+Subject: [PATCH 064/308] perf/core: Add SRCU annotation for pmus list walk
 
 Since commit
    28875945ba98d ("rcu: Add support for consolidated-RCU reader checking")
@@ -22,7 +22,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/kernel/events/core.c b/kernel/events/core.c
-index 2f848123cdae..26ef30f8031e 100644
+index 1993a741d2dc..0461eb35646f 100644
 --- a/kernel/events/core.c
 +++ b/kernel/events/core.c
 @@ -10289,7 +10289,7 @@ static struct pmu *perf_init_event(struct perf_event *event)

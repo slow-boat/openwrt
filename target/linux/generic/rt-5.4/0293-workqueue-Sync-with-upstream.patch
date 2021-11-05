@@ -1,10 +1,10 @@
-From 58f9332f9d5293c4e69cbbc438a02b1c20df858a Mon Sep 17 00:00:00 2001
-Message-Id: <58f9332f9d5293c4e69cbbc438a02b1c20df858a.1628521258.git.zanussi@kernel.org>
-In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
-References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From 943d0f56470513b7334dc3e80262021e6c96eaa9 Mon Sep 17 00:00:00 2001
+Message-Id: <943d0f56470513b7334dc3e80262021e6c96eaa9.1634742095.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Wed, 10 Jun 2020 12:59:18 +0200
-Subject: [PATCH 293/307] workqueue: Sync with upstream
+Subject: [PATCH 293/308] workqueue: Sync with upstream
 
 This is an all-on-one patch reverting the following commits:
   workqueue: Don't assume that the callback has interrupts disabled
@@ -49,7 +49,7 @@ index 21ae66cd41d3..f426a0661aa0 100644
 -
  #endif /* _LINUX_SWAIT_H */
 diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-index 040a94c0dd4c..6fe1f46a9651 100644
+index 7ff94bd7b22f..c06f7a199989 100644
 --- a/kernel/workqueue.c
 +++ b/kernel/workqueue.c
 @@ -51,7 +51,6 @@

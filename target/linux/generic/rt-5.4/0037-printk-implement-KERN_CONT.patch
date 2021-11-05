@@ -1,10 +1,10 @@
-From e4938c2d5228ee9e7dcdd59118130fa667335582 Mon Sep 17 00:00:00 2001
-Message-Id: <e4938c2d5228ee9e7dcdd59118130fa667335582.1628521257.git.zanussi@kernel.org>
-In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
-References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From 96b15878be3a32eb28b0073c750ad3419a45ed31 Mon Sep 17 00:00:00 2001
+Message-Id: <96b15878be3a32eb28b0073c750ad3419a45ed31.1634742093.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
 From: John Ogness <john.ogness@linutronix.de>
 Date: Tue, 12 Feb 2019 15:29:59 +0100
-Subject: [PATCH 037/307] printk: implement KERN_CONT
+Subject: [PATCH 037/308] printk: implement KERN_CONT
 
 Implement KERN_CONT based on the printing CPU rather than on the
 printing task. As long as the KERN_CONT messages are coming from the

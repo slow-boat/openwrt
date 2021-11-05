@@ -1,10 +1,10 @@
-From 43880069936b94c59eb5d8794819927ed3b2812b Mon Sep 17 00:00:00 2001
-Message-Id: <43880069936b94c59eb5d8794819927ed3b2812b.1628521258.git.zanussi@kernel.org>
-In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
-References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From 16d3070b60e1c8dd4f58610a958493cc14c1c236 Mon Sep 17 00:00:00 2001
+Message-Id: <16d3070b60e1c8dd4f58610a958493cc14c1c236.1634742094.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Fri, 24 Jul 2009 12:38:56 +0200
-Subject: [PATCH 119/307] preempt: Provide preempt_*_(no)rt variants
+Subject: [PATCH 119/308] preempt: Provide preempt_*_(no)rt variants
 
 RT needs a few preempt_disable/enable points which are not necessary
 otherwise. Implement variants to avoid #ifdeffery.

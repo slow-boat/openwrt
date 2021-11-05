@@ -1,10 +1,10 @@
-From 0143dc33561e7546d48d879906a8f72e5c56b6d4 Mon Sep 17 00:00:00 2001
-Message-Id: <0143dc33561e7546d48d879906a8f72e5c56b6d4.1628521258.git.zanussi@kernel.org>
-In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
-References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From 8b566601283c340330591f2a62f3a0b7dc32e229 Mon Sep 17 00:00:00 2001
+Message-Id: <8b566601283c340330591f2a62f3a0b7dc32e229.1634742094.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
 From: Ingo Molnar <mingo@elte.hu>
 Date: Fri, 3 Jul 2009 08:29:37 -0500
-Subject: [PATCH 115/307] mm: page_alloc: rt-friendly per-cpu pages
+Subject: [PATCH 115/308] mm: page_alloc: rt-friendly per-cpu pages
 
 rt-friendly per-cpu pages: convert the irqs-off per-cpu locking
 method into a preemptible, explicit-per-cpu-locks method.
@@ -20,7 +20,7 @@ Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
  1 file changed, 32 insertions(+), 19 deletions(-)
 
 diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index bf062853c9ae..4b70ad16a6e6 100644
+index a93e8189e40f..7a30dde46639 100644
 --- a/mm/page_alloc.c
 +++ b/mm/page_alloc.c
 @@ -61,6 +61,7 @@

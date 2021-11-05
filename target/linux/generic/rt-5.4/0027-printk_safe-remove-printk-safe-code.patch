@@ -1,10 +1,10 @@
-From fbe9d044662aba6221fd651b3b662b859d38f025 Mon Sep 17 00:00:00 2001
-Message-Id: <fbe9d044662aba6221fd651b3b662b859d38f025.1628521257.git.zanussi@kernel.org>
-In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
-References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From 6f2b68d96a94def687a56db6d5cb4b3694984684 Mon Sep 17 00:00:00 2001
+Message-Id: <6f2b68d96a94def687a56db6d5cb4b3694984684.1634742093.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
 From: John Ogness <john.ogness@linutronix.de>
 Date: Tue, 12 Feb 2019 15:29:49 +0100
-Subject: [PATCH 027/307] printk_safe: remove printk safe code
+Subject: [PATCH 027/308] printk_safe: remove printk safe code
 
 vprintk variants are now NMI-safe so there is no longer a need for
 the "safe" calls.

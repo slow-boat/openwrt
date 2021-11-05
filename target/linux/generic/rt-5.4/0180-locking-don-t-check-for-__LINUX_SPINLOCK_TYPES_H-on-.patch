@@ -1,10 +1,10 @@
-From 16f0f94411cfed30dce8f02129b4ece9571d1648 Mon Sep 17 00:00:00 2001
-Message-Id: <16f0f94411cfed30dce8f02129b4ece9571d1648.1628521258.git.zanussi@kernel.org>
-In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
-References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From 9f105a1ba5d8a938391627b3cf79a0d9c59de5de Mon Sep 17 00:00:00 2001
+Message-Id: <9f105a1ba5d8a938391627b3cf79a0d9c59de5de.1634742094.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Fri, 4 Aug 2017 17:40:42 +0200
-Subject: [PATCH 180/307] locking: don't check for __LINUX_SPINLOCK_TYPES_H on
+Subject: [PATCH 180/308] locking: don't check for __LINUX_SPINLOCK_TYPES_H on
  -RT archs
 
 Upstream uses arch_spinlock_t within spinlock_t and requests that

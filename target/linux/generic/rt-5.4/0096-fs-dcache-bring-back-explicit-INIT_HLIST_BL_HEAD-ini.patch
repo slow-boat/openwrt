@@ -1,10 +1,10 @@
-From 7397bf831c1c9313567c926c9e0726a040c1eff7 Mon Sep 17 00:00:00 2001
-Message-Id: <7397bf831c1c9313567c926c9e0726a040c1eff7.1628521258.git.zanussi@kernel.org>
-In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
-References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From bb010b90bb42e5073b6e583c39563ec034cdb5f0 Mon Sep 17 00:00:00 2001
+Message-Id: <bb010b90bb42e5073b6e583c39563ec034cdb5f0.1634742094.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Wed, 13 Sep 2017 12:32:34 +0200
-Subject: [PATCH 096/307] fs/dcache: bring back explicit INIT_HLIST_BL_HEAD
+Subject: [PATCH 096/308] fs/dcache: bring back explicit INIT_HLIST_BL_HEAD
  init
 
 Commit 3d375d78593c ("mm: update callers to use HASH_ZERO flag") removed

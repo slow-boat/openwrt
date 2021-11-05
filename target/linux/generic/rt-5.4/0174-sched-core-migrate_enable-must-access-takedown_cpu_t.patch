@@ -1,10 +1,10 @@
-From 30fc8ac6d35fee22cb9ded965787d1d8009a2565 Mon Sep 17 00:00:00 2001
-Message-Id: <30fc8ac6d35fee22cb9ded965787d1d8009a2565.1628521258.git.zanussi@kernel.org>
-In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
-References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From f5c27905df32fe55094f68d1b8acf86cb04aeb35 Mon Sep 17 00:00:00 2001
+Message-Id: <f5c27905df32fe55094f68d1b8acf86cb04aeb35.1634742094.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Fri, 29 Nov 2019 17:24:55 +0100
-Subject: [PATCH 174/307] sched/core: migrate_enable() must access
+Subject: [PATCH 174/308] sched/core: migrate_enable() must access
  takedown_cpu_task on !HOTPLUG_CPU
 
 The variable takedown_cpu_task is never declared/used on !HOTPLUG_CPU
@@ -34,10 +34,10 @@ index afb2162240cf..241410325c19 100644
  static int takedown_cpu(unsigned int cpu)
  {
 diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index fdcad14bca4c..5e324441d019 100644
+index 2ececa339a56..d0c6e99319bf 100644
 --- a/kernel/sched/core.c
 +++ b/kernel/sched/core.c
-@@ -8241,9 +8241,11 @@ void migrate_enable(void)
+@@ -8254,9 +8254,11 @@ void migrate_enable(void)
  
  	p->migrate_disable = 0;
  	rq->nr_pinned--;

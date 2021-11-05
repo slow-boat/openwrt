@@ -1,10 +1,10 @@
-From 03156451cd8ae2227e9e7c70738704452c5d42d4 Mon Sep 17 00:00:00 2001
-Message-Id: <03156451cd8ae2227e9e7c70738704452c5d42d4.1628521257.git.zanussi@kernel.org>
-In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
-References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From 2de5f5046b8235bf15fe142e1870f03ae983e120 Mon Sep 17 00:00:00 2001
+Message-Id: <2de5f5046b8235bf15fe142e1870f03ae983e120.1634742093.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
 From: Peter Zijlstra <peterz@infradead.org>
 Date: Fri, 31 Jan 2020 16:07:05 +0100
-Subject: [PATCH 056/307] locking/percpu-rwsem: Convert to bool
+Subject: [PATCH 056/308] locking/percpu-rwsem: Convert to bool
 
 Use bool where possible.
 

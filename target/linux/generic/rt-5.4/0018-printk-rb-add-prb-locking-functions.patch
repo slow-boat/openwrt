@@ -1,10 +1,10 @@
-From 76cbfe946ba16aace0f95ca5f7c55b2e5d1bc365 Mon Sep 17 00:00:00 2001
-Message-Id: <76cbfe946ba16aace0f95ca5f7c55b2e5d1bc365.1628521257.git.zanussi@kernel.org>
-In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
-References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From c254ebd0ecdcaafa95c68ec586d866a7c981972d Mon Sep 17 00:00:00 2001
+Message-Id: <c254ebd0ecdcaafa95c68ec586d866a7c981972d.1634742093.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
 From: John Ogness <john.ogness@linutronix.de>
 Date: Tue, 12 Feb 2019 15:29:40 +0100
-Subject: [PATCH 018/307] printk-rb: add prb locking functions
+Subject: [PATCH 018/308] printk-rb: add prb locking functions
 
 Add processor-reentrant spin locking functions. These allow
 restricting the number of possible contexts to 2, which can simplify

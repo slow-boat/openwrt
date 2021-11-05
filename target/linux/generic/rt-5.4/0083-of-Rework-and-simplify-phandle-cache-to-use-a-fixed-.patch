@@ -1,10 +1,10 @@
-From 31dbca74b139bfda68bc7c81318134a45154de1c Mon Sep 17 00:00:00 2001
-Message-Id: <31dbca74b139bfda68bc7c81318134a45154de1c.1628521257.git.zanussi@kernel.org>
-In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
-References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From 159b0644573a7a953375b85df8b11946d1f6a7cd Mon Sep 17 00:00:00 2001
+Message-Id: <159b0644573a7a953375b85df8b11946d1f6a7cd.1634742094.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
 From: Rob Herring <robh@kernel.org>
 Date: Wed, 11 Dec 2019 17:23:45 -0600
-Subject: [PATCH 083/307] of: Rework and simplify phandle cache to use a fixed
+Subject: [PATCH 083/308] of: Rework and simplify phandle cache to use a fixed
  size
 
 The phandle cache was added to speed up of_find_node_by_phandle() by

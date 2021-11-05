@@ -1,10 +1,10 @@
-From 86c1e174888c63feda38f7e28f636d481fa13005 Mon Sep 17 00:00:00 2001
-Message-Id: <86c1e174888c63feda38f7e28f636d481fa13005.1628521258.git.zanussi@kernel.org>
-In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
-References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From 7b71a58af53a8a07822d574ee780a1eb5e389960 Mon Sep 17 00:00:00 2001
+Message-Id: <7b71a58af53a8a07822d574ee780a1eb5e389960.1634742094.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Tue, 17 Oct 2017 16:36:18 +0200
-Subject: [PATCH 212/307] lockdep: disable self-test
+Subject: [PATCH 212/308] lockdep: disable self-test
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -20,10 +20,10 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index d66a5b6f3b26..62acf00f9fc3 100644
+index 6467cfb8c7c0..05869e27bf05 100644
 --- a/lib/Kconfig.debug
 +++ b/lib/Kconfig.debug
-@@ -1239,7 +1239,7 @@ config DEBUG_ATOMIC_SLEEP
+@@ -1238,7 +1238,7 @@ config DEBUG_ATOMIC_SLEEP
  
  config DEBUG_LOCKING_API_SELFTESTS
  	bool "Locking API boot-time self-tests"

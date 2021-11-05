@@ -1,10 +1,10 @@
-From 5cfd5636dd17652e6cb1d9d696505faf9e0208e7 Mon Sep 17 00:00:00 2001
-Message-Id: <5cfd5636dd17652e6cb1d9d696505faf9e0208e7.1628521257.git.zanussi@kernel.org>
-In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
-References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From 65a1423c40b913f66560588e79fe1b1f64cc3bdd Mon Sep 17 00:00:00 2001
+Message-Id: <65a1423c40b913f66560588e79fe1b1f64cc3bdd.1634742093.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
 From: John Ogness <john.ogness@linutronix.de>
 Date: Tue, 12 Feb 2019 15:29:51 +0100
-Subject: [PATCH 029/307] printk: track seq per console
+Subject: [PATCH 029/308] printk: track seq per console
 
 Allow each console to track which seq record was last printed. This
 simplifies identifying dropped records.

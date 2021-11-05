@@ -1,10 +1,10 @@
-From 43ecb742593ce73a0e811254f122e3a9e7784fa2 Mon Sep 17 00:00:00 2001
-Message-Id: <43ecb742593ce73a0e811254f122e3a9e7784fa2.1628521258.git.zanussi@kernel.org>
-In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
-References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From 548e0dc9d990565d234cf424bb79f9b7464a36d8 Mon Sep 17 00:00:00 2001
+Message-Id: <548e0dc9d990565d234cf424bb79f9b7464a36d8.1634742094.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Wed, 2 Dec 2015 11:34:07 +0100
-Subject: [PATCH 163/307] rtmutex: trylock is okay on -RT
+Subject: [PATCH 163/308] rtmutex: trylock is okay on -RT
 
 non-RT kernel could deadlock on rt_mutex_trylock() in softirq context. On
 -RT we don't run softirqs in IRQ context but in thread context so it is

@@ -1,10 +1,10 @@
-From a11e446fff926eda97dbc2536323c500a8119f5d Mon Sep 17 00:00:00 2001
-Message-Id: <a11e446fff926eda97dbc2536323c500a8119f5d.1628521258.git.zanussi@kernel.org>
-In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
-References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From 639aa63358c84fd90c3f92f8c190f8fd35309add Mon Sep 17 00:00:00 2001
+Message-Id: <639aa63358c84fd90c3f92f8c190f8fd35309add.1634742095.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
 From: "Ahmed S. Darwish" <a.darwish@linutronix.de>
 Date: Wed, 10 Jun 2020 12:53:00 +0200
-Subject: [PATCH 295/307] net: phy: fixed_phy: Remove unused seqcount
+Subject: [PATCH 295/308] net: phy: fixed_phy: Remove unused seqcount
 
 Commit bf7afb29d545 ("phy: improve safety of fixed-phy MII register
 reading") protected the fixed PHY status with a sequence counter.

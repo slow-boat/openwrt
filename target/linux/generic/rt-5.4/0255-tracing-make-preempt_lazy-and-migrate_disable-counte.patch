@@ -1,10 +1,10 @@
-From bb5a20583ba95cd2ed44097673cd16bb21cf3c58 Mon Sep 17 00:00:00 2001
-Message-Id: <bb5a20583ba95cd2ed44097673cd16bb21cf3c58.1628521258.git.zanussi@kernel.org>
-In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
-References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From 06d55a6d153bcf16a745462e8d8263412f698241 Mon Sep 17 00:00:00 2001
+Message-Id: <06d55a6d153bcf16a745462e8d8263412f698241.1634742095.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Fri, 21 Feb 2020 18:15:15 +0100
-Subject: [PATCH 255/307] tracing: make preempt_lazy and migrate_disable
+Subject: [PATCH 255/308] tracing: make preempt_lazy and migrate_disable
  counter smaller
 
 The migrate_disable counter should not exceed 255 so it is enough to

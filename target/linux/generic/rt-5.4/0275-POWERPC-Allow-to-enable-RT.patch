@@ -1,10 +1,10 @@
-From a7ffb0b1aabaf4497a9e7f6b80d1c8b85d4cf6c3 Mon Sep 17 00:00:00 2001
-Message-Id: <a7ffb0b1aabaf4497a9e7f6b80d1c8b85d4cf6c3.1628521258.git.zanussi@kernel.org>
-In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
-References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From a1e26956b48ae243347219c630ab70c8594c4fad Mon Sep 17 00:00:00 2001
+Message-Id: <a1e26956b48ae243347219c630ab70c8594c4fad.1634742095.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Fri, 11 Oct 2019 13:14:41 +0200
-Subject: [PATCH 275/307] POWERPC: Allow to enable RT
+Subject: [PATCH 275/308] POWERPC: Allow to enable RT
 
 Allow to select RT.
 

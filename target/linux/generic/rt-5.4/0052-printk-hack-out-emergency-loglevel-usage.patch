@@ -1,10 +1,10 @@
-From 454aebf5f4d2d4bb02958dfc3e3b6b51c41f3963 Mon Sep 17 00:00:00 2001
-Message-Id: <454aebf5f4d2d4bb02958dfc3e3b6b51c41f3963.1628521257.git.zanussi@kernel.org>
-In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
-References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From 5d0fb9d360be919e0b0da136183d9509eb936f76 Mon Sep 17 00:00:00 2001
+Message-Id: <5d0fb9d360be919e0b0da136183d9509eb936f76.1634742093.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
 From: John Ogness <john.ogness@linutronix.de>
 Date: Tue, 3 Dec 2019 09:14:57 +0100
-Subject: [PATCH 052/307] printk: hack out emergency loglevel usage
+Subject: [PATCH 052/308] printk: hack out emergency loglevel usage
 
 Instead of using an emergency loglevel to determine if atomic
 messages should be printed, use oops_in_progress. This conforms

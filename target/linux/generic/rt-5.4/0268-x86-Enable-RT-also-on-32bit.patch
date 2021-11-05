@@ -1,10 +1,10 @@
-From cd9b8d82df3910ab13bd273f2ca5b37b07a8221a Mon Sep 17 00:00:00 2001
-Message-Id: <cd9b8d82df3910ab13bd273f2ca5b37b07a8221a.1628521258.git.zanussi@kernel.org>
-In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
-References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From 854a6a8407d4af150d7e06d0161950684f00945b Mon Sep 17 00:00:00 2001
+Message-Id: <854a6a8407d4af150d7e06d0161950684f00945b.1634742095.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Thu, 7 Nov 2019 17:49:20 +0100
-Subject: [PATCH 268/307] x86: Enable RT also on 32bit
+Subject: [PATCH 268/308] x86: Enable RT also on 32bit
 
 Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 ---
@@ -12,7 +12,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 38a0347f909b..52bf75f94ba0 100644
+index 3030ba5993eb..947b316dfb4b 100644
 --- a/arch/x86/Kconfig
 +++ b/arch/x86/Kconfig
 @@ -25,7 +25,6 @@ config X86_64

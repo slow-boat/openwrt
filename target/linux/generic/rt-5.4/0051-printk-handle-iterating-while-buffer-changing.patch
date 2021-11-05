@@ -1,10 +1,10 @@
-From 0490feee848c9a64d4b77ce220ea8a597bac8677 Mon Sep 17 00:00:00 2001
-Message-Id: <0490feee848c9a64d4b77ce220ea8a597bac8677.1628521257.git.zanussi@kernel.org>
-In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
-References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From deaeaada917715d82641617b7ba3689052110ca7 Mon Sep 17 00:00:00 2001
+Message-Id: <deaeaada917715d82641617b7ba3689052110ca7.1634742093.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
 From: John Ogness <john.ogness@linutronix.de>
 Date: Mon, 7 Oct 2019 16:20:39 +0200
-Subject: [PATCH 051/307] printk: handle iterating while buffer changing
+Subject: [PATCH 051/308] printk: handle iterating while buffer changing
 
 The syslog and kmsg_dump readers are provided buffers to fill.
 Both try to maximize the provided buffer usage by calculating the

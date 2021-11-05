@@ -1,10 +1,10 @@
-From 28d280ec9edaa3dbad49d0f72307073058de6fa0 Mon Sep 17 00:00:00 2001
-Message-Id: <28d280ec9edaa3dbad49d0f72307073058de6fa0.1628521258.git.zanussi@kernel.org>
-In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
-References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From 42eaecf39a510e39df5efb306e55a4571ed7a42c Mon Sep 17 00:00:00 2001
+Message-Id: <42eaecf39a510e39df5efb306e55a4571ed7a42c.1634742095.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Fri, 26 Oct 2012 18:50:54 +0100
-Subject: [PATCH 249/307] sched: Add support for lazy preemption
+Subject: [PATCH 249/308] sched: Add support for lazy preemption
 
 It has become an obsession to mitigate the determinism vs. throughput
 loss of RT. Looking at the mainline semantics of preemption points
@@ -145,7 +145,7 @@ index eb9a84306963..adb085fe31e4 100644
  } while (0)
  
 diff --git a/include/linux/sched.h b/include/linux/sched.h
-index d27eecbeb7b1..f6beaecb0384 100644
+index 39abc9e2827f..aac61dbe79e1 100644
 --- a/include/linux/sched.h
 +++ b/include/linux/sched.h
 @@ -1791,6 +1791,44 @@ static inline int test_tsk_need_resched(struct task_struct *tsk)
@@ -245,7 +245,7 @@ index deff97217496..7871ec3c9a02 100644
  	prompt "Preemption Model"
  	default PREEMPT_NONE
 diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index d1866c7b0ecc..e36d60533d06 100644
+index c14fed9b884b..9b32fbded588 100644
 --- a/kernel/sched/core.c
 +++ b/kernel/sched/core.c
 @@ -553,6 +553,48 @@ void resched_curr(struct rq *rq)
@@ -297,7 +297,7 @@ index d1866c7b0ecc..e36d60533d06 100644
  void resched_cpu(int cpu)
  {
  	struct rq *rq = cpu_rq(cpu);
-@@ -3085,6 +3127,9 @@ int sched_fork(unsigned long clone_flags, struct task_struct *p)
+@@ -3098,6 +3140,9 @@ int sched_fork(unsigned long clone_flags, struct task_struct *p)
  	p->on_cpu = 0;
  #endif
  	init_task_preempt_count(p);
@@ -307,7 +307,7 @@ index d1866c7b0ecc..e36d60533d06 100644
  #ifdef CONFIG_SMP
  	plist_node_init(&p->pushable_tasks, MAX_PRIO);
  	RB_CLEAR_NODE(&p->pushable_dl_tasks);
-@@ -4226,6 +4271,7 @@ static void __sched notrace __schedule(bool preempt)
+@@ -4239,6 +4284,7 @@ static void __sched notrace __schedule(bool preempt)
  
  	next = pick_next_task(rq, prev, &rf);
  	clear_tsk_need_resched(prev);
@@ -315,7 +315,7 @@ index d1866c7b0ecc..e36d60533d06 100644
  	clear_preempt_need_resched();
  
  	if (likely(prev != next)) {
-@@ -4414,6 +4460,30 @@ static void __sched notrace preempt_schedule_common(void)
+@@ -4427,6 +4473,30 @@ static void __sched notrace preempt_schedule_common(void)
  	} while (need_resched());
  }
  
@@ -346,7 +346,7 @@ index d1866c7b0ecc..e36d60533d06 100644
  #ifdef CONFIG_PREEMPTION
  /*
   * This is the entry point to schedule() from in-kernel preemption
-@@ -4427,7 +4497,8 @@ asmlinkage __visible void __sched notrace preempt_schedule(void)
+@@ -4440,7 +4510,8 @@ asmlinkage __visible void __sched notrace preempt_schedule(void)
  	 */
  	if (likely(!preemptible()))
  		return;
@@ -356,7 +356,7 @@ index d1866c7b0ecc..e36d60533d06 100644
  	preempt_schedule_common();
  }
  NOKPROBE_SYMBOL(preempt_schedule);
-@@ -4454,6 +4525,9 @@ asmlinkage __visible void __sched notrace preempt_schedule_notrace(void)
+@@ -4467,6 +4538,9 @@ asmlinkage __visible void __sched notrace preempt_schedule_notrace(void)
  	if (likely(!preemptible()))
  		return;
  
@@ -366,7 +366,7 @@ index d1866c7b0ecc..e36d60533d06 100644
  	do {
  		/*
  		 * Because the function tracer can trace preempt_count_sub()
-@@ -6241,7 +6315,9 @@ void init_idle(struct task_struct *idle, int cpu)
+@@ -6254,7 +6328,9 @@ void init_idle(struct task_struct *idle, int cpu)
  
  	/* Set the preempt count _outside_ the spinlocks! */
  	init_idle_preempt_count(idle, cpu);
@@ -377,7 +377,7 @@ index d1866c7b0ecc..e36d60533d06 100644
  	/*
  	 * The idle tasks have their own, simple scheduling class:
  	 */
-@@ -8205,6 +8281,7 @@ void migrate_disable(void)
+@@ -8218,6 +8294,7 @@ void migrate_disable(void)
  
  	if (++current->migrate_disable == 1) {
  		this_rq()->nr_pinned++;
@@ -385,7 +385,7 @@ index d1866c7b0ecc..e36d60533d06 100644
  #ifdef CONFIG_SCHED_DEBUG
  		WARN_ON_ONCE(current->pinned_on_cpu >= 0);
  		current->pinned_on_cpu = smp_processor_id();
-@@ -8286,6 +8363,7 @@ void migrate_enable(void)
+@@ -8299,6 +8376,7 @@ void migrate_enable(void)
  	}
  
  out:
@@ -394,7 +394,7 @@ index d1866c7b0ecc..e36d60533d06 100644
  }
  EXPORT_SYMBOL(migrate_enable);
 diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 74cb20f32f72..222ce85beeec 100644
+index 87d9fad9d01d..404e0b37c5bc 100644
 --- a/kernel/sched/fair.c
 +++ b/kernel/sched/fair.c
 @@ -4134,7 +4134,7 @@ check_preempt_tick(struct cfs_rq *cfs_rq, struct sched_entity *curr)
@@ -484,10 +484,10 @@ index cf08d2c4be81..f60443e0b743 100644
  
  /*
 diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index d3381bc00f2c..1f369ad89301 100644
+index ede3adee7be0..d4285053950c 100644
 --- a/kernel/sched/sched.h
 +++ b/kernel/sched/sched.h
-@@ -1886,6 +1886,15 @@ extern void reweight_task(struct task_struct *p, int prio);
+@@ -1888,6 +1888,15 @@ extern void reweight_task(struct task_struct *p, int prio);
  extern void resched_curr(struct rq *rq);
  extern void resched_cpu(int cpu);
  

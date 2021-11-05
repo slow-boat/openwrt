@@ -1,10 +1,10 @@
-From 8983493f4dce3bf0231ce9049ab2a985a4004c91 Mon Sep 17 00:00:00 2001
-Message-Id: <8983493f4dce3bf0231ce9049ab2a985a4004c91.1628521258.git.zanussi@kernel.org>
-In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
-References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From 429fc2eb013f6c0d89ce3d57b3407c95384cb596 Mon Sep 17 00:00:00 2001
+Message-Id: <429fc2eb013f6c0d89ce3d57b3407c95384cb596.1634742094.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Sun, 17 Jul 2011 22:51:33 +0200
-Subject: [PATCH 161/307] sched: Use the proper LOCK_OFFSET for cond_resched()
+Subject: [PATCH 161/308] sched: Use the proper LOCK_OFFSET for cond_resched()
 
 RT does not increment preempt count when a 'sleeping' spinlock is
 locked. Update PREEMPT_LOCK_OFFSET for that case.

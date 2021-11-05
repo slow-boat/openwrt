@@ -1,10 +1,10 @@
-From d05d5d8b751b8933028f4bebb5b5b28105c7dfa9 Mon Sep 17 00:00:00 2001
-Message-Id: <d05d5d8b751b8933028f4bebb5b5b28105c7dfa9.1628521258.git.zanussi@kernel.org>
-In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
-References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From 04c32cfea6d27169cca3c14eb9c6e934a1322e0f Mon Sep 17 00:00:00 2001
+Message-Id: <04c32cfea6d27169cca3c14eb9c6e934a1322e0f.1634742095.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
 From: Julia Cartwright <julia@ni.com>
 Date: Mon, 7 May 2018 08:58:57 -0500
-Subject: [PATCH 280/307] squashfs: make use of local lock in multi_cpu
+Subject: [PATCH 280/308] squashfs: make use of local lock in multi_cpu
  decompressor
 
 Currently, the squashfs multi_cpu decompressor makes use of

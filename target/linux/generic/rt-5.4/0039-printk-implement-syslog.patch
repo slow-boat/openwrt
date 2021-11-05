@@ -1,10 +1,10 @@
-From 3f15fa09c67627109131b7351c9442525fa81280 Mon Sep 17 00:00:00 2001
-Message-Id: <3f15fa09c67627109131b7351c9442525fa81280.1628521257.git.zanussi@kernel.org>
-In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
-References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From a752b11f865d08db14247fc83f78e71a172e2d21 Mon Sep 17 00:00:00 2001
+Message-Id: <a752b11f865d08db14247fc83f78e71a172e2d21.1634742093.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
 From: John Ogness <john.ogness@linutronix.de>
 Date: Tue, 12 Feb 2019 15:30:01 +0100
-Subject: [PATCH 039/307] printk: implement syslog
+Subject: [PATCH 039/308] printk: implement syslog
 
 Since printk messages are now logged to a new ring buffer, update
 the syslog functions to pull the messages from there.

@@ -1,10 +1,10 @@
-From c402c207fcdaa58bfca11d3071d43ad5c613069f Mon Sep 17 00:00:00 2001
-Message-Id: <c402c207fcdaa58bfca11d3071d43ad5c613069f.1628521258.git.zanussi@kernel.org>
-In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
-References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From c53467a190d129a9eeebf9bd197b730aa89a9a28 Mon Sep 17 00:00:00 2001
+Message-Id: <c53467a190d129a9eeebf9bd197b730aa89a9a28.1634742095.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Wed, 13 Feb 2013 11:03:11 +0100
-Subject: [PATCH 247/307] arm: Enable highmem for rt
+Subject: [PATCH 247/308] arm: Enable highmem for rt
 
 fixup highmem for ARM.
 

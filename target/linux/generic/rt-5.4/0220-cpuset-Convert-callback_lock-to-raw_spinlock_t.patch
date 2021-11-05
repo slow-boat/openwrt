@@ -1,10 +1,10 @@
-From 51f6c848128ff4104073e81b344a0db918734390 Mon Sep 17 00:00:00 2001
-Message-Id: <51f6c848128ff4104073e81b344a0db918734390.1628521258.git.zanussi@kernel.org>
-In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
-References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From 731d35f7bd05edbb870df9e1036a3c73dbde5405 Mon Sep 17 00:00:00 2001
+Message-Id: <731d35f7bd05edbb870df9e1036a3c73dbde5405.1634742094.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
 From: Mike Galbraith <efault@gmx.de>
 Date: Sun, 8 Jan 2017 09:32:25 +0100
-Subject: [PATCH 220/307] cpuset: Convert callback_lock to raw_spinlock_t
+Subject: [PATCH 220/308] cpuset: Convert callback_lock to raw_spinlock_t
 
 The two commits below add up to a cpuset might_sleep() splat for RT:
 
@@ -53,7 +53,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  1 file changed, 35 insertions(+), 35 deletions(-)
 
 diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index bab6a934862e..e27d09807c2f 100644
+index badfa8f15359..1141fe109ac5 100644
 --- a/kernel/cgroup/cpuset.c
 +++ b/kernel/cgroup/cpuset.c
 @@ -345,7 +345,7 @@ void cpuset_read_unlock(void)
@@ -251,7 +251,7 @@ index bab6a934862e..e27d09807c2f 100644
  
  	if (cpus_updated)
  		update_tasks_cpumask(cs);
-@@ -3168,7 +3168,7 @@ static void cpuset_hotplug_workfn(struct work_struct *work)
+@@ -3175,7 +3175,7 @@ static void cpuset_hotplug_workfn(struct work_struct *work)
  
  	/* synchronize cpus_allowed to cpu_active_mask */
  	if (cpus_updated) {
@@ -260,7 +260,7 @@ index bab6a934862e..e27d09807c2f 100644
  		if (!on_dfl)
  			cpumask_copy(top_cpuset.cpus_allowed, &new_cpus);
  		/*
-@@ -3188,17 +3188,17 @@ static void cpuset_hotplug_workfn(struct work_struct *work)
+@@ -3195,17 +3195,17 @@ static void cpuset_hotplug_workfn(struct work_struct *work)
  			}
  		}
  		cpumask_copy(top_cpuset.effective_cpus, &new_cpus);
@@ -281,7 +281,7 @@ index bab6a934862e..e27d09807c2f 100644
  		update_tasks_nodemask(&top_cpuset);
  	}
  
-@@ -3299,11 +3299,11 @@ void cpuset_cpus_allowed(struct task_struct *tsk, struct cpumask *pmask)
+@@ -3306,11 +3306,11 @@ void cpuset_cpus_allowed(struct task_struct *tsk, struct cpumask *pmask)
  {
  	unsigned long flags;
  
@@ -295,7 +295,7 @@ index bab6a934862e..e27d09807c2f 100644
  }
  
  /**
-@@ -3364,11 +3364,11 @@ nodemask_t cpuset_mems_allowed(struct task_struct *tsk)
+@@ -3371,11 +3371,11 @@ nodemask_t cpuset_mems_allowed(struct task_struct *tsk)
  	nodemask_t mask;
  	unsigned long flags;
  
@@ -309,7 +309,7 @@ index bab6a934862e..e27d09807c2f 100644
  
  	return mask;
  }
-@@ -3460,14 +3460,14 @@ bool __cpuset_node_allowed(int node, gfp_t gfp_mask)
+@@ -3467,14 +3467,14 @@ bool __cpuset_node_allowed(int node, gfp_t gfp_mask)
  		return true;
  
  	/* Not hardwall and node outside mems_allowed: scan up cpusets */

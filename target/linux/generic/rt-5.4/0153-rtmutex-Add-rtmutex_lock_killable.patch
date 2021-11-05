@@ -1,10 +1,10 @@
-From 29fbdd9238e2e84f764625ebf6eb767c5c64d745 Mon Sep 17 00:00:00 2001
-Message-Id: <29fbdd9238e2e84f764625ebf6eb767c5c64d745.1628521258.git.zanussi@kernel.org>
-In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
-References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From cb5cbf6f84b529114a56826561519d046f07e333 Mon Sep 17 00:00:00 2001
+Message-Id: <cb5cbf6f84b529114a56826561519d046f07e333.1634742094.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Thu, 9 Jun 2011 11:43:52 +0200
-Subject: [PATCH 153/307] rtmutex: Add rtmutex_lock_killable()
+Subject: [PATCH 153/308] rtmutex: Add rtmutex_lock_killable()
 
 Add "killable" type to rtmutex. We need this since rtmutex are used as
 "normal" mutexes which do use this type.

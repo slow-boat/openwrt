@@ -1,10 +1,10 @@
-From 65ea337a6d8e9809840bc51c3daa709e2f38727e Mon Sep 17 00:00:00 2001
-Message-Id: <65ea337a6d8e9809840bc51c3daa709e2f38727e.1628521258.git.zanussi@kernel.org>
-In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
-References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From 6be5db97c6d3f6cc327a8d2aa6b0a54c6c2f7c00 Mon Sep 17 00:00:00 2001
+Message-Id: <6be5db97c6d3f6cc327a8d2aa6b0a54c6c2f7c00.1634742095.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Mon, 18 Jul 2011 17:10:12 +0200
-Subject: [PATCH 276/307] mips: Disable highmem on RT
+Subject: [PATCH 276/308] mips: Disable highmem on RT
 
 The current highmem handling on -RT is not compatible and needs fixups.
 
@@ -14,10 +14,10 @@ Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index 6ecdc690f733..d84e3284d43f 100644
+index 2bfef67d52c6..d4ff215b7500 100644
 --- a/arch/mips/Kconfig
 +++ b/arch/mips/Kconfig
-@@ -2587,7 +2587,7 @@ config MIPS_CRC_SUPPORT
+@@ -2588,7 +2588,7 @@ config MIPS_CRC_SUPPORT
  #
  config HIGHMEM
  	bool "High Memory Support"

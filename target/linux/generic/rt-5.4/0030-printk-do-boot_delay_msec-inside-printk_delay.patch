@@ -1,10 +1,10 @@
-From ca1385424f7a278add5df8c328167e752ce02782 Mon Sep 17 00:00:00 2001
-Message-Id: <ca1385424f7a278add5df8c328167e752ce02782.1628521257.git.zanussi@kernel.org>
-In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
-References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From 5dbed3602590ccd773197e3089113b28f725a504 Mon Sep 17 00:00:00 2001
+Message-Id: <5dbed3602590ccd773197e3089113b28f725a504.1634742093.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
 From: John Ogness <john.ogness@linutronix.de>
 Date: Tue, 12 Feb 2019 15:29:52 +0100
-Subject: [PATCH 030/307] printk: do boot_delay_msec inside printk_delay
+Subject: [PATCH 030/308] printk: do boot_delay_msec inside printk_delay
 
 Both functions needed to be called one after the other, so just
 integrate boot_delay_msec into printk_delay for simplification.

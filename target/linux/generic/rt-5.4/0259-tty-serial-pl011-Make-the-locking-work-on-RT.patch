@@ -1,10 +1,10 @@
-From 618da2c6147073814e2cade518b49c23f66bb948 Mon Sep 17 00:00:00 2001
-Message-Id: <618da2c6147073814e2cade518b49c23f66bb948.1628521258.git.zanussi@kernel.org>
-In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
-References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From 4f59b006f1347d32196a374149e12201e4f47c79 Mon Sep 17 00:00:00 2001
+Message-Id: <4f59b006f1347d32196a374149e12201e4f47c79.1634742095.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Tue, 8 Jan 2013 21:36:51 +0100
-Subject: [PATCH 259/307] tty/serial/pl011: Make the locking work on RT
+Subject: [PATCH 259/308] tty/serial/pl011: Make the locking work on RT
 
 The lock is a sleeping lock and local_irq_save() is not the optimsation
 we are looking for. Redo it to make it work on -RT and non-RT.

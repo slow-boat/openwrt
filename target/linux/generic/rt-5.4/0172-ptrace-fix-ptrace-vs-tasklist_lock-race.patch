@@ -1,10 +1,10 @@
-From 92503f0c6a0c374d64fc9e1e84a9eebf0825f7b3 Mon Sep 17 00:00:00 2001
-Message-Id: <92503f0c6a0c374d64fc9e1e84a9eebf0825f7b3.1628521258.git.zanussi@kernel.org>
-In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
-References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From 7432ea0ba2db4c09db99e730b981b73263d4ab2f Mon Sep 17 00:00:00 2001
+Message-Id: <7432ea0ba2db4c09db99e730b981b73263d4ab2f.1634742094.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Thu, 29 Aug 2013 18:21:04 +0200
-Subject: [PATCH 172/307] ptrace: fix ptrace vs tasklist_lock race
+Subject: [PATCH 172/308] ptrace: fix ptrace vs tasklist_lock race
 
 As explained by Alexander Fyodorov <halcy@yandex.ru>:
 
@@ -33,7 +33,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  3 files changed, 68 insertions(+), 7 deletions(-)
 
 diff --git a/include/linux/sched.h b/include/linux/sched.h
-index a47f9ba13107..73a2dba48ccf 100644
+index 00b95976b5ea..fe5553262cdd 100644
 --- a/include/linux/sched.h
 +++ b/include/linux/sched.h
 @@ -107,12 +107,8 @@ struct task_group;
@@ -122,10 +122,10 @@ index eb4d04cb3aaf..258b599b7158 100644
  	}
  	spin_unlock_irq(&task->sighand->siglock);
 diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 3138f48d566a..3852661c13b3 100644
+index ba896cba835f..098f9122793a 100644
 --- a/kernel/sched/core.c
 +++ b/kernel/sched/core.c
-@@ -1981,6 +1981,18 @@ int migrate_swap(struct task_struct *cur, struct task_struct *p,
+@@ -1994,6 +1994,18 @@ int migrate_swap(struct task_struct *cur, struct task_struct *p,
  }
  #endif /* CONFIG_NUMA_BALANCING */
  
@@ -144,7 +144,7 @@ index 3138f48d566a..3852661c13b3 100644
  /*
   * wait_task_inactive - wait for a thread to unschedule.
   *
-@@ -2025,7 +2037,7 @@ unsigned long wait_task_inactive(struct task_struct *p, long match_state)
+@@ -2038,7 +2050,7 @@ unsigned long wait_task_inactive(struct task_struct *p, long match_state)
  		 * is actually now running somewhere else!
  		 */
  		while (task_running(rq, p)) {
@@ -153,7 +153,7 @@ index 3138f48d566a..3852661c13b3 100644
  				return 0;
  			cpu_relax();
  		}
-@@ -2040,7 +2052,8 @@ unsigned long wait_task_inactive(struct task_struct *p, long match_state)
+@@ -2053,7 +2065,8 @@ unsigned long wait_task_inactive(struct task_struct *p, long match_state)
  		running = task_running(rq, p);
  		queued = task_on_rq_queued(p);
  		ncsw = 0;

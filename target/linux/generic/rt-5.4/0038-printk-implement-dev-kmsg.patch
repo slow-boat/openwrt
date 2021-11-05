@@ -1,10 +1,10 @@
-From f4f49f05242b5cfc428fa3f8f917f7efd1375f21 Mon Sep 17 00:00:00 2001
-Message-Id: <f4f49f05242b5cfc428fa3f8f917f7efd1375f21.1628521257.git.zanussi@kernel.org>
-In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
-References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From 3b58a2fc615996cc6b22b35e7490867f041d0a3c Mon Sep 17 00:00:00 2001
+Message-Id: <3b58a2fc615996cc6b22b35e7490867f041d0a3c.1634742093.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
 From: John Ogness <john.ogness@linutronix.de>
 Date: Tue, 12 Feb 2019 15:30:00 +0100
-Subject: [PATCH 038/307] printk: implement /dev/kmsg
+Subject: [PATCH 038/308] printk: implement /dev/kmsg
 
 Since printk messages are now logged to a new ring buffer, update
 the /dev/kmsg functions to pull the messages from there.

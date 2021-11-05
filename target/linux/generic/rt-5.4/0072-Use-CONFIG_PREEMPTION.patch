@@ -1,10 +1,10 @@
-From 333cd572b63eeb607607a33e8915b35380cd3bb8 Mon Sep 17 00:00:00 2001
-Message-Id: <333cd572b63eeb607607a33e8915b35380cd3bb8.1628521257.git.zanussi@kernel.org>
-In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
-References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From d46f0fc51793003a2826e7c62549f9f3ed31582b Mon Sep 17 00:00:00 2001
+Message-Id: <d46f0fc51793003a2826e7c62549f9f3ed31582b.1634742094.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Fri, 26 Jul 2019 11:30:49 +0200
-Subject: [PATCH 072/307] Use CONFIG_PREEMPTION
+Subject: [PATCH 072/308] Use CONFIG_PREEMPTION
 
 Thisi is an all-in-one patch of the current `PREEMPTION' branch.
 
@@ -305,10 +305,10 @@ index 1fbc69894eed..1e0020b0bc74 100644
  
  FTRACE_OPS_FL_IPMODIFY
 diff --git a/arch/arc/kernel/entry.S b/arch/arc/kernel/entry.S
-index b37ca852a9f7..c6b88f1b50ee 100644
+index cef1d3f2656f..ae656bfc31c3 100644
 --- a/arch/arc/kernel/entry.S
 +++ b/arch/arc/kernel/entry.S
-@@ -331,11 +331,11 @@ resume_user_mode_begin:
+@@ -343,11 +343,11 @@ resume_user_mode_begin:
  resume_kernel_mode:
  
  	; Disable Interrupts from this point on
@@ -1561,7 +1561,7 @@ index c1e641c792d5..9894049f87d2 100644
  		   "unknown",
  #endif
 diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-index 6aeb53b4e19f..8393e2580bf9 100644
+index 885d4792abdf..4c685894b899 100644
 --- a/kernel/workqueue.c
 +++ b/kernel/workqueue.c
 @@ -2288,7 +2288,7 @@ __acquires(&pool->lock)
@@ -1574,10 +1574,10 @@ index 6aeb53b4e19f..8393e2580bf9 100644
  	 * happen could deadlock with stop_machine as such work item could
  	 * indefinitely requeue itself while all other CPUs are trapped in
 diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index bb30740f8cb5..d66a5b6f3b26 100644
+index 1adc57413920..6467cfb8c7c0 100644
 --- a/lib/Kconfig.debug
 +++ b/lib/Kconfig.debug
-@@ -1061,7 +1061,7 @@ config DEBUG_TIMEKEEPING
+@@ -1060,7 +1060,7 @@ config DEBUG_TIMEKEEPING
  
  config DEBUG_PREEMPT
  	bool "Debug preemptible kernel"

@@ -1,10 +1,10 @@
-From b36e2afa933937ba931af71758998879530fbd8f Mon Sep 17 00:00:00 2001
-Message-Id: <b36e2afa933937ba931af71758998879530fbd8f.1628521258.git.zanussi@kernel.org>
-In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
-References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From 478b006f3325fa8147c0d4e2dcf0ba29b6ffb210 Mon Sep 17 00:00:00 2001
+Message-Id: <478b006f3325fa8147c0d4e2dcf0ba29b6ffb210.1634742095.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
 From: Mike Galbraith <umgwanakikbuti@gmail.com>
 Date: Thu, 31 Mar 2016 04:08:28 +0200
-Subject: [PATCH 278/307] drivers/block/zram: Replace bit spinlocks with
+Subject: [PATCH 278/308] drivers/block/zram: Replace bit spinlocks with
  rtmutex for -rt
 
 They're nondeterministic, and lead to ___might_sleep() splats in -rt.

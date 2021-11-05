@@ -1,10 +1,10 @@
-From ed6bb48d79b5fc868b87ab755fba20299ecfcb45 Mon Sep 17 00:00:00 2001
-Message-Id: <ed6bb48d79b5fc868b87ab755fba20299ecfcb45.1628521258.git.zanussi@kernel.org>
-In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
-References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From c6ab27465af5f30c6dc0eb77cdd0baef79a39754 Mon Sep 17 00:00:00 2001
+Message-Id: <c6ab27465af5f30c6dc0eb77cdd0baef79a39754.1634742094.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
 From: Matt Fleming <matt@codeblueprint.co.uk>
 Date: Sun, 26 Jan 2020 21:19:45 +0000
-Subject: [PATCH 126/307] mm/memcontrol: Move misplaced
+Subject: [PATCH 126/308] mm/memcontrol: Move misplaced
  local_unlock_irqrestore()
 
 The comment about local_lock_irqsave() mentions just the counters and
@@ -21,10 +21,10 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index a077436aa0aa..8d154c2c66aa 100644
+index df8e3008e572..3d8cdfcba145 100644
 --- a/mm/memcontrol.c
 +++ b/mm/memcontrol.c
-@@ -7102,10 +7102,10 @@ void mem_cgroup_swapout(struct page *page, swp_entry_t entry)
+@@ -7110,10 +7110,10 @@ void mem_cgroup_swapout(struct page *page, swp_entry_t entry)
  	mem_cgroup_charge_statistics(memcg, page, PageTransHuge(page),
  				     -nr_entries);
  	memcg_check_events(memcg, page);

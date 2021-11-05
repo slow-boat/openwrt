@@ -1,10 +1,10 @@
-From 479f1f909bf0d720fad89deb127d24254b564979 Mon Sep 17 00:00:00 2001
-Message-Id: <479f1f909bf0d720fad89deb127d24254b564979.1628521258.git.zanussi@kernel.org>
-In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
-References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From 9a8b98a0a9cfab006a9e63ffc77be4b46dfbc714 Mon Sep 17 00:00:00 2001
+Message-Id: <9a8b98a0a9cfab006a9e63ffc77be4b46dfbc714.1634742094.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Date: Wed, 11 Oct 2017 17:43:49 +0200
-Subject: [PATCH 221/307] apparmor: use a locallock instead preempt_disable()
+Subject: [PATCH 221/308] apparmor: use a locallock instead preempt_disable()
 
 get_buffers() disables preemption which acts as a lock for the per-CPU
 variable. Since we can't disable preemption here on RT, a local_lock is

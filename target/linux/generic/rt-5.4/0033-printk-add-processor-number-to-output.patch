@@ -1,10 +1,10 @@
-From 0e78f112b0e4fec3483b0a6fcd8dc56fd08db8b0 Mon Sep 17 00:00:00 2001
-Message-Id: <0e78f112b0e4fec3483b0a6fcd8dc56fd08db8b0.1628521257.git.zanussi@kernel.org>
-In-Reply-To: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
-References: <cf130d0c2b14921d6ee7897749918210def3babb.1628521257.git.zanussi@kernel.org>
+From 20c3b32f025f8949349d1bf288e6afc5990004ab Mon Sep 17 00:00:00 2001
+Message-Id: <20c3b32f025f8949349d1bf288e6afc5990004ab.1634742093.git.zanussi@kernel.org>
+In-Reply-To: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
+References: <4bdddbe15d0ecfb5be4b1709415917a9fa7a4b5a.1634742093.git.zanussi@kernel.org>
 From: John Ogness <john.ogness@linutronix.de>
 Date: Tue, 12 Feb 2019 15:29:55 +0100
-Subject: [PATCH 033/307] printk: add processor number to output
+Subject: [PATCH 033/308] printk: add processor number to output
 
 It can be difficult to sort printk out if multiple processors are
 printing simultaneously. Add the processor number to the printk

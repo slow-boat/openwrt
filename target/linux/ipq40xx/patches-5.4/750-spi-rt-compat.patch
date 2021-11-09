@@ -1,0 +1,54 @@
+Index: linux-5.10.75/drivers/spi/spi-qup.c
+===================================================================
+--- linux-5.10.75.orig/drivers/spi/spi-qup.c
++++ linux-5.10.75/drivers/spi/spi-qup.c
+@@ -595,6 +595,7 @@ static irqreturn_t spi_qup_qup_irq(int i
+ 	u32 opflags, qup_err, spi_err;
+ 	unsigned long flags;
+ 	int error = 0;
++	int completed = 0;
+ 
+ 	qup_err = readl_relaxed(controller->base + QUP_ERROR_FLAGS);
+ 	spi_err = readl_relaxed(controller->base + SPI_ERROR_FLAGS);
+@@ -614,6 +615,7 @@ static irqreturn_t spi_qup_qup_irq(int i
+ 			dev_warn(controller->dev, "INPUT_OVER_RUN\n");
+ 
+ 		error = -EIO;
++		completed = 1;
+ 	}
+ 
+ 	if (spi_err) {
+@@ -623,6 +625,7 @@ static irqreturn_t spi_qup_qup_irq(int i
+ 			dev_warn(controller->dev, "CLK_UNDER_RUN\n");
+ 
+ 		error = -EIO;
++		completed = 1;
+ 	}
+ 
+ 	spin_lock_irqsave(&controller->lock, flags);
+@@ -640,20 +643,20 @@ static irqreturn_t spi_qup_qup_irq(int i
+ 			spi_qup_write(controller);
+ 
+ 		if (!spi_qup_data_pending(controller))
+-			complete(&controller->done);
++			completed = 1;
+ 	}
+ 
+-	if (error)
+-		complete(&controller->done);
+-
+ 	if (opflags & QUP_OP_MAX_INPUT_DONE_FLAG) {
+ 		if (!spi_qup_is_dma_xfer(controller->mode)) {
+ 			if (spi_qup_data_pending(controller))
+ 				return IRQ_HANDLED;
+ 		}
+-		complete(&controller->done);
++		completed = 1;
+ 	}
+ 
++	if(completed)
++		complete(&controller->done);
++
+ 	return IRQ_HANDLED;
+ }
+ 

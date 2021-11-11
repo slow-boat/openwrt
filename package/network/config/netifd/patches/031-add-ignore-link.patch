@@ -1,8 +1,8 @@
-Index: netifd-2019-05-08-f6fb7000/interface.c
+Index: netifd-2021-10-21-f78bdec2/interface.c
 ===================================================================
---- netifd-2019-05-08-f6fb7000.orig/interface.c
-+++ netifd-2019-05-08-f6fb7000/interface.c
-@@ -52,6 +52,7 @@ enum {
+--- netifd-2021-10-21-f78bdec2.orig/interface.c
++++ netifd-2021-10-21-f78bdec2/interface.c
+@@ -59,6 +59,7 @@ enum {
  	IFACE_ATTR_DELEGATE,
  	IFACE_ATTR_IP6IFACEID,
  	IFACE_ATTR_FORCE_LINK,
@@ -10,7 +10,7 @@ Index: netifd-2019-05-08-f6fb7000/interface.c
  	IFACE_ATTR_IP6WEIGHT,
  	IFACE_ATTR_MAX
  };
-@@ -77,6 +78,7 @@ static const struct blobmsg_policy iface
+@@ -89,6 +90,7 @@ static const struct blobmsg_policy iface
  	[IFACE_ATTR_DELEGATE] = { .name = "delegate", .type = BLOBMSG_TYPE_BOOL },
  	[IFACE_ATTR_IP6IFACEID] = { .name = "ip6ifaceid", .type = BLOBMSG_TYPE_STRING },
  	[IFACE_ATTR_FORCE_LINK] = { .name = "force_link", .type = BLOBMSG_TYPE_BOOL },
@@ -18,7 +18,7 @@ Index: netifd-2019-05-08-f6fb7000/interface.c
  	[IFACE_ATTR_IP6WEIGHT] = { .name = "ip6weight", .type = BLOBMSG_TYPE_INT32 },
  };
  
-@@ -871,6 +873,7 @@ interface_alloc(const char *name, struct
+@@ -898,6 +900,7 @@ interface_alloc(const char *name, struct
  
  	iface->autostart = blobmsg_get_bool_default(tb[IFACE_ATTR_AUTO], true);
  	iface->force_link = blobmsg_get_bool_default(tb[IFACE_ATTR_FORCE_LINK], force_link);
@@ -26,7 +26,7 @@ Index: netifd-2019-05-08-f6fb7000/interface.c
  	iface->dynamic = dynamic;
  	iface->proto_ip.no_defaultroute =
  		!blobmsg_get_bool_default(tb[IFACE_ATTR_DEFAULTROUTE], true);
-@@ -1038,6 +1041,9 @@ interface_set_main_dev(struct interface
+@@ -1085,6 +1088,9 @@ interface_set_main_dev(struct interface
  {
  	bool claimed = iface->l3_dev.claimed;
  
@@ -36,11 +36,11 @@ Index: netifd-2019-05-08-f6fb7000/interface.c
  	if (iface->main_dev.dev == dev)
  		return;
  
-Index: netifd-2019-05-08-f6fb7000/interface.h
+Index: netifd-2021-10-21-f78bdec2/interface.h
 ===================================================================
---- netifd-2019-05-08-f6fb7000.orig/interface.h
-+++ netifd-2019-05-08-f6fb7000/interface.h
-@@ -124,6 +124,7 @@ struct interface {
+--- netifd-2021-10-21-f78bdec2.orig/interface.h
++++ netifd-2021-10-21-f78bdec2/interface.h
+@@ -128,6 +128,7 @@ struct interface {
  	bool enabled;
  	bool link_state;
  	bool force_link;
@@ -48,24 +48,24 @@ Index: netifd-2019-05-08-f6fb7000/interface.h
  	bool dynamic;
  	bool policy;
  	bool link_up_event;
-Index: netifd-2019-05-08-f6fb7000/device.c
+Index: netifd-2021-10-21-f78bdec2/device.c
 ===================================================================
---- netifd-2019-05-08-f6fb7000.orig/device.c
-+++ netifd-2019-05-08-f6fb7000/device.c
-@@ -125,7 +125,7 @@ static int set_device_state(struct devic
+--- netifd-2021-10-21-f78bdec2.orig/device.c
++++ netifd-2021-10-21-f78bdec2/device.c
+@@ -157,7 +157,7 @@ static int set_device_state(struct devic
+ 		system_if_apply_settings(dev, &dev->settings, dev->settings.flags);
  
  		system_if_up(dev);
- 	}
--	else
-+	else if(!dev->ext_link)
+-	} else {
++	} else if(!dev->ext_link){
  		system_if_down(dev);
- 
- 	return 0;
-Index: netifd-2019-05-08-f6fb7000/device.h
+ 		system_if_apply_settings(dev, &dev->orig_settings, dev->orig_settings.flags);
+ 	}
+Index: netifd-2021-10-21-f78bdec2/device.h
 ===================================================================
---- netifd-2019-05-08-f6fb7000.orig/device.h
-+++ netifd-2019-05-08-f6fb7000/device.h
-@@ -217,6 +217,7 @@ struct device {
+--- netifd-2021-10-21-f78bdec2.orig/device.h
++++ netifd-2021-10-21-f78bdec2/device.h
+@@ -243,6 +243,7 @@ struct device {
  	bool disabled;
  	bool deferred;
  	bool hidden;

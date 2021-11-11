@@ -1,0 +1,48 @@
+Index: netifd-2019-05-08-f6fb7000/bond.c
+===================================================================
+--- netifd-2019-05-08-f6fb7000.orig/bond.c
++++ netifd-2019-05-08-f6fb7000/bond.c
+@@ -174,9 +174,9 @@ bond_enable_member(struct bond_member *b
+ 	if (ret)
+ 		goto error;
+ 
+-	/* Disable IPv6 for bond members */
+-	if (!(bm->dev.dev->settings.flags & DEV_OPT_IPV6)) {
+-		bm->dev.dev->settings.ipv6 = 0;
++	/* If bond has a ipv6 override, inherit it */
++	if(bst->dev.settings.flags & DEV_OPT_IPV6) {
++		bm->dev.dev->settings.ipv6 = bst->dev.settings.ipv6;
+ 		bm->dev.dev->settings.flags |= DEV_OPT_IPV6;
+ 	}
+ 
+Index: netifd-2019-05-08-f6fb7000/bridge.c
+===================================================================
+--- netifd-2019-05-08-f6fb7000.orig/bridge.c
++++ netifd-2019-05-08-f6fb7000/bridge.c
+@@ -204,9 +204,9 @@ bridge_enable_member(struct bridge_membe
+ 	if (ret)
+ 		goto error;
+ 
+-	/* Disable IPv6 for bridge members */
+-	if (!(bm->dev.dev->settings.flags & DEV_OPT_IPV6)) {
+-		bm->dev.dev->settings.ipv6 = 0;
++	/* If bridge has a ipv6 override, inherit it */
++	if(bst->dev.settings.flags & DEV_OPT_IPV6) {
++		bm->dev.dev->settings.ipv6 = bst->dev.settings.ipv6;
+ 		bm->dev.dev->settings.flags |= DEV_OPT_IPV6;
+ 	}
+ 
+Index: netifd-2019-05-08-f6fb7000/device.c
+===================================================================
+--- netifd-2019-05-08-f6fb7000.orig/device.c
++++ netifd-2019-05-08-f6fb7000/device.c
+@@ -412,7 +412,8 @@ device_append_settings(struct device *de
+ void
+ device_init_settings(struct device *dev, struct blob_attr **tb)
+ {
+-	dev->settings.flags = 0;
++	dev->settings.flags = DEV_OPT_IPV6; /* default action is actually to override IPv6 to disable it */
++	dev->settings.ipv6 = false;
+ 	device_append_settings(dev,tb);
+ }
+ 

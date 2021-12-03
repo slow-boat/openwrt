@@ -71,6 +71,20 @@ mvebu_setup_macs()
 		lan_mac=$label_mac
 		wan_mac=$label_mac
 		;;
+	solidrun,clearfog-pro-a1)
+		# mac addresses are random, fix them so we don't have switch issues between boot cycles
+		lan_mac=$(cat /sys/class/net/eth0/address) && ucidef_set_network_device_mac eth0 $lan_mac
+		lan_mac=$(cat /sys/class/net/eth2/address) && ucidef_set_network_device_mac eth2 $lan_mac
+		lan_mac=$(cat /sys/class/net/eth1/address) || return
+		ucidef_set_network_device_mac eth1 $lan_mac
+		local i=1
+		while [ $i -le 7 ]; do
+			lan_mac=$(macaddr_add $lan_mac 1)
+			ucidef_set_network_device_mac lan$i $lan_mac
+			i=$((i+1))
+		done
+		return
+		;;
 	esac
 
 	[ -n "$lan_mac" ] && ucidef_set_interface_macaddr "lan" $lan_mac

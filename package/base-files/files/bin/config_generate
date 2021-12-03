@@ -209,6 +209,23 @@ generate_network() {
 	esac
 }
 
+generate_network_device() {
+	local macaddr
+
+	json_select network_device
+		json_select "$1"
+			json_get_vars macaddr
+		json_select ..
+	json_select ..
+
+	[ -n "$macaddr" ] || return
+	uci -q batch <<-EOF
+		add network device
+		set network.@device[-1].name='$1'
+		set network.@device[-1].macaddr='$macaddr'
+	EOF
+}
+
 generate_switch_vlans_ports() {
 	local switch="$1"
 	local port ports role roles num attr val
@@ -511,6 +528,9 @@ if [ ! -s /etc/config/network ]; then
 
 	json_get_keys keys network
 	for key in $keys; do generate_network $key $bridge_name; done
+	
+	json_get_keys keys network_device
+	for key in $keys; do generate_network_device $key; done
 
 	json_get_keys keys switch
 	for key in $keys; do generate_switch $key; done

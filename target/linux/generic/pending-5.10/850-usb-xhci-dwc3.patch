@@ -1,0 +1,17 @@
+Index: linux-5.10.75/drivers/usb/host/xhci-plat.c
+===================================================================
+--- linux-5.10.75.orig/drivers/usb/host/xhci-plat.c
++++ linux-5.10.75/drivers/usb/host/xhci-plat.c
+@@ -327,6 +327,12 @@ static int xhci_plat_probe(struct platfo
+ 					 &xhci->imod_interval);
+ 	}
+ 
++	if (of_device_is_compatible(pdev->dev.parent->of_node, "snps,dwc3")){
++		xhci->quirks |= XHCI_SKIP_PHY_INIT;
++		xhci->quirks |= XHCI_NO_SOFT_RETRY;
++		xhci_info(xhci, "Adding DWC3 quirks");
++	}
++
+ 	hcd->usb_phy = devm_usb_get_phy_by_phandle(sysdev, "usb-phy", 0);
+ 	if (IS_ERR(hcd->usb_phy)) {
+ 		ret = PTR_ERR(hcd->usb_phy);

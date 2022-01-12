@@ -16,23 +16,23 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  kernel/printk/printk.c  | 30 +++++++++++++++++++++++++++---
  2 files changed, 28 insertions(+), 3 deletions(-)
 
-diff --git a/include/linux/console.h b/include/linux/console.h
-index d09951d5a94e..22f2d31ca5ac 100644
---- a/include/linux/console.h
-+++ b/include/linux/console.h
+Index: linux-5.4.162/include/linux/console.h
+===================================================================
+--- linux-5.4.162.orig/include/linux/console.h
++++ linux-5.4.162/include/linux/console.h
 @@ -153,6 +153,7 @@ struct console {
  	short	flags;
  	short	index;
  	int	cflag;
 +	unsigned long printk_seq;
+ 	uint	ispeed;
+ 	uint	ospeed;
  	void	*data;
- 	struct	 console *next;
- };
-diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-index 2c85d6d1b60e..ff9ec5cc8fa6 100644
---- a/kernel/printk/printk.c
-+++ b/kernel/printk/printk.c
-@@ -1535,6 +1535,16 @@ SYSCALL_DEFINE3(syslog, int, type, char __user *, buf, int, len)
+Index: linux-5.4.162/kernel/printk/printk.c
+===================================================================
+--- linux-5.4.162.orig/kernel/printk/printk.c
++++ linux-5.4.162/kernel/printk/printk.c
+@@ -1535,6 +1535,16 @@ SYSCALL_DEFINE3(syslog, int, type, char
  	return do_syslog(type, buf, len, SYSLOG_FROM_READER);
  }
  
@@ -49,7 +49,7 @@ index 2c85d6d1b60e..ff9ec5cc8fa6 100644
  static void format_text(struct printk_log *msg, u64 seq,
  			char *ext_text, size_t *ext_len,
  			char *text, size_t *len, bool time)
-@@ -1568,7 +1578,7 @@ static void format_text(struct printk_log *msg, u64 seq,
+@@ -1568,7 +1578,7 @@ static void format_text(struct printk_lo
   * log_buf[start] to log_buf[end - 1].
   * The console_lock must be held.
   */
@@ -58,7 +58,7 @@ index 2c85d6d1b60e..ff9ec5cc8fa6 100644
  				 const char *text, size_t len)
  {
  	struct console *con;
-@@ -1586,6 +1596,19 @@ static void call_console_drivers(const char *ext_text, size_t ext_len,
+@@ -1586,6 +1596,19 @@ static void call_console_drivers(const c
  		if (!cpu_online(raw_smp_processor_id()) &&
  		    !(con->flags & CON_ANYTIME))
  			continue;
@@ -78,7 +78,7 @@ index 2c85d6d1b60e..ff9ec5cc8fa6 100644
  		if (con->flags & CON_EXTENDED)
  			con->write(con, ext_text, ext_len);
  		else
-@@ -1825,7 +1848,7 @@ static ssize_t msg_print_ext_header(char *buf, size_t size,
+@@ -1825,7 +1848,7 @@ static ssize_t msg_print_ext_header(char
  static ssize_t msg_print_ext_body(char *buf, size_t size,
  				  char *dict, size_t dict_len,
  				  char *text, size_t text_len) { return 0; }
@@ -87,7 +87,7 @@ index 2c85d6d1b60e..ff9ec5cc8fa6 100644
  				 const char *text, size_t len) {}
  static size_t msg_print_text(const struct printk_log *msg, bool syslog,
  			     bool time, char *buf, size_t size) { return 0; }
-@@ -2584,8 +2607,9 @@ static int printk_kthread_func(void *data)
+@@ -2591,8 +2614,9 @@ static int printk_kthread_func(void *dat
  			    &len, printk_time);
  
  		console_lock();
@@ -98,6 +98,3 @@ index 2c85d6d1b60e..ff9ec5cc8fa6 100644
  			boot_delay_msec(msg->level);
  			printk_delay();
  		}
--- 
-2.17.1
-

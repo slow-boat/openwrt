@@ -19,23 +19,23 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  kernel/printk/printk.c  | 75 +++++++++++++++++++++++++++++++++++++++++
  2 files changed, 76 insertions(+)
 
-diff --git a/include/linux/console.h b/include/linux/console.h
-index 22f2d31ca5ac..27651ab3e7c9 100644
---- a/include/linux/console.h
-+++ b/include/linux/console.h
-@@ -154,6 +154,7 @@ struct console {
- 	short	index;
- 	int	cflag;
+Index: linux-5.4.162/include/linux/console.h
+===================================================================
+--- linux-5.4.162.orig/include/linux/console.h
++++ linux-5.4.162/include/linux/console.h
+@@ -156,6 +156,7 @@ struct console {
  	unsigned long printk_seq;
+ 	uint	ispeed;
+ 	uint	ospeed;
 +	int	wrote_history;
  	void	*data;
  	struct	 console *next;
  };
-diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-index 6d02f07f47cf..7aa0ab0c9e1f 100644
---- a/kernel/printk/printk.c
-+++ b/kernel/printk/printk.c
-@@ -1588,6 +1588,77 @@ static void format_text(struct printk_log *msg, u64 seq,
+Index: linux-5.4.162/kernel/printk/printk.c
+===================================================================
+--- linux-5.4.162.orig/kernel/printk/printk.c
++++ linux-5.4.162/kernel/printk/printk.c
+@@ -1588,6 +1588,77 @@ static void format_text(struct printk_lo
  	}
  }
  
@@ -113,7 +113,7 @@ index 6d02f07f47cf..7aa0ab0c9e1f 100644
  /*
   * Call the console drivers, asking them to write out
   * log_buf[start] to log_buf[end - 1].
-@@ -1606,6 +1677,10 @@ static void call_console_drivers(u64 seq, const char *ext_text, size_t ext_len,
+@@ -1606,6 +1677,10 @@ static void call_console_drivers(u64 seq
  	for_each_console(con) {
  		if (!(con->flags & CON_ENABLED))
  			continue;
@@ -124,6 +124,3 @@ index 6d02f07f47cf..7aa0ab0c9e1f 100644
  		if (!con->write)
  			continue;
  		if (!cpu_online(raw_smp_processor_id()) &&
--- 
-2.17.1
-

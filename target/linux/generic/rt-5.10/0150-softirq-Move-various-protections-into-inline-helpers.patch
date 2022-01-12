@@ -1,7 +1,8 @@
-From 67d5806e450e6cf128dc2a9a09487d1d10babe6a Mon Sep 17 00:00:00 2001
+From 573c930e344fcad486b44a788f90e4da145e4335 Mon Sep 17 00:00:00 2001
 From: Thomas Gleixner <tglx@linutronix.de>
 Date: Tue, 9 Mar 2021 09:55:55 +0100
-Subject: [PATCH 150/304] softirq: Move various protections into inline helpers
+Subject: [PATCH v4.9-rt 150/315] softirq: Move various protections into inline
+ helpers
 
 To allow reuse of the bulk of softirq processing code for RT and to avoid
 #ifdeffery all over the place, split protections for various code sections
@@ -103,5 +104,5 @@ index fcb201ceed71..87fac6ac0c32 100644
  
  #ifdef CONFIG_HOTPLUG_CPU
 -- 
-2.32.0
+2.31.1
 

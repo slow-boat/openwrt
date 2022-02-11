@@ -1,26 +1,25 @@
 
 config alsa
-	option chans_in '2'
-	option chans_out '2'
-	option rate '48000'
+	option card 'rockchiprk3308a'
+	option period_sz '1024'
 	option periods '3'
-	option format 'S32_LE'
-	option period_sz '2048'
 
 config rtprio
-#	option irq_match 'mmc1 kworker/u2'
-	option irq '75'
 
 config gpio
-	option amp_gpio '13'
-
-config zita-n2j
-	option buffer '100'
+	option amp_gpio '16'
+	option ovl_led 'rockpis:blue:user'
 
 config crossover
 
+config zita-n2j
+
 config convolver
-	option enabled '0'
-	option gain '0.4'
-	option maxsize '32768'
+	option file 'RTA.wav'
+	option partition '1024'
+	option gain '0.25'
+
+config mpd
+	option smb_mount '1'
+	option smb_args '-t cifs -o username=root,password=root,vers=1.0,sec=ntlm,file_mode=0777 //home-gateway/data/music'
 

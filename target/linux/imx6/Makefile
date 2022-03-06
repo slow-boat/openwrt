@@ -7,7 +7,7 @@ include $(TOPDIR)/rules.mk
 ARCH:=arm
 BOARD:=imx6
 BOARDNAME:=Freescale i.MX 6
-FEATURES:=audio fpu gpio usb squashfs targz boot-part rootfs-part
+FEATURES:=audio fpu gpio usb rtc squashfs targz boot-part rootfs-part
 CPU_TYPE:=cortex-a9
 CPU_SUBTYPE:=neon
 

@@ -9,43 +9,32 @@ Signed-off-by: Robert Nelson <robertcnelson@gmail.com>
  include/configs/wandboard.h | 121 +++++++++++++++++++++++++++++++++++-
  2 files changed, 124 insertions(+), 4 deletions(-)
 
-diff --git a/configs/wandboard_defconfig b/configs/wandboard_defconfig
-index 5725487446..cb2d6f0aac 100644
---- a/configs/wandboard_defconfig
-+++ b/configs/wandboard_defconfig
-@@ -13,7 +13,7 @@ CONFIG_CMD_HDMIDETECT=y
- CONFIG_DISTRO_DEFAULTS=y
- CONFIG_NR_DRAM_BANKS=1
+Index: u-boot-2020.04/configs/wandboard_defconfig
+===================================================================
+--- u-boot-2020.04.orig/configs/wandboard_defconfig
++++ u-boot-2020.04/configs/wandboard_defconfig
+@@ -24,7 +24,7 @@ CONFIG_FIT=y
+ CONFIG_SPL_FIT_PRINT=y
+ CONFIG_SPL_LOAD_FIT=y
  CONFIG_SYS_EXTRA_OPTIONS="IMX_CONFIG=arch/arm/mach-imx/spl_sd.cfg"
 -CONFIG_BOOTCOMMAND="run findfdt; run finduuid; run distro_bootcmd"
 +CONFIG_BOOTCOMMAND="run findfdt; setenv devtype mmc; setenv mmcdev 0; run mmcboot; setenv mmcdev 1; run mmcboot; run distro_bootcmd"
  # CONFIG_CONSOLE_MUX is not set
  CONFIG_SYS_CONSOLE_IS_IN_ENV=y
  CONFIG_SYS_CONSOLE_OVERWRITE_ROUTINE=y
-@@ -24,6 +24,10 @@ CONFIG_BOARD_EARLY_INIT_F=y
- CONFIG_SPL_FS_EXT4=y
- CONFIG_SPL_I2C_SUPPORT=y
- CONFIG_SPL_WATCHDOG_SUPPORT=y
-+CONFIG_AUTOBOOT_KEYED=y
-+CONFIG_AUTOBOOT_PROMPT="Press SPACE to abort autoboot in %d seconds\n"
-+CONFIG_AUTOBOOT_DELAY_STR="d"
-+CONFIG_AUTOBOOT_STOP_STR=" "
- # CONFIG_CMD_FLASH is not set
- CONFIG_CMD_GPIO=y
- CONFIG_CMD_I2C=y
-@@ -31,6 +35,7 @@ CONFIG_CMD_MMC=y
- CONFIG_CMD_SATA=y
+@@ -44,6 +44,7 @@ CONFIG_CMD_SATA=y
  CONFIG_CMD_USB=y
+ CONFIG_CMD_BMP=y
  CONFIG_CMD_CACHE=y
 +CONFIG_CMD_BTRFS=y
  CONFIG_CMD_EXT4_WRITE=y
- CONFIG_ENV_IS_IN_MMC=y
- CONFIG_ENV_VARS_UBOOT_RUNTIME_CONFIG=y
-diff --git a/include/configs/wandboard.h b/include/configs/wandboard.h
-index b03a1c550c..7bf8c06964 100644
---- a/include/configs/wandboard.h
-+++ b/include/configs/wandboard.h
-@@ -82,11 +82,16 @@
+ CONFIG_OF_CONTROL=y
+ CONFIG_DEFAULT_DEVICE_TREE="imx6dl-wandboard-revb1"
+Index: u-boot-2020.04/include/configs/wandboard.h
+===================================================================
+--- u-boot-2020.04.orig/include/configs/wandboard.h
++++ u-boot-2020.04/include/configs/wandboard.h
+@@ -57,11 +57,16 @@
  	"fdtfile=undefined\0" \
  	"fdt_high=0xffffffff\0" \
  	"initrd_high=0xffffffff\0" \
@@ -64,7 +53,7 @@ index b03a1c550c..7bf8c06964 100644
  	"update_sd_firmware_filename=u-boot.imx\0" \
  	"update_sd_firmware=" \
  		"if test ${ip_dyn} = yes; then " \
-@@ -101,6 +106,11 @@
+@@ -76,6 +81,11 @@
  				"mmc write ${loadaddr} 0x2 ${fw_sz}; " \
  			"fi; "	\
  		"fi\0" \
@@ -76,7 +65,7 @@ index b03a1c550c..7bf8c06964 100644
  	"findfdt="\
  		"if test $board_name = D1 && test $board_rev = MX6QP ; then " \
  			"setenv fdtfile imx6qp-wandboard-revd1.dtb; fi; " \
-@@ -118,6 +128,111 @@
+@@ -93,6 +103,111 @@
  			"setenv fdtfile imx6dl-wandboard-revb1.dtb; fi; " \
  		"if test $fdtfile = undefined; then " \
  			"echo WARNING: Could not determine dtb to use; fi; \0" \
@@ -188,15 +177,3 @@ index b03a1c550c..7bf8c06964 100644
  	"kernel_addr_r=" __stringify(CONFIG_LOADADDR) "\0" \
  	"pxefile_addr_r=" __stringify(CONFIG_LOADADDR) "\0" \
  	"ramdisk_addr_r=0x13000000\0" \
-@@ -148,7 +263,7 @@
- 	(CONFIG_SYS_INIT_RAM_ADDR + CONFIG_SYS_INIT_SP_OFFSET)
- 
- /* Environment organization */
--#define CONFIG_ENV_SIZE			(8 * 1024)
-+#define CONFIG_ENV_SIZE			(10 * 1024)
- 
- #define CONFIG_ENV_OFFSET		(768 * 1024)
- #define CONFIG_SYS_MMC_ENV_DEV		0
--- 
-2.20.1
-

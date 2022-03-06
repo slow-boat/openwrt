@@ -100,12 +100,11 @@ endef
 
 define Build/imx6-sdcard
 	$(Build/imx6-combined-image-prepare)
-
+	$(Build/imx6-combined-image)
 	$(if $(UBOOT_DD), \
 		dd if=$(STAGING_DIR_IMAGE)/$(UBOOT)-u-boot.img of=$@ bs=1024 seek=69 conv=notrunc; , \
 		$(CP) $(STAGING_DIR_IMAGE)/$(UBOOT)-u-boot.img $@.boot/u-boot.img; \
 	)
-	$(Build/imx6-combined-image)
 	dd if=$(STAGING_DIR_IMAGE)/$(UBOOT)-SPL of=$@ bs=1024 seek=1 conv=notrunc
 
 	$(Build/imx6-combined-image-clean)
@@ -196,15 +195,15 @@ endef
 TARGET_DEVICES += ventana-large
 
 define Device/wandboard
-  DEVICE_PACKAGES := kmod-hwmon-core \
-	kmod-sound-core kmod-sound-soc-imx kmod-sound-soc-imx-sgtl5000 \
-	kmod-mmc kmod-brcmfmac brcmfmac-firmware-4329-sdio kmod-brcmutil kmod-cfg80211 iw wpad-basic iwinfo
+  DEVICE_PACKAGES := kmod-hwmon-core hwclock \
+	kmod-sound-core kmod-sound-soc-imx kmod-sound-soc-imx-sgtl5000 kmod-sound-soc-spdif kmod-sound-soc-spdif-imx \
+	kmod-mmc kmod-brcmfmac brcmfmac-firmware-4329-sdio kmod-brcmutil kmod-cfg80211 iw wpad-basic iwinfo kmod-cryptodev kmod-i2c-core
   DEVICE_VENDOR := Wand
   DEVICE_MODEL := Wandboard
   SUPPORTED_DEVICES := wand,wandboard
   KERNEL := kernel-bin
   UBOOT := wandboard
-  # UBOOT_DD := true
+  UBOOT_DD := true
   BOOT_SCRIPT = bootscript-wandboard
   DEVICE_NAME := wandboard
   DEVICE_DTS := \
@@ -227,10 +226,12 @@ define Device/cubox-i
   SUPPORTED_DEVICES := solidrun,cubox-i/dl solidrun,cubox-i/q
   KERNEL := kernel-bin
   UBOOT := mx6cuboxi
+  UBOOT_DD := true
   BOOT_SCRIPT = bootscript-cubox
   DEVICE_NAME := cubox
-  DEVICE_PACKAGES := kmod-hwmon-core \
-	kmod-mmc kmod-brcmfmac brcmfmac-firmware-4330-sdio kmod-brcmutil kmod-cfg80211 iw wpad-basic iwinfo
+  DEVICE_PACKAGES := kmod-hwmon-core hwclock \
+	kmod-mmc kmod-brcmfmac brcmfmac-firmware-4330-sdio brcmfmac-firmware-4329-sdio kmod-brcmutil kmod-cfg80211 iw wpad-basic iwinfo \
+	kmod-sound-core kmod-sound-soc-imx kmod-sound-soc-spdif kmod-sound-soc-spdif-imx kmod-cryptodev kmod-i2c-core
   DEVICE_DTS := imx6q-cubox-i imx6dl-cubox-i imx6q-hummingboard imx6dl-hummingboard
   IMAGES := combined.bin dtb sysupgrade.bin
   FILESYSTEMS := squashfs

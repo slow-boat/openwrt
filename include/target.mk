@@ -150,6 +150,7 @@ find_kernel_config=$(if $(__config_list),$(__config_list),$(lastword $(__config_
 
 GENERIC_LINUX_CONFIG = $(call find_kernel_config,$(GENERIC_PLATFORM_DIR))
 LINUX_TARGET_CONFIG = $(call find_kernel_config,$(PLATFORM_DIR))
+ARMBIAN_DIR := $(PLATFORM_DIR)/armbian$(if $(wildcard $(PLATFORM_DIR)/armbian-$(KERNEL_PATCHVER)),-$(KERNEL_PATCHVER))
 ifneq ($(PLATFORM_DIR),$(PLATFORM_SUBDIR))
   LINUX_SUBTARGET_CONFIG = $(call find_kernel_config,$(PLATFORM_SUBDIR))
 endif

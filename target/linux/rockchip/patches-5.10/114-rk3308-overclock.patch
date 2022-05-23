@@ -1,0 +1,30 @@
+Index: linux-5.10.27/arch/arm64/boot/dts/rockchip/rk3308.dtsi
+===================================================================
+--- linux-5.10.27.orig/arch/arm64/boot/dts/rockchip/rk3308.dtsi
++++ linux-5.10.27/arch/arm64/boot/dts/rockchip/rk3308.dtsi
+@@ -125,6 +125,16 @@
+ 			opp-microvolt = <1125000 1125000 1340000>;
+ 			clock-latency-ns = <40000>;
+ 		};
++		opp-1200000000 {
++			opp-hz = /bits/ 64 <1200000000>;
++			opp-microvolt = <1225000 1225000 1340000>;
++			clock-latency-ns = <40000>;
++		};
++		opp-1296000000 {
++			opp-hz = /bits/ 64 <1296000000>;
++			opp-microvolt = <1300000 1300000 1340000>;
++			clock-latency-ns = <40000>;
++		};
+ 	};
+ 
+ 	arm-pmu {
+@@ -586,7 +596,7 @@
+ 		rockchip,hw-tshut-temp = <120000>;
+ 		status = "disabled";
+ 	};
+-	
++
+ 	amba: bus {
+ 		compatible = "simple-bus";
+ 		#address-cells = <2>;

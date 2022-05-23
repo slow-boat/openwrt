@@ -1,6 +1,14 @@
-From 52630f326b426518cc7b9f6c6719517bc9625781 Mon Sep 17 00:00:00 2001
-From: Jayantajit Gogoi <jayanta.gogoi525@gmail.com>
-Date: Wed, 30 Sep 2020 10:12:40 +0000
+From 3aab567792a7fa949e8aca7a92a31f15d435efbe Mon Sep 17 00:00:00 2001
+From: ashthespy <ashthespy@gmail.com>
+Date: Thu, 16 Jan 2020 21:11:56 +0100
+Subject: [PATCH 04/23] ethernet: stmmac: dwmac-rk: Add MAC driver support for
+ rk3308
+
+Probably in the wrong place, as it's only 10/100 but :meh:
+
+From 67e46ea01439010eadbc220c7600fa6dae01e8e8 Mon Sep 17 00:00:00 2001
+From: David Wu <david.wu@rock-chips.com>
+Date: Thu, 8 Mar 2018 20:07:12 +0800
 Subject: [PATCH] ethernet: stmmac: dwmac-rk: Add MAC driver support for rk3308
 
 Add constants and callback functions for the dwmac on rk3308 soc.
@@ -8,15 +16,22 @@ The base structure is the same, but registers and the bits in
 them moved slightly, and add the clk_mac_speed for the select
 of mac speed.
 
+Change-Id: Ieaea3ade9e51d5118f0eb855d8e02febfb2275d1
 Signed-off-by: David Wu <david.wu@rock-chips.com>
-Signed-off-by: Jayantajit Gogoi <jayanta.gogoi525@gmail.com>
+---
+ .../bindings/net/rockchip-dwmac.txt           |  3 +-
+ .../net/ethernet/stmicro/stmmac/dwmac-rk.c    | 59 +++++++++++++++++++
+ 2 files changed, 61 insertions(+), 1 deletion(-)
+
+:100644 100644 3b71da7e874 553d5e17eca M        Documentation/devicetree/bindings/net/rockchip-dwmac.txt
+:100644 100644 dc50ba13a74 3b9b4731118 M        drivers/net/ethernet/stmicro/stmmac/dwmac-rk.c
 ---
  .../bindings/net/rockchip-dwmac.txt           |  1 +
  .../net/ethernet/stmicro/stmmac/dwmac-rk.c    | 59 +++++++++++++++++++
  2 files changed, 60 insertions(+)
 
 diff --git a/Documentation/devicetree/bindings/net/rockchip-dwmac.txt b/Documentation/devicetree/bindings/net/rockchip-dwmac.txt
-index 3b71da7e87..553d5e17ec 100644
+index 3b71da7e8742..553d5e17eca8 100644
 --- a/Documentation/devicetree/bindings/net/rockchip-dwmac.txt
 +++ b/Documentation/devicetree/bindings/net/rockchip-dwmac.txt
 @@ -8,6 +8,7 @@ Required properties:
@@ -28,7 +43,7 @@ index 3b71da7e87..553d5e17ec 100644
     "rockchip,rk3366-gmac": found on RK3366 SoCs
     "rockchip,rk3368-gmac": found on RK3368 SoCs
 diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-rk.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-rk.c
-index 9f9aaa47a8..1b4613602b 100644
+index dc50ba13a746..cfeca75ed284 100644
 --- a/drivers/net/ethernet/stmicro/stmmac/dwmac-rk.c
 +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-rk.c
 @@ -482,6 +482,64 @@ static const struct rk_gmac_ops rk3288_ops = {
@@ -104,3 +119,6 @@ index 9f9aaa47a8..1b4613602b 100644
  	{ .compatible = "rockchip,rk3328-gmac", .data = &rk3328_ops },
  	{ .compatible = "rockchip,rk3366-gmac", .data = &rk3366_ops },
  	{ .compatible = "rockchip,rk3368-gmac", .data = &rk3368_ops },
+-- 
+2.25.1
+

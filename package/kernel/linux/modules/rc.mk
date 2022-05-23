@@ -31,7 +31,8 @@ define KernelPackage/rc-gpio
 	CONFIG_IR_SPI=n \
 	CONFIG_IR_SERIAL=n \
 	CONFIG_IR_SIR=n \
-	CONFIG_RC_XBOX_DVD=n
+	CONFIG_RC_XBOX_DVD=n \
+	CONFIG_IR_TOY=n
   FILES:=$(LINUX_DIR)/drivers/media/rc/gpio-ir-recv.ko \
 	$(LINUX_DIR)/drivers/media/rc/gpio-ir-tx.ko \
 	$(LINUX_DIR)/drivers/media/rc/pwm-ir-tx.ko

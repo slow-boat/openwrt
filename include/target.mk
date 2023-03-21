@@ -59,9 +59,7 @@ DEFAULT_PACKAGES.router:=\
 	iptables \
 	kmod-ipt-offload \
 	odhcp6c \
-	odhcpd \
-	ppp \
-	ppp-mod-pppoe
+	odhcpd
 
 ifneq ($(DUMP),)
   all: dumpinfo

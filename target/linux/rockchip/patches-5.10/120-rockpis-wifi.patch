@@ -90,7 +90,7 @@ Index: linux-5.10.27/arch/arm64/boot/dts/rockchip/rk3308-rock-pi-s.dts
 +	#address-cells = <1>;
 +	#size-cells = <0>;
 +	/* bus-width = <4>;  */
-+	max-frequency = <1000000>;
++	max-frequency = <4000000>;
 +	cap-sd-highspeed;
 +	cap-sdio-irq;
 +	/* supports-sdio; */

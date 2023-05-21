@@ -1,0 +1,186 @@
+Index: linux-5.10.27/arch/arm64/boot/dts/rockchip/rk3308-rock-pi-s.dts
+===================================================================
+--- linux-5.10.27.orig/arch/arm64/boot/dts/rockchip/rk3308-rock-pi-s.dts
++++ linux-5.10.27/arch/arm64/boot/dts/rockchip/rk3308-rock-pi-s.dts
+@@ -76,6 +76,19 @@
+ 		rotary-encoder,relative-axis;
+ 	};
+ 
++	sdio_pwrseq: sdio-pwrseq {
++		compatible = "mmc-pwrseq-simple";
++		pinctrl-names = "default";
++		pinctrl-0 = <&wifi_enable_h>;
++    /*
++		 * On the module itself this is one of these (depending
++		 * on the actual card populated):
++		 * - SDIO_RESET_L_WL_REG_ON
++		 * - PDN (power down when low)
++		 */
++		reset-gpios = <&gpio0 RK_PA2 GPIO_ACTIVE_LOW>;
++	};
++
+ 	vcc5v0_sys: vcc5v0-sys {
+ 		compatible = "regulator-fixed";
+ 		regulator-name = "vcc5v0_sys";
+@@ -156,6 +169,17 @@
+ 		regulator-boot-on;
+ 	};
+ 
++	vcc5v0_otg: vcc5v0-otg {
++		compatible = "regulator-fixed";
++		regulator-name = "vcc5v0_otg";
++		regulator-always-on;
++		gpio = <&gpio0 RK_PC5 GPIO_ACTIVE_HIGH>;
++		enable-active-high;
++		pinctrl-names = "default";
++		pinctrl-0 = <&otg_vbus_drv>;
++		vin-supply = <&vcc5v0_sys>;
++	};
++
+ 	vcc_sd: vcc-sd {
+ 		compatible = "regulator-fixed";
+ 		gpio = <&gpio4 RK_PD6 GPIO_ACTIVE_LOW>;
+@@ -189,12 +213,22 @@
+ 
+ &acodec {
+ 	status = "okay";
++	#sound-dai-cells = <0>;
+ };
+ 
+ &cpu0 {
+ 	cpu-supply = <&vdd_core>;
+ };
+ 
++&cpu0_opp_table {
++	opp-1200000000 {
++		status = "okay";
++	};
++	opp-1296000000 {
++		status = "okay";
++	};
++};
++
+ &emmc {
+ 	bus-width = <4>;
+ 	cap-mmc-highspeed;
+@@ -257,6 +291,18 @@
+ 					<1 RK_PC6 RK_FUNC_GPIO &pcfg_pull_up_4ma>;
+ 		};
+ 	};
++
++	sdio-pwrseq {
++		wifi_enable_h: wifi-enable-h {
++			rockchip,pins = <0 RK_PA2 RK_FUNC_GPIO &pcfg_pull_none>;
++		};
++	};
++
++	wifi {
++		wifi_host_wake: wifi-host-wake {
++			rockchip,pins = <0 RK_PA0 RK_FUNC_GPIO &pcfg_pull_down>;
++		};
++	};
+ };
+ 
+ &pwm0 {
+@@ -269,6 +315,29 @@
+ 	status = "okay";
+ };
+ 
++&sdio {
++	#address-cells = <1>;
++	#size-cells = <0>;
++	/* bus-width = <4>;  */
++	max-frequency = <1000000>;
++	cap-sd-highspeed;
++	cap-sdio-irq;
++	/* supports-sdio; */
++	keep-power-in-suspend;
++	mmc-pwrseq = <&sdio_pwrseq>;
++	non-removable;
++	sd-uhs-sdr104;
++	status = "okay";
++
++	rtl8723ds: wifi@1 {
++		interrupt-parent = <&gpio0>;
++		interrupts = <RK_PA3 GPIO_ACTIVE_HIGH>;
++		interrupt-names = "host-wake";
++		pinctrl-names = "default";
++		pinctrl-0 = <&wifi_host_wake>;
++	};
++};
++
+ &sdmmc {
+ 	bus-width = <4>;
+ 	cap-mmc-highspeed;
+@@ -293,6 +362,12 @@
+ 	status = "okay";
+ };
+ 
++&uart4 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&uart4_xfer &uart4_rts &uart4_cts>;
++	status = "okay";
++};
++
+ &u2phy {
+ 	status = "okay";
+ 
+Index: linux-5.10.27/arch/arm64/boot/dts/rockchip/rk3308.dtsi
+===================================================================
+--- linux-5.10.27.orig/arch/arm64/boot/dts/rockchip/rk3308.dtsi
++++ linux-5.10.27/arch/arm64/boot/dts/rockchip/rk3308.dtsi
+@@ -165,11 +165,54 @@
+ 		#clock-cells = <0>;
+ 	};
+ 
++	otp: otp@ff210000 {
++		compatible = "rockchip,rk3308-otp";
++		reg = <0x0 0xff210000 0x0 0x4000>;
++		#address-cells = <1>;
++		#size-cells = <1>;
++		clocks = <&cru SCLK_OTP_USR>, <&cru PCLK_OTP_NS>,
++			 <&cru PCLK_OTP_PHY>;
++		clock-names = "otp", "apb_pclk", "phy";
++		resets = <&cru SRST_OTP_PHY>;
++		reset-names = "phy";
++
++		/* Data cells */
++		cpu_id: id@7 {
++			reg = <0x07 0x10>;
++		};
++		cpu_leakage: cpu-leakage@17 {
++			reg = <0x17 0x1>;
++		};
++		logic_leakage: logic-leakage@18 {
++			reg = <0x18 0x1>;
++		};
++	};
++
+ 	psci {
+ 		compatible = "arm,psci-1.0";
+ 		method = "smc";
+ 	};
+ 
++	reserved-memory {
++		#address-cells = <2>;
++		#size-cells = <2>;
++		ranges;
++
++		drm_logo: drm-logo@00000000 {
++			compatible = "rockchip,drm-logo";
++			reg = <0x0 0x0 0x0 0x0>;
++		};
++
++		ramoops: ramoops@110000 {
++			compatible = "ramoops";
++			reg = <0x0 0x110000 0x0 0xf0000>;
++			record-size = <0x30000>;
++			console-size = <0xc0000>;
++			ftrace-size = <0x00000>;
++			pmsg-size = <0x00000>;
++		};
++	};
++
+ 	timer {
+ 		compatible = "arm,armv8-timer";
+ 		interrupts = <GIC_PPI 13 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_HIGH)>,

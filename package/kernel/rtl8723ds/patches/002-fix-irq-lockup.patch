@@ -1,0 +1,13 @@
+Index: rtl8723ds-2023-05-03-c65bc55a/os_dep/linux/ioctl_cfg80211.c
+===================================================================
+--- rtl8723ds-2023-05-03-c65bc55a.orig/os_dep/linux/ioctl_cfg80211.c
++++ rtl8723ds-2023-05-03-c65bc55a/os_dep/linux/ioctl_cfg80211.c
+@@ -4001,7 +4001,7 @@ static int cfg80211_rtw_del_virtual_intf
+ 			RTW_INFO(FUNC_NDEV_FMT" remove monitor ndev\n", FUNC_NDEV_ARG(ndev));
+ 		} else {
+ 			RTW_INFO(FUNC_NDEV_FMT" unregister ndev\n", FUNC_NDEV_ARG(ndev));
+-			rtw_os_ndev_unregister(adapter);
++			//rtw_os_ndev_unregister(adapter);
+ 		}
+ 	} else
+ #if defined(CONFIG_P2P) && defined(RTW_DEDICATED_P2P_DEVICE)
